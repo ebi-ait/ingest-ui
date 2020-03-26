@@ -2,11 +2,12 @@
 <a *ngIf="!this.createMode" routerLink="/projects/detail" [queryParams]="{uuid:this.projectResource.uuid.uuid}" class="text-info" >Cancel</a>
 
 <json-schema-form
-  loadExternalAssets="true"
   [schema]="projectSchema"
   [layout]="projectLayout"
   framework="material-design"
-  (onSubmit)="onSave($event)"
+  loadExternalAssets="true"
   [(data)]="project"
+  [options]="{debug:true}"
+  (onSubmit)="onSave($event)"
 >
 </json-schema-form>
