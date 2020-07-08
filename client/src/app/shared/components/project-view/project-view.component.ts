@@ -3,7 +3,7 @@ import {Project} from '../../models/project';
 import {AlertService} from '../../services/alert.service';
 import * as metadataSchema from '../../../submitter/project-form/project-metadata-schema.json';
 import * as ingestSchema from '../../../submitter/project-form/project-ingest-schema.json';
-import {wranglerLayout} from '../../../submitter/project-form/wrangler-layout';
+import {layout} from '../../../submitter/project-form/layout';
 import {MetadataFormConfig} from '../../../metadata-schema-form/models/metadata-form-config';
 
 
@@ -24,7 +24,7 @@ export class ProjectViewComponent implements OnInit {
     hideFields: ['describedBy', 'schema_version', 'schema_type', 'provenance'],
     removeEmptyFields: true,
     viewMode: true,
-    layout: wranglerLayout
+    layout: layout
   };
 
   constructor(private alertService: AlertService) {
