@@ -1,0 +1,10 @@
+<h1>Questionnaire</h1>
+
+<div class="form-group">
+  <label>What species are the donors of your experiment?</label>
+  <br/>
+  <span *ngFor="let type of donorTypes; let i = index">
+    <input type="checkbox" name="donorType" id="donorType{{i}}">
+    <label for="donorType{{i}}">{{type}}</label>
+  </span>
+</div>
