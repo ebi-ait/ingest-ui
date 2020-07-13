@@ -1,10 +1,15 @@
-<h1>Questionnaire</h1>
+<div class="vf-grid vf-grid__col-1">
+  <h1>Questionnaire</h1>
+  <div>&nbsp;</div>
 
-<div class="form-group">
-  <label>What species are the donors of your experiment?</label>
-  <br/>
-  <span *ngFor="let type of donorTypes; let i = index">
-    <input type="checkbox" name="donorType" id="donorType{{i}}">
-    <label for="donorType{{i}}">{{type}}</label>
-  </span>
+  <div>
+    <fieldset class="vf-form__fieldset">
+      <legend class="vf-form__legend">What species are the donors of your experiment?</legend>
+      <div class="vf-form__item vf-form__item--checkbox vf-form__item--checkbox--inline"
+           *ngFor="let type of donorTypes; let i = index">
+        <input class="vf-form__checkbox" type="checkbox" name="donorType" id="donorType{{i}}">
+        <label class="vf-form__label" for="donorType{{i}}">{{type | titlecase}}</label>
+      </div>
+    </fieldset>
+  </div>
 </div>

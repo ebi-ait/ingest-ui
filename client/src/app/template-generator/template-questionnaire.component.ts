@@ -8,7 +8,7 @@ import {TemplateSpecification} from "./template-specification";
 })
 export class TemplateQuestionnaireComponent {
 
-  donorTypes = ['human', 'mouse'];
+  donorTypes = ['human', 'mouse', 'other'];
 
   model = new TemplateSpecification([])
 
