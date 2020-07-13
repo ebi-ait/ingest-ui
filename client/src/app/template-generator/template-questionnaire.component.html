@@ -12,4 +12,15 @@
       </div>
     </fieldset>
   </div>
+
+  <div>
+    <fieldset class="vf-form__fieldset">
+      <legend class="vf-form__legend">Are any of your donor pre-natal (i.e. fetal or embryonic)?</legend>
+      <div class="vf-form__item vf-form__item--radio vf-form__item--radio--inline"
+           *ngFor="let preNatal of preNatalQuantity; let i = index">
+        <input class="vf-form__radio" type="radio" name="preNatalQuantity" id="preNatalQuantity{{i}}">
+        <label class="vf-form__label" for="preNatalQuantity{{i}}">{{preNatal | titlecase}}</label>
+      </div>
+    </fieldset>
+  </div>
 </div>

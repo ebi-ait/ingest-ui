@@ -9,6 +9,7 @@ import {TemplateSpecification} from "./template-specification";
 export class TemplateQuestionnaireComponent {
 
   donorTypes = ['human', 'mouse', 'other'];
+  preNatalQuantity = ['all', 'some', 'none'];
 
   model = new TemplateSpecification([])
 
