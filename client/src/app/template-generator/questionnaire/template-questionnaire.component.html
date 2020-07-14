@@ -2,27 +2,11 @@
   <h1>Questionnaire</h1>
   <div>&nbsp;</div>
 
-  <app-template-question></app-template-question>
+  <app-template-question name="donorType" [options]="donorTypes" [multiSelect]="true">
+    What species are the donors of your experiment?
+  </app-template-question>
 
-  <div>
-    <fieldset class="vf-form__fieldset">
-      <legend class="vf-form__legend">What species are the donors of your experiment?</legend>
-      <div class="vf-form__item vf-form__item--checkbox vf-form__item--checkbox--inline"
-           *ngFor="let type of donorTypes; let i = index">
-        <input class="vf-form__checkbox" type="checkbox" name="donorType" id="donorType{{i}}">
-        <label class="vf-form__label" for="donorType{{i}}">{{type | titlecase}}</label>
-      </div>
-    </fieldset>
-  </div>
-
-  <div>
-    <fieldset class="vf-form__fieldset">
-      <legend class="vf-form__legend">Are any of your donor pre-natal (i.e. fetal or embryonic)?</legend>
-      <div class="vf-form__item vf-form__item--radio vf-form__item--radio--inline"
-           *ngFor="let preNatal of preNatalQuantity; let i = index">
-        <input class="vf-form__radio" type="radio" name="preNatalQuantity" id="preNatalQuantity{{i}}">
-        <label class="vf-form__label" for="preNatalQuantity{{i}}">{{preNatal | titlecase}}</label>
-      </div>
-    </fieldset>
-  </div>
+  <app-template-question name="preNatalQuantity" [options]="preNatalQuantity" [multiSelect]="false">
+    Are any of your donor pre-natal (i.e. fetal or embryonic)?
+  </app-template-question>
 </div>

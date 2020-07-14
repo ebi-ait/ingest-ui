@@ -1,9 +1,10 @@
 <div>
   <fieldset class="vf-form__fieldset">
-    <legend class="vf-form__legend">Question?</legend>
-    <div class="vf-form__item vf-form__item--checkbox vf-form__item--checkbox--inline">
-      <input class="vf-form__checkbox" type="checkbox" name="donorType" id="cb_id">
-      <label class="vf-form__label" for="cb_id">Option</label>
+    <legend class="vf-form__legend"><ng-content></ng-content></legend>
+    <div class="vf-form__item vf-form__item--{{inputType}} vf-form__item--{{inputType}}--inline"
+         *ngFor="let option of options; let i = index">
+      <input class="vf-form__{{inputType}}" type="{{inputType}}" name="{{name}}" id="{{name}}_{{i}}">
+      <label class="vf-form__label" for="{{name}}_{{i}}">{{option | titlecase}}</label>
     </div>
   </fieldset>
 </div>
