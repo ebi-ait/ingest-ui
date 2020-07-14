@@ -4,7 +4,7 @@ import {TemplateSpecification} from "../template-specification";
 @Component({
   selector: 'app-template-questionnaire',
   templateUrl: './template-questionnaire.component.html',
-  styleUrls: ['./template-questionnaire.component.css']
+  styleUrls: ['../template-generator.css']
 })
 export class TemplateQuestionnaireComponent {
 
