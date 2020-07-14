@@ -13,7 +13,7 @@ import {UserIsWranglerGuard} from './shared/guards/user-is-wrangler.guard';
 import {WranglerOrOwnerGuard} from './shared/guards/wrangler-or-owner.guard';
 import {WelcomeComponent} from './welcome/welcome.component';
 import {ProjectRegistrationFormComponent} from './project-registration/project-registration-form/project-registration-form.component';
-import {TemplateQuestionnaireComponent} from "./template-generator/template-questionnaire.component";
+import {TemplateQuestionnaireComponent} from "./template-generator/questionnaire/template-questionnaire.component";
 
 export const ROUTES: Routes = [
   {path: 'login', component: LoginComponent},
