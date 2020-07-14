@@ -10,6 +10,7 @@ export class TemplateQuestionnaireComponent {
 
   donorTypes = ['human', 'mouse', 'other'];
   preNatalQuantity = ['all', 'some', 'none'];
+  specimenTypes = ['primary tissue', 'organoid', 'cell line']
 
   model = new TemplateSpecification([])
 

@@ -9,4 +9,20 @@
   <app-template-question name="preNatalQuantity" [options]="preNatalQuantity" [multiSelect]="false">
     Are any of your donor pre-natal (i.e. fetal or embryonic)?
   </app-template-question>
+
+  <app-template-question name="donorsRelated" [options]="['yes', 'no']" [multiSelect]="false">
+    Are any of your donors/mice related to one another (e.g. mother and fetus)?
+  </app-template-question>
+
+  <app-template-question name="specimenType" [options]="specimenTypes" [multiSelect]="true">
+    What type of specimens did you use?
+  </app-template-question>
+
+  <app-template-question name="trackExperimentInfo" [options]="['yes', 'no']" [multiSelect]="false">
+    Do you wish to record information about where, when and who performed your experiment?
+  </app-template-question>
+
+  <app-template-question name="timecourseInvolved" [options]="['yes', 'no']" [multiSelect]="false">
+    Did your experiment involve a timecourse?
+  </app-template-question>
 </div>
