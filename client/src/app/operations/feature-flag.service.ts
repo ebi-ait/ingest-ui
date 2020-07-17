@@ -7,9 +7,7 @@ enabled. The present goal (at the time of writing) is to be able to toggle _OFF_
 In the future, when feature flags are much more fleshed out, the assumptions could change.
  */
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class FeatureFlagService {
 
   private disabledFeatures: Set<string>;
