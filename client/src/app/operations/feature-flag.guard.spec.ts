@@ -21,7 +21,8 @@ describe('Feature Flag Guard', () => {
     const service = getTestBed().inject(FeatureFlagService) as SpyObj<FeatureFlagService>;
 
     //and:
-    const route: any = {snapshot: {}, data: {featureFlag: 'UserProfile'}};
+    let userProfile = 'UserProfile';
+    const route: any = {snapshot: {}, data: {featureFlag: userProfile}};
     const routeState: any = {snapshot: {}, url: ''};
 
     //and:
@@ -29,6 +30,7 @@ describe('Feature Flag Guard', () => {
 
     //when:
     expect(guard.canActivate(route, routeState)).toEqual(true);
+    expect(service.isEnabled).toHaveBeenCalledWith(userProfile);
   });
 
 });
