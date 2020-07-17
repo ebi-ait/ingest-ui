@@ -21,7 +21,7 @@ export class FeatureFlagService {
     });
   }
 
-  isDisabled(feature: string): boolean {
-    return this.disabledFeatures.has(feature);
+  isEnabled(feature: string): boolean {
+    return !this.disabledFeatures.has(feature);
   }
 }
