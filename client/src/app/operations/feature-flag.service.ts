@@ -12,9 +12,16 @@ In the future, when feature flags are much more fleshed out, the assumptions cou
 })
 export class FeatureFlagService {
 
-  constructor(disabled: string) { }
+  private disabledFeatures: Set<string>;
+
+  constructor(disabledFeatures: string) {
+    this.disabledFeatures = new Set();
+    disabledFeatures.split(',').forEach((feature) => {
+      this.disabledFeatures.add(feature);
+    });
+  }
 
   isDisabled(feature: string): boolean {
-    return false;
+    return this.disabledFeatures.has(feature);
   }
 }
