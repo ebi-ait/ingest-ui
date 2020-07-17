@@ -19,4 +19,17 @@ describe('Enable Check', () => {
     expect(service.isEnabled('logging')).toEqual(true);
   });
 
+  it('should disable feature by name regardless of case and white spacing.', () => {
+    //given:
+    let service = new FeatureFlagService('MyProfile, ToDo List, logging');
+
+    //expect:
+    expect(service.isEnabled('MyProfile')).toEqual(false);
+    expect(service.isEnabled('myprofile')).toEqual(false);
+
+    //and:
+    expect(service.isEnabled('todo list')).toEqual(false);
+    expect(service.isEnabled('ToDoList')).toEqual(true);
+  });
+
 });

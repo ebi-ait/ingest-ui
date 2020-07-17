@@ -17,11 +17,12 @@ export class FeatureFlagService {
   constructor(disabledFeatures: string) {
     this.disabledFeatures = new Set();
     disabledFeatures.split(',').forEach((feature) => {
-      this.disabledFeatures.add(feature);
+      this.disabledFeatures.add(feature.toLowerCase().trim());
     });
   }
 
   isEnabled(feature: string): boolean {
-    return !this.disabledFeatures.has(feature);
+    let key = feature.toLowerCase();
+    return !this.disabledFeatures.has(key);
   }
 }
