@@ -15,22 +15,27 @@ describe('Feature Flag Guard', () => {
     });
   });
 
-  it('should allow enabled features', () => {
-    //given:
-    const guard = getTestBed().inject(FeatureFlagGuard);
-    const service = getTestBed().inject(FeatureFlagService) as SpyObj<FeatureFlagService>;
+  [
+    {allow: true, action: 'allow'},
+    {allow: false, action: 'block'}
+  ].forEach(param => {
+    it(`should ${param.action} features`, () => {
+      //given:
+      const guard = getTestBed().inject(FeatureFlagGuard);
+      const service = getTestBed().inject(FeatureFlagService) as SpyObj<FeatureFlagService>;
 
-    //and:
-    let userProfile = 'UserProfile';
-    const route: any = {snapshot: {}, data: {featureFlag: userProfile}};
-    const routeState: any = {snapshot: {}, url: ''};
+      //and:
+      let userProfile = 'UserProfile';
+      const route: any = {snapshot: {}, data: {featureFlag: userProfile}};
+      const routeState: any = {snapshot: {}, url: ''};
 
-    //and:
-    service.isEnabled.and.returnValue(true);
+      //and:
+      service.isEnabled.and.returnValue(param.allow);
 
-    //when:
-    expect(guard.canActivate(route, routeState)).toEqual(true);
-    expect(service.isEnabled).toHaveBeenCalledWith(userProfile);
+      //when:
+      expect(guard.canActivate(route, routeState)).toEqual(param.allow);
+      expect(service.isEnabled).toHaveBeenCalledWith(userProfile);
+    });
   });
 
 });
