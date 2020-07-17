@@ -11,8 +11,8 @@ export class FeatureFlagGuard implements CanActivate{
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot):
     Observable<boolean> | Promise<boolean> | boolean {
-    const featureFlag: string = route.data['featureFlag'];
-    return this.service.isEnabled(featureFlag);
+    const featureFlag: string = route.data ? route.data['featureFlag'] : null;
+    return featureFlag != null ? this.service.isEnabled(featureFlag) : true;
   }
 
 }

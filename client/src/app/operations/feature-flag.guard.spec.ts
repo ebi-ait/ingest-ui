@@ -26,16 +26,30 @@ describe('Feature Flag Guard', () => {
 
       //and:
       let userProfile = 'UserProfile';
-      const route: any = {snapshot: {}, data: {featureFlag: userProfile}};
-      const routeState: any = {snapshot: {}, url: ''};
+      const route: any = {data: {featureFlag: userProfile}};
+      const routeState: any = {url: '/userprofile'};
 
       //and:
       service.isEnabled.and.returnValue(param.allow);
 
-      //when:
+      //expect:
       expect(guard.canActivate(route, routeState)).toEqual(param.allow);
       expect(service.isEnabled).toHaveBeenCalledWith(userProfile);
     });
+  });
+
+  it('should allow routes with no flags', () => {
+    //given:
+    const guard = getTestBed().inject(FeatureFlagGuard);
+    const service = getTestBed().inject(FeatureFlagService) as SpyObj<FeatureFlagService>;
+
+    //and:
+    const route: any = {};
+    const routeState: any = {url: '/accounts'};
+
+    //expect:
+    expect(guard.canActivate(route, routeState)).toEqual(true);
+    expect(service.isEnabled).toHaveBeenCalledTimes(0);
   });
 
 });
