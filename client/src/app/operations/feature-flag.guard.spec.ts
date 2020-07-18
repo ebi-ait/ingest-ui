@@ -38,18 +38,22 @@ describe('Feature Flag Guard', () => {
     });
   });
 
-  it('should allow routes with no flags', () => {
-    //given:
-    const guard = getTestBed().inject(FeatureFlagGuard);
-    const service = getTestBed().inject(FeatureFlagService) as SpyObj<FeatureFlagService>;
+  [
+    {route: {}, description: 'no flags'},
+    {route: {data: {text: 'some data'}}, description: 'unrelated data'}
+  ].forEach((param: any) => {
+    it(`should allow routes with ${param.description}`, () => {
+      //given:
+      const guard = getTestBed().inject(FeatureFlagGuard);
+      const service = getTestBed().inject(FeatureFlagService) as SpyObj<FeatureFlagService>;
 
-    //and:
-    const route: any = {};
-    const routeState: any = {url: '/accounts'};
+      //and:
+      const routeState: any = {url: '/accounts'};
 
-    //expect:
-    expect(guard.canActivate(route, routeState)).toEqual(true);
-    expect(service.isEnabled).toHaveBeenCalledTimes(0);
+      //expect:
+      expect(guard.canActivate(param, routeState)).toEqual(true);
+      expect(service.isEnabled).toHaveBeenCalledTimes(0);
+    });
   });
 
 });
