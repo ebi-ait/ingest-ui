@@ -12,6 +12,10 @@ export class FeatureFlagService {
 
   private disabledFeatures: Set<string>;
 
+  /*
+  For now, source the disabled features from env. This will allow operations to set the list without having
+  to rebuild the UI container.
+   */
   constructor(disabledFeatures: string) {
     this.disabledFeatures = new Set();
     disabledFeatures.split(',').forEach((feature) => {
