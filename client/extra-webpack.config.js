@@ -1,6 +1,10 @@
 const webpack = require('webpack');
 
-let env = Object.keys(process.env);
+let env = {};
+Object.entries(process.env).forEach(entry => {
+  const [key, value] = entry;
+  env[key] = JSON.stringify(value);
+});
 
 module.exports = {
   plugins: [
