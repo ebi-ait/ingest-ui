@@ -5,7 +5,6 @@
 <ng-container *ngIf="project">
   <h1>{{getProjectName()}}</h1>
   <br/>
-
   <mat-tab-group>
     <mat-tab label="1. Project">
       <div class="vf-u-margin__top--xxl">
@@ -39,6 +38,8 @@
         <table>
           <thead class="thead-light">
           <tr>
+            <th></th>
+            <th></th>
             <th>Created</th>
             <th>Submission UUID</th>
             <th>Status</th>
@@ -47,6 +48,15 @@
           </thead>
           <tbody>
           <tr *ngFor="let submissionEnvelope of submissionEnvelopes">
+            <td>
+              <mat-icon [ngStyle]="{'color': 'lightgrey'}" *ngIf="submissionEnvelope['isUpdate']"
+                        matTooltip="This is an update submission.">info
+              </mat-icon>
+            </td>
+            <td><a href="{{submissionEnvelope['_links']['self']['href']}}" target="_blank" class="vf-link"
+                   title="click to see Ingest API resource">
+              <mat-icon [ngStyle]="{'color': 'lightgrey'}">link</mat-icon>
+            </a></td>
             <td>{{submissionEnvelope.submissionDate | date: "medium"}}</td>
             <td>
               <a [routerLink]="['/submissions/detail']"
