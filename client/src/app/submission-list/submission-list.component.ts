@@ -2,7 +2,6 @@ import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulatio
 import {IngestService} from '../shared/services/ingest.service';
 import {SubmissionEnvelope} from '../shared/models/submissionEnvelope';
 import {ActivatedRoute, Router} from '@angular/router';
-
 import {AlertService} from '../shared/services/alert.service';
 import {takeWhile, tap} from 'rxjs/operators';
 import {LoaderService} from '../shared/services/loader.service';
@@ -23,22 +22,18 @@ export class SubmissionListComponent implements OnInit, OnDestroy, AfterViewInit
   links: Object;
   currentPageInfo: Object;
   params: Object;
-
-  interval: number;
-
+  private interval: number;
   private alive: boolean;
 
   private showAll;
+  pageFromUrl;
   pollingSubscription: Subscription;
-
-
   // MatPaginator Inputs
   pageSizeOptions: number[] = [5, 10, 20, 30];
-
   // MatPaginator Output
   pageEvent: PageEvent;
 
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   upload = false;
 
   constructor(private ingestService: IngestService,
@@ -60,7 +55,7 @@ export class SubmissionListComponent implements OnInit, OnDestroy, AfterViewInit
 
     this.submissionProjects = {};
 
-    this.params = {'page': 0, 'size': 20, 'sort' : 'submissionDate,desc'};
+    this.params = {'page': 0, 'size': 20, 'sort': 'submissionDate,desc'};
 
     route.params.subscribe(() => {
       this.showAll = this.route.snapshot.paramMap.get('all');
@@ -154,6 +149,7 @@ export class SubmissionListComponent implements OnInit, OnDestroy, AfterViewInit
   getProjectName(submission) {
     return this.submissionProjects[this.getSubmissionId(submission)]['name'];
   }
+
   getProjectId(submission) {
     return this.submissionProjects[this.getSubmissionId(submission)]['id'];
   }

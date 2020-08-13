@@ -205,7 +205,7 @@ export class IngestService {
 
   public getSubmissionProject(submissionId): Observable<Project> {
     return this.http
-      .get<ListResult<Project>>(`${this.API_URL}/submissionEnvelopes/${submissionId}/projects`)
+      .get<ListResult<Project>>(`${this.API_URL}/submissionEnvelopes/${submissionId}/relatedProjects`)
       .pipe(map(data => data._embedded && data._embedded.projects ? data._embedded.projects[0] : null));
   }
 
