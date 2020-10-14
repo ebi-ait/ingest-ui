@@ -51,6 +51,11 @@ export class BrokerService {
     return this.http.get(url, {responseType: 'blob', observe: 'response'});
   }
 
+  updateSpreadsheet(formData, submissionUuid: string): Observable<any> {
+    console.log('updating spreadsheet');
+    return this.http.put(`${this.API_URL}/submissions/${submissionUuid}/spreadsheet`, formData);
+  }
+
   private handleError(operation: any) {
     return (err: any) => {
       const errMsg = `error in ${operation}()`;

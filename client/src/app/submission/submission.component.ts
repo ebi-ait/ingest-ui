@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
 import {Observable, timer} from 'rxjs';
@@ -41,6 +41,9 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   submissionErrors: Object[];
   selectedIndex: any = 0;
   archiveEntities: ArchiveEntity[];
+
+  @ViewChild('spreadsheetFileInput') spreadsheetFileInput;
+
   private alive: boolean;
   private pollInterval: number;
   private MAX_ERRORS = 9;
@@ -296,5 +299,29 @@ export class SubmissionComponent implements OnInit, OnDestroy {
             console.error(err);
           }
         });
+  }
+
+  uploadSpreadsheet() {
+    const fileBrowser = this.spreadsheetFileInput.nativeElement;
+
+    if (fileBrowser.files && fileBrowser.files[0]) {
+      this.loaderService.display(true);
+      const formData = new FormData();
+      formData.append('file', fileBrowser.files[0]);
+
+      this.brokerService.updateSpreadsheet(formData, this.submissionEnvelopeUuid).subscribe({
+        next: data => {
+          this.loaderService.display(false);
+          this.alertService.success('Upload Success', 'successful overwrite', true, true);
+        },
+        error: err => {
+          this.alertService.error('Error', 'Error in updating spreadsheet');
+          this.loaderService.display(false);
+        }
+      });
+    } else {
+      this.alertService.clear();
+      this.alertService.error('No file chosen!', 'Please choose a spreadsheet to upload.', false, true);
+    }
   }
 }

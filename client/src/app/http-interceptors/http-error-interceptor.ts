@@ -28,7 +28,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
           // already on error page with some api call still throwing error
           return throwError(error);
         }
-        // console.log(req.url)
+
         if (error.error instanceof ErrorEvent) {
           // client-side or network error
           console.error(error.error);
