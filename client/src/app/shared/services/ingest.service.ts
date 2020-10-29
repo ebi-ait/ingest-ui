@@ -28,6 +28,12 @@ export class IngestService {
 
   API_URL: string = environment.INGEST_API_URL;
 
+  public queryProjects = this.getQueryEntity('projects');
+  public queryBiomaterials = this.getQueryEntity('biomaterials');
+  public queryProtocols = this.getQueryEntity('protocols');
+  public queryFiles = this.getQueryEntity('files');
+  public queryProcesses = this.getQueryEntity('processes');
+
   private static reduceColumnsForBundleManifests(entityType, data) {
     if (entityType === 'bundleManifests') {
       return data.map(function (row) {
@@ -102,14 +108,85 @@ export class IngestService {
     return this.http.post(`${this.API_URL}/projects`, project);
   }
 
-  public queryProjects(query: Criteria[], params?): Observable<ListResult<MetadataDocument>> {
-    return this.http.post(`${this.API_URL}/projects/query`, query, {params: params})
-      .pipe(map(data => data as ListResult<MetadataDocument>));
+  public getQueryEntity(entityType: string): (query: Criteria[], params?) => Observable<ListResult<MetadataDocument>> {
+    const acceptedEntityTypes: string[] = ['files', 'processes', 'biomaterials', 'projects', 'protocols'];
+    if (!acceptedEntityTypes.includes(entityType)) {
+      throw new Error(`entityType must be one of ${acceptedEntityTypes.join()}`);
+    }
+    return (query: Criteria[], params?) =>
+      this.http.post(`${this.API_URL}/${entityType}/query`, query, {params: params})
+        .pipe(map(data => data as ListResult<MetadataDocument>));
   }
 
-  queryBiomaterials(query: Criteria[], params?): Observable<ListResult<MetadataDocument>> {
-    return this.http.post(`${this.API_URL}/biomaterials/query`, query, {params: params})
-      .pipe(map(data => data as ListResult<MetadataDocument>));
+  public addInputBiomaterialToProcess(processId: string, biomaterialId: string): Observable<Object> {
+    return this.http.post(
+      `${this.API_URL}/biomaterials/${biomaterialId}/inputToProcesses`,
+      `${this.API_URL}/processes/${processId}`,
+      {
+        headers: {
+          'Content-Type': 'text/uri-list',
+        }
+      }
+    );
+  }
+
+  public addOutputBiomaterialToProcess(processId: string, biomaterialId: string): Observable<Object> {
+    return this.http.post(
+      `${this.API_URL}/biomaterials/${biomaterialId}/derivedByProcesses`,
+      `${this.API_URL}/processes/${processId}`,
+      {
+        headers: {
+          'Content-Type': 'text/uri-list',
+        }
+      }
+    );
+  }
+
+  public addProtocolToProcess(processId: string, protocolId: string): Observable<Object> {
+    return this.http.post(
+      `${this.API_URL}/processes/${processId}/protocols`,
+      `${this.API_URL}/protocols/${protocolId}`,
+      {
+        headers: {
+          'Content-Type': 'text/uri-list',
+        }
+      }
+    );
+  }
+
+  public addOutputFileToProcess(processId: string, fileId: string): Observable<Object> {
+    return this.http.post(
+      `${this.API_URL}/files/${fileId}/derivedByProcesses`,
+      `${this.API_URL}/processes/${processId}`, {
+        headers: {
+          'Content-Type': 'text/uri-list',
+        }
+      }
+    );
+  }
+
+  public deleteInputBiomaterialFromProcess(processId: string, biomaterialId: string): Observable<Object> {
+    return this.http.delete(
+      `${this.API_URL}/biomaterials/${biomaterialId}/inputToProcesses/${processId}`
+    );
+  }
+
+  public deleteOutputBiomaterialFromProcess(processId: string, biomaterialId: string): Observable<Object> {
+    return this.http.delete(
+      `${this.API_URL}/biomaterials/${biomaterialId}/derivedByProcesses/${processId}`
+    );
+  }
+
+  public deleteProtocolFromProcess(processId: string, protocolId: string): Observable<Object> {
+    return this.http.delete(
+      `${this.API_URL}/processes/${processId}/protocols/${protocolId}`
+    );
+  }
+
+  public deleteOutputFileFromProcess(processId: string, fileId: string): Observable<Object> {
+    return this.http.delete(
+      `${this.API_URL}/files/${fileId}/derivedByProcesses/${processId}`
+    );
   }
 
   public patchProject(projectResource, patch): Observable<Project> {
