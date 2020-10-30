@@ -26,6 +26,7 @@ export class MetadataPickerComponent implements OnInit {
   options$: Observable<MetadataDocument[]>;
   value: MetadataDocument;
   searchControl: FormControl;
+  loadingResults: boolean;
   private searchField = {
     'biomaterials': 'content.biomaterial_core.biomaterial_id',
     'protocols': 'content.protocol_core.protocol_id',
@@ -37,15 +38,16 @@ export class MetadataPickerComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchControl = new FormControl('');
+    this.loadingResults = false;
     this.options$ = this.searchControl.valueChanges
       .pipe(
         startWith(this.searchControl.value ? this.searchControl.value : ''),
         filter(text => text && text.length > 2),
-        debounceTime(2000),
+        debounceTime(800),
         distinctUntilChanged(),
+        tap(() => { this.loadingResults = true; }),
         switchMap(newSearch => this.onSearchValueChanged(newSearch))
       );
-
   }
 
   // TODO make this configurable, use a "metadata field accessor" given a path
@@ -75,17 +77,16 @@ export class MetadataPickerComponent implements OnInit {
   }
 
   onSearchValueChanged(value: string): Observable<MetadataDocument[]> {
-    if (typeof value === 'string') {
-      const searchText = value ? value.toLowerCase() : '';
-      const query: Criteria[] = [
-        {
-          field: this.searchField[this.entityType],
-          operator: 'REGEX',
-          value: searchText
-        }
-      ];
-      return this.queryEntity(query);
-    }
+    if (typeof value !== 'string') { return; }
+    const searchText = value ? value.toLowerCase() : '';
+    const query: Criteria[] = [
+      {
+        field: this.searchField[this.entityType],
+        operator: 'REGEX',
+        value: searchText
+      }
+    ];
+    return this.queryEntity(query);
   }
 
   getConcreteType(metadata: MetadataDocument): string {
@@ -103,8 +104,8 @@ export class MetadataPickerComponent implements OnInit {
       map(data => {
         return data && data._embedded ? data._embedded[this.entityType] : [];
       }),
-      tap(data => {
-        console.log(`query ${this.entityType}`, data);
+      tap(() => {
+        this.loadingResults = false;
       }));
   }
 }
