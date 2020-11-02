@@ -16,6 +16,9 @@ export class MetadataPickerComponent implements OnInit {
   @Input()
   entityType: string;
 
+  @Input()
+  submissionEnvelopeId: string;
+
   @Output()
   picked = new EventEmitter<MetadataDocument>();
 
@@ -45,7 +48,9 @@ export class MetadataPickerComponent implements OnInit {
         filter(text => text && text.length > 2),
         debounceTime(800),
         distinctUntilChanged(),
-        tap(() => { this.loadingResults = true; }),
+        tap(() => {
+          this.loadingResults = true;
+        }),
         switchMap(newSearch => this.onSearchValueChanged(newSearch))
       );
   }
@@ -77,7 +82,9 @@ export class MetadataPickerComponent implements OnInit {
   }
 
   onSearchValueChanged(value: string): Observable<MetadataDocument[]> {
-    if (typeof value !== 'string') { return; }
+    if (typeof value !== 'string') {
+      return;
+    }
     const searchText = value ? value.toLowerCase() : '';
     const query: Criteria[] = [
       {
@@ -86,7 +93,15 @@ export class MetadataPickerComponent implements OnInit {
         value: searchText
       }
     ];
-    return this.queryEntity(query);
+
+    if (this.submissionEnvelopeId) {
+      query.push({
+        field: 'submissionEnvelope.id',
+        operator: 'IS',
+        value: this.submissionEnvelopeId
+      });
+    }
+    return this.queryEntity(query, {operator: 'AND'});
   }
 
   getConcreteType(metadata: MetadataDocument): string {
@@ -98,9 +113,9 @@ export class MetadataPickerComponent implements OnInit {
     this.searchControl.reset();
   }
 
-  private queryEntity(query: Criteria[]): Observable<MetadataDocument[]> {
+  private queryEntity(query: Criteria[], params?): Observable<MetadataDocument[]> {
     const queryEntity = this.ingestService.getQueryEntity(this.entityType);
-    return queryEntity(query).pipe(
+    return queryEntity(query, params).pipe(
       map(data => {
         return data && data._embedded ? data._embedded[this.entityType] : [];
       }),

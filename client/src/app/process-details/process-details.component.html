@@ -61,14 +61,20 @@
               <p><strong>name: </strong> {{input?.content['biomaterial_core']['biomaterial_name']}}</p>
               <p><strong>description: </strong> {{input?.content['biomaterial_core']['biomaterial_description']}}</p>
             </mat-card-content>
-            <mat-icon-button (click)="removeInputBiomaterial(input)" style="cursor: pointer" matTooltip="Unlink Biomaterial">
+            <mat-icon-button (click)="removeInputBiomaterial(input)" style="cursor: pointer"
+                             matTooltip="Unlink Biomaterial">
+
               <mat-icon>delete</mat-icon>
             </mat-icon-button>
           </mat-card>
         </div>
       </ng-container>
+
       <app-metadata-picker [entityType]="'biomaterials'"
-                           (picked)="onInputBiomaterialPicked($event)"></app-metadata-picker>
+                           [submissionEnvelopeId]="submissionEnvelopeId"
+                           (picked)="onInputBiomaterialPicked($event)">
+      </app-metadata-picker>
+
       <ng-container *ngFor="let input of inputBiomaterialsToAdd">
         <div class="vf-u-padding__bottom--xl">
           <mat-card class="wrap-text">
@@ -84,7 +90,9 @@
           </mat-card>
         </div>
       </ng-container>
-      <mat-icon-button *ngIf="inputBiomaterialsToAdd.length > 0" (click)="addInputBiomaterials()" style="cursor: pointer" matTooltip="Link Biomaterials">
+      <mat-icon-button *ngIf="inputBiomaterialsToAdd.length > 0" (click)="addInputBiomaterials()"
+                       style="cursor: pointer" matTooltip="Link Biomaterials">
+
         <mat-icon>add</mat-icon>
       </mat-icon-button>
     </div>
@@ -111,7 +119,12 @@
           </mat-card>
         </div>
       </ng-container>
-      <app-metadata-picker [entityType]="'protocols'" (picked)="onProtocolPicked($event)"></app-metadata-picker>
+
+      <app-metadata-picker [entityType]="'protocols'"
+                           [submissionEnvelopeId]="submissionEnvelopeId"
+                           (picked)="onProtocolPicked($event)">
+      </app-metadata-picker>
+
       <ng-container *ngFor="let protocol of protocolsToAdd">
         <div class="vf-u-padding__bottom--xl">
           <mat-card class="wrap-text">
@@ -127,7 +140,8 @@
           </mat-card>
         </div>
       </ng-container>
-      <mat-icon-button *ngIf="protocolsToAdd.length > 0" (click)="addProtocols()" style="cursor: pointer" matTooltip="Link Protocols">
+      <mat-icon-button *ngIf="protocolsToAdd.length > 0" (click)="addProtocols()" style="cursor: pointer"
+                       matTooltip="Link Protocols">
         <mat-icon>add</mat-icon>
       </mat-icon-button>
     </div>
@@ -147,7 +161,8 @@
               <p><strong>name: </strong> {{output?.content['biomaterial_core']['biomaterial_name']}}</p>
               <p><strong>description: </strong> {{output?.content['biomaterial_core']['biomaterial_description']}}</p>
             </mat-card-content>
-            <mat-icon-button (click)="removeOutputBiomaterial(output)" style="cursor: pointer" matTooltip="Unlink Biomaterial">
+            <mat-icon-button (click)="removeOutputBiomaterial(output)" style="cursor: pointer"
+                             matTooltip="Unlink Biomaterial">
               <mat-icon>delete</mat-icon>
             </mat-icon-button>
           </mat-card>
@@ -171,7 +186,9 @@
       </ng-container>
 
       <app-metadata-picker [entityType]="'biomaterials'"
-                           (picked)="onDerivedBiomaterialPicked($event)"></app-metadata-picker>
+                           [submissionEnvelopeId]="submissionEnvelopeId"
+                           (picked)="onDerivedBiomaterialPicked($event)">
+      </app-metadata-picker>
 
       <ng-container *ngFor="let output of outputBiomaterialsToAdd">
         <div class="vf-u-padding__bottom--xl">
@@ -188,12 +205,16 @@
           </mat-card>
         </div>
       </ng-container>
-      <mat-icon-button  *ngIf="outputBiomaterialsToAdd.length > 0" (click)="addOutputBiomaterials()" style="cursor: pointer" matTooltip="Link Biomaterials">
+
+      <mat-icon-button *ngIf="outputBiomaterialsToAdd.length > 0" (click)="addOutputBiomaterials()"
+                       style="cursor: pointer" matTooltip="Link Biomaterials">
         <mat-icon>add</mat-icon>
       </mat-icon-button>
 
       <app-metadata-picker [entityType]="'files'"
-                           (picked)="onDerivedFilePicked($event)"></app-metadata-picker>
+                           [submissionEnvelopeId]="submissionEnvelopeId"
+                           (picked)="onDerivedFilePicked($event)">
+      </app-metadata-picker>
 
       <ng-container *ngFor="let output of outputFilesToAdd">
         <div class="vf-u-padding__bottom--xl">
@@ -208,7 +229,9 @@
           </mat-card>
         </div>
       </ng-container>
-      <mat-icon-button *ngIf="outputFilesToAdd.length > 0" (click)="addOutputFiles()" style="cursor: pointer" matTooltip="Link Files">
+
+      <mat-icon-button *ngIf="outputFilesToAdd.length > 0" (click)="addOutputFiles()" style="cursor: pointer"
+                       matTooltip="Link Files">
         <mat-icon>add</mat-icon>
       </mat-icon-button>
     </div>

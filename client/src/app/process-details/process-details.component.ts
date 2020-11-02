@@ -20,6 +20,9 @@ export class ProcessDetailsComponent implements OnInit {
   @Input()
   schemaUrl: string;
 
+  @Input()
+  submissionEnvelopeId: string;
+
   processId: string;
 
   inputBiomaterials: MetadataDocument[];
