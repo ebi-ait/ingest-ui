@@ -78,6 +78,7 @@
       <ng-container *ngIf="row['type'] === 'Process'">
         <h3>Process Details</h3>
         <app-process-details [processUrl]="row['_links.self.href']"
+                             [submissionEnvelopeId]="submissionEnvelopeId"
                              [schemaUrl]="row['content.describedBy']"></app-process-details>
       </ng-container>
     </ng-template>
