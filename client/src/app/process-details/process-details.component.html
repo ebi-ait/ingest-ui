@@ -61,7 +61,7 @@
               <p><strong>name: </strong> {{input?.content['biomaterial_core']['biomaterial_name']}}</p>
               <p><strong>description: </strong> {{input?.content['biomaterial_core']['biomaterial_description']}}</p>
             </mat-card-content>
-            <mat-icon-button (click)="removeInputBiomaterial(input)" style="cursor: pointer" matTooltip="Remove Biomaterial">
+            <mat-icon-button (click)="removeInputBiomaterial(input)" style="cursor: pointer" matTooltip="Unlink Biomaterial">
               <mat-icon>delete</mat-icon>
             </mat-icon-button>
           </mat-card>
@@ -84,7 +84,7 @@
           </mat-card>
         </div>
       </ng-container>
-      <mat-icon-button *ngIf="inputBiomaterialsToAdd.length > 0" (click)="addInputBiomaterials()" style="cursor: pointer" matTooltip="Add Biomaterials">
+      <mat-icon-button *ngIf="inputBiomaterialsToAdd.length > 0" (click)="addInputBiomaterials()" style="cursor: pointer" matTooltip="Link Biomaterials">
         <mat-icon>add</mat-icon>
       </mat-icon-button>
     </div>
@@ -105,7 +105,7 @@
               <p><strong>name: </strong> {{protocol?.content['protocol_core']['protocol_name']}}</p>
               <p><strong>description: </strong> {{protocol?.content['protocol_core']['protocol_description']}}</p>
             </mat-card-content>
-            <mat-icon-button (click)="removeProtocol(protocol)" style="cursor: pointer" matTooltip="Remove Protocol">
+            <mat-icon-button (click)="removeProtocol(protocol)" style="cursor: pointer" matTooltip="Unlink Protocol">
               <mat-icon>delete</mat-icon>
             </mat-icon-button>
           </mat-card>
@@ -127,7 +127,7 @@
           </mat-card>
         </div>
       </ng-container>
-      <mat-icon-button *ngIf="protocolsToAdd.length > 0" (click)="addProtocols()" style="cursor: pointer" matTooltip="Add Protocols">
+      <mat-icon-button *ngIf="protocolsToAdd.length > 0" (click)="addProtocols()" style="cursor: pointer" matTooltip="Link Protocols">
         <mat-icon>add</mat-icon>
       </mat-icon-button>
     </div>
@@ -147,7 +147,7 @@
               <p><strong>name: </strong> {{output?.content['biomaterial_core']['biomaterial_name']}}</p>
               <p><strong>description: </strong> {{output?.content['biomaterial_core']['biomaterial_description']}}</p>
             </mat-card-content>
-            <mat-icon-button (click)="removeOutputBiomaterial(output)" style="cursor: pointer" matTooltip="Remove Biomaterial">
+            <mat-icon-button (click)="removeOutputBiomaterial(output)" style="cursor: pointer" matTooltip="Unlink Biomaterial">
               <mat-icon>delete</mat-icon>
             </mat-icon-button>
           </mat-card>
@@ -163,7 +163,7 @@
               <p><strong>type: </strong> {{output?.content['schema_type']}}</p>
               <p><strong>uuid: </strong> {{output?.uuid?.uuid}}</p>
             </mat-card-content>
-            <mat-icon-button (click)="removeOutputFile(output)" style="cursor: pointer" matTooltip="Remove File">
+            <mat-icon-button (click)="removeOutputFile(output)" style="cursor: pointer" matTooltip="Unlink File">
               <mat-icon>delete</mat-icon>
             </mat-icon-button>
           </mat-card>
@@ -188,7 +188,7 @@
           </mat-card>
         </div>
       </ng-container>
-      <mat-icon-button  *ngIf="outputBiomaterialsToAdd.length > 0" (click)="addOutputBiomaterials()" style="cursor: pointer" matTooltip="Add Biomaterials">
+      <mat-icon-button  *ngIf="outputBiomaterialsToAdd.length > 0" (click)="addOutputBiomaterials()" style="cursor: pointer" matTooltip="Link Biomaterials">
         <mat-icon>add</mat-icon>
       </mat-icon-button>
 
@@ -208,7 +208,7 @@
           </mat-card>
         </div>
       </ng-container>
-      <mat-icon-button *ngIf="outputFilesToAdd.length > 0" (click)="addOutputFiles()" style="cursor: pointer" matTooltip="Add Files">
+      <mat-icon-button *ngIf="outputFilesToAdd.length > 0" (click)="addOutputFiles()" style="cursor: pointer" matTooltip="Link Files">
         <mat-icon>add</mat-icon>
       </mat-icon-button>
     </div>
