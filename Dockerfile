@@ -15,7 +15,7 @@ COPY ./client /app
 RUN npm install
 
 # build app
-RUN ngbuild --prod
+RUN ng build --prod
 
 # Stage 2 (serve)
 FROM nginx:1.19.3-alpine
