@@ -10,12 +10,9 @@ WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 
 # install and cache app dependencies
-COPY ./client/package.json /app/package.json
-COPY ./client/package-lock.json /app/package-lock.json
-RUN npm install
-
 # add app
 COPY ./client /app
+RUN npm install
 
 # build app
 CMD npm run build --prod
