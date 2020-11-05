@@ -14,7 +14,6 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "prebuild": "node ./prebuild.ts",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect"
   },
