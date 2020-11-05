@@ -28,8 +28,7 @@ COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
 COPY ./prepare_artifact.sh /usr/share/nginx/prepare_artifact.sh
 RUN chmod +x /usr/share/nginx/prepare_artifact.sh
-RUN /usr/share/nginx/prepare_artifact.sh
 
 # Run on 4200 just so we don't have to change helm config files
 EXPOSE 4200 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["sh", "-c", "/usr/share/nginx/prepare_artifact.sh && nginx -g 'daemon off;'"]
