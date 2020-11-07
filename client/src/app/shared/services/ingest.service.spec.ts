@@ -83,4 +83,35 @@ describe('Ingest Service', () => {
 
     ['files', 'protocols', 'biomaterials', 'processes', 'projects'].forEach(makeTest);
   });
+
+  describe('standard CRUD helpers', () => {
+    it('should get the given url', () => {
+      const url = '42.com/meaning/life';
+      service.get(url).subscribe(() => {});
+      const req = httpTestingController.expectOne(url);
+      expect(req.request.method).toEqual('GET');
+    });
+
+    it('should send a PUT request to the given url', () => {
+      const url = '42.com/meaning/life';
+      const body = {
+        name: 'Zaphod'
+      };
+      service.put(url, body).subscribe(() => {});
+      const req = httpTestingController.expectOne(url);
+      expect(req.request.method).toEqual('PUT');
+      expect(req.request.body).toEqual(body);
+    });
+
+    it('should send a PATCH request to the given url', () => {
+      const url = '42.com/meaning/life';
+      const body = {
+        name: 'Zaphod'
+      };
+      service.patch(url, body).subscribe(() => {});
+      const req = httpTestingController.expectOne(url);
+      expect(req.request.method).toEqual('PATCH');
+      expect(req.request.body).toEqual(body);
+    });
+  });
 });
