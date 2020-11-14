@@ -8,7 +8,7 @@
 
   <mat-tab-group>
     <mat-tab label="1. Project">
-      <div>
+      <div class="vf-u-margin__top--xxl">
         <app-project-summary (tabChange)="projectTabChange($event)" [project]="project"></app-project-summary>
         <a class="vf-button vf-button--sm {{upload ? '' : 'vf-button--primary'}}" role="button"
            routerLink="/projects/{{project?.uuid?.uuid}}/{{selectedProjectTabKey}}">Edit Project</a>
@@ -18,11 +18,12 @@
       </div>
     </mat-tab>
     <mat-tab label="2. Experiment Template">
-      <br/>
-     <app-template-questionnaire></app-template-questionnaire>
+      <div class="vf-u-margin__top--xxl">
+        <app-template-questionnaire></app-template-questionnaire>
+      </div>
     </mat-tab>
     <mat-tab label="3. Upload">
-      <div style="margin-top: 1rem">
+      <div class="vf-u-margin__top--xxl">
         <button
           *ngIf="canSubmit(project)"
           type="button" class="vf-button vf-button--sm {{upload ? '' : 'vf-button--primary'}}"
@@ -70,10 +71,14 @@
       </div>
     </mat-tab>
     <mat-tab label="4. View Metadata">
-      4. View Metadata
+      <div class="vf-u-margin__top--xxl">
+        View Metdata
+      </div>
     </mat-tab>
     <mat-tab label="5. View Data">
-      5. View Data
+      <div class="vf-u-margin__top--xxl">
+        View Data
+      </div>
     </mat-tab>
   </mat-tab-group>
 </ng-container>
