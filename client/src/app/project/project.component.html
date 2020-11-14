@@ -8,7 +8,14 @@
 
   <mat-tab-group>
     <mat-tab label="1. Project">
-      <app-project-summary (tabChange)="projectTabChange($event)" [project]="project"></app-project-summary>
+      <div style="margin-top: 1rem">
+        <a class="vf-button vf-button--sm {{upload ? '' : 'vf-button--primary'}}" role="button"
+           routerLink="/projects/{{project?.uuid?.uuid}}/{{selectedProjectTabKey}}">Edit Project</a>
+        <button *ngIf="submissionEnvelopes && submissionEnvelopes.length === 0" mat-icon-button (click)="onDeleteProject()">
+          <mat-icon>delete_forever</mat-icon>
+        </button>
+        <app-project-summary (tabChange)="projectTabChange($event)" [project]="project"></app-project-summary>
+      </div>
     </mat-tab>
     <mat-tab label="2. Experiment Template">
       <br/>
@@ -16,19 +23,14 @@
     </mat-tab>
     <mat-tab label="3. Upload">
       <div style="margin-top: 1rem">
-        <a class="vf-button vf-button--sm {{upload ? '' : 'vf-button--primary'}}" role="button"
-           routerLink="/projects/{{project?.uuid?.uuid}}/{{selectedProjectTabKey}}">Edit Project</a>
         <button
           *ngIf="canSubmit(project)"
           type="button" class="vf-button vf-button--sm {{upload ? '' : 'vf-button--primary'}}"
           (click)="onSwitchUpload()">{{upload ? "Cancel" : "Submit to Project"}}</button>
-        <button *ngIf="submissionEnvelopes && submissionEnvelopes.length === 0" mat-icon-button (click)="onDeleteProject()">
-          <mat-icon>delete_forever</mat-icon>
-        </button>
       </div>
       <br/>
       <app-upload *ngIf="upload" [projectUuid]="projectUuid"></app-upload>
-
+      <p style="text-align: center" *ngIf="!submissionEnvelopes || !submissionEnvelopes?.length">There are no submissions.</p>
       <div class="dashboard" *ngIf="!upload && submissionEnvelopes && submissionEnvelopes.length > 0">
         <h2>Previous Submissions</h2>
         <table>
