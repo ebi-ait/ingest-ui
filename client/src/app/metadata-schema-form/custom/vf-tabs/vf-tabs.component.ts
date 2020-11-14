@@ -12,7 +12,12 @@ export class VfTabsComponent implements AfterContentInit {
   constructor() { }
 
   ngAfterContentInit(): void {
-    this.selectTab(this.tabs.first);
+    setTimeout(() => {
+      // Slight hack to get change detection working.
+      // Since the contents of <app-vf-tabs> may (and is) created dynamically with an ngFor, the content changes after it has been checked
+      // This will put the selectTab into the macrotask queue and cause it to be executed after main thread (Angular) complete
+      this.selectTab(this.tabs.first);
+    }, 0);
   }
 
   selectTab(tab: VfTabComponent): void {
