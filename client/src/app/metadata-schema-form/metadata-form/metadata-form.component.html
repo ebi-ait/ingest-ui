@@ -1,40 +1,42 @@
 <form *ngIf="done" class="vf-form" [formGroup]="metadataForm.formGroup" (submit)="onSubmit($event)">
-  <app-vf-tabs *ngIf="useVf">
-    <ng-container *ngFor="let tab of visibleTabs">
-      <app-vf-tab title="{{tab.title}}">
-        <ng-container *ngFor="let item of tab.items">
-          <app-metadata-form-item
-            [item]="item"
-            [metadataForm]="metadataForm">
-          </app-metadata-form-item>
-        </ng-container>
-      </app-vf-tab>
-    </ng-container>
-  </app-vf-tabs>
+  <ng-container *ngIf="visibleTabs.length > 1">
+    <app-vf-tabs *ngIf="useVf">
+      <ng-container *ngFor="let tab of visibleTabs">
+        <app-vf-tab title="{{tab.title}}">
+          <ng-container *ngFor="let item of tab.items">
+            <app-metadata-form-item
+              [item]="item"
+              [metadataForm]="metadataForm">
+            </app-metadata-form-item>
+          </ng-container>
+        </app-vf-tab>
+      </ng-container>
+    </app-vf-tabs>
 
-  <mat-tab-group *ngIf="visibleTabs.length > 1 && !useVf"
-                 (selectedIndexChange)="onSelectedIndexChange($event)"
-                 [selectedIndex]="lookupTabIndex(selectedTabKey)">
-    <ng-container *ngFor="let tab of visibleTabs">
-      <mat-tab>
-        <div>
-          <ng-template mat-tab-label>
-            <label [matTooltip]="metadataForm.get(tab.key) ? metadataForm.get(tab.key).schema.description : ''">
-              {{tab.title}}
-            </label>
-          </ng-template>
-          <div class="vf-u-margin__top--xxl vf-u-margin__bottom--xxl">
-            <ng-container *ngFor="let item of tab.items">
-              <app-metadata-form-item
-                [item]="item"
-                [metadataForm]="metadataForm">
-              </app-metadata-form-item>
-            </ng-container>
+    <mat-tab-group *ngIf="!useVf"
+                   (selectedIndexChange)="onSelectedIndexChange($event)"
+                   [selectedIndex]="lookupTabIndex(selectedTabKey)">
+      <ng-container *ngFor="let tab of visibleTabs">
+        <mat-tab>
+          <div>
+            <ng-template mat-tab-label>
+              <label [matTooltip]="metadataForm.get(tab.key) ? metadataForm.get(tab.key).schema.description : ''">
+                {{tab.title}}
+              </label>
+            </ng-template>
+            <div class="vf-u-margin__top--xxl vf-u-margin__bottom--xxl">
+              <ng-container *ngFor="let item of tab.items">
+                <app-metadata-form-item
+                  [item]="item"
+                  [metadataForm]="metadataForm">
+                </app-metadata-form-item>
+              </ng-container>
+            </div>
           </div>
-        </div>
-      </mat-tab>
-    </ng-container>
-  </mat-tab-group>
+        </mat-tab>
+      </ng-container>
+    </mat-tab-group>
+  </ng-container>
   <div *ngIf="visibleTabs.length === 1" class="vf-u-margin__top--xxl vf-u-margin__bottom--xxl">
     <ng-container *ngFor="let item of visibleTabs[0].items">
       <app-metadata-form-item
