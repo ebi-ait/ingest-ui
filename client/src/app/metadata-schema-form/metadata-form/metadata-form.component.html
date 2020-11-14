@@ -1,6 +1,18 @@
 <form *ngIf="done" class="vf-form" [formGroup]="metadataForm.formGroup" (submit)="onSubmit($event)">
+  <app-vf-tabs *ngIf="useVf">
+    <ng-container *ngFor="let tab of visibleTabs">
+      <app-vf-tab title="{{tab.title}}">
+        <ng-container *ngFor="let item of tab.items">
+          <app-metadata-form-item
+            [item]="item"
+            [metadataForm]="metadataForm">
+          </app-metadata-form-item>
+        </ng-container>
+      </app-vf-tab>
+    </ng-container>
+  </app-vf-tabs>
 
-  <mat-tab-group *ngIf="visibleTabs.length > 1"
+  <mat-tab-group *ngIf="visibleTabs.length > 1 && !useVf"
                  (selectedIndexChange)="onSelectedIndexChange($event)"
                  [selectedIndex]="lookupTabIndex(selectedTabKey)">
     <ng-container *ngFor="let tab of visibleTabs">

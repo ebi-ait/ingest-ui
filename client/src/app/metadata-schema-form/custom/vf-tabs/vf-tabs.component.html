@@ -1,0 +1,12 @@
+<div class="vf-tabs" *ngIf="tabs.length > 1">
+  <ul class="vf-tabs__list" style="display:block">
+    <ng-container *ngFor="let tab of tabs">
+      <li class="vf-tabs__item" (click)="selectTab(tab)">
+        <a class="vf-tabs__link" [class.is-active]="tab.active" href="javascript:void(0);">{{tab.title}}</a>
+      </li>
+    </ng-container>
+  </ul>
+  <div class="vf-tabs-content">
+    <ng-content></ng-content>
+  </div>
+</div>
