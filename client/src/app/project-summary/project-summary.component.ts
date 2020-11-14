@@ -8,11 +8,11 @@ import {MetadataFormConfig} from '../metadata-schema-form/models/metadata-form-c
 
 
 @Component({
-  selector: 'app-project-view',
-  templateUrl: './project-view.component.html',
-  styleUrls: ['./project-view.component.scss']
+  selector: 'app-project-summary',
+  templateUrl: './project-summary.component.html',
+  styleUrls: ['./project-summary.component.scss']
 })
-export class ProjectViewComponent implements OnInit {
+export class ProjectSummaryComponent implements OnInit {
   @Input() project: Project;
   @Output() tabChange = new EventEmitter<string>();
   title: string;
