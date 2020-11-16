@@ -12,7 +12,8 @@
         <app-project-summary (tabChange)="projectTabChange($event)" [project]="project"></app-project-summary>
         <a class="vf-button vf-button--sm {{upload ? '' : 'vf-button--primary'}}" role="button"
            routerLink="/projects/{{project?.uuid?.uuid}}/{{selectedProjectTabKey}}">Edit Project</a>
-        <button *ngIf="submissionEnvelopes && submissionEnvelopes.length === 0" mat-icon-button (click)="onDeleteProject()">
+        <button *ngIf="submissionEnvelopes && submissionEnvelopes.length === 0" mat-icon-button
+                (click)="onDeleteProject()">
           <mat-icon>delete_forever</mat-icon>
         </button>
       </div>
@@ -31,7 +32,8 @@
       </div>
       <br/>
       <app-upload *ngIf="upload" [projectUuid]="projectUuid"></app-upload>
-      <p style="text-align: center" *ngIf="!submissionEnvelopes || !submissionEnvelopes?.length">There are no submissions.</p>
+      <p style="text-align: center" *ngIf="!submissionEnvelopes || !submissionEnvelopes?.length">There are no
+        submissions.</p>
       <div class="dashboard" *ngIf="!upload && submissionEnvelopes && submissionEnvelopes.length > 0">
         <h2>Previous Submissions</h2>
         <table>
@@ -72,12 +74,31 @@
     </mat-tab>
     <mat-tab label="4. View Metadata">
       <div class="vf-u-margin__top--xxl">
-        View Metdata
+        <app-vf-tabs>
+          <app-vf-tab title="Biomaterials">
+            <app-data-table [endpoint]="this.project._links['self']['href'] + '/biomaterials'"
+                            entityType="biomaterials" [flatten]="true">
+            </app-data-table>
+          </app-vf-tab>
+          <app-vf-tab title="Processes">
+            <app-data-table [endpoint]="this.project._links['self']['href'] + '/processes'"
+                            entityType="processes" [flatten]="true">
+            </app-data-table>
+          </app-vf-tab>
+          <app-vf-tab title="Protocols">
+            <app-data-table [endpoint]="this.project._links['self']['href'] + '/protocols'"
+                            entityType="protocols" [flatten]="true">
+            </app-data-table>
+          </app-vf-tab>
+        </app-vf-tabs>
       </div>
     </mat-tab>
     <mat-tab label="5. View Data">
       <div class="vf-u-margin__top--xxl">
-        View Data
+
+        <app-data-table [endpoint]="this.project._links['self']['href'] + '/files'"
+                        entityType="files" [flatten]="true">
+        </app-data-table>
       </div>
     </mat-tab>
   </mat-tab-group>

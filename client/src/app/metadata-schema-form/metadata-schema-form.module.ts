@@ -67,15 +67,16 @@ import { VfTabComponent } from './custom/vf-tab/vf-tab.component';
     BaseInputComponent,
     FormItemComponent,
     VfTabsComponent,
-    VfTabComponent,
-    VfTabsComponent
+    VfTabComponent
   ],
   exports: [
     MetadataFormComponent,
     MetadataFieldComponent,
     VfInputComponent,
     SelectRadioComponent,
-    EnumListInputComponent
+    EnumListInputComponent,
+    VfTabsComponent,
+    VfTabComponent
   ],
   providers: []
 })
