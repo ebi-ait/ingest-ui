@@ -84,46 +84,6 @@ describe('Ingest Service', () => {
     ['files', 'protocols', 'biomaterials', 'processes', 'projects'].forEach(makeTest);
   });
 
-  describe('project entity functions', () => {
-    const mockList = {
-      name: 'my random name'
-    };
-
-    it(`should work for getFetchEntitiesForProject and a real entityType`, () => {
-      service.getFetchEntitiesForProject('protocols')('abc')
-        // @ts-ignore
-        .subscribe(res => expect(res.name).toEqual('my random name'));
-
-      const req = httpTestingController.expectOne(`${api_url}/project/abc/protocols`);
-      expect(req.request.method).toEqual('GET');
-      req.flush(mockList);
-    });
-
-    it(`should fail for getFetchEntitiesForProject and a fake entityType`, () => {
-
-      // TODO: Remove ts-ignore and mock returned ListResult properly
-      // @ts-ignore
-      expect(() => service.getFetchEntitiesForProject('beeblebrox')).toThrow();
-    });
-
-
-    const makeTest = name => {
-      it(`should work for ${name}`, () => {
-        const funcName = `fetch${name.charAt(0).toUpperCase()}${name.slice(1)}ForProject`;
-
-        // TODO: Remove ts-ignore and mock returned ListResult properly
-        // @ts-ignore
-        service[funcName]('abc').subscribe(res => expect(res.name).toEqual('my random name'));
-
-        const req = httpTestingController.expectOne(`${api_url}/project/abc/${name}`);
-        expect(req.request.method).toEqual('GET');
-        req.flush(mockList);
-      });
-    };
-
-    ['files', 'protocols', 'biomaterials', 'processes'].forEach(makeTest);
-  });
-
   describe('standard CRUD helpers', () => {
     it('should get the given url', () => {
       const url = '42.com/meaning/life';

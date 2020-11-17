@@ -33,10 +33,6 @@ export class IngestService {
   public queryProtocols = this.getQueryEntity('protocols');
   public queryFiles = this.getQueryEntity('files');
   public queryProcesses = this.getQueryEntity('processes');
-  public fetchBiomaterialsForProject = this.getFetchEntitiesForProject('biomaterials');
-  public fetchProtocolsForProject = this.getFetchEntitiesForProject('protocols');
-  public fetchProcessesForProject = this.getFetchEntitiesForProject('processes');
-  public fetchFilesForProject = this.getFetchEntitiesForProject('files');
 
   private static reduceColumnsForBundleManifests(entityType, data) {
     if (entityType === 'bundleManifests') {
@@ -124,12 +120,6 @@ export class IngestService {
     return (query: Criteria[], params?) =>
       this.http.post(`${this.API_URL}/${entityType}/query`, query, {params: params})
         .pipe(map(data => data as ListResult<MetadataDocument>));
-  }
-
-  public getFetchEntitiesForProject(entityType: string): (project_id: string, params?) => Observable<ListResult<MetadataDocument>> {
-    this.validateEntity(entityType);
-    return (project_id, params?) => this.http.get(`${this.API_URL}/project/${project_id}/${entityType}`)
-      .pipe(map(data => data as ListResult<MetadataDocument>));
   }
 
   public addInputBiomaterialToProcess(processId: string, biomaterialId: string): Observable<Object> {
