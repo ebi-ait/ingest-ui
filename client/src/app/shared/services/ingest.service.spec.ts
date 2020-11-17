@@ -92,6 +92,13 @@ describe('Ingest Service', () => {
       expect(req.request.method).toEqual('GET');
     });
 
+    it('should get the given url with options', () => {
+      const url = '42.com/meaning/life';
+      service.get(url, { params: { page: '42' }}).subscribe(() => {});
+      const req = httpTestingController.expectOne(`${url}?page=42`);
+      expect(req.request.method).toEqual('GET');
+    });
+
     it('should send a PUT request to the given url', () => {
       const url = '42.com/meaning/life';
       const body = {
