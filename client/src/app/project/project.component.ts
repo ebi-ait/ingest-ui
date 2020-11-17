@@ -66,9 +66,11 @@ export class ProjectComponent implements OnInit {
 
   setProjectData(projectData) {
     this.project = projectData;
-    const submissions_url = projectData['_links']['submissionEnvelopes']['href'];
-    this.ingestService.get(submissions_url).subscribe(submission => {
-        this.submissionEnvelopes = submission['_embedded'] ? submission['_embedded']['submissionEnvelopes'] : [];
+    const projectSubmissionsUrl = projectData['_links']['submissionEnvelopes']['href'];
+    this.ingestService.get(projectSubmissionsUrl).subscribe(
+      submissionData => {
+        const submissions = submissionData['_embedded'] ? submissionData['_embedded']['submissionEnvelopes'] : [];
+        this.submissionEnvelopes = submissions;
       }
     );
   }
