@@ -28,6 +28,8 @@ import {EnumDropDownComponent} from './metadata-field-types/enum-drop-down/enum-
 import {EnumRadioListComponent} from './metadata-field-types/enum-radio-list/enum-radio-list.component';
 import {EnumRadioInlineComponent} from './metadata-field-types/enum-radio-inline/enum-radio-inline.component';
 import {FormItemComponent} from './form-item/form-item.component';
+import { VfTabsComponent } from './custom/vf-tabs/vf-tabs.component';
+import { VfTabComponent } from './custom/vf-tab/vf-tab.component';
 
 
 @NgModule({
@@ -63,14 +65,18 @@ import {FormItemComponent} from './form-item/form-item.component';
     OntologyBaseComponent,
     MetadataFormItemComponent,
     BaseInputComponent,
-    FormItemComponent
+    FormItemComponent,
+    VfTabsComponent,
+    VfTabComponent
   ],
   exports: [
     MetadataFormComponent,
     MetadataFieldComponent,
     VfInputComponent,
     SelectRadioComponent,
-    EnumListInputComponent
+    EnumListInputComponent,
+    VfTabsComponent,
+    VfTabComponent
   ],
   providers: []
 })

@@ -1,6 +1,6 @@
 # Stage 1 (build)
 # base image
-FROM node:12.16.3-alpine as build-step
+FROM quay.io/ebi-ait/ingest-base-images:node_12.16.3-alpine as build-step
 
 # set working directory
 RUN mkdir /app
@@ -22,7 +22,7 @@ RUN npm install
 RUN ng build -c=env
 
 # Stage 2 (serve)
-FROM nginx:1.19.3-alpine
+FROM quay.io/ebi-ait/ingest-base-images:nginx_1.19.3-alpine
 
 COPY --from=build-step /app/dist /usr/share/nginx/html
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf

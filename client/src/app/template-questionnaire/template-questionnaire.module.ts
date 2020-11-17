@@ -21,6 +21,9 @@ import {ExperimentDetailGroupComponent} from "./experiment-detail-group/experime
     SpecimenGroupComponent,
     ExperimentDetailGroupComponent
   ],
+  exports: [
+    TemplateQuestionnaireFormComponent
+  ],
   imports: [
     CommonModule,
     MetadataSchemaFormModule

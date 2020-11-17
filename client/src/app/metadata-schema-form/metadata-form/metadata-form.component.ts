@@ -22,6 +22,8 @@ export class MetadataFormComponent implements OnInit {
 
   @Input() selectedTabKey: string;
 
+  @Input() useVf = false;
+
   @Input() data: object;
 
   @Output() save = new EventEmitter<object>();

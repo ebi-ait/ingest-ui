@@ -1,9 +1,6 @@
 <ngx-datatable #datatable
-
                *ngIf="rows && (rows.length > 0)"
-
                class="material expandable"
-
                [columnMode]="'force'"
                [rows]="rows"
                [headerHeight]="50"
@@ -11,15 +8,13 @@
                [rowHeight]="40"
                [rowIdentity]="getRowId"
                [scrollbarH]="true"
-
                [count]="page.totalElements"
                [limit]="page.size"
                [loadingIndicator]="isLoading"
                [externalPaging]="isPaginated"
-
                (page)='setPage($event)'>
 
-  <ng-container *ngFor="let column of columns">
+  <ng-container *ngFor="let column of getAllColumns(rows)">
     <ngx-datatable-column prop="{{column}}">
       <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
         <span *ngIf="!isUrl(value)" title="{{value}}">{{value}}</span>

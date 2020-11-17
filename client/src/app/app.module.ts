@@ -36,7 +36,7 @@ import {ProjectFormComponent} from './project-form/project-form.component';
 
 import {UploadComponent} from './shared/components/upload/upload.component';
 import {LoginComponent} from './login/login.component';
-import {ProjectViewComponent} from './shared/components/project-view/project-view.component';
+import {ProjectSummaryComponent} from './project-summary/project-summary.component';
 import {AlertService} from './shared/services/alert.service';
 import {AlertComponent} from './shared/components/alert/alert.component';
 import {LoaderService} from './shared/services/loader.service';
@@ -83,7 +83,7 @@ const BROWSER_LOCALE = navigator.language;
     AllProjectsComponent,
     UploadComponent,
     LoginComponent,
-    ProjectViewComponent,
+    ProjectSummaryComponent,
     AlertComponent,
     AaiCallbackComponent,
     ProjectFormComponent,

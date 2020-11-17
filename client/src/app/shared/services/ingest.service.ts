@@ -249,8 +249,8 @@ export class IngestService {
     return this.http.patch(ingestLink, patchData);
   }
 
-  public get(url): Observable<Object> {
-    return this.http.get(url);
+  public get(url, options?): Observable<Object> {
+    return this.http.get(url, options);
   }
 
   public getAs<T>(url): Observable<T> {

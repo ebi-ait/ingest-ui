@@ -1,18 +1,18 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Project} from '../../models/project';
-import {AlertService} from '../../services/alert.service';
-import * as metadataSchema from '../../../project-form/project-metadata-schema.json';
-import * as ingestSchema from '../../../project-form/project-ingest-schema.json';
-import {layout} from '../../../project-form/layout';
-import {MetadataFormConfig} from '../../../metadata-schema-form/models/metadata-form-config';
+import {Project} from '../shared/models/project';
+import {AlertService} from '../shared/services/alert.service';
+import * as metadataSchema from '../project-form/project-metadata-schema.json';
+import * as ingestSchema from '../project-form/project-ingest-schema.json';
+import {layout} from '../project-form/layout';
+import {MetadataFormConfig} from '../metadata-schema-form/models/metadata-form-config';
 
 
 @Component({
-  selector: 'app-project-view',
-  templateUrl: './project-view.component.html',
-  styleUrls: ['./project-view.component.scss']
+  selector: 'app-project-summary',
+  templateUrl: './project-summary.component.html',
+  styleUrls: ['./project-summary.component.scss']
 })
-export class ProjectViewComponent implements OnInit {
+export class ProjectSummaryComponent implements OnInit {
   @Input() project: Project;
   @Output() tabChange = new EventEmitter<string>();
   title: string;
