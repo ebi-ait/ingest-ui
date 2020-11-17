@@ -1,6 +1,6 @@
 <form *ngIf="done" class="vf-form" [formGroup]="metadataForm.formGroup" (submit)="onSubmit($event)">
   <ng-container *ngIf="visibleTabs.length > 1">
-    <app-vf-tabs *ngIf="useVf">
+    <app-vf-tabs *ngIf="useVf" (selectedIndexChange)="onSelectedIndexChange($event)">
       <ng-container *ngFor="let tab of visibleTabs">
         <app-vf-tab title="{{tab.title}}">
           <ng-container *ngFor="let item of tab.items">
