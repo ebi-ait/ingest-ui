@@ -92,9 +92,9 @@ export class DataTableComponent implements OnInit {
           let rows: any[];
           // TODO for now just check for specific types
           if (['biomaterials', 'protocols', 'files', 'processes'].indexOf(this.entityType) >= 0) {
-            rows = data._embedded[this.entityType].map(resource => resource['content']);
+            rows = data && data._embedded ? data._embedded[this.entityType].map(resource => resource['content']) : [];
           } else {
-            rows = data._embedded[this.entityType];
+            rows = data && data._embedded ? data._embedded[this.entityType] : [];
           }
           this.rows = this.flatten ? rows.map(row => this.flattenService.flatten(row)) : rows;
           this.page = data.page;
