@@ -88,14 +88,6 @@
       </ng-template>
     </mat-tab>
 
-    <mat-tab label="Errors" *ngIf="submissionErrors && submissionErrors.length > 0">
-      <ng-template matTabContent>
-        <br/>
-        <app-data-table [idColumn]="'instance'" [rows]="submissionErrors" [columns]="['title', 'detail', 'instance']">
-        </app-data-table>
-      </ng-template>
-    </mat-tab>
-
     <mat-tab label="Submit" [disabled]="!isValid"
              *ngIf="[ 'Submitted', 'Processing', 'Archiving', 'Exporting', 'Cleanup', 'Complete'].indexOf(submissionState) < 0">
       <ng-template matTabContent>
