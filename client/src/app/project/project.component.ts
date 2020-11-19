@@ -6,6 +6,7 @@ import {IngestService} from '../shared/services/ingest.service';
 import {SubmissionEnvelope} from '../shared/models/submissionEnvelope';
 import {LoaderService} from '../shared/services/loader.service';
 import {Project} from '../shared/models/project';
+import {MetadataDataSource} from '../shared/components/data-table/data-source/metadata-data-source';
 
 @Component({
   selector: 'app-project',
@@ -26,6 +27,11 @@ export class ProjectComponent implements OnInit {
   upload = false;
   selectedProjectTabKey: string;
   userIsWrangler: boolean;
+
+  biomaterialDataSource: MetadataDataSource;
+  protocolDataSource: MetadataDataSource;
+  processDataSource: MetadataDataSource;
+  fileDataSource: MetadataDataSource;
 
   constructor(
     private alertService: AlertService,
@@ -64,15 +70,17 @@ export class ProjectComponent implements OnInit {
     });
   }
 
-  setProjectData(projectData) {
+  setProjectData(projectData: Project) {
     this.project = projectData;
-    const projectSubmissionsUrl = projectData['_links']['submissionEnvelopes']['href'];
-    this.ingestService.get(projectSubmissionsUrl).subscribe(
+    this.initDataSources(projectData);
+    const submissionsUrl = projectData['_links']['submissionEnvelopes']['href'];
+    this.ingestService.get(submissionsUrl).subscribe(
       submissionData => {
         const submissions = submissionData['_embedded'] ? submissionData['_embedded']['submissionEnvelopes'] : [];
         this.submissionEnvelopes = submissions;
       }
     );
+
   }
 
   getProjectName() {
@@ -181,5 +189,14 @@ export class ProjectComponent implements OnInit {
 
   projectTabChange(tabKey: string) {
     this.selectedProjectTabKey = tabKey;
+  }
+
+  private initDataSources(projectData: Project) {
+    const projectUrl = projectData._links['self']['href'];
+    // TODO changes needed in Ingest Core so that these project entity endpoints can be in found in _links
+    this.biomaterialDataSource = new MetadataDataSource(this.ingestService, projectUrl + '/biomaterials', 'biomaterials');
+    this.protocolDataSource = new MetadataDataSource(this.ingestService, projectUrl + '/protocols', 'protocols');
+    this.processDataSource = new MetadataDataSource(this.ingestService, projectUrl + '/processes', 'processes');
+    this.fileDataSource = new MetadataDataSource(this.ingestService, projectUrl + '/files', 'files');
   }
 }

@@ -78,10 +78,10 @@
       </ng-template>
     </mat-tab>
 
-    <mat-tab label="Accessions" *ngIf="archiveEntities && archiveEntities.length > 0">
+    <mat-tab label="Accessions" *ngIf="['Archiving', 'Archived', 'Exported', 'Cleanup', 'Completed'].indexOf(submissionState) >= 0">
       <ng-template matTabContent>
         <br/>
-        <app-data-table [rows]="archiveEntities"
+        <app-data-table [dataSource]="archiveEntityDataSource"
                         [idColumn]="'alias'"
                         [columns]="['type', 'accession', 'alias', '_links.self.href']">
         </app-data-table>

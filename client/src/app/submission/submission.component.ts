@@ -11,6 +11,7 @@ import {BrokerService} from '../shared/services/broker.service';
 import {Project} from '../shared/models/project';
 import {ArchiveEntity} from '../shared/models/archiveEntity';
 import {ListResult} from '../shared/models/hateoas';
+import {IngestDataSource} from '../shared/components/data-table/data-source/ingest-data-source';
 
 
 @Component({
@@ -40,7 +41,9 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   manifest: Object;
   submissionErrors: Object[];
   selectedIndex: any = 0;
-  archiveEntities: ArchiveEntity[];
+
+  archiveEntityDataSource: IngestDataSource<ArchiveEntity>;
+
   private alive: boolean;
   private pollInterval: number;
   private MAX_ERRORS = 1;
@@ -72,7 +75,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.pollSubmissionEnvelope();
     this.pollEntities();
 
-    this.getArchiveEntities(this.submissionEnvelopeUuid);
+    this.initArchiveEntityDataSource(this.submissionEnvelopeUuid);
   }
 
   ngOnDestroy() {
@@ -207,17 +210,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       ).subscribe(() => this.getSubmissionProject(this.submissionEnvelopeId));
   }
 
-  private getArchiveEntitiesFromSubmission(submissionUuid: string): Observable<ArchiveEntity[]> {
-    return this.ingestService.getArchiveSubmission(submissionUuid)
-      .pipe(
-        filter(data => data && 'entities' in data._links && 'href' in data._links['entities']),
-        map(data => data._links['entities']['href']),
-        distinctUntilChanged(),
-        switchMap(href => this.ingestService.getAs<ListResult<ArchiveEntity>>(href)),
-        map(data => data._embedded ? data._embedded.archiveEntities : [])
-      );
-  }
-
   private getSubmissionEnvelope() {
     if (this.submissionEnvelopeId) {
       this.submissionEnvelope$ = this.ingestService.getSubmission(this.submissionEnvelopeId);
@@ -274,8 +266,17 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       );
   }
 
-  private getArchiveEntities(submissionUuid: string) {
-    this.getArchiveEntitiesFromSubmission(submissionUuid).subscribe(data => this.archiveEntities = data);
+  private initArchiveEntityDataSource(submissionUuid: string) {
+    this.ingestService.getArchiveSubmission(submissionUuid)
+      .subscribe(
+        archiveSubmission => {
+          if (archiveSubmission) {
+            const entitiesUrl = archiveSubmission['_links']['entities']['href'];
+            this.archiveEntityDataSource = new IngestDataSource<ArchiveEntity>(this.ingestService, entitiesUrl, 'archiveEntities');
+          }
+
+        }
+      );
   }
 
   private getSubmissionManifest() {
