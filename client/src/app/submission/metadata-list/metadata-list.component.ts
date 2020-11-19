@@ -9,8 +9,6 @@ import {MetadataDetailsDialogComponent} from '../../metadata-details-dialog/meta
 import {MatDialog} from '@angular/material/dialog';
 import {SchemaService} from '../../shared/services/schema.service';
 import {LoaderService} from '../../shared/services/loader.service';
-import {ListResult} from '../../shared/models/hateoas';
-import {MetadataSchema} from '../../shared/models/metadata-schema';
 
 @Component({
   selector: 'app-metadata-list',
