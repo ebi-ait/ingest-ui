@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
 import {Observable, timer} from 'rxjs';
-import {distinctUntilChanged, filter, map, switchMap, takeWhile} from 'rxjs/operators';
+import {filter, takeWhile} from 'rxjs/operators';
 import {IngestService} from '../shared/services/ingest.service';
 import {AlertService} from '../shared/services/alert.service';
 import {SubmissionEnvelope} from '../shared/models/submissionEnvelope';
@@ -10,7 +10,6 @@ import {LoaderService} from '../shared/services/loader.service';
 import {BrokerService} from '../shared/services/broker.service';
 import {Project} from '../shared/models/project';
 import {ArchiveEntity} from '../shared/models/archiveEntity';
-import {ListResult} from '../shared/models/hateoas';
 import {IngestDataSource} from '../shared/components/data-table/data-source/ingest-data-source';
 
 
