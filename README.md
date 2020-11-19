@@ -72,7 +72,12 @@ webpack                           4.42.0
 
 ## Development server
 
-Run `ng serve` or `ng serve -c=[dev|staging|prod]` for a dev server pointing to the ingest api urls configuration in the `environment.<env>.ts`. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+1. In order to be able to login, cd to `client/src/environments` and add `AAI_CLIENT_ID` to the relevant `environment.<env>.ts` 
+file according to the value defined in the relevant [\<env\>.yaml](https://github.com/ebi-ait/ingest-kube-deployment/tree/master/apps)
+
+2. Run `ng serve` or `ng serve -c=[dev|staging|prod]` for a dev server pointing to the ingest api urls configuration in the `environment.<env>.ts`. 
+
+3. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 ## Deployment
 Please check `ingest-kube-deployment` repo
