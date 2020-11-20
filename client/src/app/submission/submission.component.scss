@@ -3,15 +3,19 @@
   padding: 7px 12px;
 }
 
+.error-text {
+  color: $danger-color;
+  font-weight: 500;
+}
+
 #validation-error-types {
   list-style: none;
   padding: 0;
   marging: 0;
 
   a {
-    color: $danger-color;
+    @extend .error-text;
     text-decoration: none;
-    font-weight: 500;
     &:hover {
       text-decoration: underline;
     }
