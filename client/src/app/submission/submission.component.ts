@@ -40,6 +40,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   manifest: Object;
   submissionErrors: Object[];
   selectedIndex: any = 0;
+  validationErrors: any
 
   archiveEntityDataSource: IngestDataSource<ArchiveEntity>;
 
@@ -75,6 +76,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.pollEntities();
 
     this.initArchiveEntityDataSource(this.submissionEnvelopeUuid);
+    this.getValidationSummary()
   }
 
   ngOnDestroy() {
@@ -91,6 +93,24 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.project$.subscribe(project => {
       this.setProject(project);
     });
+  }
+
+  getValidationSummary() {
+    this.validationErrors = {
+      biomaterials: {
+        total: 4,
+        metadataErrors: 4,
+      },
+      processes: {
+        total: 4,
+        metadataErrors: 4
+      },
+      files: {
+        total: 24,
+        metadataErrors: 4,
+        fileMissing: 20
+      }
+    };
   }
 
   setProject(project) {
