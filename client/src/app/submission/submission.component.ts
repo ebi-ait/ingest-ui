@@ -40,7 +40,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   manifest: Object;
   submissionErrors: Object[];
   selectedIndex: any = 0;
-  validationErrors: any
+  validationErrors: any;
 
   archiveEntityDataSource: IngestDataSource<ArchiveEntity>;
 
@@ -316,5 +316,9 @@ export class SubmissionComponent implements OnInit, OnDestroy {
             console.error(err);
           }
         });
+  }
+
+  navigateToTab(index: number): void {
+    this.selectedIndex = index;
   }
 }

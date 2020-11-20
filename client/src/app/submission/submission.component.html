@@ -32,9 +32,27 @@
       <p>Your metadata validation returned 24 errors. Review and fix them below.</p>
 
       <ul id="validation-error-types">
-        <li>Biomaterials: {{validationErrors.biomaterials.total}} errors</li>
-        <li>Processes: {{validationErrors.processes.total}} errors</li>
-        <li>Data files: {{validationErrors.files.metadataErrors}} errors, {{validationErrors.files.fileMissing}} files missing</li>
+        <li>
+          Biomaterials:
+          <a href="javascript: void(0)" (click)="navigateToTab(0)">
+            {{validationErrors.biomaterials.total}} errors
+          </a>
+        </li>
+        <li>
+          Processes:
+          <a href="javascript: void(0)"(click)="navigateToTab(1)">
+            {{validationErrors.processes.total}} errors
+          </a>
+        </li>
+        <li>
+          Data files:
+          <a href="javascript: void(0)" (click)="navigateToTab(3)">
+            {{validationErrors.files.metadataErrors}} errors
+          </a>,
+          <a href="javascript: void(0)" (click)="navigateToTab(3)">
+            {{validationErrors.files.fileMissing}} files missing
+          </a>
+        </li>
       </ul>
     </div>
     <div *ngIf=" project?.validationErrors && project?.validationErrors.length > 0">
