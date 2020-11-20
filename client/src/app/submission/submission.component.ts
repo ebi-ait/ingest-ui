@@ -42,6 +42,13 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   selectedIndex: any = 0;
   validationErrors: any;
 
+  // TODO: Give these a type
+  biomaterialsDataSource: any;
+  processesDataSource: any;
+  protocolsDataSource: any;
+  bundleManifestsDataSource: any;
+  filesDataSource: any;
+
   archiveEntityDataSource: IngestDataSource<ArchiveEntity>;
 
   private alive: boolean;
@@ -217,6 +224,9 @@ export class SubmissionComponent implements OnInit, OnDestroy {
           this.getSubmissionErrors();
           this.getSubmissionManifest();
           this.getValidationSummary();
+
+          // TODO: move this polling into data source
+          this.initDataSources();
         }
       });
   }
@@ -233,7 +243,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     if (this.submissionEnvelopeId) {
       this.submissionEnvelope$ = this.ingestService.getSubmission(this.submissionEnvelopeId);
     } else if (this.submissionEnvelopeUuid) {
-
       this.submissionEnvelope$ = this.ingestService.getSubmissionByUuid(this.submissionEnvelopeUuid);
     } else {
       this.submissionEnvelope$ = null;
@@ -293,9 +302,18 @@ export class SubmissionComponent implements OnInit, OnDestroy {
             const entitiesUrl = archiveSubmission['_links']['entities']['href'];
             this.archiveEntityDataSource = new IngestDataSource<ArchiveEntity>(this.ingestService, entitiesUrl, 'archiveEntities');
           }
-
         }
       );
+  }
+
+  private initDataSources() {
+    const submissionTypes = ['biomaterials', 'processes', 'protocols', 'files', 'bundleManifests', 'files'];
+    submissionTypes.forEach(type => {
+      this[`${type}DataSource`] = new IngestDataSource<any>(
+        this.ingestService, this.submissionEnvelope._links[type].href,
+        type
+      );
+    });
   }
 
   private getSubmissionManifest() {

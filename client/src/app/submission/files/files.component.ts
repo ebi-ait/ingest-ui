@@ -6,8 +6,8 @@ import {Component, Input, OnInit} from '@angular/core';
   styleUrls: ['./files.component.css']
 })
 export class FilesComponent implements OnInit {
-  @Input() submissionEnvelopeId;
   @Input() submissionEnvelope;
+  @Input() dataSource;
   @Input() files$;
   @Input() manifest;
 

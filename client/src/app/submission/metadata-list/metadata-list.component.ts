@@ -27,6 +27,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   @Input() metadataList;
   @Input() metadataType;
   @Input() expectedCount;
+  @Input() dataSource: any;
 
   private _config = {
     displayContent: true,
@@ -175,16 +176,18 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   fetchData(pageInfo) {
-    if (this.submissionEnvelopeId) {
-      const params = {
-        page: pageInfo['offset'],
-        size: pageInfo['size'],
-        sort: pageInfo['sort']
-      };
+    const params = {
+      page: pageInfo['offset'],
+      size: pageInfo['size'],
+      sort: pageInfo['sort']
+    };
 
-      this.metadataList$ = this.ingestService.fetchSubmissionData(this.submissionEnvelopeId, this.metadataType, this.filterState, params);
-      this.metadataList$.subscribe(data => {
-        this.rows = data.data.map(this.flattenService.flatten);
+    this.isLoading = true;
+    // TODO: Change dataSource to use angular collection and extract common logic between here and DataTableComponent
+    return this.dataSource.fetchData(params).subscribe(
+      data => {
+        this.isLoading = false;
+        this.rows = data.data.map(row => this.flattenService.flatten(row));
         this.metadataList = data.data;
         if (data.page) {
           this.isPaginated = true;
@@ -192,21 +195,24 @@ export class MetadataListComponent implements OnInit, OnDestroy {
         } else {
           this.isPaginated = false;
         }
-      });
-    }
+      }
+    );
   }
 
   startPolling(pageInfo) {
+    // TODO: move polling to data source
     this.pollingSubscription = this.pollingTimer.subscribe(() => this.fetchData(pageInfo));
   }
 
   stopPolling() {
+    // TODO: move polling to data source
     if (this.pollingSubscription) {
       this.pollingSubscription.unsubscribe();
     }
   }
 
   filterByState(event) {
+    // TODO: move to data source
     this.filterState = event.value;
     this.setPage(this.currentPageInfo);
   }
@@ -216,6 +222,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   onSort(event) {
+    // TODO: move to data source
     const sorts = event.sorts;
 
     const column = sorts[0]['prop']; // only one column sorting is supported for now

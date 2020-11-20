@@ -1,10 +1,9 @@
-<div *ngIf="submissionEnvelopeId">
+<div *ngIf="submissionEnvelope">
   <div class="card">
     <div class="card-body" >
       <div class="row">
         <div class="col-lg-12">
-          <app-metadata-list [submissionEnvelopeId]="submissionEnvelopeId"
-                             [metadataType]="'files'"
+          <app-metadata-list [dataSource]="dataSource"
                              [config]="{displayLinking: true}"
                              [expectedCount]="manifest ? manifest['expectedFiles']: null">
           </app-metadata-list>
