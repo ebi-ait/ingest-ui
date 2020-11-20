@@ -76,7 +76,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.pollEntities();
 
     this.initArchiveEntityDataSource(this.submissionEnvelopeUuid);
-    this.getValidationSummary()
   }
 
   ngOnDestroy() {
@@ -217,6 +216,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
         if (this.submissionEnvelope) {
           this.getSubmissionErrors();
           this.getSubmissionManifest();
+          this.getValidationSummary();
         }
       });
   }
