@@ -1,7 +1,7 @@
 import { DataSource } from '@angular/cdk/collections';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {IngestService} from '../shared/services/ingest.service';
-import {map, share, startWith, switchMap} from 'rxjs/operators';
+import {map, share, startWith, switchMap, tap} from 'rxjs/operators';
 import {ListResult} from '../shared/models/hateoas';
 import {PagedData} from '../shared/models/page';
 
@@ -14,9 +14,12 @@ export interface MetadataDataSource<T> {
 
 export class MetadataDataSource<T> implements MetadataDataSource<T> {
   pageNumber: Subject<number>;
+  private loading = new Subject<boolean>();
+  public loading$ = this.loading.asObservable();
+
   constructor(protected ingestService: IngestService,
               protected endpoint: string,
-              protected resourceType: string,) {
+              protected resourceType: string) {
     this.endpoint = endpoint;
     this.resourceType = resourceType;
   }
@@ -41,6 +44,7 @@ export class MetadataDataSource<T> implements MetadataDataSource<T> {
     this.pageNumber = new Subject();
     return this.pageNumber.pipe(
       startWith(0),
+      tap(() => this.loading.next(true)),
       switchMap(page => {
         return this.fetchPage({
             page: page,
@@ -48,7 +52,8 @@ export class MetadataDataSource<T> implements MetadataDataSource<T> {
             sort: ''
           }
         );
-      })
+      }),
+      tap(() => this.loading.next(false))
     );
   }
 

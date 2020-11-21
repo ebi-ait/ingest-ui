@@ -33,7 +33,7 @@
 
   [count]="page.totalElements"
   [limit]="page.size"
-  [loadingIndicator]="isLoading"
+  [loadingIndicator]="dataSource.loading$ | async"
   [externalPaging]="isPaginated"
 
   (page)='setPage($event)'

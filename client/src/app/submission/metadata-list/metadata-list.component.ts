@@ -57,7 +57,6 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   currentPageInfo: {};
   private alive: boolean;
   private pollInterval: number;
-  isLoading = false;
 
   constructor(private ingestService: IngestService,
               private flattenService: FlattenService,
@@ -78,7 +77,6 @@ export class MetadataListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.dataSource.connect().subscribe(data => {
-      this.isLoading = false;
       this.rows = data.data.map(row => this.flattenService.flatten(row));
       this.metadataList = data.data;
       if (data.page) {
@@ -190,7 +188,6 @@ export class MetadataListComponent implements OnInit, OnDestroy {
     // TODO: move polling to data source
     this.pollingSubscription = this.pollingTimer.subscribe(() => {
       this.dataSource.fetch(this.page.number);
-      this.isLoading = true;
     });
   }
 
