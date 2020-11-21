@@ -1,7 +1,7 @@
 import { DataSource } from '@angular/cdk/collections';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {BehaviorSubject, Observable, Subject, timer} from 'rxjs';
 import {IngestService} from '../shared/services/ingest.service';
-import {map, share, startWith, switchMap, tap} from 'rxjs/operators';
+import {delay, map, repeat, share, startWith, switchMap, takeUntil, takeWhile, tap} from 'rxjs/operators';
 import {ListResult} from '../shared/models/hateoas';
 import {PagedData} from '../shared/models/page';
 
@@ -17,6 +17,7 @@ export class MetadataDataSource<T> implements MetadataDataSource<T> {
   private sort: Subject<any>;
   private loading = new Subject<boolean>();
   public loading$ = this.loading.asObservable();
+  private isPolling: boolean;
 
   constructor(protected ingestService: IngestService,
               protected endpoint: string,
@@ -45,16 +46,13 @@ export class MetadataDataSource<T> implements MetadataDataSource<T> {
     );
   }
 
-  connect(): Observable<PagedData<T>>  {
-    this.pageNumber = new Subject();
-    this.sort = new Subject();
+  connect(shouldPoll = false, pollInterval = 5000): Observable<PagedData<T>>  {
+    this.pageNumber = new BehaviorSubject(0);
+    this.sort = new BehaviorSubject('');
 
-
-    return this.sort.pipe(
-      startWith(''),
+    const page$ = this.sort.pipe(
       switchMap(sort => {
         return this.pageNumber.pipe(
-          startWith(0),
           tap(() => this.loading.next(true)),
           switchMap(page => {
             return this.fetchPage({
@@ -67,7 +65,20 @@ export class MetadataDataSource<T> implements MetadataDataSource<T> {
           tap(() => this.loading.next(false)));
       })
     );
+
+    if (shouldPoll) {
+      this.isPolling = true;
+      return timer(0, pollInterval).pipe(
+        takeWhile(() => this.isPolling),
+        switchMap(() => {
+          return page$;
+        })
+      );
+    }
+    return page$;
   }
 
-  disconnect(): void {}
+  disconnect(): void {
+    this.isPolling = false;
+  }
 }

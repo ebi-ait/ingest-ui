@@ -18,8 +18,6 @@ import {LoaderService} from '../../shared/services/loader.service';
 })
 
 export class MetadataListComponent implements OnInit, OnDestroy {
-  pollingSubscription: Subscription;
-  pollingTimer: Observable<number>;
 
   @ViewChild('datatable') table: any;
 
@@ -54,28 +52,23 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   validationStates: string[];
   filterState: string;
   currentPageInfo: {};
-  private alive: boolean;
-  private pollInterval: number;
 
   constructor(private ingestService: IngestService,
               private flattenService: FlattenService,
               private schemaService: SchemaService,
               private loaderService: LoaderService,
               public dialog: MatDialog) {
-    this.pollInterval = 5000; // 5s
-    this.alive = true;
     this.page.number = 0;
     this.page.size = 20;
-    this.pollingTimer = timer(0, this.pollInterval).pipe(takeWhile(() => this.alive)); // only fires when component is alive
     this.validationStates = ['Draft', 'Validating', 'Valid', 'Invalid'];
   }
 
   ngOnDestroy() {
-    this.alive = false; // switches your TimerObservable off
+    this.dataSource.disconnect();
   }
 
   ngOnInit() {
-      this.dataSource.connect().subscribe(data => {
+    this.dataSource.connect(true, 5000).subscribe(data => {
       this.rows = data.data.map(row => this.flattenService.flatten(row));
       this.metadataList = data.data;
       if (data.page) {
@@ -176,25 +169,8 @@ export class MetadataListComponent implements OnInit, OnDestroy {
 
   setPage(pageInfo) {
     this.currentPageInfo = pageInfo;
-    this.stopPolling();
     this.page.number = pageInfo.offset;
     this.dataSource.fetch(this.page.number);
-    this.startPolling();
-    this.alive = true;
-  }
-
-  startPolling() {
-    // TODO: move polling to data source
-    this.pollingSubscription = this.pollingTimer.subscribe(() => {
-      this.dataSource.fetch(this.page.number);
-    });
-  }
-
-  stopPolling() {
-    // TODO: move polling to data source
-    if (this.pollingSubscription) {
-      this.pollingSubscription.unsubscribe();
-    }
   }
 
   filterByState(event) {
@@ -215,9 +191,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
 
     if (this.dataSource.resourceType === 'files') { // only sorting in files are supported for now
       this.currentPageInfo['sort'] = {column: column, dir: dir};
-      this.stopPolling();
       this.dataSource.sortBy(column, dir);
-      this.startPolling();
     }
   }
 
