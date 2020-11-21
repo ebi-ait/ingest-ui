@@ -25,7 +25,6 @@ export class MetadataListComponent implements OnInit, OnDestroy {
 
   @Input() title: string;
   @Input() metadataList;
-  @Input() metadataType;
   @Input() expectedCount;
   @Input() dataSource: any;
 
@@ -76,7 +75,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.dataSource.connect().subscribe(data => {
+      this.dataSource.connect().subscribe(data => {
       this.rows = data.data.map(row => this.flattenService.flatten(row));
       this.metadataList = data.data;
       if (data.page) {
@@ -145,7 +144,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   getDefaultValidMessage() {
     let validMessage = '* Metadata is valid.';
 
-    if (this.metadataType === 'files') {
+    if (this.dataSource.resourceType === 'files') {
       validMessage = '* Data is valid.';
     }
 
@@ -205,21 +204,21 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   showFilterState() {
-    return this.metadataType !== 'bundleManifests';
+    return this.dataSource.resourceType !== 'bundleManifests';
   }
 
   onSort(event) {
-    // TODO: move to data source
     const sorts = event.sorts;
 
     const column = sorts[0]['prop']; // only one column sorting is supported for now
     const dir = sorts[0]['dir'];
 
-    if (this.metadataType === 'files') { // only sorting in files are supported for now
+    if (this.dataSource.resourceType === 'files') { // only sorting in files are supported for now
       this.currentPageInfo['sort'] = {column: column, dir: dir};
-      this.setPage(this.currentPageInfo);
+      this.stopPolling();
+      this.dataSource.sortBy(column, dir);
+      this.startPolling();
     }
-
   }
 
   getRowId(row) {

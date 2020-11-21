@@ -13,7 +13,8 @@ export interface MetadataDataSource<T> {
 }
 
 export class MetadataDataSource<T> implements MetadataDataSource<T> {
-  pageNumber: Subject<number>;
+  private pageNumber: Subject<number>;
+  private sort: Subject<any>;
   private loading = new Subject<boolean>();
   public loading$ = this.loading.asObservable();
 
@@ -26,6 +27,10 @@ export class MetadataDataSource<T> implements MetadataDataSource<T> {
 
   fetch(page: number): void {
     this.pageNumber.next(page);
+  }
+
+  sortBy(column = '', direction = ''): void {
+    this.sort.next({column, direction});
   }
 
   private fetchPage(params?: any): Observable<PagedData<T>> {
@@ -42,18 +47,25 @@ export class MetadataDataSource<T> implements MetadataDataSource<T> {
 
   connect(): Observable<PagedData<T>>  {
     this.pageNumber = new Subject();
-    return this.pageNumber.pipe(
-      startWith(0),
-      tap(() => this.loading.next(true)),
-      switchMap(page => {
-        return this.fetchPage({
-            page: page,
-            size: 20,
-            sort: ''
-          }
-        );
-      }),
-      tap(() => this.loading.next(false))
+    this.sort = new Subject();
+
+
+    return this.sort.pipe(
+      startWith(''),
+      switchMap(sort => {
+        return this.pageNumber.pipe(
+          startWith(0),
+          tap(() => this.loading.next(true)),
+          switchMap(page => {
+            return this.fetchPage({
+                page: page,
+                size: 20,
+                sort: `${sort.column},${sort.direction}`
+              }
+            );
+          }),
+          tap(() => this.loading.next(false)));
+      })
     );
   }
 
