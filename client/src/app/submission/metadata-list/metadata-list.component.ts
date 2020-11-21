@@ -47,7 +47,6 @@ export class MetadataListComponent implements OnInit, OnDestroy {
     Object.assign(this._config, config);
   }
 
-  metadataList$: Observable<PagedData<MetadataDocument>>;
   @Input() submissionEnvelopeId: string;
   page: Page = {number: 0, size: 0, sort: '', totalElements: 0, totalPages: 0};
   rows: any[];
@@ -78,6 +77,17 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.dataSource.connect().subscribe(data => {
+      this.isLoading = false;
+      this.rows = data.data.map(row => this.flattenService.flatten(row));
+      this.metadataList = data.data;
+      if (data.page) {
+        this.isPaginated = true;
+        this.page = data.page;
+      } else {
+        this.isPaginated = false;
+      }
+    });
     this.setPage({offset: 0});
   }
 
@@ -171,37 +181,17 @@ export class MetadataListComponent implements OnInit, OnDestroy {
     this.currentPageInfo = pageInfo;
     this.stopPolling();
     this.page.number = pageInfo.offset;
-    this.startPolling(this.currentPageInfo);
+    this.dataSource.fetch(this.page.number);
+    this.startPolling();
     this.alive = true;
   }
 
-  fetchData(pageInfo) {
-    const params = {
-      page: pageInfo['offset'],
-      size: pageInfo['size'],
-      sort: pageInfo['sort']
-    };
-
-    this.isLoading = true;
-    // TODO: Change dataSource to use angular collection and extract common logic between here and DataTableComponent
-    return this.dataSource.fetchData(params).subscribe(
-      data => {
-        this.isLoading = false;
-        this.rows = data.data.map(row => this.flattenService.flatten(row));
-        this.metadataList = data.data;
-        if (data.page) {
-          this.isPaginated = true;
-          this.page = data.page;
-        } else {
-          this.isPaginated = false;
-        }
-      }
-    );
-  }
-
-  startPolling(pageInfo) {
+  startPolling() {
     // TODO: move polling to data source
-    this.pollingSubscription = this.pollingTimer.subscribe(() => this.fetchData(pageInfo));
+    this.pollingSubscription = this.pollingTimer.subscribe(() => {
+      this.dataSource.fetch(this.page.number);
+      this.isLoading = true;
+    });
   }
 
   stopPolling() {

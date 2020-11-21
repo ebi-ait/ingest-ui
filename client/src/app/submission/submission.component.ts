@@ -11,6 +11,7 @@ import {BrokerService} from '../shared/services/broker.service';
 import {Project} from '../shared/models/project';
 import {ArchiveEntity} from '../shared/models/archiveEntity';
 import {IngestDataSource} from '../shared/components/data-table/data-source/ingest-data-source';
+import {MetadataDataSource} from './metadata-data-source';
 
 
 @Component({
@@ -307,10 +308,17 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   }
 
   private initDataSources() {
-    const submissionTypes = ['biomaterials', 'processes', 'protocols', 'files', 'bundleManifests', 'files'];
+    const submissionTypes = ['biomaterials', 'processes', 'protocols', 'files', 'bundleManifests'];
     submissionTypes.forEach(type => {
-      this[`${type}DataSource`] = new IngestDataSource<any>(
-        this.ingestService, this.submissionEnvelope._links[type].href,
+      if (this[`${type}DataSource`]) {
+        // Ensure this is only called once.
+        // datasources should not be reinistatiated
+        // TODO: sort out other polling here and remove this check
+        return;
+      }
+      this[`${type}DataSource`] = new MetadataDataSource<any>(
+        this.ingestService,
+        this.submissionEnvelope._links[type].href,
         type
       );
     });
