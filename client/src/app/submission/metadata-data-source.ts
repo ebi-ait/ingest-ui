@@ -1,7 +1,7 @@
 import { DataSource } from '@angular/cdk/collections';
 import {BehaviorSubject, Observable, Subject, timer} from 'rxjs';
 import {IngestService} from '../shared/services/ingest.service';
-import {delay, map, repeat, share, startWith, switchMap, takeUntil, takeWhile, tap} from 'rxjs/operators';
+import {map, switchMap, takeWhile, tap} from 'rxjs/operators';
 import {ListResult} from '../shared/models/hateoas';
 import {PagedData} from '../shared/models/page';
 
@@ -32,6 +32,11 @@ export class MetadataDataSource<T> implements MetadataDataSource<T> {
 
   sortBy(column = '', direction = ''): void {
     this.sort.next({column, direction});
+  }
+
+  filterByState(state: string): void {
+    // TODO
+    console.warn('implement filterByState');
   }
 
   private fetchPage(params?: any): Observable<PagedData<T>> {
