@@ -209,7 +209,7 @@ export class IngestService {
       .pipe(map(data => data._embedded && data._embedded.projects ? data._embedded.projects[0] : null));
   }
 
-  public fetchSubmissionData(submissionId, entityType, filterState, params): Observable<PagedData<MetadataDocument>> {
+  public fetchSubmissionData(submissionId, entityType, params): Observable<PagedData<MetadataDocument>> {
     let url = `${this.API_URL}/submissionEnvelopes/${submissionId}/${entityType}`;
     const submission_url = `${this.API_URL}/submissionEnvelopes/${submissionId}`;
 
@@ -217,14 +217,13 @@ export class IngestService {
     if (sort) {
       url = `${this.API_URL}/${entityType}/search/findBySubmissionEnvelope`;
       params['envelopeUri'] = encodeURIComponent(submission_url);
-      params['sort'] = `${sort['column']},${sort['dir']}`;
+      params['sort'] = `${sort['column']},${sort['direction']}`;
     }
 
-    if (filterState) {
+    if (params.filterState) {
       url = `${this.API_URL}/${entityType}/search/findBySubmissionEnvelopeAndValidationState`;
       params['envelopeUri'] = encodeURIComponent(submission_url);
-      params['state'] = filterState.toUpperCase();
-
+      params['state'] = params.filterState.toUpperCase();
     }
     return this.http
       .get<ListResult<MetadataDocument>>(url, {params: params})

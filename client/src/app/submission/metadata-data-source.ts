@@ -12,63 +12,56 @@ export interface MetadataDataSource<T> {
   disconnect(): void;
 }
 
+export interface Sort {
+  column: string;
+  direction: string;
+}
+
+export interface Params {
+  sort?: Sort;
+  page: number;
+  size: number;
+  [x: string]: any;
+}
+
+export type PaginatedEndpoint<T> = (params: Params) => Observable<T>;
+
 export class MetadataDataSource<T> implements MetadataDataSource<T> {
-  private pageNumber: Subject<number>;
-  private sort: Subject<any>;
+  private params: BehaviorSubject<Params>;
   private loading = new Subject<boolean>();
   public loading$ = this.loading.asObservable();
   private isPolling: boolean;
 
-  constructor(protected ingestService: IngestService,
-              protected endpoint: string,
+  constructor(protected endpoint: PaginatedEndpoint<PagedData<T>>,
               protected resourceType: string) {
     this.endpoint = endpoint;
     this.resourceType = resourceType;
   }
 
   fetch(page: number): void {
-    this.pageNumber.next(page);
+    this.setParams({ ...this.params.getValue(), page });
   }
 
   sortBy(column = '', direction = ''): void {
-    this.sort.next({column, direction});
+    this.setParams({ ...this.params.getValue(), sort: { column, direction }});
   }
 
-  filterByState(state: string): void {
-    // TODO
-    console.warn('implement filterByState');
-  }
-
-  private fetchPage(params?: any): Observable<PagedData<T>> {
-    return this.ingestService.get(this.endpoint, {params: params}).pipe(
-      map(data => data as ListResult<any>),
-      map(data => {
-        return {
-          data: data && data._embedded ? data._embedded[this.resourceType] : [],
-          page: data.page
-        };
-      })
-    );
+  protected setParams(params: Params): void {
+    this.params.next(params);
   }
 
   connect(shouldPoll = false, pollInterval = 5000): Observable<PagedData<T>>  {
-    this.pageNumber = new BehaviorSubject(0);
-    this.sort = new BehaviorSubject('');
+    this.params = new BehaviorSubject<Params>({
+      page: 0,
+      size: 20
+    });
 
-    const page$ = this.sort.pipe(
-      switchMap(sort => {
-        return this.pageNumber.pipe(
-          tap(() => this.loading.next(true)),
-          switchMap(page => {
-            return this.fetchPage({
-                page: page,
-                size: 20,
-                sort: `${sort.column},${sort.direction}`
-              }
-            );
-          }),
-          tap(() => this.loading.next(false)));
-      })
+    const page$ = this.params.pipe(
+      tap(() => this.loading.next(true)),
+      switchMap(params => {
+        return this.endpoint(params);
+      }),
+      tap(() => this.loading.next(false))
     );
 
     if (shouldPoll) {

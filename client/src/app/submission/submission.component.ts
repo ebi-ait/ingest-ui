@@ -317,12 +317,12 @@ export class SubmissionComponent implements OnInit, OnDestroy {
         return;
       }
       this[`${type}DataSource`] = new MetadataDataSource<any>(
-        this.ingestService,
-        this.submissionEnvelope._links[type].href,
+        (params) => this.ingestService.fetchSubmissionData(this.submissionEnvelopeId, type, params),
         type
       );
     });
   }
+
 
   private getSubmissionManifest() {
     this.ingestService.get(this.submissionEnvelope['_links']['submissionManifest']['href'])

@@ -51,7 +51,6 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   isPaginated: boolean;
   validationStates: string[];
   filterState: string;
-  currentPageInfo: {};
 
   constructor(private ingestService: IngestService,
               private flattenService: FlattenService,
@@ -68,7 +67,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.dataSource.connect(true, 5000).subscribe(data => {
+    this.dataSource.connect(false, 5000).subscribe(data => {
       this.rows = data.data.map(row => this.flattenService.flatten(row));
       this.metadataList = data.data;
       if (data.page) {
@@ -168,7 +167,6 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   setPage(pageInfo) {
-    this.currentPageInfo = pageInfo;
     this.page.number = pageInfo.offset;
     this.dataSource.fetch(this.page.number);
   }
@@ -176,7 +174,6 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   filterByState(event) {
     // TODO: move to data source
     this.filterState = event.value;
-    this.setPage(this.currentPageInfo);
   }
 
   showFilterState() {
@@ -190,7 +187,6 @@ export class MetadataListComponent implements OnInit, OnDestroy {
     const dir = sorts[0]['dir'];
 
     if (this.dataSource.resourceType === 'files') { // only sorting in files are supported for now
-      this.currentPageInfo['sort'] = {column: column, dir: dir};
       this.dataSource.sortBy(column, dir);
     }
   }
