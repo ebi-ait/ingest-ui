@@ -6,11 +6,11 @@ export interface Sort {
   direction: string;
 }
 
-export interface Params {
+export interface QueryData {
   sort?: Sort;
   page: number;
   size: number;
   [x: string]: any;
 }
 
-export type PaginatedEndpoint<T> = (params: Params) => Observable<PagedData<T>>;
+export type PaginatedEndpoint<T> = (params: QueryData) => Observable<PagedData<T>>;

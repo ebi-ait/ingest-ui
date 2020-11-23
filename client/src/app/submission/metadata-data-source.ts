@@ -2,11 +2,10 @@ import {BehaviorSubject, Observable, Subject, timer} from 'rxjs';
 import {pluck, switchMap, takeWhile, tap} from 'rxjs/operators';
 import {PagedData} from '../shared/models/page';
 import { DataSource } from '../shared/models/data-source';
-import {PaginatedEndpoint, Params} from '../shared/models/paginatedEndpoint';
-import {INVALID_FILE_TYPES} from '../shared/constants';
+import {PaginatedEndpoint, QueryData} from '../shared/models/paginatedEndpoint';
 
 export class PaginatedDataSource<T> implements DataSource<T> {
-  protected params: BehaviorSubject<Params>;
+  private queryData: BehaviorSubject<QueryData>;
   private loading = new Subject<boolean>();
   public loading$ = this.loading.asObservable();
   private polling = new Subject<boolean>();
@@ -19,26 +18,30 @@ export class PaginatedDataSource<T> implements DataSource<T> {
   }
 
   fetch(page: number): void {
-    this.setParams({ ...this.params.getValue(), page });
+    this.setQueryData({ ...this.queryData.getValue(), page });
   }
 
   sortBy(column = '', direction = ''): void {
-    this.setParams({ ...this.params.getValue(), sort: { column, direction }});
+    this.setQueryData({ ...this.queryData.getValue(), sort: { column, direction }});
   }
 
-  protected setParams(params: Params): void {
-    this.params.next(params);
+  protected setQueryData(params: QueryData): void {
+    this.queryData.next(params);
+  }
+
+  protected getQueryData(): QueryData {
+    return this.queryData.getValue();
   }
 
   connect(shouldPoll = false, pollInterval = 5000): Observable<PagedData<T>>  {
-    this.params = new BehaviorSubject<Params>({
+    this.queryData = new BehaviorSubject<QueryData>({
       page: 0,
       size: 20
     });
 
-    this.page$ = this.params.pipe(pluck('page'));
+    this.page$ = this.queryData.pipe(pluck('page'));
 
-    const page$ = this.params.pipe(
+    const page$ = this.queryData.pipe(
       tap(() => this.loading.next(true)),
       switchMap(params => {
         // Copy the params to remove side-effects
@@ -75,10 +78,10 @@ export class MetadataDataSource<T> extends PaginatedDataSource<T> {
   }
 
   public filterByState(state: string) {
-    this.setParams({ ...this.params.getValue(), filterState: state });
+    this.setQueryData({ ...this.getQueryData(), filterState: state });
   }
 
   public filterByFileValidationType(fileValidationType: string) {
-    this.setParams({ ...this.params.getValue(), fileValidationTypeFilter: fileValidationType });
+    this.setQueryData({ ...this.getQueryData(), fileValidationTypeFilter: fileValidationType });
   }
 }
