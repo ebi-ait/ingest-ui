@@ -221,6 +221,10 @@ export class IngestService {
       params['sort'] = `${sort['column']},${sort['direction']}`;
     }
 
+    if (params.filterState && params.fileValidationTypeFilter) {
+      throw new Error('Cannot have both filterState and fileValidationTypeFilter.');
+    }
+
     if (params.filterState) {
       url = `${this.API_URL}/${entityType}/search/findBySubmissionEnvelopeAndValidationState`;
       params['envelopeUri'] = encodeURIComponent(submission_url);
