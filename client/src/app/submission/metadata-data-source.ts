@@ -78,10 +78,10 @@ export class MetadataDataSource<T> extends PaginatedDataSource<T> {
   }
 
   public filterByState(state: string) {
-    this.setQueryData({ ...this.getQueryData(), filterState: state });
+    this.setQueryData({ ...this.getQueryData(), filterState: state, page: 0 });
   }
 
   public filterByFileValidationType(fileValidationType: string) {
-    this.setQueryData({ ...this.getQueryData(), fileValidationTypeFilter: fileValidationType });
+    this.setQueryData({ ...this.getQueryData(), fileValidationTypeFilter: fileValidationType, page: 0 });
   }
 }
