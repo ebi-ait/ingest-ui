@@ -33,7 +33,7 @@
 
   [count]="page.totalElements"
   [limit]="page.size"
-  [loadingIndicator]="dataSource.loading$ | async"
+  [loadingIndicator]="(dataSource.loading$ | async) && !(dataSource.polling$ | async)"
   [externalPaging]="isPaginated"
 
   (page)='setPage($event)'

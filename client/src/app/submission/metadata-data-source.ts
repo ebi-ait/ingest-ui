@@ -30,6 +30,8 @@ export class MetadataDataSource<T> implements MetadataDataSource<T> {
   protected params: BehaviorSubject<Params>;
   private loading = new Subject<boolean>();
   public loading$ = this.loading.asObservable();
+  private polling = new Subject<boolean>();
+  public polling$ = this.polling.asObservable();
   private isPolling: boolean;
 
   constructor(protected endpoint: PaginatedEndpoint<PagedData<T>>) {
@@ -65,10 +67,12 @@ export class MetadataDataSource<T> implements MetadataDataSource<T> {
     if (shouldPoll) {
       this.isPolling = true;
       return timer(0, pollInterval).pipe(
+        tap(() => this.polling.next(true)),
         takeWhile(() => this.isPolling),
         switchMap(() => {
           return page$;
-        })
+        }),
+        tap(() => this.polling.next(false))
       );
     }
     return page$;

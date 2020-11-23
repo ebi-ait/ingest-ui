@@ -67,7 +67,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.dataSource.connect(false, 5000).subscribe(data => {
+    this.dataSource.connect(true, 5000).subscribe(data => {
       this.rows = data.data.map(row => this.flattenService.flatten(row));
       this.metadataList = data.data;
       if (data.page) {
