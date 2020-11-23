@@ -1,32 +1,10 @@
-import { DataSource } from '@angular/cdk/collections';
 import {BehaviorSubject, Observable, Subject, timer} from 'rxjs';
-import {IngestService} from '../shared/services/ingest.service';
-import {map, switchMap, takeWhile, tap} from 'rxjs/operators';
-import {ListResult} from '../shared/models/hateoas';
+import {switchMap, takeWhile, tap} from 'rxjs/operators';
 import {PagedData} from '../shared/models/page';
+import { DataSource } from '../shared/models/data-source';
+import {PaginatedEndpoint, Params} from '../shared/models/paginatedEndpoint';
 
-// TODO Move these interfacts to another file
-export interface MetadataDataSource<T> {
-  connect(): Observable<PagedData<T>>;
-  fetch(page: number): void;
-  disconnect(): void;
-}
-
-export interface Sort {
-  column: string;
-  direction: string;
-}
-
-export interface Params {
-  sort?: Sort;
-  page: number;
-  size: number;
-  [x: string]: any;
-}
-
-export type PaginatedEndpoint<T> = (params: Params) => Observable<T>;
-
-export class MetadataDataSource<T> implements MetadataDataSource<T> {
+export class PaginatedDataSource<T> implements DataSource<T> {
   protected params: BehaviorSubject<Params>;
   private loading = new Subject<boolean>();
   public loading$ = this.loading.asObservable();
@@ -34,7 +12,7 @@ export class MetadataDataSource<T> implements MetadataDataSource<T> {
   public polling$ = this.polling.asObservable();
   private isPolling: boolean;
 
-  constructor(protected endpoint: PaginatedEndpoint<PagedData<T>>) {
+  constructor(protected endpoint: PaginatedEndpoint<T>) {
     this.endpoint = endpoint;
   }
 
@@ -83,9 +61,9 @@ export class MetadataDataSource<T> implements MetadataDataSource<T> {
   }
 }
 
-export class SubmissionDataSource<T> extends MetadataDataSource<T> {
+export class MetadataDataSource<T> extends PaginatedDataSource<T> {
   public resourceType: string;
-  constructor(protected endpoint: PaginatedEndpoint<PagedData<T>>,
+  constructor(protected endpoint: PaginatedEndpoint<T>,
               resourceType: string) {
     super(endpoint);
     this.resourceType = resourceType;

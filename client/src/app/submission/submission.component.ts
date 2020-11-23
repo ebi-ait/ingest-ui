@@ -316,7 +316,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
         // TODO: sort out other polling here and remove this check
         return;
       }
-      this[`${type}DataSource`] = new SubmissionDataSource<any>(
+      this[`${type}DataSource`] = new MetadataDataSource<any>(
         (params) => this.ingestService.fetchSubmissionData(this.submissionEnvelopeId, type, params),
         type
       );
