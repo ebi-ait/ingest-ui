@@ -37,7 +37,8 @@ export class PaginatedDataSource<T> implements DataSource<T> {
     const page$ = this.params.pipe(
       tap(() => this.loading.next(true)),
       switchMap(params => {
-        return this.endpoint(params);
+        // Copy the params to remove side-effects
+        return this.endpoint(Object.assign({}, params));
       }),
       tap(() => this.loading.next(false))
     );
