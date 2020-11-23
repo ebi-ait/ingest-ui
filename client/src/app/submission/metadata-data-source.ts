@@ -27,7 +27,7 @@ export interface Params {
 export type PaginatedEndpoint<T> = (params: Params) => Observable<T>;
 
 export class MetadataDataSource<T> implements MetadataDataSource<T> {
-  private params: BehaviorSubject<Params>;
+  protected params: BehaviorSubject<Params>;
   private loading = new Subject<boolean>();
   public loading$ = this.loading.asObservable();
   private isPolling: boolean;
@@ -80,9 +80,14 @@ export class MetadataDataSource<T> implements MetadataDataSource<T> {
 }
 
 export class SubmissionDataSource<T> extends MetadataDataSource<T> {
+  public resourceType: string;
   constructor(protected endpoint: PaginatedEndpoint<PagedData<T>>,
               resourceType: string) {
     super(endpoint);
     this.resourceType = resourceType;
+  }
+
+  public filterByState(state: string) {
+    this.setParams({ ...this.params.getValue(), filterState: state });
   }
 }

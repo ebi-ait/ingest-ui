@@ -172,8 +172,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   filterByState(event) {
-    // TODO: move to data source
-    this.filterState = event.value;
+    this.dataSource.filterByState(event.value);
   }
 
   showFilterState() {
