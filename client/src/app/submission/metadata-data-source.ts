@@ -3,6 +3,7 @@ import {pluck, switchMap, takeWhile, tap} from 'rxjs/operators';
 import {PagedData} from '../shared/models/page';
 import { DataSource } from '../shared/models/data-source';
 import {PaginatedEndpoint, Params} from '../shared/models/paginatedEndpoint';
+import {INVALID_FILE_TYPES} from '../shared/constants';
 
 export class PaginatedDataSource<T> implements DataSource<T> {
   protected params: BehaviorSubject<Params>;
@@ -75,5 +76,9 @@ export class MetadataDataSource<T> extends PaginatedDataSource<T> {
 
   public filterByState(state: string) {
     this.setParams({ ...this.params.getValue(), filterState: state });
+  }
+
+  public filterByFileValidationType(fileValidationType: string) {
+    this.setParams({ ...this.params.getValue(), fileValidationTypeFilter: fileValidationType });
   }
 }

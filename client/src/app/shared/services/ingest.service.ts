@@ -17,6 +17,7 @@ import {Project} from '../models/project';
 import {ArchiveSubmission} from '../models/archiveSubmission';
 import {ArchiveEntity} from '../models/archiveEntity';
 import {Criteria} from '../models/criteria';
+import {INVALID_FILE_TYPES} from '../constants';
 
 
 @Injectable()
@@ -225,8 +226,67 @@ export class IngestService {
       params['envelopeUri'] = encodeURIComponent(submission_url);
       params['state'] = params.filterState.toUpperCase();
     }
-    return this.http
-      .get<ListResult<MetadataDocument>>(url, {params: params})
+
+    let request: Observable<ListResult<MetadataDocument>>;
+    if (params.fileValidationTypeFilter) {
+      if (entityType !== 'files') {
+        throw new Error('Only files can be filtered by validation type.');
+      }
+      const fileValidationTypeFilter = params.fileValidationTypeFilter;
+      delete params.fileValidationTypeFilter; // Don't want to include this in the request
+      params['operator'] = 'AND';
+
+      let query;
+      switch (fileValidationTypeFilter) {
+        case INVALID_FILE_TYPES[0]:
+          // Invalid metadata
+          query = [{
+            field: 'validationJob',
+            operator: 'IS',
+            value: null
+          }, {
+            field: 'validationState',
+            operator: 'IS',
+            value: 'INVALID'
+          }, {
+            field: 'validationErrors.0.message',
+            operator: 'NE',
+            // TODO: use regex here. Error messages likely to change
+            value: 'Valid metadata. File is not uploaded.'
+          }];
+          break;
+        case INVALID_FILE_TYPES[1]:
+          // invalid file
+          query = [{
+            field: 'validationJob.validationReport.validationState',
+            operator: 'IS',
+            value: 'INVALID'
+          }];
+          break;
+        case INVALID_FILE_TYPES[2]:
+          // Missing file (not uploaded)
+          query = [{
+            field: 'validationErrors.0.message',
+            operator: 'IS',
+            value: 'Valid metadata. File is not uploaded.'
+          }];
+          break;
+        default:
+          throw new Error('Unknown file validation state.');
+      }
+
+      query.push({
+        field: 'submissionEnvelope.id',
+        operator: 'IS',
+        value: submissionId
+      });
+
+      request = this.queryFiles(query, params);
+    } else {
+      request = this.http.get<ListResult<MetadataDocument>>(url, {params: params});
+    }
+
+    return request
       .pipe(map(data => {
         const pagedData: PagedData<MetadataDocument> = {data: [], page: undefined};
         if (data._embedded && data._embedded[entityType]) {

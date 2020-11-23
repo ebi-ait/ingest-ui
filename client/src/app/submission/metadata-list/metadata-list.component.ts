@@ -1,6 +1,6 @@
 import {AfterViewChecked, Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Observable, of, Subscription, timer} from 'rxjs';
-import {takeWhile, tap} from 'rxjs/operators';
+import {filter, takeWhile, tap} from 'rxjs/operators';
 import {IngestService} from '../../shared/services/ingest.service';
 import {FlattenService} from '../../shared/services/flatten.service';
 import {Page, PagedData} from '../../shared/models/page';
@@ -9,6 +9,7 @@ import {MetadataDetailsDialogComponent} from '../../metadata-details-dialog/meta
 import {MatDialog} from '@angular/material/dialog';
 import {SchemaService} from '../../shared/services/schema.service';
 import {LoaderService} from '../../shared/services/loader.service';
+import {INVALID_FILE_TYPES} from '../../shared/constants';
 
 @Component({
   selector: 'app-metadata-list',
@@ -77,6 +78,11 @@ export class MetadataListComponent implements OnInit, OnDestroy {
         this.isPaginated = false;
       }
     });
+
+    if (this.dataSource.resourceType === 'files') {
+      this.validationStates = this.validationStates.concat(INVALID_FILE_TYPES);
+    }
+
     this.setPage({offset: 0});
   }
 
@@ -172,7 +178,14 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   filterByState(event) {
-    this.dataSource.filterByState(event.value);
+    const filterState = event.value;
+
+    if (INVALID_FILE_TYPES.includes(filterState)) {
+      this.dataSource.filterByFileValidationType(filterState);
+      return;
+    }
+
+    this.dataSource.filterByState(filterState);
   }
 
   showFilterState() {
@@ -220,6 +233,4 @@ export class MetadataListComponent implements OnInit, OnDestroy {
     const metadata = this.metadataList[rowIndex];
     this.table.rowDetail.toggleExpandRow(row);
   }
-
-
 }
