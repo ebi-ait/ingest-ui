@@ -11,7 +11,7 @@ import {BrokerService} from '../shared/services/broker.service';
 import {Project} from '../shared/models/project';
 import {ArchiveEntity} from '../shared/models/archiveEntity';
 import {IngestDataSource} from '../shared/components/data-table/data-source/ingest-data-source';
-import {MetadataDataSource} from './metadata-data-source';
+import {MetadataDataSource, SubmissionDataSource} from './metadata-data-source';
 
 
 @Component({
@@ -316,7 +316,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
         // TODO: sort out other polling here and remove this check
         return;
       }
-      this[`${type}DataSource`] = new MetadataDataSource<any>(
+      this[`${type}DataSource`] = new SubmissionDataSource<any>(
         (params) => this.ingestService.fetchSubmissionData(this.submissionEnvelopeId, type, params),
         type
       );

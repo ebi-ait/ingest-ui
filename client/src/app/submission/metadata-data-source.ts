@@ -32,10 +32,8 @@ export class MetadataDataSource<T> implements MetadataDataSource<T> {
   public loading$ = this.loading.asObservable();
   private isPolling: boolean;
 
-  constructor(protected endpoint: PaginatedEndpoint<PagedData<T>>,
-              protected resourceType: string) {
+  constructor(protected endpoint: PaginatedEndpoint<PagedData<T>>) {
     this.endpoint = endpoint;
-    this.resourceType = resourceType;
   }
 
   fetch(page: number): void {
@@ -78,5 +76,13 @@ export class MetadataDataSource<T> implements MetadataDataSource<T> {
 
   disconnect(): void {
     this.isPolling = false;
+  }
+}
+
+export class SubmissionDataSource<T> extends MetadataDataSource<T> {
+  constructor(protected endpoint: PaginatedEndpoint<PagedData<T>>,
+              resourceType: string) {
+    super(endpoint);
+    this.resourceType = resourceType;
   }
 }
