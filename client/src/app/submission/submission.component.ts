@@ -11,7 +11,7 @@ import {BrokerService} from '../shared/services/broker.service';
 import {Project} from '../shared/models/project';
 import {ArchiveEntity} from '../shared/models/archiveEntity';
 import {IngestDataSource} from '../shared/components/data-table/data-source/ingest-data-source';
-import {MetadataDataSource, SubmissionDataSource} from './metadata-data-source';
+import {MetadataDataSource} from './metadata-data-source';
 
 
 @Component({

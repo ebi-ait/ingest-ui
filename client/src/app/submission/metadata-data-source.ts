@@ -1,5 +1,5 @@
 import {BehaviorSubject, Observable, Subject, timer} from 'rxjs';
-import {switchMap, takeWhile, tap} from 'rxjs/operators';
+import {pluck, switchMap, takeWhile, tap} from 'rxjs/operators';
 import {PagedData} from '../shared/models/page';
 import { DataSource } from '../shared/models/data-source';
 import {PaginatedEndpoint, Params} from '../shared/models/paginatedEndpoint';
@@ -11,6 +11,7 @@ export class PaginatedDataSource<T> implements DataSource<T> {
   private polling = new Subject<boolean>();
   public polling$ = this.polling.asObservable();
   private isPolling: boolean;
+  public page$: Observable<number>;
 
   constructor(protected endpoint: PaginatedEndpoint<T>) {
     this.endpoint = endpoint;
@@ -33,6 +34,8 @@ export class PaginatedDataSource<T> implements DataSource<T> {
       page: 0,
       size: 20
     });
+
+    this.page$ = this.params.pipe(pluck('page'));
 
     const page$ = this.params.pipe(
       tap(() => this.loading.next(true)),
