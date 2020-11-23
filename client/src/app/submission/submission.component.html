@@ -28,33 +28,6 @@
   <div>
     <div class="vf-text-body vf-text-body--2">{{projectTitle}}</div>
     <div class="vf-text-body vf-text-body--3">{{getContributors(project)}}</div>
-    <div>
-      <p>Your metadata validation returned <span class="error-text">24 errors</span>. Review and fix them below.</p>
-
-      <ul id="validation-error-types">
-        <li>
-          Biomaterials:
-          <a href="javascript: void(0)" (click)="navigateToTab(0)">
-            {{validationErrors.biomaterials.total}} errors
-          </a>
-        </li>
-        <li>
-          Processes:
-          <a href="javascript: void(0)"(click)="navigateToTab(1)">
-            {{validationErrors.processes.total}} errors
-          </a>
-        </li>
-        <li>
-          Data files:
-          <a href="javascript: void(0)" (click)="navigateToTab(3)">
-            {{validationErrors.files.metadataErrors}} errors
-          </a>,
-          <a href="javascript: void(0)" (click)="navigateToTab(3)">
-            {{validationErrors.files.fileMissing}} files missing
-          </a>
-        </li>
-      </ul>
-    </div>
     <div *ngIf=" project?.validationErrors && project?.validationErrors.length > 0">
       <span class="vf-text-body vf-text-body--3 vf-u-text-color--red">Project is Invalid. Please go back and edit the project.</span><br/>
       <ng-container *ngFor="let error of project?.validationErrors">
