@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 import * as _ from 'lodash';
 
@@ -18,6 +18,7 @@ import {ArchiveSubmission} from '../models/archiveSubmission';
 import {ArchiveEntity} from '../models/archiveEntity';
 import {Criteria} from '../models/criteria';
 import {INVALID_FILE_TYPES} from '../constants';
+import {SubmissionSummary} from '../models/submissionSummary';
 
 
 @Injectable()
@@ -225,19 +226,19 @@ export class IngestService {
       throw new Error('Cannot have both filterState and fileValidationTypeFilter.');
     }
 
-    if (params.filterState) {
+    if (params.filterState && !INVALID_FILE_TYPES.includes(params.filterState)) {
       url = `${this.API_URL}/${entityType}/search/findBySubmissionEnvelopeAndValidationState`;
       params['envelopeUri'] = encodeURIComponent(submission_url);
       params['state'] = params.filterState.toUpperCase();
     }
 
     let request: Observable<ListResult<MetadataDocument>>;
-    if (params.fileValidationTypeFilter) {
+    if (params.filterState && INVALID_FILE_TYPES.includes(params.filterState)) {
       if (entityType !== 'files') {
         throw new Error('Only files can be filtered by validation type.');
       }
-      const fileValidationTypeFilter = params.fileValidationTypeFilter;
-      delete params.fileValidationTypeFilter; // Don't want to include this in the request
+      const fileValidationTypeFilter = params.filterState;
+      delete params.filterState; // Don't want to include this in the request
       params['operator'] = 'AND';
 
       let query;
@@ -302,6 +303,16 @@ export class IngestService {
         pagedData.page = data.page;
         return pagedData;
       }));
+  }
+
+  public getSubmissionSummary(submissionId): Observable<SubmissionSummary> {
+    return this.http.get<SubmissionSummary>(`${this.API_URL}/submissionEnvelopes/${submissionId}/summary`)
+      .pipe(map(summary => ({
+          ...summary,
+          totalInvalid: summary.invalidBiomaterials + summary.invalidFiles + summary.missingFiles +
+            summary.invalidProcesses + summary.invalidProtocols
+        })
+      ));
   }
 
   public put(ingestLink, body) {

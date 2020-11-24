@@ -3,7 +3,7 @@
 <ng-container *ngIf="showFilterState()">
   <div>
     <mat-form-field>
-      <mat-select placeholder="Filter by state" (selectionChange)="filterByState($event)">
+      <mat-select placeholder="Filter by state" (selectionChange)="filterByState($event)" [value]="dataSource.filterState$ | async">
         <mat-option>None</mat-option>
         <mat-option *ngFor="let state of validationStates" [value]="state">{{state}}</mat-option>
       </mat-select>
