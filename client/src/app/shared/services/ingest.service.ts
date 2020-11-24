@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 import * as _ from 'lodash';
 
@@ -18,6 +18,7 @@ import {ArchiveSubmission} from '../models/archiveSubmission';
 import {ArchiveEntity} from '../models/archiveEntity';
 import {Criteria} from '../models/criteria';
 import {INVALID_FILE_TYPES} from '../constants';
+import {SubmissionSummary} from '../models/submissionSummary';
 
 
 @Injectable()
@@ -259,6 +260,16 @@ export class IngestService {
         pagedData.page = data.page;
         return pagedData;
       }));
+  }
+
+  public getSubmissionSummary(submissionId): Observable<SubmissionSummary> {
+    return this.http.get<SubmissionSummary>(`${this.API_URL}/submissionEnvelopes/${submissionId}/summary`)
+      .pipe(map(summary => ({
+          ...summary,
+          totalInvalid: summary.invalidBiomaterials + summary.invalidFiles + summary.missingFiles +
+            summary.invalidProcesses + summary.invalidProtocols
+        })
+      ));
   }
 
   public put(ingestLink, body) {

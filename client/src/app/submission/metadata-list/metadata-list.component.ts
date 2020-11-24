@@ -1,10 +1,7 @@
-import {AfterViewChecked, Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {Observable, of, Subscription, timer} from 'rxjs';
-import {filter, takeWhile, tap} from 'rxjs/operators';
+import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {IngestService} from '../../shared/services/ingest.service';
 import {FlattenService} from '../../shared/services/flatten.service';
-import {Page, PagedData} from '../../shared/models/page';
-import {MetadataDocument} from '../../shared/models/metadata-document';
+import {Page} from '../../shared/models/page';
 import {MetadataDetailsDialogComponent} from '../../metadata-details-dialog/metadata-details-dialog.component';
 import {MatDialog} from '@angular/material/dialog';
 import {SchemaService} from '../../shared/services/schema.service';
@@ -51,7 +48,6 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   expandAll: boolean;
   isPaginated: boolean;
   validationStates: string[];
-  filterState: string;
 
   constructor(private ingestService: IngestService,
               private flattenService: FlattenService,
@@ -178,14 +174,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   filterByState(event) {
-    const filterState = event.value;
-
-    if (INVALID_FILE_TYPES.includes(filterState)) {
-      this.dataSource.filterByFileValidationType(filterState);
-      return;
-    }
-
-    this.dataSource.filterByState(filterState);
+    this.dataSource.filterByState(event.value);
   }
 
   showFilterState() {
