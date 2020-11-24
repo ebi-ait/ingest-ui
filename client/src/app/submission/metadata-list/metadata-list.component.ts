@@ -80,7 +80,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
     });
 
     if (this.dataSource.resourceType === 'files') {
-      this.validationStates = this.validationStates.concat(INVALID_FILE_TYPES);
+      this.validationStates = this.validationStates.concat(INVALID_FILE_TYPES.map(a => a.humanFriendly));
     }
 
     this.setPage({offset: 0});

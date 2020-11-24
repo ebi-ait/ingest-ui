@@ -214,6 +214,10 @@ export class IngestService {
     let url = `${this.API_URL}/submissionEnvelopes/${submissionId}/${entityType}`;
     const submission_url = `${this.API_URL}/submissionEnvelopes/${submissionId}`;
 
+    // IMPORTANT! The order of these if statements matters
+    // The url is overridden in each but params will be preserved.
+    // E.g. params.sort can be added and used in the url for filtering as well
+    // This might not be the best way to do this but with the varying endpoints, it's okay
     const sort = params['sort'];
     if (sort) {
       url = `${this.API_URL}/${entityType}/search/findBySubmissionEnvelope`;
@@ -224,73 +228,26 @@ export class IngestService {
     if (params.filterState && params.fileValidationTypeFilter) {
       throw new Error('Cannot have both filterState and fileValidationTypeFilter.');
     }
-
-    if (params.filterState) {
+    const humanFriendlyTypes = INVALID_FILE_TYPES.map(a => a.humanFriendly);
+    if (params.filterState && !humanFriendlyTypes.includes(params.filterState)) {
       url = `${this.API_URL}/${entityType}/search/findBySubmissionEnvelopeAndValidationState`;
       params['envelopeUri'] = encodeURIComponent(submission_url);
       params['state'] = params.filterState.toUpperCase();
     }
 
-    let request: Observable<ListResult<MetadataDocument>>;
-    if (params.fileValidationTypeFilter) {
+    if (params.filterState && humanFriendlyTypes.includes(params.filterState)) {
       if (entityType !== 'files') {
         throw new Error('Only files can be filtered by validation type.');
       }
-      const fileValidationTypeFilter = params.fileValidationTypeFilter;
-      delete params.fileValidationTypeFilter; // Don't want to include this in the request
-      params['operator'] = 'AND';
 
-      let query;
-      switch (fileValidationTypeFilter) {
-        case INVALID_FILE_TYPES[0]:
-          // Invalid metadata
-          query = [{
-            field: 'validationJob',
-            operator: 'IS',
-            value: null
-          }, {
-            field: 'validationState',
-            operator: 'IS',
-            value: 'INVALID'
-          }, {
-            field: 'validationErrors.0.message',
-            operator: 'NE',
-            // TODO: use regex here. Error messages likely to change
-            value: 'Valid metadata. File is not uploaded.'
-          }];
-          break;
-        case INVALID_FILE_TYPES[1]:
-          // invalid file
-          query = [{
-            field: 'validationJob.validationReport.validationState',
-            operator: 'IS',
-            value: 'INVALID'
-          }];
-          break;
-        case INVALID_FILE_TYPES[2]:
-          // Missing file (not uploaded)
-          query = [{
-            field: 'validationErrors.0.message',
-            operator: 'IS',
-            value: 'Valid metadata. File is not uploaded.'
-          }];
-          break;
-        default:
-          throw new Error('Unknown file validation state.');
-      }
-
-      query.push({
-        field: 'submissionEnvelope.id',
-        operator: 'IS',
-        value: submissionId
-      });
-
-      request = this.queryFiles(query, params);
-    } else {
-      request = this.http.get<ListResult<MetadataDocument>>(url, {params: params});
+      url = `${this.API_URL}/files/search/findBySubmissionIdAndErrorType`;
+      const fileValidationTypeFilter = INVALID_FILE_TYPES.find(type => type.humanFriendly === params.filterState).code;
+      delete params.filterState; // Don't want to include this in the request
+      params.errorType = fileValidationTypeFilter;
+      params.id = submissionId;
     }
 
-    return request
+    return this.http.get<ListResult<MetadataDocument>>(url, {params: params})
       .pipe(map(data => {
         const pagedData: PagedData<MetadataDocument> = {data: [], page: undefined};
         if (data._embedded && data._embedded[entityType]) {
