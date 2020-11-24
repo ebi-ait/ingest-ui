@@ -306,13 +306,7 @@ export class IngestService {
   }
 
   public getSubmissionSummary(submissionId): Observable<SubmissionSummary> {
-    return this.http.get<SubmissionSummary>(`${this.API_URL}/submissionEnvelopes/${submissionId}/summary`)
-      .pipe(map(summary => ({
-          ...summary,
-          totalInvalid: summary.invalidBiomaterials + summary.invalidFiles + summary.missingFiles +
-            summary.invalidProcesses + summary.invalidProtocols
-        })
-      ));
+    return this.http.get<SubmissionSummary>(`${this.API_URL}/submissionEnvelopes/${submissionId}/summary`);
   }
 
   public put(ingestLink, body) {
