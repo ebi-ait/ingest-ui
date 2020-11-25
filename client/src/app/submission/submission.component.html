@@ -28,35 +28,35 @@
   <div>
     <div class="vf-text-body vf-text-body--2">{{projectTitle}}</div>
     <div class="vf-text-body vf-text-body--3">{{getContributors(project)}}</div>
-    <div>
-      <p>Your metadata validation returned <span class="error-text">{{validationSummary.totalInvalid}} errors</span>. Review and fix them below.</p>
+    <div *ngIf="validationSummary">
+      <p>Your metadata validation returned <span class="error-text">{{validationSummary.totalInvalid}} error(s)</span>. Review and fix them below.</p>
 
       <ul id="validation-error-types">
         <li>
           Biomaterials:
           <a href="javascript: void(0)" (click)="navigateToTab(0, { dataSource: biomaterialsDataSource, filterState: 'Invalid'})">
-            {{validationSummary.invalidBiomaterials}} errors
+            {{validationSummary.invalidBiomaterials}} error(s)
           </a>
         </li>
         <li>
           Processes:
           <a href="javascript: void(0)"(click)="navigateToTab(1, { dataSource: processesDataSource, filterState: 'Invalid' })">
-            {{validationSummary.invalidProcesses}} errors
+            {{validationSummary.invalidProcesses}} error(s)
           </a>
         </li>
         <li>
           Protocols:
           <a href="javascript: void(0)"(click)="navigateToTab(2, { dataSource: protocolsDataSource, filterState: 'Invalid' })">
-            {{validationSummary.invalidProtocols}} errors
+            {{validationSummary.invalidProtocols}} error(s)
           </a>
         </li>
         <li>
           Data files:
           <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Invalid'})">
-            {{validationSummary.invalidFiles}} errors
+            {{validationSummary.invalidFiles}} error(s)
           </a>,
           <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Not Uploaded'})">
-            {{validationSummary.missingFiles}} files missing
+            {{validationSummary.missingFiles}} file(s) missing
           </a>
         </li>
       </ul>
