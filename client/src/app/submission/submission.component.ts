@@ -44,7 +44,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   selectedIndex: any = 0;
   validationErrors: any;
 
-  // TODO: Give these a type
   biomaterialsDataSource: MetadataDataSource<MetadataDocument>;
   processesDataSource: MetadataDataSource<MetadataDocument>;
   protocolsDataSource: MetadataDataSource<MetadataDocument>;
