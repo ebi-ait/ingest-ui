@@ -7,6 +7,8 @@ export interface SubmissionSummary {
   invalidBiomaterials: number;
   totalFiles: number;
   invalidFiles: number;
+  fileErrors: number;
+  fileMetadataErrors: number;
   missingFiles: number;
   totalProcesses: number;
   invalidProcesses: number;

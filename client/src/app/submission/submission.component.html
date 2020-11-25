@@ -52,8 +52,11 @@
         </li>
         <li>
           Data files:
-          <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Invalid'})">
-            {{validationSummary.invalidFiles}} error(s)
+          <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Invalid Metadata'})">
+            {{validationSummary.fileMetadataErrors}} metadata error(s)
+          </a>,
+          <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Invalid File'})">
+            {{validationSummary.fileErrors}} file error(s)
           </a>,
           <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Not Uploaded'})">
             {{validationSummary.missingFiles}} file(s) missing
