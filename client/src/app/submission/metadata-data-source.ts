@@ -2,33 +2,19 @@ import {BehaviorSubject, Observable, Subject, timer} from 'rxjs';
 import {pluck, switchMap, takeWhile, tap} from 'rxjs/operators';
 import {PagedData} from '../shared/models/page';
 import { DataSource } from '../shared/models/data-source';
-import {PaginatedEndpoint, QueryData} from '../shared/models/paginatedEndpoint';
+import {Endpoint, PaginatedEndpoint, QueryData} from '../shared/models/paginatedEndpoint';
 
-export class PaginatedDataSource<T> implements DataSource<T> {
+export class SimpleDataSource<T> implements  DataSource<T> {
   protected queryData: BehaviorSubject<QueryData>;
   private loading = new Subject<boolean>();
   public loading$ = this.loading.asObservable();
   private polling = new Subject<boolean>();
   public polling$ = this.polling.asObservable();
   private isPolling: boolean;
-  public page$: Observable<number>;
 
-  constructor(protected endpoint: PaginatedEndpoint<T>) {
+  constructor(protected endpoint: Endpoint<T>) {
     this.endpoint = endpoint;
-    this.queryData = new BehaviorSubject<QueryData>({
-      page: 0,
-      size: 20
-    });
-
-    this.page$ = this.queryData.pipe(pluck('page'));
-  }
-
-  fetch(page: number): void {
-    this.setQueryData({ ...this.queryData.getValue(), page });
-  }
-
-  sortBy(column = '', direction = ''): void {
-    this.setQueryData({ ...this.queryData.getValue(), sort: { column, direction }});
+    this.queryData = new BehaviorSubject<QueryData>({});
   }
 
   protected setQueryData(params: QueryData): void {
@@ -39,8 +25,8 @@ export class PaginatedDataSource<T> implements DataSource<T> {
     return this.queryData.getValue();
   }
 
-  connect(shouldPoll = false, pollInterval = 5000): Observable<PagedData<T>>  {
-    const page$ = this.queryData.pipe(
+  connect(shouldPoll = false, pollInterval = 5000): Observable<T>  {
+    const result$ = this.queryData.pipe(
       tap(() => this.loading.next(true)),
       switchMap(params => {
         // Copy the params to remove side-effects
@@ -55,16 +41,38 @@ export class PaginatedDataSource<T> implements DataSource<T> {
         tap(() => this.polling.next(true)),
         takeWhile(() => this.isPolling),
         switchMap(() => {
-          return page$;
+          return result$;
         }),
         tap(() => this.polling.next(false))
       );
     }
-    return page$;
+    return result$;
   }
 
   disconnect(): void {
     this.isPolling = false;
+  }
+}
+
+export class PaginatedDataSource<T> extends SimpleDataSource<T> {
+  public page$: Observable<number>;
+
+  constructor(protected endpoint: PaginatedEndpoint<T>) {
+    super(endpoint);
+    this.setQueryData({
+      page: 0,
+      size: 20
+    });
+
+    this.page$ = this.queryData.pipe(pluck('page'));
+  }
+
+  fetch(page: number): void {
+    this.setQueryData({ ...this.queryData.getValue(), page });
+  }
+
+  sortBy(column = '', direction = ''): void {
+    this.setQueryData({ ...this.queryData.getValue(), sort: { column, direction }});
   }
 }
 
