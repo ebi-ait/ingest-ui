@@ -28,6 +28,42 @@
   <div>
     <div class="vf-text-body vf-text-body--2">{{projectTitle}}</div>
     <div class="vf-text-body vf-text-body--3">{{getContributors(project)}}</div>
+    <div *ngIf="validationSummary">
+      <p>Your validation returned <span class="error-text">{{validationSummary.totalInvalid}} error(s)</span>. Review and fix them below.</p>
+
+      <ul id="validation-error-types">
+        <li>
+          Biomaterials:
+          <a href="javascript: void(0)" (click)="navigateToTab(0, { dataSource: biomaterialsDataSource, filterState: 'Invalid'})">
+            {{validationSummary.invalidBiomaterials}} error(s)
+          </a>
+        </li>
+        <li>
+          Processes:
+          <a href="javascript: void(0)"(click)="navigateToTab(1, { dataSource: processesDataSource, filterState: 'Invalid' })">
+            {{validationSummary.invalidProcesses}} error(s)
+          </a>
+        </li>
+        <li>
+          Protocols:
+          <a href="javascript: void(0)"(click)="navigateToTab(2, { dataSource: protocolsDataSource, filterState: 'Invalid' })">
+            {{validationSummary.invalidProtocols}} error(s)
+          </a>
+        </li>
+        <li>
+          Data files:
+          <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Invalid Metadata'})">
+            {{validationSummary.fileMetadataErrors}} metadata error(s)
+          </a>,
+          <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Invalid File'})">
+            {{validationSummary.fileErrors}} file error(s)
+          </a>,
+          <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Not Uploaded'})">
+            {{validationSummary.missingFiles}} file(s) missing
+          </a>
+        </li>
+      </ul>
+    </div>
     <div *ngIf=" project?.validationErrors && project?.validationErrors.length > 0">
       <span class="vf-text-body vf-text-body--3 vf-u-text-color--red">Project is Invalid. Please go back and edit the project.</span><br/>
       <ng-container *ngFor="let error of project?.validationErrors">

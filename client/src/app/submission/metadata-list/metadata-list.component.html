@@ -3,7 +3,7 @@
 <ng-container *ngIf="showFilterState()">
   <div>
     <mat-form-field>
-      <mat-select placeholder="Filter by state" (selectionChange)="filterByState($event)">
+      <mat-select placeholder="Filter by state" (selectionChange)="filterByState($event)" [value]="dataSource.filterState$ | async">
         <mat-option>None</mat-option>
         <mat-option *ngFor="let state of validationStates" [value]="state">{{state}}</mat-option>
       </mat-select>
@@ -16,10 +16,12 @@
   <a href="javascript:void(0)" (click)="collapseAllRows();">Collapse All</a>
 </ng-container>
 
+<p *ngIf="initialLoading">Loading...</p>
+
 <ngx-datatable
   #datatable
 
-  *ngIf="rows && ( rows.length > 0 || !config.hideWhenEmptyRows)"
+  *ngIf="!initialLoading && rows && ( rows.length > 0 || !config.hideWhenEmptyRows)"
 
   class="material expandable"
 

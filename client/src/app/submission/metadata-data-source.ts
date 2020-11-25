@@ -5,7 +5,7 @@ import { DataSource } from '../shared/models/data-source';
 import {PaginatedEndpoint, QueryData} from '../shared/models/paginatedEndpoint';
 
 export class PaginatedDataSource<T> implements DataSource<T> {
-  private queryData: BehaviorSubject<QueryData>;
+  protected queryData: BehaviorSubject<QueryData>;
   private loading = new Subject<boolean>();
   public loading$ = this.loading.asObservable();
   private polling = new Subject<boolean>();
@@ -15,6 +15,12 @@ export class PaginatedDataSource<T> implements DataSource<T> {
 
   constructor(protected endpoint: PaginatedEndpoint<T>) {
     this.endpoint = endpoint;
+    this.queryData = new BehaviorSubject<QueryData>({
+      page: 0,
+      size: 20
+    });
+
+    this.page$ = this.queryData.pipe(pluck('page'));
   }
 
   fetch(page: number): void {
@@ -34,13 +40,6 @@ export class PaginatedDataSource<T> implements DataSource<T> {
   }
 
   connect(shouldPoll = false, pollInterval = 5000): Observable<PagedData<T>>  {
-    this.queryData = new BehaviorSubject<QueryData>({
-      page: 0,
-      size: 20
-    });
-
-    this.page$ = this.queryData.pipe(pluck('page'));
-
     const page$ = this.queryData.pipe(
       tap(() => this.loading.next(true)),
       switchMap(params => {
@@ -71,17 +70,15 @@ export class PaginatedDataSource<T> implements DataSource<T> {
 
 export class MetadataDataSource<T> extends PaginatedDataSource<T> {
   public resourceType: string;
+  public filterState$: Observable<string>;
   constructor(protected endpoint: PaginatedEndpoint<T>,
               resourceType: string) {
     super(endpoint);
     this.resourceType = resourceType;
+    this.filterState$ = this.queryData.pipe(pluck('filterState'));
   }
 
   public filterByState(state: string) {
-    this.setQueryData({ ...this.getQueryData(), fileValidationTypeFilter: null, filterState: state, page: 0 });
-  }
-
-  public filterByFileValidationType(fileValidationType: string) {
-    this.setQueryData({ ...this.getQueryData(), fileValidationTypeFilter: fileValidationType, filterState: null, page: 0 });
+    this.setQueryData({ ...this.getQueryData(), filterState: state, page: 0 });
   }
 }

@@ -13,7 +13,7 @@ import {ArchiveEntity} from '../shared/models/archiveEntity';
 import {IngestDataSource} from '../shared/components/data-table/data-source/ingest-data-source';
 import {MetadataDataSource} from './metadata-data-source';
 import {MetadataDocument} from '../shared/models/metadata-document';
-
+import {SubmissionSummary} from '../shared/models/submissionSummary';
 
 @Component({
   selector: 'app-submission',
@@ -42,7 +42,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   manifest: Object;
   submissionErrors: Object[];
   selectedIndex: any = 0;
-  validationErrors: any;
+  validationSummary: SubmissionSummary;
 
   biomaterialsDataSource: MetadataDataSource<MetadataDocument>;
   processesDataSource: MetadataDataSource<MetadataDocument>;
@@ -103,21 +103,9 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   }
 
   getValidationSummary() {
-    this.validationErrors = {
-      biomaterials: {
-        total: 4,
-        metadataErrors: 4,
-      },
-      processes: {
-        total: 4,
-        metadataErrors: 4
-      },
-      files: {
-        total: 24,
-        metadataErrors: 4,
-        fileMissing: 20
-      }
-    };
+    this.ingestService.getSubmissionSummary(this.submissionEnvelopeId).subscribe(summary => {
+      this.validationSummary = summary;
+    });
   }
 
   setProject(project) {
@@ -344,7 +332,10 @@ export class SubmissionComponent implements OnInit, OnDestroy {
         });
   }
 
-  navigateToTab(index: number): void {
+  navigateToTab(index: number, sourceFilter?: { dataSource?: MetadataDataSource<any>, filterState?: string }): void {
     this.selectedIndex = index;
+    if (sourceFilter && sourceFilter.dataSource && sourceFilter.filterState) {
+      sourceFilter.dataSource.filterByState(sourceFilter.filterState);
+    }
   }
 }
