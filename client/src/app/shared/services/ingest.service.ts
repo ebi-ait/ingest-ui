@@ -17,6 +17,7 @@ import {Project} from '../models/project';
 import {ArchiveSubmission} from '../models/archiveSubmission';
 import {ArchiveEntity} from '../models/archiveEntity';
 import {Criteria} from '../models/criteria';
+import {INVALID_FILE_TYPES} from '../constants';
 
 
 @Injectable()
@@ -209,25 +210,44 @@ export class IngestService {
       .pipe(map(data => data._embedded && data._embedded.projects ? data._embedded.projects[0] : null));
   }
 
-  public fetchSubmissionData(submissionId, entityType, filterState, params): Observable<PagedData<MetadataDocument>> {
+  public fetchSubmissionData(submissionId, entityType, params): Observable<PagedData<MetadataDocument>> {
     let url = `${this.API_URL}/submissionEnvelopes/${submissionId}/${entityType}`;
     const submission_url = `${this.API_URL}/submissionEnvelopes/${submissionId}`;
 
+    // IMPORTANT! The order of these if statements matters
+    // The url is overridden in each but params will be preserved.
+    // E.g. params.sort can be added and used in the url for filtering as well
+    // This might not be the best way to do this but with the varying endpoints, it's okay
     const sort = params['sort'];
     if (sort) {
       url = `${this.API_URL}/${entityType}/search/findBySubmissionEnvelope`;
       params['envelopeUri'] = encodeURIComponent(submission_url);
-      params['sort'] = `${sort['column']},${sort['dir']}`;
+      params['sort'] = `${sort['column']},${sort['direction']}`;
     }
 
-    if (filterState) {
+    if (params.filterState && params.fileValidationTypeFilter) {
+      throw new Error('Cannot have both filterState and fileValidationTypeFilter.');
+    }
+    const humanFriendlyTypes = INVALID_FILE_TYPES.map(a => a.humanFriendly);
+    if (params.filterState && !humanFriendlyTypes.includes(params.filterState)) {
       url = `${this.API_URL}/${entityType}/search/findBySubmissionEnvelopeAndValidationState`;
       params['envelopeUri'] = encodeURIComponent(submission_url);
-      params['state'] = filterState.toUpperCase();
-
+      params['state'] = params.filterState.toUpperCase();
     }
-    return this.http
-      .get<ListResult<MetadataDocument>>(url, {params: params})
+
+    if (params.filterState && humanFriendlyTypes.includes(params.filterState)) {
+      if (entityType !== 'files') {
+        throw new Error('Only files can be filtered by validation type.');
+      }
+
+      url = `${this.API_URL}/files/search/findBySubmissionEnvelopeIdAndErrorType`;
+      const fileValidationTypeFilter = INVALID_FILE_TYPES.find(type => type.humanFriendly === params.filterState).code;
+      delete params.filterState; // Don't want to include this in the request
+      params.errorType = fileValidationTypeFilter;
+      params.id = submissionId;
+    }
+
+    return this.http.get<ListResult<MetadataDocument>>(url, {params: params})
       .pipe(map(data => {
         const pagedData: PagedData<MetadataDocument> = {data: [], page: undefined};
         if (data._embedded && data._embedded[entityType]) {

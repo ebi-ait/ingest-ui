@@ -41,20 +41,20 @@
   <mat-tab-group *ngIf="submissionEnvelopeId" [selectedIndex]="selectedIndex">
     <mat-tab label="Biomaterials">
       <ng-template matTabContent>
-        <app-metadata-list [submissionEnvelopeId]="submissionEnvelopeId" [metadataType]="'biomaterials'"
+        <app-metadata-list [dataSource]="biomaterialsDataSource"
                            [config]="{displayLinking: true}"
                            [expectedCount]="manifest ? manifest['expectedBiomaterials'] : null"></app-metadata-list>
       </ng-template>
     </mat-tab>
     <mat-tab label="Processes">
       <ng-template matTabContent>
-        <app-metadata-list [submissionEnvelopeId]="submissionEnvelopeId" [metadataType]="'processes'"
+        <app-metadata-list [dataSource]="processesDataSource"
                            [expectedCount]="manifest ? manifest['expectedProcesses'] : null"></app-metadata-list>
       </ng-template>
     </mat-tab>
     <mat-tab label="Protocols">
       <ng-template matTabContent>
-        <app-metadata-list [submissionEnvelopeId]="submissionEnvelopeId" [metadataType]="'protocols'"
+        <app-metadata-list [dataSource]="protocolsDataSource"
                            [config]="{displayLinking: true}"
                            [expectedCount]="manifest ? manifest['expectedProtocols'] : null"></app-metadata-list>
       </ng-template>
@@ -62,8 +62,8 @@
     <mat-tab label="Data" [disabled]="!submissionEnvelopeId">
       <ng-template matTabContent>
         <app-files
+          [dataSource]="filesDataSource"
           [submissionEnvelope]="submissionEnvelope"
-          [submissionEnvelopeId]="submissionEnvelopeId"
           [manifest]="manifest">
         </app-files>
       </ng-template>
@@ -71,8 +71,7 @@
     <mat-tab label="Assays" *ngIf="isSubmitted">
       <ng-template matTabContent>
         <app-metadata-list
-          [submissionEnvelopeId]="submissionEnvelopeId"
-          [metadataType]="'bundleManifests'"
+          [dataSource]="bundleManifestsDataSource"
           [config]="{displayAll: true, hideWhenEmptyRows: true}">
         </app-metadata-list>
       </ng-template>
@@ -84,14 +83,6 @@
         <app-data-table [dataSource]="archiveEntityDataSource"
                         [idColumn]="'alias'"
                         [columns]="['type', 'accession', 'alias', '_links.self.href']">
-        </app-data-table>
-      </ng-template>
-    </mat-tab>
-
-    <mat-tab label="Errors" *ngIf="submissionErrors && submissionErrors.length > 0">
-      <ng-template matTabContent>
-        <br/>
-        <app-data-table [idColumn]="'instance'" [rows]="submissionErrors" [columns]="['title', 'detail', 'instance']">
         </app-data-table>
       </ng-template>
     </mat-tab>

@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
 import {Observable, timer} from 'rxjs';
-import {distinctUntilChanged, filter, map, switchMap, takeWhile} from 'rxjs/operators';
+import {filter, takeWhile} from 'rxjs/operators';
 import {IngestService} from '../shared/services/ingest.service';
 import {AlertService} from '../shared/services/alert.service';
 import {SubmissionEnvelope} from '../shared/models/submissionEnvelope';
@@ -10,8 +10,9 @@ import {LoaderService} from '../shared/services/loader.service';
 import {BrokerService} from '../shared/services/broker.service';
 import {Project} from '../shared/models/project';
 import {ArchiveEntity} from '../shared/models/archiveEntity';
-import {ListResult} from '../shared/models/hateoas';
 import {IngestDataSource} from '../shared/components/data-table/data-source/ingest-data-source';
+import {MetadataDataSource} from './metadata-data-source';
+import {MetadataDocument} from '../shared/models/metadata-document';
 
 
 @Component({
@@ -41,6 +42,13 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   manifest: Object;
   submissionErrors: Object[];
   selectedIndex: any = 0;
+  validationErrors: any;
+
+  biomaterialsDataSource: MetadataDataSource<MetadataDocument>;
+  processesDataSource: MetadataDataSource<MetadataDocument>;
+  protocolsDataSource: MetadataDataSource<MetadataDocument>;
+  bundleManifestsDataSource: MetadataDataSource<MetadataDocument>;
+  filesDataSource: MetadataDataSource<MetadataDocument>;
 
   archiveEntityDataSource: IngestDataSource<ArchiveEntity>;
 
@@ -92,6 +100,24 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.project$.subscribe(project => {
       this.setProject(project);
     });
+  }
+
+  getValidationSummary() {
+    this.validationErrors = {
+      biomaterials: {
+        total: 4,
+        metadataErrors: 4,
+      },
+      processes: {
+        total: 4,
+        metadataErrors: 4
+      },
+      files: {
+        total: 24,
+        metadataErrors: 4,
+        fileMissing: 20
+      }
+    };
   }
 
   setProject(project) {
@@ -198,6 +224,10 @@ export class SubmissionComponent implements OnInit, OnDestroy {
         if (this.submissionEnvelope) {
           this.getSubmissionErrors();
           this.getSubmissionManifest();
+          this.getValidationSummary();
+
+          // TODO: move this polling into data source
+          this.initDataSources();
         }
       });
   }
@@ -214,7 +244,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     if (this.submissionEnvelopeId) {
       this.submissionEnvelope$ = this.ingestService.getSubmission(this.submissionEnvelopeId);
     } else if (this.submissionEnvelopeUuid) {
-
       this.submissionEnvelope$ = this.ingestService.getSubmissionByUuid(this.submissionEnvelopeUuid);
     } else {
       this.submissionEnvelope$ = null;
@@ -274,10 +303,26 @@ export class SubmissionComponent implements OnInit, OnDestroy {
             const entitiesUrl = archiveSubmission['_links']['entities']['href'];
             this.archiveEntityDataSource = new IngestDataSource<ArchiveEntity>(this.ingestService, entitiesUrl, 'archiveEntities');
           }
-
         }
       );
   }
+
+  private initDataSources() {
+    const submissionTypes = ['biomaterials', 'processes', 'protocols', 'files', 'bundleManifests'];
+    submissionTypes.forEach(type => {
+      if (this[`${type}DataSource`]) {
+        // Ensure this is only called once.
+        // datasources should not be reinistatiated
+        // TODO: sort out other polling here and remove this check
+        return;
+      }
+      this[`${type}DataSource`] = new MetadataDataSource<any>(
+        (params) => this.ingestService.fetchSubmissionData(this.submissionEnvelopeId, type, params),
+        type
+      );
+    });
+  }
+
 
   private getSubmissionManifest() {
     this.ingestService.get(this.submissionEnvelope['_links']['submissionManifest']['href'])
@@ -297,5 +342,9 @@ export class SubmissionComponent implements OnInit, OnDestroy {
             console.error(err);
           }
         });
+  }
+
+  navigateToTab(index: number): void {
+    this.selectedIndex = index;
   }
 }

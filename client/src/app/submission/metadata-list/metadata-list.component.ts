@@ -1,6 +1,6 @@
 import {AfterViewChecked, Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Observable, of, Subscription, timer} from 'rxjs';
-import {takeWhile, tap} from 'rxjs/operators';
+import {filter, takeWhile, tap} from 'rxjs/operators';
 import {IngestService} from '../../shared/services/ingest.service';
 import {FlattenService} from '../../shared/services/flatten.service';
 import {Page, PagedData} from '../../shared/models/page';
@@ -9,8 +9,7 @@ import {MetadataDetailsDialogComponent} from '../../metadata-details-dialog/meta
 import {MatDialog} from '@angular/material/dialog';
 import {SchemaService} from '../../shared/services/schema.service';
 import {LoaderService} from '../../shared/services/loader.service';
-import {ListResult} from '../../shared/models/hateoas';
-import {MetadataSchema} from '../../shared/models/metadata-schema';
+import {INVALID_FILE_TYPES} from '../../shared/constants';
 
 @Component({
   selector: 'app-metadata-list',
@@ -20,15 +19,13 @@ import {MetadataSchema} from '../../shared/models/metadata-schema';
 })
 
 export class MetadataListComponent implements OnInit, OnDestroy {
-  pollingSubscription: Subscription;
-  pollingTimer: Observable<number>;
 
   @ViewChild('datatable') table: any;
 
   @Input() title: string;
   @Input() metadataList;
-  @Input() metadataType;
   @Input() expectedCount;
+  @Input() dataSource: any;
 
   private _config = {
     displayContent: true,
@@ -48,7 +45,6 @@ export class MetadataListComponent implements OnInit, OnDestroy {
     Object.assign(this._config, config);
   }
 
-  metadataList$: Observable<PagedData<MetadataDocument>>;
   @Input() submissionEnvelopeId: string;
   page: Page = {number: 0, size: 0, sort: '', totalElements: 0, totalPages: 0};
   rows: any[];
@@ -56,29 +52,37 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   isPaginated: boolean;
   validationStates: string[];
   filterState: string;
-  currentPageInfo: {};
-  private alive: boolean;
-  private pollInterval: number;
-  isLoading = false;
 
   constructor(private ingestService: IngestService,
               private flattenService: FlattenService,
               private schemaService: SchemaService,
               private loaderService: LoaderService,
               public dialog: MatDialog) {
-    this.pollInterval = 5000; // 5s
-    this.alive = true;
     this.page.number = 0;
     this.page.size = 20;
-    this.pollingTimer = timer(0, this.pollInterval).pipe(takeWhile(() => this.alive)); // only fires when component is alive
     this.validationStates = ['Draft', 'Validating', 'Valid', 'Invalid'];
   }
 
   ngOnDestroy() {
-    this.alive = false; // switches your TimerObservable off
+    this.dataSource.disconnect();
   }
 
   ngOnInit() {
+    this.dataSource.connect(true, 5000).subscribe(data => {
+      this.rows = data.data.map(row => this.flattenService.flatten(row));
+      this.metadataList = data.data;
+      if (data.page) {
+        this.isPaginated = true;
+        this.page = data.page;
+      } else {
+        this.isPaginated = false;
+      }
+    });
+
+    if (this.dataSource.resourceType === 'files') {
+      this.validationStates = this.validationStates.concat(INVALID_FILE_TYPES.map(a => a.humanFriendly));
+    }
+
     this.setPage({offset: 0});
   }
 
@@ -138,7 +142,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   getDefaultValidMessage() {
     let validMessage = '* Metadata is valid.';
 
-    if (this.metadataType === 'files') {
+    if (this.dataSource.resourceType === 'files') {
       validMessage = '* Data is valid.';
     }
 
@@ -169,52 +173,23 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   setPage(pageInfo) {
-    this.currentPageInfo = pageInfo;
-    this.stopPolling();
     this.page.number = pageInfo.offset;
-    this.startPolling(this.currentPageInfo);
-    this.alive = true;
-  }
-
-  fetchData(pageInfo) {
-    if (this.submissionEnvelopeId) {
-      const params = {
-        page: pageInfo['offset'],
-        size: pageInfo['size'],
-        sort: pageInfo['sort']
-      };
-
-      this.metadataList$ = this.ingestService.fetchSubmissionData(this.submissionEnvelopeId, this.metadataType, this.filterState, params);
-      this.metadataList$.subscribe(data => {
-        this.rows = data.data.map(this.flattenService.flatten);
-        this.metadataList = data.data;
-        if (data.page) {
-          this.isPaginated = true;
-          this.page = data.page;
-        } else {
-          this.isPaginated = false;
-        }
-      });
-    }
-  }
-
-  startPolling(pageInfo) {
-    this.pollingSubscription = this.pollingTimer.subscribe(() => this.fetchData(pageInfo));
-  }
-
-  stopPolling() {
-    if (this.pollingSubscription) {
-      this.pollingSubscription.unsubscribe();
-    }
+    this.dataSource.fetch(this.page.number);
   }
 
   filterByState(event) {
-    this.filterState = event.value;
-    this.setPage(this.currentPageInfo);
+    const filterState = event.value;
+
+    if (INVALID_FILE_TYPES.includes(filterState)) {
+      this.dataSource.filterByFileValidationType(filterState);
+      return;
+    }
+
+    this.dataSource.filterByState(filterState);
   }
 
   showFilterState() {
-    return this.metadataType !== 'bundleManifests';
+    return this.dataSource.resourceType !== 'bundleManifests';
   }
 
   onSort(event) {
@@ -223,11 +198,9 @@ export class MetadataListComponent implements OnInit, OnDestroy {
     const column = sorts[0]['prop']; // only one column sorting is supported for now
     const dir = sorts[0]['dir'];
 
-    if (this.metadataType === 'files') { // only sorting in files are supported for now
-      this.currentPageInfo['sort'] = {column: column, dir: dir};
-      this.setPage(this.currentPageInfo);
+    if (this.dataSource.resourceType === 'files') { // only sorting in files are supported for now
+      this.dataSource.sortBy(column, dir);
     }
-
   }
 
   getRowId(row) {
@@ -260,6 +233,4 @@ export class MetadataListComponent implements OnInit, OnDestroy {
     const metadata = this.metadataList[rowIndex];
     this.table.rowDetail.toggleExpandRow(row);
   }
-
-
 }

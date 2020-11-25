@@ -32,8 +32,9 @@
   [scrollbarH]="true"
 
   [count]="page.totalElements"
+  [offset]="dataSource.page$ | async"
   [limit]="page.size"
-  [loadingIndicator]="isLoading"
+  [loadingIndicator]="(dataSource.loading$ | async) && !(dataSource.polling$ | async)"
   [externalPaging]="isPaginated"
 
   (page)='setPage($event)'
