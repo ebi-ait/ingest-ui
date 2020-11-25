@@ -240,7 +240,7 @@ export class IngestService {
         throw new Error('Only files can be filtered by validation type.');
       }
 
-      url = `${this.API_URL}/files/search/findBySubmissionIdAndErrorType`;
+      url = `${this.API_URL}/files/search/findBySubmissionEnvelopeIdAndErrorType`;
       const fileValidationTypeFilter = INVALID_FILE_TYPES.find(type => type.humanFriendly === params.filterState).code;
       delete params.filterState; // Don't want to include this in the request
       params.errorType = fileValidationTypeFilter;
