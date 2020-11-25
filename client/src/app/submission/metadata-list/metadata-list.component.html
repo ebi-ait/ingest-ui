@@ -16,12 +16,12 @@
   <a href="javascript:void(0)" (click)="collapseAllRows();">Collapse All</a>
 </ng-container>
 
-<p *ngIf="dataSource.loading$ | async">Loading...</p>
+<p *ngIf="initialLoading">Loading...</p>
 
 <ngx-datatable
   #datatable
 
-  *ngIf="rows && ( rows.length > 0 || !config.hideWhenEmptyRows)"
+  *ngIf="!initialLoading && rows && ( rows.length > 0 || !config.hideWhenEmptyRows)"
 
   class="material expandable"
 
