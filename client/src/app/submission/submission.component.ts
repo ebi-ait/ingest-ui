@@ -12,6 +12,7 @@ import {Project} from '../shared/models/project';
 import {ArchiveEntity} from '../shared/models/archiveEntity';
 import {IngestDataSource} from '../shared/components/data-table/data-source/ingest-data-source';
 import {MetadataDataSource} from './metadata-data-source';
+import {MetadataDocument} from '../shared/models/metadata-document';
 
 
 @Component({
@@ -44,11 +45,11 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   validationErrors: any;
 
   // TODO: Give these a type
-  biomaterialsDataSource: any;
-  processesDataSource: any;
-  protocolsDataSource: any;
-  bundleManifestsDataSource: any;
-  filesDataSource: any;
+  biomaterialsDataSource: MetadataDataSource<MetadataDocument>;
+  processesDataSource: MetadataDataSource<MetadataDocument>;
+  protocolsDataSource: MetadataDataSource<MetadataDocument>;
+  bundleManifestsDataSource: MetadataDataSource<MetadataDocument>;
+  filesDataSource: MetadataDataSource<MetadataDocument>;
 
   archiveEntityDataSource: IngestDataSource<ArchiveEntity>;
 
