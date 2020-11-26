@@ -54,19 +54,31 @@
           Data files:
           <ng-container *ngIf="validationSummary.fileMetadataErrors">
             <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Invalid Metadata'})">
-              {{validationSummary.fileMetadataErrors}} metadata error(s)
+              {{validationSummary.fileMetadataErrors}}
+              <ng-container [ngPlural]="validationSummary.fileMetadataErrors">
+                <ng-template ngPluralCase="one">metadata error</ng-template>
+                <ng-template ngPluralCase="other">metadata errors</ng-template>
+              </ng-container>
             </a>
           </ng-container>
           <ng-container *ngIf="validationSummary.fileMetadataErrors && validationSummary.fileErrors">, </ng-container>
           <ng-container *ngIf="validationSummary.fileErrors">
             <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Invalid File'})">
-              {{validationSummary.fileErrors}} file error(s)
+              {{validationSummary.fileErrors}}
+              <ng-container [ngPlural]="validationSummary.fileErrors">
+                <ng-template ngPluralCase="one">file error</ng-template>
+                <ng-template ngPluralCase="other">file errors</ng-template>
+              </ng-container>
             </a>
           </ng-container>
           <ng-container *ngIf="(validationSummary.fileMetadataErrors || validationSummary.fileErrors) && validationSummary.missingFiles">, </ng-container>
           <ng-container *ngIf="validationSummary.missingFiles">
             <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Not Uploaded'})">
-              {{validationSummary.missingFiles}} file(s) missing
+              {{validationSummary.missingFiles}}
+              <ng-container [ngPlural]="validationSummary.missingFiles">
+                <ng-template ngPluralCase="one">file missing</ng-template>
+                <ng-template ngPluralCase="other">files missing</ng-template>
+              </ng-container>
             </a>
           </ng-container>
         </li>
