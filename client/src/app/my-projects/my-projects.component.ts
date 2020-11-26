@@ -1,13 +1,10 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MatPaginator, PageEvent} from '@angular/material/paginator';
-import {Observable, timer} from 'rxjs';
-import {takeWhile, tap} from 'rxjs/operators';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {MatPaginator} from '@angular/material/paginator';
 import {AaiService} from '../aai/aai.service';
 import {IngestService} from '../shared/services/ingest.service';
 import {Project, ProjectColumn} from '../shared/models/project';
 import {Account} from '../core/account';
 import {PaginatedDataSource} from '../shared/data-sources/paginated-data-source';
-import {ListResult} from '../shared/models/hateoas';
 import {PagedData} from '../shared/models/page';
 import {SimpleDataSource} from '../shared/data-sources/simple-data-source';
 
