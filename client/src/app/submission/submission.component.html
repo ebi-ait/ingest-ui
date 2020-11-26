@@ -28,39 +28,59 @@
   <div>
     <div class="vf-text-body vf-text-body--2">{{projectTitle}}</div>
     <div class="vf-text-body vf-text-body--3">{{getContributors(project)}}</div>
-    <div *ngIf="validationSummary">
+    <div *ngIf="validationSummary && validationSummary.totalInvalid > 0">
       <p>Your validation returned <span class="error-text">{{validationSummary.totalInvalid}} error(s)</span>. Review and fix them below.</p>
 
       <ul id="validation-error-types">
-        <li>
+        <li *ngIf="validationSummary.invalidBiomaterials > 0">
           Biomaterials:
           <a href="javascript: void(0)" (click)="navigateToTab(0, { dataSource: biomaterialsDataSource, filterState: 'Invalid'})">
             {{validationSummary.invalidBiomaterials}} error(s)
           </a>
         </li>
-        <li>
+        <li *ngIf="validationSummary.invalidProcesses > 0">
           Processes:
           <a href="javascript: void(0)"(click)="navigateToTab(1, { dataSource: processesDataSource, filterState: 'Invalid' })">
             {{validationSummary.invalidProcesses}} error(s)
           </a>
         </li>
-        <li>
+        <li *ngIf="validationSummary.invalidProtocols > 0">
           Protocols:
           <a href="javascript: void(0)"(click)="navigateToTab(2, { dataSource: protocolsDataSource, filterState: 'Invalid' })">
             {{validationSummary.invalidProtocols}} error(s)
           </a>
         </li>
-        <li>
+        <li *ngIf="validationSummary.invalidFiles > 0">
           Data files:
-          <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Invalid Metadata'})">
-            {{validationSummary.fileMetadataErrors}} metadata error(s)
-          </a>,
-          <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Invalid File'})">
-            {{validationSummary.fileErrors}} file error(s)
-          </a>,
-          <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Not Uploaded'})">
-            {{validationSummary.missingFiles}} file(s) missing
-          </a>
+          <ng-container *ngIf="validationSummary.fileMetadataErrors">
+            <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Invalid Metadata'})">
+              {{validationSummary.fileMetadataErrors}}
+              <ng-container [ngPlural]="validationSummary.fileMetadataErrors">
+                <ng-template ngPluralCase="one">metadata error</ng-template>
+                <ng-template ngPluralCase="other">metadata errors</ng-template>
+              </ng-container>
+            </a>
+          </ng-container>
+          <ng-container *ngIf="validationSummary.fileMetadataErrors && validationSummary.fileErrors">, </ng-container>
+          <ng-container *ngIf="validationSummary.fileErrors">
+            <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Invalid File'})">
+              {{validationSummary.fileErrors}}
+              <ng-container [ngPlural]="validationSummary.fileErrors">
+                <ng-template ngPluralCase="one">file error</ng-template>
+                <ng-template ngPluralCase="other">file errors</ng-template>
+              </ng-container>
+            </a>
+          </ng-container>
+          <ng-container *ngIf="(validationSummary.fileMetadataErrors || validationSummary.fileErrors) && validationSummary.missingFiles">, </ng-container>
+          <ng-container *ngIf="validationSummary.missingFiles">
+            <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Not Uploaded'})">
+              {{validationSummary.missingFiles}}
+              <ng-container [ngPlural]="validationSummary.missingFiles">
+                <ng-template ngPluralCase="one">file missing</ng-template>
+                <ng-template ngPluralCase="other">files missing</ng-template>
+              </ng-container>
+            </a>
+          </ng-container>
         </li>
       </ul>
     </div>
