@@ -1,7 +1,6 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {IngestService} from '../../shared/services/ingest.service';
 import {FlattenService} from '../../shared/services/flatten.service';
-import {Page} from '../../shared/models/page';
 import {MetadataDetailsDialogComponent} from '../../metadata-details-dialog/metadata-details-dialog.component';
 import {MatDialog} from '@angular/material/dialog';
 import {SchemaService} from '../../shared/services/schema.service';
@@ -43,10 +42,8 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   @Input() submissionEnvelopeId: string;
-  page: Page = {number: 0, size: 0, sort: '', totalElements: 0, totalPages: 0};
   rows: any[];
   expandAll: boolean;
-  isPaginated: boolean;
   validationStates: string[];
   initialLoading: boolean;
 
@@ -55,8 +52,6 @@ export class MetadataListComponent implements OnInit, OnDestroy {
               private schemaService: SchemaService,
               private loaderService: LoaderService,
               public dialog: MatDialog) {
-    this.page.number = 0;
-    this.page.size = 20;
     this.validationStates = ['Draft', 'Validating', 'Valid', 'Invalid'];
   }
 
@@ -69,12 +64,6 @@ export class MetadataListComponent implements OnInit, OnDestroy {
     this.dataSource.connect(true, 5000).subscribe(data => {
       this.rows = data.data.map(row => this.flattenService.flatten(row));
       this.metadataList = data.data;
-      if (data.page) {
-        this.isPaginated = true;
-        this.page = data.page;
-      } else {
-        this.isPaginated = false;
-      }
       this.initialLoading = false;
     });
 
@@ -172,8 +161,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   setPage(pageInfo) {
-    this.page.number = pageInfo.offset;
-    this.dataSource.fetch(this.page.number);
+    this.dataSource.fetch(pageInfo.offset);
   }
 
   filterByState(event) {

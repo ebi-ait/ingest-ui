@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 
 import {ListResult} from '../models/hateoas';
 import {Summary} from '../models/summary';
-import {PagedData} from '../models/page';
+import {Page, PagedData} from '../models/page';
 import {SubmissionEnvelope} from '../models/submissionEnvelope';
 
 import {environment} from '../../../environments/environment';
@@ -64,8 +64,15 @@ export class IngestService {
     return this.http.get(`${this.API_URL}/projects`, {params: params});
   }
 
-  public getUserProjects(params): Observable<any> {
-    return this.http.get(`${this.API_URL}/user/projects`, {params: params});
+  public getUserProjects(params): Observable<PagedData<Project>> {
+    return this.http.get<ListResult<Project>>(`${this.API_URL}/user/projects`, {params: params}).pipe(
+      map(data => {
+        return {
+          data: data._embedded ? data._embedded.projects : [],
+          page: data.page
+        };
+      })
+    );
   }
 
   public getUserAccount(): Observable<Account> {

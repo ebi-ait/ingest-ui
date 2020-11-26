@@ -6,64 +6,36 @@ import {AaiService} from '../aai/aai.service';
 import {IngestService} from '../shared/services/ingest.service';
 import {Project, ProjectColumn} from '../shared/models/project';
 import {Account} from '../core/account';
+import {PaginatedDataSource} from '../shared/data-sources/paginated-data-source';
+import {ListResult} from '../shared/models/hateoas';
+import {PagedData} from '../shared/models/page';
+import {SimpleDataSource} from '../shared/data-sources/simple-data-source';
 
 @Component({
   selector: 'app-my-projects',
   templateUrl: './my-projects.component.html',
   styleUrls: ['./my-projects.component.css']
 })
-export class MyProjectsComponent implements OnInit, OnDestroy, AfterViewInit {
-  account$: Observable<Account>;
+export class MyProjectsComponent implements OnInit, OnDestroy {
   isWrangler: Boolean;
   introduction: String;
   columns: ProjectColumn[];
 
   projects: Project[];
-
-  alive: boolean;
-  interval: number;
-
-  pagination: Object;
-  params: Object;
-  currentPageInfo: Object;
-
-  // MatPaginator Inputs
-  pageSizeOptions: number[] = [5, 10, 20, 30];
-
-  // MatPaginator Output
-  pageEvent: PageEvent;
+  projectsDataSource: PaginatedDataSource<Project>;
+  accountDataSource: SimpleDataSource<Account>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
-  constructor(private aai: AaiService, private ingestService: IngestService) {
-    this.alive = true;
-    this.interval = 4000;
-
-    this.currentPageInfo = {
-      size: 20,
-      number: 0,
-      totalPages: 0,
-      totalElements: 0,
-      start: 0,
-      end: 0
-    };
-    this.params = {'page': 0, 'size': 20, 'sort': 'updateDate,desc'};
-  }
+  constructor(private aai: AaiService, private ingestService: IngestService) {}
 
   ngOnInit() {
     // protected against null user by the user-is-logged-in guard
-    this.account$ = this.ingestService.getUserAccount();
-    this.pollAccount();
-    this.pollProjects();
-  }
+    this.accountDataSource =  new SimpleDataSource(this.ingestService.getUserAccount.bind(this.ingestService));
+    this.projectsDataSource = new PaginatedDataSource(this.ingestService.getUserProjects.bind(this.ingestService));
 
-  ngOnDestroy() {
-    this.alive = false; // switches your IntervalObservable off
-  }
-
-  private pollAccount() {
-    this.account$.subscribe({
-      next: data => {
+    this.accountDataSource.connect(true)
+      .subscribe((data: Account) => {
         this.isWrangler = data.isWrangler();
         if (this.isWrangler) {
           this.introduction = 'These are your assigned projects.';
@@ -82,46 +54,16 @@ export class MyProjectsComponent implements OnInit, OnDestroy, AfterViewInit {
             ProjectColumn.last_updated
           ];
         }
-      }
-    });
-  }
+      });
 
-  pollProjects() {
-    timer(0, this.interval)
-      .pipe(takeWhile(() => this.alive))// only fires when component is alive
-      .subscribe(() => this.getProjects());
-  }
-
-  getProjects() {
-    if (this.paginator) {
-      this.params['page'] = this.paginator.pageIndex;
-      this.params['size'] = this.paginator.pageSize;
-    }
-    this.ingestService.getUserProjects(this.params)
-      .subscribe({
-        next: data => {
-          this.projects = data._embedded ? data._embedded.projects : [];
-          this.pagination = data.page;
-          this.getCurrentPageInfo(this.pagination);
-        }
+    this.projectsDataSource.connect(true)
+      .subscribe((result: PagedData<Project>) => {
+        this.projects = result.data;
       });
   }
 
-  // TODO Create a component which supports dynamic(polled data) datatable loading and pagination
-  ngAfterViewInit() {
-    if (this.paginator) {
-      this.paginator.page
-        .pipe(
-          tap(() => this.getProjects())
-        )
-        .subscribe();
-    }
-  }
-
-  getCurrentPageInfo(pagination) {
-    this.currentPageInfo['totalPages'] = pagination.totalPages;
-    this.currentPageInfo['totalElements'] = pagination.totalElements;
-    this.currentPageInfo['number'] = pagination.number;
-    return this.currentPageInfo;
+  ngOnDestroy() {
+    this.projectsDataSource.disconnect();
+    this.accountDataSource.disconnect();
   }
 }

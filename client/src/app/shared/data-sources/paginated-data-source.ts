@@ -2,9 +2,11 @@ import {Observable} from 'rxjs';
 import {PaginatedEndpoint} from '../models/paginatedEndpoint';
 import {pluck} from 'rxjs/operators';
 import {SimpleDataSource} from './simple-data-source';
+import {Page, PagedData} from '../models/page';
 
-export class PaginatedDataSource<T> extends SimpleDataSource<T> {
-  public page$: Observable<number>;
+export class PaginatedDataSource<T> extends SimpleDataSource<PagedData<T>> {
+  public page$: Observable<Page>;
+  public requestedOffset$: Observable<number>;
 
   constructor(protected endpoint: PaginatedEndpoint<T>) {
     super(endpoint);
@@ -13,7 +15,8 @@ export class PaginatedDataSource<T> extends SimpleDataSource<T> {
       size: 20
     });
 
-    this.page$ = this.queryData.pipe(pluck('page'));
+    this.requestedOffset$ = this.queryData.pipe(pluck('page'));
+    this.page$ = this.result$.pipe(pluck('page'));
   }
 
   fetch(page: number): void {
@@ -21,6 +24,6 @@ export class PaginatedDataSource<T> extends SimpleDataSource<T> {
   }
 
   sortBy(column = '', direction = ''): void {
-    this.setQueryData({ ...this.queryData.getValue(), sort: { column, direction }});
+    this.setQueryData({ ...this.queryData.getValue(), sort: { column, direction }, page: 0 });
   }
 }
