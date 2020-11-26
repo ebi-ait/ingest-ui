@@ -20,9 +20,9 @@
   <ng-container *ngIf="page['totalElements'] > 0">
     <mat-paginator [length]="page['totalElements']"
                    [pageSize]="page['size']"
-                   [pageIndex]="page['number']">
-<!--                   [pageSizeOptions]="pageSizeOptions"-->
-<!--                   (page)="pageEvent = $event">-->
+                   [pageIndex]="page['number']"
+                   [pageSizeOptions]="pageSizeOptions"
+                   (page)="pageEvent = $event">
     </mat-paginator>
   </ng-container>
 </ng-container>

@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MatPaginator} from '@angular/material/paginator';
+import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {AaiService} from '../aai/aai.service';
 import {IngestService} from '../shared/services/ingest.service';
 import {Project, ProjectColumn} from '../shared/models/project';
@@ -21,6 +21,13 @@ export class MyProjectsComponent implements OnInit, OnDestroy {
   projects: Project[];
   projectsDataSource: PaginatedDataSource<Project>;
   accountDataSource: SimpleDataSource<Account>;
+
+
+  // MatPaginator Inputs
+  pageSizeOptions: number[] = [5, 10, 20, 30];
+
+  // MatPaginator Output
+  pageEvent: PageEvent;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
