@@ -28,29 +28,29 @@
   <div>
     <div class="vf-text-body vf-text-body--2">{{projectTitle}}</div>
     <div class="vf-text-body vf-text-body--3">{{getContributors(project)}}</div>
-    <div *ngIf="validationSummary">
+    <div *ngIf="validationSummary && validationSummary.totalInvalid > 0">
       <p>Your validation returned <span class="error-text">{{validationSummary.totalInvalid}} error(s)</span>. Review and fix them below.</p>
 
       <ul id="validation-error-types">
-        <li>
+        <li *ngIf="validationSummary.invalidBiomaterials > 0">
           Biomaterials:
           <a href="javascript: void(0)" (click)="navigateToTab(0, { dataSource: biomaterialsDataSource, filterState: 'Invalid'})">
             {{validationSummary.invalidBiomaterials}} error(s)
           </a>
         </li>
-        <li>
+        <li *ngIf="validationSummary.invalidProcesses > 0">
           Processes:
           <a href="javascript: void(0)"(click)="navigateToTab(1, { dataSource: processesDataSource, filterState: 'Invalid' })">
             {{validationSummary.invalidProcesses}} error(s)
           </a>
         </li>
-        <li>
+        <li *ngIf="validationSummary.invalidProtocols > 0">
           Protocols:
           <a href="javascript: void(0)"(click)="navigateToTab(2, { dataSource: protocolsDataSource, filterState: 'Invalid' })">
             {{validationSummary.invalidProtocols}} error(s)
           </a>
         </li>
-        <li>
+        <li *ngIf="validationSummary.invalidFiles > 0">
           Data files:
           <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Invalid Metadata'})">
             {{validationSummary.fileMetadataErrors}} metadata error(s)
