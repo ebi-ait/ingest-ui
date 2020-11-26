@@ -52,15 +52,23 @@
         </li>
         <li *ngIf="validationSummary.invalidFiles > 0">
           Data files:
-          <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Invalid Metadata'})">
-            {{validationSummary.fileMetadataErrors}} metadata error(s)
-          </a>,
-          <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Invalid File'})">
-            {{validationSummary.fileErrors}} file error(s)
-          </a>,
-          <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Not Uploaded'})">
-            {{validationSummary.missingFiles}} file(s) missing
-          </a>
+          <ng-container *ngIf="validationSummary.fileMetadataErrors">
+            <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Invalid Metadata'})">
+              {{validationSummary.fileMetadataErrors}} metadata error(s)
+            </a>
+          </ng-container>
+          <ng-container *ngIf="validationSummary.fileMetadataErrors && validationSummary.fileErrors">, </ng-container>
+          <ng-container *ngIf="validationSummary.fileErrors">
+            <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Invalid File'})">
+              {{validationSummary.fileErrors}} file error(s)
+            </a>
+          </ng-container>
+          <ng-container *ngIf="(validationSummary.fileMetadataErrors || validationSummary.fileErrors) && validationSummary.missingFiles">, </ng-container>
+          <ng-container *ngIf="validationSummary.missingFiles">
+            <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Not Uploaded'})">
+              {{validationSummary.missingFiles}} file(s) missing
+            </a>
+          </ng-container>
         </li>
       </ul>
     </div>
