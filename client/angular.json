@@ -35,20 +35,6 @@
                 }
               ]
             },
-            "testing": {
-              "budgets": [
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
-                }
-              ],
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.testing.ts"
-                }
-              ]
-            },
             "dev": {
               "budgets": [
                 {
@@ -83,20 +69,6 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.env.ts"
-                }
-              ]
-            },
-            "integration": {
-              "budgets": [
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
-                }
-              ],
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.integration.ts"
                 }
               ]
             },
@@ -148,17 +120,11 @@
             "local": {
               "browserTarget": "ingest-ui:build:local"
             },
-            "testing": {
-              "browserTarget": "ingest-ui:build:testing"
-            },
             "env": {
               "browserTarget": "ingest-ui:build:env"
             },
             "dev": {
               "browserTarget": "ingest-ui:build:dev"
-            },
-            "integration": {
-              "browserTarget": "ingest-ui:build:integration"
             },
             "staging": {
               "browserTarget": "ingest-ui:build:staging"
