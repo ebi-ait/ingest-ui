@@ -22,7 +22,7 @@
                    [pageSize]="page['size']"
                    [pageIndex]="page['number']"
                    [pageSizeOptions]="pageSizeOptions"
-                   (page)="pageEvent = $event">
+                   (page)="onPageChange($event)">
     </mat-paginator>
   </ng-container>
 </ng-container>

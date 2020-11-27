@@ -22,12 +22,8 @@ export class MyProjectsComponent implements OnInit, OnDestroy {
   projectsDataSource: PaginatedDataSource<Project>;
   accountDataSource: SimpleDataSource<Account>;
 
-
   // MatPaginator Inputs
   pageSizeOptions: number[] = [5, 10, 20, 30];
-
-  // MatPaginator Output
-  pageEvent: PageEvent;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
@@ -64,6 +60,10 @@ export class MyProjectsComponent implements OnInit, OnDestroy {
       .subscribe((result: PagedData<Project>) => {
         this.projects = result.data;
       });
+  }
+
+  onPageChange({ pageIndex, pageSize }) {
+    this.projectsDataSource.fetch(pageIndex, pageSize);
   }
 
   ngOnDestroy() {

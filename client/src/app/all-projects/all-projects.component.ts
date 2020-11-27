@@ -30,9 +30,6 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
   // MatPaginator Inputs
   pageSizeOptions: number[] = [5, 10, 20, 30];
 
-  // MatPaginator Output
-  pageEvent: PageEvent;
-
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   searchText: string;
@@ -120,11 +117,16 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
       // TODO: Merge ListResult and PagedData and get rid of PagedData
       const pagedData: PagedData<MetadataDocument> = {data: [], page: undefined};
       pagedData.data = data._embedded ? data._embedded.projects : [];
+      pagedData.page = data.page;
       return pagedData;
     }));
   }
 
   onKeyEnter(value) {
     this.dataSource.filterByState(value);
+  }
+
+  onPageChange({ pageIndex, pageSize }) {
+    this.dataSource.fetch(pageIndex, pageSize);
   }
 }
