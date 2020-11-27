@@ -19,8 +19,8 @@ export class PaginatedDataSource<T> extends SimpleDataSource<PagedData<T>> {
     this.page$ = this.result$.pipe(pluck('page'));
   }
 
-  fetch(page: number): void {
-    this.setQueryData({ ...this.queryData.getValue(), page });
+  fetch(page: number, size = 20): void {
+    this.setQueryData({ ...this.queryData.getValue(), page, size });
   }
 
   sortBy(column = '', direction = ''): void {

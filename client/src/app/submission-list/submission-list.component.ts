@@ -3,10 +3,13 @@ import {IngestService} from '../shared/services/ingest.service';
 import {SubmissionEnvelope} from '../shared/models/submissionEnvelope';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AlertService} from '../shared/services/alert.service';
-import {takeWhile, tap} from 'rxjs/operators';
+import {map, takeWhile, tap} from 'rxjs/operators';
 import {LoaderService} from '../shared/services/loader.service';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
-import {Subscription, timer} from 'rxjs';
+import {Observable, Subscription, timer} from 'rxjs';
+import {PaginatedDataSource} from '../shared/data-sources/paginated-data-source';
+import {PagedData} from '../shared/models/page';
+import {MetadataDocument} from '../shared/models/metadata-document';
 
 @Component({
   selector: 'app-submission-list',
@@ -14,24 +17,16 @@ import {Subscription, timer} from 'rxjs';
   styleUrls: ['./submission-list.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class SubmissionListComponent implements OnInit, OnDestroy, AfterViewInit {
+export class SubmissionListComponent implements OnInit, OnDestroy {
   submissionProjects: Object;
-
   submissionEnvelopes: SubmissionEnvelope[];
-  pagination: Object;
   links: Object;
-  currentPageInfo: Object;
-  params: Object;
-  private interval: number;
-  private alive: boolean;
 
   private showAll;
-  pageFromUrl;
-  pollingSubscription: Subscription;
   // MatPaginator Inputs
   pageSizeOptions: number[] = [5, 10, 20, 30];
-  // MatPaginator Output
-  pageEvent: PageEvent;
+
+  dataSource: PaginatedDataSource<SubmissionEnvelope>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   upload = false;
@@ -42,45 +37,43 @@ export class SubmissionListComponent implements OnInit, OnDestroy, AfterViewInit
               private alertService: AlertService,
               private loaderService: LoaderService
   ) {
-    this.alive = true;
-    this.interval = 10000;
-    this.currentPageInfo = {
-      size: 20,
-      number: 0,
-      totalPages: 0,
-      totalElements: 0,
-      start: 0,
-      end: 0
-    };
-
     this.submissionProjects = {};
-
-    this.params = {'page': 0, 'size': 20, 'sort': 'submissionDate,desc'};
+    // TODO implement default sorting. Do in my-projects too
+    // this.params = {'page': 0, 'size': 20, 'sort': 'submissionDate,desc'};
 
     route.params.subscribe(() => {
       this.showAll = this.route.snapshot.paramMap.get('all');
-      this.resetPolling();
     });
   }
 
   ngOnInit() {
-    this.pollSubmissions();
+    this.dataSource = new PaginatedDataSource<SubmissionEnvelope>(this.getSubmissions.bind(this));
+    this.dataSource.connect().subscribe(data => {
+      const submissions = data.data;
+      this.submissionEnvelopes = submissions;
+      this.initSubmissionProjects(submissions);
+    });
   }
 
   ngOnDestroy() {
-    this.alive = false; // switches your IntervalObservable off
+    this.dataSource.disconnect();
   }
 
-  ngAfterViewInit() {
-    this.paginator.page
-      .pipe(
-        tap(() => this.loadSubmissions())
-      )
-      .subscribe();
-  }
-
-  loadSubmissions() {
-    this.resetPolling();
+  getSubmissions(params) {
+    return (this.showAll ? this.ingestService.getAllSubmissions(params) : this.ingestService.getUserSubmissions(params))
+        .pipe(
+            tap(result => {
+              // TODO Refactor to use ListResult instead of PagedData and then don't need this
+              this.links = result._links;
+            }),
+            map(result => {
+              // TODO Refactor to use ListResult instead of PagedData
+              const pagedData: PagedData<MetadataDocument> = {data: [], page: undefined};
+              pagedData.data = result._embedded ? result._embedded.submissionEnvelopes : [];
+              pagedData.page = result.page;
+              return pagedData;
+            })
+        );
   }
 
   getSubmitLink(submissionEnvelope) {
@@ -95,39 +88,6 @@ export class SubmissionListComponent implements OnInit, OnDestroy, AfterViewInit
 
   getSubmissionUuid(submissionEnvelope) {
     return submissionEnvelope['uuid']['uuid'];
-  }
-
-  resetPolling() {
-    this.stopPolling();
-    this.pollSubmissions();
-  }
-
-  stopPolling() {
-    if (this.pollingSubscription) {
-      this.pollingSubscription.unsubscribe();
-    }
-  }
-
-  pollSubmissions() {
-    this.pollingSubscription =
-      timer(0, this.interval)
-        .pipe(takeWhile(() => this.alive)) // only fires when component is alive
-        .subscribe(() => this.getSubmissions());
-  }
-
-  getSubmissions() {
-    this.params['page'] = this.paginator.pageIndex;
-    this.params['size'] = this.paginator.pageSize;
-
-    (this.showAll ? this.ingestService.getAllSubmissions(this.params) : this.ingestService.getUserSubmissions(this.params))
-      .subscribe(data => {
-        const submissions = data._embedded ? data._embedded.submissionEnvelopes : [];
-        this.submissionEnvelopes = submissions;
-        this.pagination = data.page;
-        this.links = data._links;
-        this.getCurrentPageInfo(this.pagination);
-        this.initSubmissionProjects(submissions);
-      });
   }
 
   initSubmissionProjects(submissions) {
@@ -164,14 +124,8 @@ export class SubmissionListComponent implements OnInit, OnDestroy, AfterViewInit
     return content ? project['content']['project_core']['project_short_name'] : '';
   }
 
-  getCurrentPageInfo(pagination) {
-    this.currentPageInfo['totalPages'] = pagination.totalPages;
-    this.currentPageInfo['totalElements'] = pagination.totalElements;
-    this.currentPageInfo['number'] = pagination.number;
-    return this.currentPageInfo;
-  }
-
   onDeleteSubmission(submissionEnvelope: SubmissionEnvelope) {
+    // TODO Check this works
     const submissionId: String = this.getSubmissionId(submissionEnvelope);
     const projectName = this.getProjectName(submissionEnvelope);
     const projectInfo = projectName ? `(${projectName})` : '';
@@ -186,7 +140,7 @@ export class SubmissionListComponent implements OnInit, OnDestroy, AfterViewInit
         () => {
           this.alertService.clear();
           this.alertService.success('', messageOnSuccess);
-          this.loadSubmissions();
+          this.dataSource.fetch(0);
           this.loaderService.display(false);
         },
         err => {
@@ -200,6 +154,10 @@ export class SubmissionListComponent implements OnInit, OnDestroy, AfterViewInit
 
   onSwitchUpload() {
     this.upload = !this.upload;
+  }
+
+  onPageChange({ pageIndex, pageSize }) {
+    this.dataSource.fetch(pageIndex, pageSize);
   }
 }
 
