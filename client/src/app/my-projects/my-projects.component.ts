@@ -32,7 +32,10 @@ export class MyProjectsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // protected against null user by the user-is-logged-in guard
     this.accountDataSource =  new SimpleDataSource(this.ingestService.getUserAccount.bind(this.ingestService));
-    this.projectsDataSource = new PaginatedDataSource(this.ingestService.getUserProjects.bind(this.ingestService));
+    this.projectsDataSource = new PaginatedDataSource(params => {
+      return this.ingestService.getUserProjects({ ...params, sort: `${params.sort.column},${params.sort.direction}`})
+    });
+    this.projectsDataSource.sortBy('updateDate', 'desc');
 
     this.accountDataSource.connect(true)
       .subscribe((data: Account) => {
