@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
-import {EMPTY, empty, Observable, of, timer} from 'rxjs';
-import {catchError, filter, map, mergeMap, takeWhile} from 'rxjs/operators';
+import {Observable, of} from 'rxjs';
+import {catchError, map, mergeMap} from 'rxjs/operators';
 import {IngestService} from '../shared/services/ingest.service';
 import {AlertService} from '../shared/services/alert.service';
 import {SubmissionEnvelope} from '../shared/models/submissionEnvelope';
@@ -10,7 +10,6 @@ import {LoaderService} from '../shared/services/loader.service';
 import {BrokerService} from '../shared/services/broker.service';
 import {Project} from '../shared/models/project';
 import {ArchiveEntity} from '../shared/models/archiveEntity';
-import {IngestDataSource} from '../shared/components/data-table/data-source/ingest-data-source';
 import {MetadataDataSource} from '../shared/data-sources/metadata-data-source';
 import {MetadataDocument} from '../shared/models/metadata-document';
 import {SubmissionSummary} from '../shared/models/submissionSummary';
