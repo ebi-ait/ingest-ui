@@ -6,7 +6,12 @@ import {IngestService} from '../shared/services/ingest.service';
 import {SubmissionEnvelope} from '../shared/models/submissionEnvelope';
 import {LoaderService} from '../shared/services/loader.service';
 import {Project} from '../shared/models/project';
-import {MetadataDataSource} from '../shared/components/data-table/data-source/metadata-data-source';
+import {MetadataDataSource} from '../shared/data-sources/metadata-data-source';
+import {MetadataDocument} from '../shared/models/metadata-document';
+import {map} from 'rxjs/operators';
+import {PagedData} from '../shared/models/page';
+import {Observable} from 'rxjs';
+import {ListResult} from '../shared/models/hateoas';
 
 @Component({
   selector: 'app-project',
@@ -28,10 +33,10 @@ export class ProjectComponent implements OnInit {
   selectedProjectTabKey: string;
   userIsWrangler: boolean;
 
-  biomaterialDataSource: MetadataDataSource;
-  protocolDataSource: MetadataDataSource;
-  processDataSource: MetadataDataSource;
-  fileDataSource: MetadataDataSource;
+  biomaterialsDataSource: MetadataDataSource<MetadataDocument>;
+  protocolsDataSource: MetadataDataSource<MetadataDocument>;
+  processesDataSource: MetadataDataSource<MetadataDocument>;
+  filesDataSource: MetadataDataSource<MetadataDocument>;
 
   constructor(
     private alertService: AlertService,
@@ -191,12 +196,27 @@ export class ProjectComponent implements OnInit {
     this.selectedProjectTabKey = tabKey;
   }
 
-  private initDataSources(projectData: Project) {
+  private fetchProjectEntities(projectData, entityType: string, params?): Observable<PagedData<any>> {
     const projectUrl = projectData._links['self']['href'];
+    return this.ingestService.get(`${projectUrl}/${entityType}`, {params}).pipe(
+        map(data => data as ListResult<any>),
+        map(data => {
+              // TODO always get the content for now
+              return {
+                data: (data && data._embedded ? data._embedded[entityType] : []).map(resource => resource['content']),
+                page: data.page
+              };
+            }
+        ));
+  }
+
+  private initDataSources(projectData: Project) {
     // TODO changes needed in Ingest Core so that these project entity endpoints can be in found in _links
-    this.biomaterialDataSource = new MetadataDataSource(this.ingestService, projectUrl + '/biomaterials', 'biomaterials');
-    this.protocolDataSource = new MetadataDataSource(this.ingestService, projectUrl + '/protocols', 'protocols');
-    this.processDataSource = new MetadataDataSource(this.ingestService, projectUrl + '/processes', 'processes');
-    this.fileDataSource = new MetadataDataSource(this.ingestService, projectUrl + '/files', 'files');
+    ['biomaterials', 'protocols', 'processes', 'files'].forEach(entityType => {
+      this[`${entityType}DataSource`] = new MetadataDataSource(
+          params => this.fetchProjectEntities(projectData, entityType, params),
+          entityType
+      );
+    });
   }
 }

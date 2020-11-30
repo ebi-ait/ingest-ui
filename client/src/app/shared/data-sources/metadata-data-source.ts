@@ -1,7 +1,7 @@
 import {Observable} from 'rxjs';
 import {pluck} from 'rxjs/operators';
-import {PaginatedEndpoint} from '../shared/models/paginatedEndpoint';
-import {PaginatedDataSource} from '../shared/data-sources/paginated-data-source';
+import {PaginatedEndpoint} from '../models/paginatedEndpoint';
+import {PaginatedDataSource} from './paginated-data-source';
 
 export class MetadataDataSource<T> extends PaginatedDataSource<T> {
   public resourceType: string;

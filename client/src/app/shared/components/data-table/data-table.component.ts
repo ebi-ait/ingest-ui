@@ -1,42 +1,43 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {Page} from '../../models/page';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FlattenService} from '../../services/flatten.service';
 import {PageEvent} from './ngx/page-event';
-import {DataSource} from './data-source/data-source';
+import {PaginatedDataSource} from '../../data-sources/paginated-data-source';
 
 @Component({
   selector: 'app-data-table',
   templateUrl: './data-table.component.html',
   styleUrls: ['./data-table.component.scss']
 })
-export class DataTableComponent implements OnInit {
+export class DataTableComponent implements OnInit, OnDestroy {
   @ViewChild('datatable') table: any;
 
-  @Input() dataSource: DataSource<any>;
-  @Input() rows = [];
-  @Input() columns: string[];
+  @Input() dataSource: PaginatedDataSource<any>;
   @Input() idColumn: string;
   @Input() flatten = false;
-
-  page: Page = {
-    number: 0,
-    size: 0,
-    sort: '',
-    totalElements: 0,
-    totalPages: 0
-  };
+  @Input() poll = false;
+  @Input() columns: string[];
 
   isPaginated = true;
-  currentPageInfo: {};
-  isLoading = false;
+  rows: any[];
+  initialLoading: boolean;
+
 
   constructor(private flattenService: FlattenService) {
-    this.page.number = 0;
-    this.page.size = 20;
+
   }
 
   ngOnInit() {
+    this.initialLoading = true;
     this.setPage({count: 0, limit: 0, pageSize: 0, offset: 0});
+
+    this.dataSource.connect(this.poll).subscribe(data => {
+      this.rows = this.flatten ? data.data.map(row => this.flattenService.flatten(row)) : data.data;
+      this.initialLoading = false;
+    });
+  }
+
+  ngOnDestroy() {
+    this.dataSource.disconnect();
   }
 
   getAllColumns(rows) {
@@ -60,8 +61,8 @@ export class DataTableComponent implements OnInit {
   }
 
   setPage(pageEvent: PageEvent) {
-    this.currentPageInfo = pageEvent;
-    this.fetchData({page: pageEvent.offset});
+    console.log("setting")
+    this.dataSource.fetch(pageEvent.offset, pageEvent.pageSize);
   }
 
   getRowId(row) {
@@ -76,22 +77,5 @@ export class DataTableComponent implements OnInit {
       return false;
     }
     return true;
-  }
-
-  private fetchData(params) {
-    if (this.dataSource) {
-      this.isLoading = true;
-      return this.dataSource.fetchData(params).subscribe(
-        data => {
-          this.isLoading = false;
-          this.rows = this.flatten ? data.data.map(row => this.flattenService.flatten(row)) : data.data;
-          this.page = data.page;
-        }
-      );
-    } else {
-      this.rows = this.flatten ? this.rows.map(this.flattenService.flatten) : this.rows;
-      this.page.size = 20;
-      this.page.totalElements = this.rows.length;
-    }
   }
 }

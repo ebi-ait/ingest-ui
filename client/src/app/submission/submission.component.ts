@@ -11,10 +11,12 @@ import {BrokerService} from '../shared/services/broker.service';
 import {Project} from '../shared/models/project';
 import {ArchiveEntity} from '../shared/models/archiveEntity';
 import {IngestDataSource} from '../shared/components/data-table/data-source/ingest-data-source';
-import {MetadataDataSource} from './metadata-data-source';
+import {MetadataDataSource} from '../shared/data-sources/metadata-data-source';
 import {MetadataDocument} from '../shared/models/metadata-document';
 import {SubmissionSummary} from '../shared/models/submissionSummary';
 import {SimpleDataSource} from '../shared/data-sources/simple-data-source';
+import {PaginatedDataSource} from '../shared/data-sources/paginated-data-source';
+import {ListResult} from '../shared/models/hateoas';
 
 @Component({
   selector: 'app-submission',
@@ -54,8 +56,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   protocolsDataSource: MetadataDataSource<MetadataDocument>;
   bundleManifestsDataSource: MetadataDataSource<MetadataDocument>;
   filesDataSource: MetadataDataSource<MetadataDocument>;
-  // TODO: Use new data source here
-  archiveEntityDataSource: IngestDataSource<ArchiveEntity>;
+  archiveEntityDataSource: PaginatedDataSource<ArchiveEntity>;
 
   private MAX_ERRORS = 1;
 
@@ -307,7 +308,17 @@ export class SubmissionComponent implements OnInit, OnDestroy {
         archiveSubmission => {
           if (archiveSubmission) {
             const entitiesUrl = archiveSubmission['_links']['entities']['href'];
-            this.archiveEntityDataSource = new IngestDataSource<ArchiveEntity>(this.ingestService, entitiesUrl, 'archiveEntities');
+            this.archiveEntityDataSource = new PaginatedDataSource<ArchiveEntity>(
+                params => this.ingestService.get(entitiesUrl, {params}).pipe(
+                    map(data => data as ListResult<any>),
+                    map(data => {
+                      return {
+                        data: data && data._embedded ? data._embedded['archiveEntities'] : [],
+                        page: data.page
+                      };
+                    })
+                )
+            );
           }
         }
       );

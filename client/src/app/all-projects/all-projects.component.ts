@@ -7,7 +7,7 @@ import {map, takeWhile, tap} from 'rxjs/operators';
 import {Criteria} from '../shared/models/criteria';
 import {ListResult} from '../shared/models/hateoas';
 import {PaginatedDataSource} from '../shared/data-sources/paginated-data-source';
-import {MetadataDataSource} from '../submission/metadata-data-source';
+import {MetadataDataSource} from '../shared/data-sources/metadata-data-source';
 import {PagedData} from '../shared/models/page';
 import {MetadataDocument} from '../shared/models/metadata-document';
 
