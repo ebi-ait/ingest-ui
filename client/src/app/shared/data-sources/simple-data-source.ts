@@ -1,7 +1,7 @@
 import {DataSource} from '../models/data-source';
-import {BehaviorSubject, Observable, Subject, timer} from 'rxjs';
+import {BehaviorSubject, Observable, Subject, throwError, timer} from 'rxjs';
 import {Endpoint, QueryData} from '../models/paginatedEndpoint';
-import {switchMap, takeWhile, tap} from 'rxjs/operators';
+import {catchError, retry, switchMap, takeWhile, tap} from 'rxjs/operators';
 
 export class SimpleDataSource<T> implements  DataSource<T> {
   protected queryData: BehaviorSubject<QueryData>;
@@ -12,12 +12,15 @@ export class SimpleDataSource<T> implements  DataSource<T> {
   private readonly result: Subject<T>;
   public result$: Observable<T>;
   private isPolling: boolean;
+  private maxRetries = 2;
+  private retryAttempts: number;
 
   constructor(protected endpoint: Endpoint<T>) {
     this.endpoint = endpoint;
     this.queryData = new BehaviorSubject<QueryData>({});
     this.result = new Subject();
     this.result$ = this.result.asObservable();
+    this.retryAttempts = 0;
   }
 
   /**
@@ -61,7 +64,16 @@ export class SimpleDataSource<T> implements  DataSource<T> {
         switchMap(() => {
           return observable$;
         }),
-        tap(() => this.polling.next(false))
+        tap(() => this.polling.next(false)),
+        catchError(err => {
+          this.retryAttempts++;
+          if (this.retryAttempts > this.maxRetries) {
+            console.warn('Maximum retries exceeded, disconnecting from data source.');
+            this.disconnect();
+          }
+          return throwError(err);
+        }),
+        retry(this.maxRetries)
       ).subscribe(this.result);
     } else {
       observable$.subscribe(this.result);
