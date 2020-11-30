@@ -68,14 +68,14 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
   }
 
   getProjects(params) {
-    // TODO: Check changing page size works
-    // this.params['page'] = this.paginator.pageIndex;
-    // this.params['size'] = this.paginator.pageSize;
-
+    const urlParams = {
+      ...params,
+      sort: `${params.sort.column},${params.sort.direction}`
+    };
     if (params.filterState) {
-      return this.searchProjects(params);
+      return this.searchProjects(urlParams);
     }
-    return this.getDefaultProjects(params);
+    return this.getDefaultProjects(urlParams);
   }
 
   searchProjects(params) {

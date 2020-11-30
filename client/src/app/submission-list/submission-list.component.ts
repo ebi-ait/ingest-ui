@@ -59,7 +59,11 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
   }
 
   getSubmissions(params) {
-    return (this.showAll ? this.ingestService.getAllSubmissions(params) : this.ingestService.getUserSubmissions(params))
+    const urlParams = {
+      ...params,
+      sort: `${params.sort.column},${params.sort.direction}`
+    };
+    return (this.showAll ? this.ingestService.getAllSubmissions(urlParams) : this.ingestService.getUserSubmissions(urlParams))
         .pipe(
             tap(result => {
               // TODO Refactor to use ListResult instead of PagedData and then don't need this
