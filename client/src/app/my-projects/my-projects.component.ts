@@ -37,7 +37,7 @@ export class MyProjectsComponent implements OnInit, OnDestroy {
     });
     this.projectsDataSource.sortBy('updateDate', 'desc');
 
-    this.accountDataSource.connect(true)
+    this.accountDataSource.connect()
       .subscribe((data: Account) => {
         this.isWrangler = data.isWrangler();
         if (this.isWrangler) {
