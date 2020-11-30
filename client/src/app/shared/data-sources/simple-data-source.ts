@@ -1,5 +1,5 @@
 import {DataSource} from '../models/data-source';
-import {BehaviorSubject, Observable, Subject, throwError, timer} from 'rxjs';
+import {BehaviorSubject, Observable, ReplaySubject, Subject, throwError, timer} from 'rxjs';
 import {Endpoint, QueryData} from '../models/paginatedEndpoint';
 import {catchError, retry, switchMap, takeWhile, tap} from 'rxjs/operators';
 
@@ -9,7 +9,7 @@ export class SimpleDataSource<T> implements  DataSource<T> {
   public loading$ = this.loading.asObservable();
   private polling = new Subject<boolean>();
   public polling$ = this.polling.asObservable();
-  private readonly result: Subject<T>;
+  private readonly result: ReplaySubject<T>;
   public result$: Observable<T>;
   private isPolling: boolean;
   private maxRetries = 2;
@@ -18,7 +18,7 @@ export class SimpleDataSource<T> implements  DataSource<T> {
   constructor(protected endpoint: Endpoint<T>) {
     this.endpoint = endpoint;
     this.queryData = new BehaviorSubject<QueryData>({});
-    this.result = new Subject();
+    this.result = new ReplaySubject<T>(1);
     this.result$ = this.result.asObservable();
     this.retryAttempts = 0;
   }
