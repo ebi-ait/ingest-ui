@@ -317,9 +317,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     const submissionTypes = ['biomaterials', 'processes', 'protocols', 'files', 'bundleManifests'];
     submissionTypes.forEach(type => {
       if (this[`${type}DataSource`]) {
-        // Ensure this is only called once.
-        // datasources should not be reinistatiated
-        // TODO: sort out other polling here and remove this check
         return;
       }
       this[`${type}DataSource`] = new MetadataDataSource<any>(
