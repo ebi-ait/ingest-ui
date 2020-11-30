@@ -310,6 +310,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
             const entitiesUrl = archiveSubmission['_links']['entities']['href'];
             this.archiveEntityDataSource = new PaginatedDataSource<ArchiveEntity>(
                 params => this.ingestService.get(entitiesUrl, {params}).pipe(
+                    // TODO: This gets done a lot, refactor
                     map(data => data as ListResult<any>),
                     map(data => {
                       return {
