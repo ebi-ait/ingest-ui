@@ -47,7 +47,7 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.dataSource = new PaginatedDataSource<SubmissionEnvelope>(this.getSubmissions.bind(this));
     this.dataSource.sortBy('submissionDate', 'desc');
-    this.dataSource.connect().subscribe(data => {
+    this.dataSource.connect(true).subscribe(data => {
       const submissions = data.data;
       this.submissionEnvelopes = submissions;
       this.initSubmissionProjects(submissions);
