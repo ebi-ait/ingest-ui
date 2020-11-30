@@ -17,6 +17,7 @@ sed -i "s#<%= BROKER_API_URL %>#$BROKER_API_URL#g" /usr/share/nginx/html/main-*.
 sed -i "s#<%= SCHEMA_API_URL %>#$SCHEMA_API_URL#g" /usr/share/nginx/html/main-*.js
 sed -i "s#<%= DSS_API_URL %>#$DSS_API_URL#g" /usr/share/nginx/html/main-*.js
 sed -i "s#<%= DOMAIN_WHITELIST %>#$DOMAIN_WHITELIST#g" /usr/share/nginx/html/main-*.js
+sed -i "s#<%= SECURED_ENDPOINTS %>#$SECURED_ENDPOINTS#g" /usr/share/nginx/html/main-*.js
 sed -i "s#<%= AAI_CLIENT_ID %>#$AAI_CLIENT_ID#g" /usr/share/nginx/html/main-*.js
 sed -i "s#<%= AAI_AUTHORITY %>#$AAI_AUTHORITY#g" /usr/share/nginx/html/main-*.js
 sed -i "s#<%= OLS_URL %>#$OLS_URL#g" /usr/share/nginx/html/main-*.js
