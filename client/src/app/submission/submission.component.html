@@ -1,7 +1,7 @@
-<div fxLayout="column" *ngIf="isSubmissionLoading()">
+<div fxLayout="column" *ngIf="isLoading">
   Loading...
 </div>
-<div fxLayout="column" *ngIf="!isSubmissionLoading()">
+<div fxLayout="column" *ngIf="!isLoading">
   <div fxLayout="row" fxLayoutAlign="space-between center">
     <h2 class="vf-text vf-text-heading--2">
       Submission {{projectShortName ? ' - ' + projectShortName : ''}}
