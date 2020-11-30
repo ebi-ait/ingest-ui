@@ -61,7 +61,6 @@ export class DataTableComponent implements OnInit, OnDestroy {
   }
 
   setPage(pageEvent: PageEvent) {
-    console.log("setting")
     this.dataSource.fetch(pageEvent.offset, pageEvent.pageSize);
   }
 
