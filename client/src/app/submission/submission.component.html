@@ -94,7 +94,7 @@
   </div>
   <br/>
   <br/>
-  <mat-tab-group *ngIf="submissionEnvelopeId" [selectedIndex]="selectedIndex">
+  <mat-tab-group *ngIf="submissionEnvelopeId" [(selectedIndex)]="selectedIndex">
     <mat-tab label="Biomaterials">
       <ng-template matTabContent>
         <app-metadata-list [dataSource]="biomaterialsDataSource"
