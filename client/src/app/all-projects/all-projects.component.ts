@@ -38,12 +38,11 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
   dataSource: MetadataDataSource<Project>;
 
   constructor(private ingestService: IngestService) {
-    // TODO implement default sorting. Do in my-projects too
-    // this.params = {'page': 0, 'size': 20, 'sort': 'updateDate,desc'};
   }
 
   ngOnInit() {
     this.dataSource = new MetadataDataSource<Project>(this.getProjects.bind(this), 'projects');
+    this.dataSource.sortBy('updateDate', 'desc');
     this.dataSource.connect(true).subscribe({
       next: data => {
         this.projects = data.data;

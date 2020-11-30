@@ -38,8 +38,6 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
               private loaderService: LoaderService
   ) {
     this.submissionProjects = {};
-    // TODO implement default sorting. Do in my-projects too
-    // this.params = {'page': 0, 'size': 20, 'sort': 'submissionDate,desc'};
 
     route.params.subscribe(() => {
       this.showAll = this.route.snapshot.paramMap.get('all');
@@ -48,6 +46,7 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.dataSource = new PaginatedDataSource<SubmissionEnvelope>(this.getSubmissions.bind(this));
+    this.dataSource.sortBy('submissionDate', 'desc');
     this.dataSource.connect().subscribe(data => {
       const submissions = data.data;
       this.submissionEnvelopes = submissions;
