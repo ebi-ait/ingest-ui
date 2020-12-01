@@ -1,5 +1,8 @@
-<ng-container *ngIf="dataSource || (rows && (rows.length > 0))">
+<p *ngIf="!rows">Loading...</p>
+
+<ng-container *ngIf="dataSource.page$ | async as page">
   <ngx-datatable #datatable
+                 *ngIf="rows && (rows.length > 0)"
                  class="material expandable"
                  [columnMode]="'force'"
                  [rows]="rows"
@@ -9,9 +12,10 @@
                  [rowIdentity]="getRowId"
                  [scrollbarH]="true"
                  [count]="page.totalElements"
+                 [offset]="dataSource.requestedOffset$ | async"
                  [limit]="page.size"
-                 [loadingIndicator]="isLoading"
-                 [externalPaging]="isPaginated"
+                 [loadingIndicator]="(dataSource.loading$ | async) && !(dataSource.polling$ | async)"
+                 [externalPaging]="page"
                  (page)='setPage($event)'>
 
     <ng-container *ngFor="let column of getAllColumns(rows)">
@@ -29,4 +33,4 @@
 
   </ngx-datatable>
 </ng-container>
-<p style="text-align: center" *ngIf="!dataSource && rows.length == 0">There's no data</p>
+<p style="text-align: center" *ngIf="rows && rows.length == 0">There's no data</p>

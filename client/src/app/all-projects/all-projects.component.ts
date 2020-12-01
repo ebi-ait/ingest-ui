@@ -6,13 +6,17 @@ import {timer} from 'rxjs';
 import {map, takeWhile, tap} from 'rxjs/operators';
 import {Criteria} from '../shared/models/criteria';
 import {ListResult} from '../shared/models/hateoas';
+import {PaginatedDataSource} from '../shared/data-sources/paginated-data-source';
+import {MetadataDataSource} from '../shared/data-sources/metadata-data-source';
+import {PagedData} from '../shared/models/page';
+import {MetadataDocument} from '../shared/models/metadata-document';
 
 @Component({
   selector: 'app-all-projects',
   templateUrl: './all-projects.component.html',
   styleUrls: ['./all-projects.component.css']
 })
-export class AllProjectsComponent implements OnInit, OnDestroy, AfterViewInit {
+export class AllProjectsComponent implements OnInit, OnDestroy {
   projects: Project[];
   columns: ProjectColumn[] = [
     ProjectColumn.api_link,
@@ -22,41 +26,31 @@ export class AllProjectsComponent implements OnInit, OnDestroy, AfterViewInit {
     ProjectColumn.last_updated
   ];
   isWrangler: Boolean = true;
-  alive: boolean;
-  interval: number;
-
-  pagination: Object;
-  params: Object;
-  currentPageInfo: Object;
 
   // MatPaginator Inputs
   pageSizeOptions: number[] = [5, 10, 20, 30];
-
-  // MatPaginator Output
-  pageEvent: PageEvent;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   searchText: string;
   value: any;
 
-  constructor(private ingestService: IngestService) {
-    this.alive = true;
-    this.interval = 4000;
-    this.currentPageInfo = {
-      size: 20,
-      number: 0,
-      totalPages: 0,
-      totalElements: 0,
-      start: 0,
-      end: 0
-    };
+  dataSource: MetadataDataSource<Project>;
 
-    this.params = {'page': 0, 'size': 20, 'sort': 'updateDate,desc'};
+  constructor(private ingestService: IngestService) {
   }
 
   ngOnInit() {
-    this.pollProjects();
+    this.dataSource = new MetadataDataSource<Project>(this.getProjects.bind(this), 'projects');
+    this.dataSource.sortBy('updateDate', 'desc');
+    this.dataSource.connect(true).subscribe({
+      next: data => {
+        this.projects = data.data;
+      },
+      error: err => {
+        console.error('err', err);
+      }
+    });
   }
 
   getProjectId(project) {
@@ -70,10 +64,21 @@ export class AllProjectsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
-    this.alive = false; // switches your IntervalObservable off
+    this.dataSource.disconnect();
   }
 
-  searchProjects(text: string, params) {
+  getProjects(params) {
+    const urlParams = {
+      ...params,
+      sort: `${params.sort.column},${params.sort.direction}`
+    };
+    if (params.filterState) {
+      return this.searchProjects(urlParams);
+    }
+    return this.getDefaultProjects(urlParams);
+  }
+
+  searchProjects(params) {
     const query = [];
     const fields = [
       'content.project_core.project_description',
@@ -85,13 +90,15 @@ export class AllProjectsComponent implements OnInit, OnDestroy, AfterViewInit {
       const criteria = {
         'field': field,
         'operator': 'REGEX',
-        'value': text.replace(/\s+/g, '\\s+')
+        'value': params.filterState.replace(/\s+/g, '\\s+')
       };
       query.push(criteria);
     }
 
+    delete params.filterState;
+
     params['operator'] = 'or';
-    this.queryProjects(query, params);
+    return this.queryProjects(query, params);
   }
 
   getDefaultProjects(params) {
@@ -101,62 +108,24 @@ export class AllProjectsComponent implements OnInit, OnDestroy, AfterViewInit {
       value: false
     } as Criteria;
     params['operator'] = 'and';
-    this.queryProjects([criteria], params);
+    return this.queryProjects([criteria], params);
   }
 
   private queryProjects(query: Criteria[], params) {
-    this.ingestService.queryProjects(query, params)
-      .pipe(map(data => data as ListResult<Project>))
-      .subscribe({
-        next: data => {
-          this.projects = data._embedded ? data._embedded.projects : [];
-          this.pagination = data.page;
-          this.getCurrentPageInfo(this.pagination);
-        },
-        error: err => {
-          console.error('err', err);
-        }
-      });
+    return this.ingestService.queryProjects(query, params).pipe(map(data => {
+      // TODO: Merge ListResult and PagedData and get rid of PagedData
+      const pagedData: PagedData<MetadataDocument> = {data: [], page: undefined};
+      pagedData.data = data._embedded ? data._embedded.projects : [];
+      pagedData.page = data.page;
+      return pagedData;
+    }));
   }
-
-  pollProjects() {
-    timer(0, this.interval)
-      .pipe(takeWhile(() => this.alive)) // only fires when component is alive
-      .subscribe(() => this.getProjects());
-  }
-
-  getProjects() {
-    this.params['page'] = this.paginator.pageIndex;
-    this.params['size'] = this.paginator.pageSize;
-
-    if (this.searchText) {
-      this.searchProjects(this.searchText, this.params);
-    } else {
-      this.getDefaultProjects(this.params);
-    }
-
-  }
-
-  // TODO Create a component which supports dynamic(polled data) datatable loading and pagination
-  ngAfterViewInit() {
-    this.paginator.page
-      .pipe(
-        tap(() => this.getProjects())
-      )
-      .subscribe();
-  }
-
-  getCurrentPageInfo(pagination) {
-    this.currentPageInfo['totalPages'] = pagination.totalPages;
-    this.currentPageInfo['totalElements'] = pagination.totalElements;
-    this.currentPageInfo['number'] = pagination.number;
-    return this.currentPageInfo;
-  }
-
 
   onKeyEnter(value) {
-    this.searchText = value;
-    this.paginator.pageIndex = 0;
-    this.getProjects();
+    this.dataSource.filterByState(value);
+  }
+
+  onPageChange({ pageIndex, pageSize }) {
+    this.dataSource.fetch(pageIndex, pageSize);
   }
 }

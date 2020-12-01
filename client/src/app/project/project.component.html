@@ -86,21 +86,20 @@
       <div class="vf-u-margin__top--xxl">
         <app-vf-tabs>
           <app-vf-tab title="Biomaterials">
-            <app-data-table [dataSource]="biomaterialDataSource" [flatten]="true"></app-data-table>
+            <app-data-table [dataSource]="biomaterialsDataSource" [flatten]="true"></app-data-table>
           </app-vf-tab>
           <app-vf-tab title="Processes">
-            <app-data-table [dataSource]="processDataSource" [flatten]="true"></app-data-table>
+            <app-data-table [dataSource]="processesDataSource" [flatten]="true"></app-data-table>
           </app-vf-tab>
           <app-vf-tab title="Protocols">
-            <app-data-table [dataSource]="protocolDataSource" [flatten]="true"></app-data-table>
+            <app-data-table [dataSource]="protocolsDataSource" [flatten]="true"></app-data-table>
           </app-vf-tab>
         </app-vf-tabs>
       </div>
     </mat-tab>
     <mat-tab label="5. View Data">
       <div class="vf-u-margin__top--xxl">
-        <app-data-table [dataSource]="fileDataSource" [flatten]="true">
-        </app-data-table>
+        <app-data-table [dataSource]="filesDataSource" [flatten]="true"></app-data-table>
       </div>
     </mat-tab>
   </mat-tab-group>

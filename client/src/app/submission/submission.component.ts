@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
-import {Observable, timer} from 'rxjs';
-import {filter, takeWhile} from 'rxjs/operators';
+import {Observable, of} from 'rxjs';
+import {catchError, map, mergeMap} from 'rxjs/operators';
 import {IngestService} from '../shared/services/ingest.service';
 import {AlertService} from '../shared/services/alert.service';
 import {SubmissionEnvelope} from '../shared/models/submissionEnvelope';
@@ -10,10 +10,12 @@ import {LoaderService} from '../shared/services/loader.service';
 import {BrokerService} from '../shared/services/broker.service';
 import {Project} from '../shared/models/project';
 import {ArchiveEntity} from '../shared/models/archiveEntity';
-import {IngestDataSource} from '../shared/components/data-table/data-source/ingest-data-source';
-import {MetadataDataSource} from './metadata-data-source';
+import {MetadataDataSource} from '../shared/data-sources/metadata-data-source';
 import {MetadataDocument} from '../shared/models/metadata-document';
 import {SubmissionSummary} from '../shared/models/submissionSummary';
+import {SimpleDataSource} from '../shared/data-sources/simple-data-source';
+import {PaginatedDataSource} from '../shared/data-sources/paginated-data-source';
+import {ListResult} from '../shared/models/hateoas';
 
 @Component({
   selector: 'app-submission',
@@ -43,17 +45,18 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   submissionErrors: Object[];
   selectedIndex: any = 0;
   validationSummary: SubmissionSummary;
+  isLoading: boolean;
+
+  submissionDataSource: SimpleDataSource<SubmissionEnvelope>;
+  projectDataSource: SimpleDataSource<Project>;
 
   biomaterialsDataSource: MetadataDataSource<MetadataDocument>;
   processesDataSource: MetadataDataSource<MetadataDocument>;
   protocolsDataSource: MetadataDataSource<MetadataDocument>;
   bundleManifestsDataSource: MetadataDataSource<MetadataDocument>;
   filesDataSource: MetadataDataSource<MetadataDocument>;
+  archiveEntityDataSource: PaginatedDataSource<ArchiveEntity>;
 
-  archiveEntityDataSource: IngestDataSource<ArchiveEntity>;
-
-  private alive: boolean;
-  private pollInterval: number;
   private MAX_ERRORS = 1;
 
   constructor(
@@ -64,8 +67,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     private router: Router,
     private loaderService: LoaderService
   ) {
-    this.pollInterval = 4000; // 4s
-    this.alive = true;
   }
 
   private static getSubmissionId(submissionEnvelope) {
@@ -74,38 +75,138 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.isLoading = true;
     this.route.queryParamMap.subscribe(queryParams => {
       this.submissionEnvelopeUuid = queryParams.get('uuid');
       this.submissionEnvelopeId = queryParams.get('id');
       this.projectUuid = queryParams.get('project');
-    });
 
-    this.pollSubmissionEnvelope();
-    this.pollEntities();
+      this.connectSubmissionEnvelope();
+    });
 
     this.initArchiveEntityDataSource(this.submissionEnvelopeUuid);
   }
 
+  connectSubmissionEnvelope() {
+    this.submissionDataSource = new SimpleDataSource<SubmissionEnvelope>(this.submissionEnvelopeEndpoint.bind(this));
+    this.submissionDataSource.connect(true, 15000).subscribe(submissionEnvelope => {
+      // NOTE: this should be broken up and/or just use dataSource attributes directly in template but
+      // we're getting rid of submissions anyway.
+      this.submissionEnvelope = submissionEnvelope;
+      this.submissionEnvelopeId = SubmissionComponent.getSubmissionId(submissionEnvelope);
+      this.isValid = this.checkIfValid(submissionEnvelope);
+      this.submissionState = submissionEnvelope['submissionState'];
+      this.isSubmitted = this.isStateSubmitted(submissionEnvelope.submissionState);
+      this.submitLink = this.getLink(submissionEnvelope, 'submit');
+      this.exportLink = this.getLink(submissionEnvelope, 'export');
+      this.cleanupLink = this.getLink(submissionEnvelope, 'cleanup');
+      this.url = this.getLink(submissionEnvelope, 'self');
+
+      this.submissionErrors = submissionEnvelope['errors'];
+      if (this.submissionErrors.length > 0) {
+        this.alertService.clear();
+      }
+      if (this.submissionErrors.length > this.MAX_ERRORS) {
+        const link = this.submissionEnvelope._links.submissionEnvelopeErrors.href;
+        const message = `Cannot show more than ${this.MAX_ERRORS} errors.`;
+        this.alertService.error(
+            `${this.submissionErrors.length - this.MAX_ERRORS} Other Errors`,
+            `${message} <a href="${link}">View all ${this.submissionErrors.length} errors.</a>`,
+            false,
+            false);
+      }
+      let errors_displayed = 0;
+      for (const err of this.submissionErrors) {
+        if (errors_displayed >= this.MAX_ERRORS) {
+          break;
+        }
+        this.alertService.error(err['title'], err['detail'], false, false);
+        errors_displayed++;
+      }
+
+      this.manifest = submissionEnvelope['manifest'];
+      const actualLinks = this.manifest['actualLinks'];
+      const expectedLinks = this.manifest['expectedLinks'];
+      if (!expectedLinks || (actualLinks === expectedLinks)) {
+        this.isLinkingDone = true;
+      }
+
+      this.validationSummary = submissionEnvelope['summary'];
+
+      this.initDataSources();
+      this.connectProject(this.submissionEnvelopeId);
+    });
+  }
+
+  private submissionEnvelopeEndpoint() {
+    if (!this.submissionEnvelopeId && !this.submissionEnvelopeUuid) {
+      throw new Error('No ID or UUID for submissionEnvelope.');
+    }
+
+    const submissionEnvelope$ = this.submissionEnvelopeId ?
+            this.ingestService.getSubmission(this.submissionEnvelopeId) :
+            this.ingestService.getSubmissionByUuid(this.submissionEnvelopeUuid);
+
+    return submissionEnvelope$.pipe(
+        mergeMap(
+            this.submissionErrorsEndpoint.bind(this),
+            (submissionEnvelope, errors) => ({ ...submissionEnvelope, errors })
+        ),
+        mergeMap(
+            this.submissionManifestEndpoint.bind(this),
+            (submissionEnvelope, manifest) => ({ ...submissionEnvelope, manifest })
+        ),
+        mergeMap(
+            submissionEnvelope => this.ingestService.getSubmissionSummary(SubmissionComponent.getSubmissionId(submissionEnvelope)),
+            (submissionEnvelope, summary) => ({ ...submissionEnvelope, summary })
+        )
+    );
+  }
+
+  private submissionErrorsEndpoint(submissionEnvelope) {
+    return this.ingestService.get(submissionEnvelope['_links']['submissionEnvelopeErrors']['href']).pipe(
+        map(data => {
+          return data['_embedded'] ? data['_embedded']['submissionErrors'] : [];
+        })
+    );
+  }
+
+  private submissionManifestEndpoint(submissionEnvelope) {
+    return this.ingestService.get(submissionEnvelope['_links']['submissionManifest']['href']).pipe(
+        catchError(err => {
+          if (err instanceof HttpErrorResponse && err.status === 404) {
+            // do nothing, the endpoint throws error when no submission manifest is found
+            this.isLinkingDone = true;
+          } else {
+            console.error(err);
+          }
+          // do nothing
+          return of([]);
+        })
+    );
+  }
+
+  private connectProject(submissionId) {
+    this.projectDataSource = new SimpleDataSource<Project>(() => this.ingestService.getSubmissionProject(submissionId));
+    this.projectDataSource.connect(true, 15000).subscribe(project => {
+      this.setProject(project);
+      // Finished loading once project is retrieved.
+      this.isLoading = false;
+    });
+  }
+
   ngOnDestroy() {
-    this.alive = false; // switches your IntervalObservable off
+    this.submissionDataSource.disconnect();
+    this.projectDataSource.disconnect();
+    this.protocolsDataSource.disconnect();
+    this.processesDataSource.disconnect();
+    this.biomaterialsDataSource.disconnect();
+    this.filesDataSource.disconnect();
   }
 
   checkIfValid(submission) {
     const status = submission['submissionState'];
     return (status === 'Valid' || this.isStateSubmitted(status));
-  }
-
-  getSubmissionProject(id) {
-    this.project$ = this.ingestService.getSubmissionProject(id);
-    this.project$.subscribe(project => {
-      this.setProject(project);
-    });
-  }
-
-  getValidationSummary() {
-    this.ingestService.getSubmissionSummary(this.submissionEnvelopeId).subscribe(summary => {
-      this.validationSummary = summary;
-    });
   }
 
   setProject(project) {
@@ -193,94 +294,11 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     }
   }
 
-  isSubmissionLoading() {
-    return !(this.project$ && this.submissionEnvelope$ && (this.manifest || this.isLinkingDone));
-  }
-
   getContributors(project: Project) {
     let contributors = project && project.content && project.content['contributors'];
     contributors = contributors ? project.content['contributors'] : [];
     const correspondents = contributors.filter(contributor => contributor['corresponding_contributor'] === true);
     return correspondents.map(c => c['name']).join(' | ');
-  }
-
-  private pollSubmissionEnvelope() {
-    timer(0, this.pollInterval)
-      .pipe(takeWhile(() => this.alive)) // only fires when component is alive
-      .subscribe(() => {
-        this.getSubmissionEnvelope();
-        if (this.submissionEnvelope) {
-          this.getSubmissionErrors();
-          this.getSubmissionManifest();
-          this.getValidationSummary();
-
-          // TODO: move this polling into data source
-          this.initDataSources();
-        }
-      });
-  }
-
-  private pollEntities() {
-    timer(500, this.pollInterval)
-      .pipe(
-        takeWhile(() => this.alive), // only fires when component is alive);
-        filter(() => this.submissionEnvelopeId && this.submissionEnvelopeId.length > 0)
-      ).subscribe(() => this.getSubmissionProject(this.submissionEnvelopeId));
-  }
-
-  private getSubmissionEnvelope() {
-    if (this.submissionEnvelopeId) {
-      this.submissionEnvelope$ = this.ingestService.getSubmission(this.submissionEnvelopeId);
-    } else if (this.submissionEnvelopeUuid) {
-      this.submissionEnvelope$ = this.ingestService.getSubmissionByUuid(this.submissionEnvelopeUuid);
-    } else {
-      this.submissionEnvelope$ = null;
-    }
-
-    if (this.submissionEnvelope$) {
-      this.submissionEnvelope$
-        .subscribe(data => {
-          this.submissionEnvelope = data;
-          this.submissionEnvelopeId = SubmissionComponent.getSubmissionId(data);
-          this.isValid = this.checkIfValid(data);
-          this.submissionState = data['submissionState'];
-          this.isSubmitted = this.isStateSubmitted(data.submissionState);
-          this.submitLink = this.getLink(data, 'submit');
-          this.exportLink = this.getLink(data, 'export');
-          this.cleanupLink = this.getLink(data, 'cleanup');
-          this.url = this.getLink(data, 'self');
-        });
-    }
-  }
-
-  private getSubmissionErrors() {
-    this.ingestService.get(this.submissionEnvelope['_links']['submissionEnvelopeErrors']['href'])
-      .subscribe(
-        data => {
-          this.submissionErrors = data['_embedded'] ? data['_embedded']['submissionErrors'] : [];
-          if (this.submissionErrors.length > 0) {
-            this.alertService.clear();
-          }
-
-          if (this.submissionErrors.length > this.MAX_ERRORS) {
-            const link = this.submissionEnvelope._links.submissionEnvelopeErrors.href;
-            const message = `Cannot show more than ${this.MAX_ERRORS} errors.`;
-            this.alertService.error(
-              `${this.submissionErrors.length - this.MAX_ERRORS} Other Errors`,
-              `${message} <a href="${link}">View all ${this.submissionErrors.length} errors.</a>`,
-              false,
-              false);
-          }
-          let errors_displayed = 0;
-          for (const err of this.submissionErrors) {
-            if (errors_displayed >= this.MAX_ERRORS) {
-              break;
-            }
-            this.alertService.error(err['title'], err['detail'], false, false);
-            errors_displayed++;
-          }
-        }
-      );
   }
 
   private initArchiveEntityDataSource(submissionUuid: string) {
@@ -289,7 +307,18 @@ export class SubmissionComponent implements OnInit, OnDestroy {
         archiveSubmission => {
           if (archiveSubmission) {
             const entitiesUrl = archiveSubmission['_links']['entities']['href'];
-            this.archiveEntityDataSource = new IngestDataSource<ArchiveEntity>(this.ingestService, entitiesUrl, 'archiveEntities');
+            this.archiveEntityDataSource = new PaginatedDataSource<ArchiveEntity>(
+                params => this.ingestService.get(entitiesUrl, {params}).pipe(
+                    // TODO: This gets done a lot, refactor
+                    map(data => data as ListResult<any>),
+                    map(data => {
+                      return {
+                        data: data && data._embedded ? data._embedded['archiveEntities'] : [],
+                        page: data.page
+                      };
+                    })
+                )
+            );
           }
         }
       );
@@ -299,9 +328,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     const submissionTypes = ['biomaterials', 'processes', 'protocols', 'files', 'bundleManifests'];
     submissionTypes.forEach(type => {
       if (this[`${type}DataSource`]) {
-        // Ensure this is only called once.
-        // datasources should not be reinistatiated
-        // TODO: sort out other polling here and remove this check
         return;
       }
       this[`${type}DataSource`] = new MetadataDataSource<any>(
@@ -309,27 +335,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
         type
       );
     });
-  }
-
-
-  private getSubmissionManifest() {
-    this.ingestService.get(this.submissionEnvelope['_links']['submissionManifest']['href'])
-      .subscribe(
-        data => {
-          this.manifest = data;
-          const actualLinks = this.manifest['actualLinks'];
-          const expectedLinks = this.manifest['expectedLinks'];
-          if (!expectedLinks || (actualLinks === expectedLinks)) {
-            this.isLinkingDone = true;
-          }
-        }, err => {
-          if (err instanceof HttpErrorResponse && err.status === 404) {
-            // do nothing, the endpoint throws error when no submission manifest is found
-            this.isLinkingDone = true;
-          } else {
-            console.error(err);
-          }
-        });
   }
 
   navigateToTab(index: number, sourceFilter?: { dataSource?: MetadataDataSource<any>, filterState?: string }): void {

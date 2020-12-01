@@ -1,7 +1,7 @@
-<div fxLayout="column" *ngIf="isSubmissionLoading()">
+<div fxLayout="column" *ngIf="isLoading">
   Loading...
 </div>
-<div fxLayout="column" *ngIf="!isSubmissionLoading()">
+<div fxLayout="column" *ngIf="!isLoading">
   <div fxLayout="row" fxLayoutAlign="space-between center">
     <h2 class="vf-text vf-text-heading--2">
       Submission {{projectShortName ? ' - ' + projectShortName : ''}}
@@ -94,7 +94,7 @@
   </div>
   <br/>
   <br/>
-  <mat-tab-group *ngIf="submissionEnvelopeId" [selectedIndex]="selectedIndex">
+  <mat-tab-group *ngIf="submissionEnvelopeId" [(selectedIndex)]="selectedIndex">
     <mat-tab label="Biomaterials">
       <ng-template matTabContent>
         <app-metadata-list [dataSource]="biomaterialsDataSource"
