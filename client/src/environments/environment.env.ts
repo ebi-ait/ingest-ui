@@ -5,6 +5,7 @@ export const environment = {
   SCHEMA_API_URL: '<%= SCHEMA_API_URL %>',
   DSS_API_URL: '<%= DSS_API_URL %>',
   DOMAIN_WHITELIST: '<%= DOMAIN_WHITELIST %>',
+  SECURED_ENDPOINTS: '<%= SECURED_ENDPOINTS %>',
   // AAI
   AAI_CLIENT_ID: '<%= AAI_CLIENT_ID %>',
   AAI_AUTHORITY: '<%= AAI_AUTHORITY %>',
