@@ -45,7 +45,6 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   rows: any[];
   expandAll: boolean;
   validationStates: string[];
-  initialLoading: boolean;
 
   constructor(private ingestService: IngestService,
               private flattenService: FlattenService,
@@ -60,11 +59,9 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.initialLoading = true;
     this.dataSource.connect(true, 5000).subscribe(data => {
       this.rows = data.data.map(row => this.flattenService.flatten(row));
       this.metadataList = data.data;
-      this.initialLoading = false;
     });
 
     if (this.dataSource.resourceType === 'files') {

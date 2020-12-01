@@ -19,20 +19,16 @@ export class DataTableComponent implements OnInit, OnDestroy {
 
   isPaginated = true;
   rows: any[];
-  initialLoading: boolean;
-
 
   constructor(private flattenService: FlattenService) {
 
   }
 
   ngOnInit() {
-    this.initialLoading = true;
     this.setPage({count: 0, limit: 0, pageSize: 0, offset: 0});
 
     this.dataSource.connect(this.poll).subscribe(data => {
       this.rows = this.flatten ? data.data.map(row => this.flattenService.flatten(row)) : data.data;
-      this.initialLoading = false;
     });
   }
 
