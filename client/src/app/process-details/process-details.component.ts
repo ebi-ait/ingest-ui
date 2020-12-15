@@ -179,7 +179,7 @@ export class ProcessDetailsComponent implements OnInit {
   }
 
   private getInputBiomaterials(processUrl: string): Observable<ListResult<MetadataDocument>> {
-    return this.ingestService.getAs<ListResult<MetadataDocument>>(`${processUrl}/inputBiomaterials`).pipe(
+    return this.ingestService.get<ListResult<MetadataDocument>>(`${processUrl}/inputBiomaterials`).pipe(
       tap(data => {
         const inputs = data._embedded ? data._embedded.biomaterials : [];
         inputs.map(input => {
@@ -200,7 +200,7 @@ export class ProcessDetailsComponent implements OnInit {
   }
 
   private getProtocols(processUrl: string): Observable<ListResult<MetadataDocument>> {
-    return this.ingestService.getAs<ListResult<MetadataDocument>>(`${processUrl}/protocols`).pipe(
+    return this.ingestService.get<ListResult<MetadataDocument>>(`${processUrl}/protocols`).pipe(
       tap(data => {
         const protocols = data._embedded ? data._embedded.protocols : [];
         this.protocols = protocols;
@@ -220,7 +220,7 @@ export class ProcessDetailsComponent implements OnInit {
   }
 
   private getDerivedBiomaterials(processUrl: string) {
-    return this.ingestService.getAs<ListResult<MetadataDocument>>(`${processUrl}/derivedBiomaterials`).pipe(
+    return this.ingestService.get<ListResult<MetadataDocument>>(`${processUrl}/derivedBiomaterials`).pipe(
       tap(data => {
         const biomaterials = data._embedded ? data._embedded.biomaterials : [];
         this.derivedBiomaterials = biomaterials;
@@ -242,7 +242,7 @@ export class ProcessDetailsComponent implements OnInit {
   }
 
   private getDerivedFiles(processUrl) {
-    return this.ingestService.getAs<ListResult<MetadataDocument>>(`${processUrl}/derivedFiles`).pipe(
+    return this.ingestService.get<ListResult<MetadataDocument>>(`${processUrl}/derivedFiles`).pipe(
       tap(data => {
         const derivedFiles = data._embedded ? data._embedded.files : [];
         this.derivedFiles = derivedFiles;

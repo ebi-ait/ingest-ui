@@ -208,7 +208,6 @@ export class IngestService {
 
   private doPatchProject(projectResource, patch, partial: boolean = false): Observable<Project> {
     const projectLink: string = projectResource['_links']['self']['href'] + `?partial=${partial}`;
-    patch['validationState'] = 'DRAFT';
     return this.http.patch<Project>(projectLink, patch);
   }
 
@@ -273,20 +272,22 @@ export class IngestService {
     return this.http.get<SubmissionSummary>(`${this.API_URL}/submissionEnvelopes/${submissionId}/summary`);
   }
 
-  public put(ingestLink, body) {
-    return this.http.put(ingestLink, body);
+  public put(ingestLink, patchData): Observable<Object>;
+  public put<T>(ingestLink, patchData): Observable<T>;
+  public put<T>(ingestLink, patchData): Observable<T> {
+    return this.http.put<T>(ingestLink, patchData);
   }
 
-  public patch(ingestLink, patchData) {
-    return this.http.patch(ingestLink, patchData);
+  public patch(ingestLink, patchData): Observable<Object>;
+  public patch<T>(ingestLink, patchData): Observable<T>;
+  public patch<T>(ingestLink, patchData): Observable<T> {
+    return this.http.patch<T>(ingestLink, patchData);
   }
 
-  public get(url, options?): Observable<Object> {
-    return this.http.get(url, options);
-  }
-
-  public getAs<T>(url): Observable<T> {
-    return this.http.get(url).pipe(map(data => data as T));
+  public get(url, options?): Observable<Object>;
+  public get<T>(url, options?): Observable<T>;
+  public get<T>(url): Observable<T> {
+    return this.http.get<T>(url);
   }
 
   public getLatestSchemas(): Observable<ListResult<MetadataSchema>> {
