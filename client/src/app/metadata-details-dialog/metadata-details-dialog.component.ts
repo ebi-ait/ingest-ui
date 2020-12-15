@@ -86,13 +86,12 @@ export class MetadataDetailsDialogComponent implements OnInit {
     const selfLink = this.metadata._links['self']['href'];
     const newContent = formData['value'];
     this.metadata['content'] = newContent;
-    this.ingestService.patch(selfLink, this.metadata)
+    this.ingestService.patch<MetadataDocument>(selfLink, this.metadata)
       .pipe(
-        map(response => response as MetadataDocument),
         concatMap(response => {
-        const draftLink = response._links['draft']['href'];
-        return this.ingestService.put(draftLink, {});
-      }))
+          const draftLink = response._links['draft']['href'];
+          return this.ingestService.put(draftLink, {});
+        }))
       .subscribe(response => {
         console.log('successful update', response);
         this.alertService.clear();
