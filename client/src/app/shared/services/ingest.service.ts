@@ -286,8 +286,8 @@ export class IngestService {
 
   public get(url, options?): Observable<Object>;
   public get<T>(url, options?): Observable<T>;
-  public get<T>(url): Observable<T> {
-    return this.http.get<T>(url);
+  public get<T>(url, options?) {
+    return this.http.get<T>(url, options);
   }
 
   public getLatestSchemas(): Observable<ListResult<MetadataSchema>> {

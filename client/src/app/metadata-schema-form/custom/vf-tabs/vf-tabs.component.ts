@@ -1,6 +1,6 @@
 import {AfterContentInit, Component, EventEmitter, Output} from '@angular/core';
-import { ContentChildren, QueryList } from '@angular/core';
-import { VfTabComponent } from '../vf-tab/vf-tab.component';
+import {ContentChildren, QueryList} from '@angular/core';
+import {VfTabComponent} from '../vf-tab/vf-tab.component';
 
 @Component({
   selector: 'app-vf-tabs',
@@ -10,7 +10,9 @@ import { VfTabComponent } from '../vf-tab/vf-tab.component';
 export class VfTabsComponent implements AfterContentInit {
   @ContentChildren(VfTabComponent) tabs: QueryList<VfTabComponent>;
   @Output() selectedIndexChange = new EventEmitter();
-  constructor() { }
+
+  constructor() {
+  }
 
   ngAfterContentInit(): void {
     setTimeout(() => {
@@ -23,7 +25,9 @@ export class VfTabsComponent implements AfterContentInit {
 
   selectTab(tab: VfTabComponent): void {
     this.tabs.toArray().forEach(toDeactivate => toDeactivate.active = false);
-    tab.active = true;
+    if (tab) {
+      tab.active = true;
+    }
     this.selectedIndexChange.emit(this.tabs.toArray().indexOf(tab));
   }
 
