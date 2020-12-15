@@ -11,8 +11,7 @@ export class VfTabsComponent implements AfterContentInit {
   @ContentChildren(VfTabComponent) tabs: QueryList<VfTabComponent>;
   @Output() selectedIndexChange = new EventEmitter();
 
-  constructor() {
-  }
+  constructor() {}
 
   ngAfterContentInit(): void {
     setTimeout(() => {
