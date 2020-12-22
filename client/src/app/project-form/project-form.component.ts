@@ -11,7 +11,8 @@ import {LoaderService} from '../shared/services/loader.service';
 import {Observable} from 'rxjs';
 import {MatTabGroup} from '@angular/material/tabs';
 import {MetadataFormConfig} from '../metadata-schema-form/models/metadata-form-config';
-import {concatMap} from 'rxjs/operators';
+import {concatMap, map} from 'rxjs/operators';
+import {MetadataDocument} from '../shared/models/metadata-document';
 
 
 @Component({
@@ -100,27 +101,27 @@ export class ProjectFormComponent implements OnInit {
   setProjectContent(projectUuid) {
     this.ingestService.getProjectByUuid(projectUuid)
       .subscribe(projectResource => {
-        console.log('Retrieved project', projectResource);
-        this.projectResource = projectResource;
-        if (projectResource && projectResource.content &&
-          !projectResource.content.hasOwnProperty('describedBy') || !projectResource.content.hasOwnProperty('schema_type')) {
-          this.schemaService.getUrlOfLatestSchema('project')
-            .subscribe(schemaUrl => {
-              projectResource.content['describedBy'] = schemaUrl;
-              projectResource.content['schema_type'] = 'project';
-              this.schema = projectResource.content['describedBy'];
-            });
-        }
+          console.log('Retrieved project', projectResource);
+          this.projectResource = projectResource;
+          if (projectResource && projectResource.content &&
+            !projectResource.content.hasOwnProperty('describedBy') || !projectResource.content.hasOwnProperty('schema_type')) {
+            this.schemaService.getUrlOfLatestSchema('project')
+              .subscribe(schemaUrl => {
+                projectResource.content['describedBy'] = schemaUrl;
+                projectResource.content['schema_type'] = 'project';
+                this.schema = projectResource.content['describedBy'];
+              });
+          }
 
-        this.schema = projectResource.content['describedBy'];
+          this.schema = projectResource.content['describedBy'];
 
-        this.projectContent = projectResource.content;
-        this.projectFormData = this.projectResource;
-        this.displayPostValidationErrors();
-      },
-      error => {
-        this.alertService.error('Project could not be retrieved.', error.message);
-      });
+          this.projectContent = projectResource.content;
+          this.projectFormData = this.projectResource;
+          this.displayPostValidationErrors();
+        },
+        error => {
+          this.alertService.error('Project could not be retrieved.', error.message);
+        });
   }
 
   onTabChange($tabKey: string) {
@@ -189,7 +190,7 @@ export class ProjectFormComponent implements OnInit {
   }
 
   private incrementTab() {
-    let index =  layout.tabs.findIndex(tab => tab.key === this.formTabKey);
+    let index = layout.tabs.findIndex(tab => tab.key === this.formTabKey);
     index++;
     if (index >= layout.tabs.length) {
       this.router.navigateByUrl(`/projects/detail?uuid=${this.projectResource['uuid']['uuid']}`);
@@ -217,7 +218,11 @@ export class ProjectFormComponent implements OnInit {
         );
     } else {
       this.patch = formValue;
-      return this.ingestService.partiallyPatchProject(this.projectResource, this.patch);
+      return this.ingestService.partiallyPatchProject(this.projectResource, this.patch)
+        .pipe(concatMap(project => {
+          const draftLink = project._links['draft']['href'];
+          return this.ingestService.put<Project>(draftLink, {});
+        }));
     }
   }
 }

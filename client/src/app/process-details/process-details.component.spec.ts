@@ -12,8 +12,8 @@ describe('ProcessDetailsComponent', () => {
   let ingestSvc: SpyObj<IngestService>;
 
   beforeEach(async(() => {
-    ingestSvc = jasmine.createSpyObj('IngestService', ['getAs']);
-    ingestSvc.getAs.and.returnValue(of({_embedded: {biomaterials: [], files: [], protocols: []}}));
+    ingestSvc = jasmine.createSpyObj('IngestService', ['get']);
+    ingestSvc.get.and.returnValue(of({_embedded: {biomaterials: [], files: [], protocols: []}}));
     TestBed.configureTestingModule({
       providers: [{provide: IngestService, useValue: ingestSvc}],
       declarations: [ProcessDetailsComponent]
