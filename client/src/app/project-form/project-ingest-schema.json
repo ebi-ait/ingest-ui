@@ -189,7 +189,7 @@
     },
     "content": {}
   },
-  "required": ["dataAccess", "identifyingOrganisms", "technology", "organs", "releaseDate"],
+  "required": ["dataAccess", "identifyingOrganisms", "technology", "organ", "releaseDate"],
   "title": "Ingest Project",
   "type": "object"
 }
