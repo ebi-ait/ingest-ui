@@ -100,11 +100,11 @@ export class ProjectIdComponent implements OnInit {
     this.identifyingOrganismCtrl = this.metadataForm.getControl(this.identifyingOrganismKey) as FormControl;
 
     this.parentTechnologyCtrl = this.metadataForm.getControl('project.technology') as FormControl;
-    this.parentTechnologyCtrl.setValidators([requireTechnologyValidator(this.metadataFormService)]);
+    this.parentTechnologyCtrl.setValidators([requireItemValidator(this.metadataFormService)]);
     this.parentTechnologyCtrl.updateValueAndValidity();
 
     this.parentOrganCtrl = this.metadataForm.getControl('project.organ') as FormControl;
-    this.parentOrganCtrl.setValidators([requireTechnologyValidator(this.metadataFormService)]);
+    this.parentOrganCtrl.setValidators([requireItemValidator(this.metadataFormService)]);
     this.parentOrganCtrl.updateValueAndValidity();
 
 
@@ -258,10 +258,10 @@ export const uniqueProjectIdAsyncValidator = (ingestService: IngestService) => {
   };
 };
 
-export const requireTechnologyValidator = (metadataFormService: MetadataFormService) => {
+export const requireItemValidator = (metadataFormService: MetadataFormService) => {
   return (input: FormControl) => {
-    const technology = metadataFormService.cleanFormData(input.value);
-    if (metadataFormService.isEmpty(technology)) {
+    const item = metadataFormService.cleanFormData(input.value);
+    if (metadataFormService.isEmpty(item)) {
       return {required: true} as ValidationErrors;
     }
   };
