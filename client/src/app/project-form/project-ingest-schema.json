@@ -131,10 +131,65 @@
         }
       }
     },
-
+    "organ": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "description": "A term that may be associated with an anatomy-related ontology term.",
+      "required": [
+        "ontologies"
+      ],
+      "title": "Organ",
+      "name": "organ",
+      "type": "object",
+      "properties": {
+        "ontologies": {
+          "description": "The organs that were investigated in your project.",
+          "guidelines": "Enter each organ by searching and selecting as many as are applicable.",
+          "type": "array",
+          "items": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "$id": "https://schema.dev.data.humancellatlas.org/module/ontology/1.2.5/organ_ontology",
+            "title": "Organ ontology",
+            "name": "organ_ontology",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "text"
+            ],
+            "properties": {
+              "text": {
+                "description": "The text for the term as the user provides it.",
+                "type": "string",
+                "user_friendly": "Organ",
+                "example": "heart; immune system"
+              },
+              "ontology": {
+                "description": "An ontology term identifier in the form prefix:accession.",
+                "type": "string",
+                "graph_restriction": {
+                  "ontologies": ["obo:hcao", "obo:uberon"],
+                  "classes": ["UBERON:0000465"],
+                  "relations": ["rdfs:subClassOf"],
+                  "direct": false,
+                  "include_self": true
+                },
+                "user_friendly": "Organ ontology ID",
+                "example": "UBERON:0000948; UBERON:0002405"
+              },
+              "ontology_label": {
+                "description": "The preferred label for the ontology term referred to in the ontology field. This may differ from the user-supplied value in the text field.",
+                "type": "string",
+                "user_friendly": "Organ ontology label",
+                "example": "heart; immune system"
+              }
+            }
+          },
+          "user_friendly": "What organs were used in your experiment?"
+        }
+      }
+    },
     "content": {}
   },
-  "required": ["dataAccess", "identifyingOrganisms", "technology", "releaseDate"],
+  "required": ["dataAccess", "identifyingOrganisms", "technology", "organs", "releaseDate"],
   "title": "Ingest Project",
   "type": "object"
 }

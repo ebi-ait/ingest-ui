@@ -33,6 +33,15 @@ export class ProjectIdComponent implements OnInit {
   otherTechnologyMetadata: Metadata;
   otherTechnologyCtrl: FormControl;
 
+  organKey = 'project.organ.ontologies';
+  organMetadata: Metadata;
+  organCtrl: FormControl;
+  parentOrganCtrl: FormControl;
+
+  otherOrganKey = 'project.organ.others';
+  otherOrganMetadata: Metadata;
+  otherOrganCtrl: FormControl;
+
   identifyingOrganismKey = 'project.identifyingOrganisms';
   identifyingOrganismMetadata: Metadata;
   identifyingOrganismCtrl: FormControl;
@@ -40,6 +49,8 @@ export class ProjectIdComponent implements OnInit {
 
   technology: string;
   otherTechnology: string;
+  organ: string;
+  otherOrgan: string;
   contributor_name: string;
   organism: string;
 
@@ -72,20 +83,37 @@ export class ProjectIdComponent implements OnInit {
     return technology;
   }
 
+  private static sanitiseOrgan(organ: string): string {
+    organ = organ.replace(/'/g, 'p');
+    organ = ProjectIdComponent.removeSpecialChars(organ);
+    organ = ProjectIdComponent.camelize(organ);
+    organ = ProjectIdComponent.capitalize(organ);
+    return organ;
+  }
+
   ngOnInit(): void {
     this.projectIdMetadata = this.metadataForm.get(this.projectShortNameKey);
     this.technologyMetadata = this.metadataForm.get(this.technologyKey);
     this.otherTechnologyMetadata = this.metadataForm.get(this.otherTechnologyKey);
+    this.organMetadata = this.metadataForm.get(this.organKey);
+    this.otherOrganMetadata = this.metadataForm.get(this.otherOrganKey);
     this.identifyingOrganismMetadata = this.metadataForm.get(this.identifyingOrganismKey);
 
     this.projectIdCtrl = this.metadataForm.getControl(this.projectShortNameKey) as FormControl;
     this.technologyCtrl = this.metadataForm.getControl(this.technologyKey) as FormControl;
     this.otherTechnologyCtrl = this.metadataForm.getControl(this.otherTechnologyKey) as FormControl;
+    this.organCtrl = this.metadataForm.getControl(this.organKey) as FormControl;
+    this.otherOrganCtrl = this.metadataForm.getControl(this.otherOrganKey) as FormControl;
     this.identifyingOrganismCtrl = this.metadataForm.getControl(this.identifyingOrganismKey) as FormControl;
 
     this.parentTechnologyCtrl = this.metadataForm.getControl('project.technology') as FormControl;
     this.parentTechnologyCtrl.setValidators([requireTechnologyValidator(this.metadataFormService)]);
     this.parentTechnologyCtrl.updateValueAndValidity();
+
+    this.parentOrganCtrl = this.metadataForm.getControl('project.organ') as FormControl;
+    this.parentOrganCtrl.setValidators([requireTechnologyValidator(this.metadataFormService)]);
+    this.parentOrganCtrl.updateValueAndValidity();
+
 
     this.projectIdCtrl.setAsyncValidators([uniqueProjectIdAsyncValidator(this.ingestService)]);
     this.projectIdCtrl.updateValueAndValidity();
@@ -138,6 +166,19 @@ export class ProjectIdComponent implements OnInit {
         this.onOtherTechnologyChange(val);
       });
 
+    this.metadataForm.getControl('project.organ.ontologies')
+        .valueChanges
+        .subscribe(val => {
+          this.onOrganChange(val);
+
+        });
+
+    this.metadataForm.getControl('project.organ.others')
+        .valueChanges
+        .subscribe(val => {
+          this.onOtherOrganChange(val);
+        });
+
     this.metadataForm.getControl('project.content.contributors')
       .valueChanges
       .subscribe(val => {
@@ -186,7 +227,6 @@ export class ProjectIdComponent implements OnInit {
     } else {
       this.technology = '';
     }
-    this.generateProjectId();
     this.metadataFormService.cleanFormData(this.otherTechnologyCtrl.value);
   }
 
@@ -197,8 +237,29 @@ export class ProjectIdComponent implements OnInit {
     } else {
       this.otherTechnology = '';
     }
+  }
+
+  private onOrganChange(val: any) {
+    const organ = this.metadataFormService.cleanFormData(val);
+    if (organ && organ.length > 0) {
+      this.organ = ProjectIdComponent.sanitiseOrgan(organ[0]['ontology_label']);
+    } else {
+      this.organ = '';
+    }
+    this.generateProjectId();
+    this.metadataFormService.cleanFormData(this.otherOrganCtrl.value);
+  }
+
+  private onOtherOrganChange(val: any) {
+    const otherOrgan = this.metadataFormService.cleanFormData(val);
+    if (otherOrgan && otherOrgan.length > 0 ) {
+      this.otherOrgan = ProjectIdComponent.sanitiseOrgan(otherOrgan[0]);
+    } else {
+      this.otherOrgan = '';
+    }
     this.generateProjectId();
   }
+
 
   private onOrganismChange(val: any) {
     const identifyingOrganisms = this.metadataFormService.cleanFormData(val);
