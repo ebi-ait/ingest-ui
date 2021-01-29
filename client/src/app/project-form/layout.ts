@@ -12,7 +12,7 @@ export const layout: MetadataFormLayout = {
         'project.dataAccess',
         'project.identifyingOrganisms',
         'project.technology',
-        'project.organs',
+        'project.organ',
         'project.releaseDate',
         'project.accessionDate',
         'project.content.array_express_accessions',
