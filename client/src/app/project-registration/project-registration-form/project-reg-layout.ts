@@ -17,6 +17,7 @@ export const projectRegLayout: MetadataFormLayout = {
           keys: [
             'project.identifyingOrganisms',
             'project.technology',
+            'project.organ',
             'project.content.project_core.project_short_name'
           ],
           component: ProjectIdComponent

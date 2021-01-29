@@ -33,6 +33,11 @@ export class ProjectIdComponent implements OnInit {
   otherTechnologyMetadata: Metadata;
   otherTechnologyCtrl: FormControl;
 
+  organKey = 'project.organ.ontologies';
+  organMetadata: Metadata;
+  organCtrl: FormControl;
+  parentOrganCtrl: FormControl;
+
   identifyingOrganismKey = 'project.identifyingOrganisms';
   identifyingOrganismMetadata: Metadata;
   identifyingOrganismCtrl: FormControl;
@@ -40,6 +45,7 @@ export class ProjectIdComponent implements OnInit {
 
   technology: string;
   otherTechnology: string;
+  organ: string;
   contributor_name: string;
   organism: string;
 
@@ -72,20 +78,35 @@ export class ProjectIdComponent implements OnInit {
     return technology;
   }
 
+  private static sanitiseOrgan(organ: string): string {
+    organ = organ.replace(/'/g, 'p');
+    organ = ProjectIdComponent.removeSpecialChars(organ);
+    organ = ProjectIdComponent.camelize(organ);
+    organ = ProjectIdComponent.capitalize(organ);
+    return organ;
+  }
+
   ngOnInit(): void {
     this.projectIdMetadata = this.metadataForm.get(this.projectShortNameKey);
     this.technologyMetadata = this.metadataForm.get(this.technologyKey);
     this.otherTechnologyMetadata = this.metadataForm.get(this.otherTechnologyKey);
+    this.organMetadata = this.metadataForm.get(this.organKey);
     this.identifyingOrganismMetadata = this.metadataForm.get(this.identifyingOrganismKey);
 
     this.projectIdCtrl = this.metadataForm.getControl(this.projectShortNameKey) as FormControl;
     this.technologyCtrl = this.metadataForm.getControl(this.technologyKey) as FormControl;
     this.otherTechnologyCtrl = this.metadataForm.getControl(this.otherTechnologyKey) as FormControl;
+    this.organCtrl = this.metadataForm.getControl(this.organKey) as FormControl;
     this.identifyingOrganismCtrl = this.metadataForm.getControl(this.identifyingOrganismKey) as FormControl;
 
     this.parentTechnologyCtrl = this.metadataForm.getControl('project.technology') as FormControl;
-    this.parentTechnologyCtrl.setValidators([requireTechnologyValidator(this.metadataFormService)]);
+    this.parentTechnologyCtrl.setValidators([requireItemValidator(this.metadataFormService)]);
     this.parentTechnologyCtrl.updateValueAndValidity();
+
+    this.parentOrganCtrl = this.metadataForm.getControl('project.organ') as FormControl;
+    this.parentOrganCtrl.setValidators([requireItemValidator(this.metadataFormService)]);
+    this.parentOrganCtrl.updateValueAndValidity();
+
 
     this.projectIdCtrl.setAsyncValidators([uniqueProjectIdAsyncValidator(this.ingestService)]);
     this.projectIdCtrl.updateValueAndValidity();
@@ -137,6 +158,13 @@ export class ProjectIdComponent implements OnInit {
       .subscribe(val => {
         this.onOtherTechnologyChange(val);
       });
+
+    this.metadataForm.getControl('project.organ.ontologies')
+        .valueChanges
+        .subscribe(val => {
+          this.onOrganChange(val);
+
+        });
 
     this.metadataForm.getControl('project.content.contributors')
       .valueChanges
@@ -197,7 +225,15 @@ export class ProjectIdComponent implements OnInit {
     } else {
       this.otherTechnology = '';
     }
-    this.generateProjectId();
+  }
+
+  private onOrganChange(val: any) {
+    const organ = this.metadataFormService.cleanFormData(val);
+    if (organ && organ.length > 0) {
+      this.organ = ProjectIdComponent.sanitiseOrgan(organ[0]['ontology_label']);
+    } else {
+      this.organ = '';
+    }
   }
 
   private onOrganismChange(val: any) {
@@ -222,10 +258,10 @@ export const uniqueProjectIdAsyncValidator = (ingestService: IngestService) => {
   };
 };
 
-export const requireTechnologyValidator = (metadataFormService: MetadataFormService) => {
+export const requireItemValidator = (metadataFormService: MetadataFormService) => {
   return (input: FormControl) => {
-    const technology = metadataFormService.cleanFormData(input.value);
-    if (metadataFormService.isEmpty(technology)) {
+    const item = metadataFormService.cleanFormData(input.value);
+    if (metadataFormService.isEmpty(item)) {
       return {required: true} as ValidationErrors;
     }
   };
