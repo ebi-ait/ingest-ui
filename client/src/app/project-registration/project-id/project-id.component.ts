@@ -214,6 +214,7 @@ export class ProjectIdComponent implements OnInit {
     } else {
       this.technology = '';
     }
+    this.generateProjectId();
     this.metadataFormService.cleanFormData(this.otherTechnologyCtrl.value);
   }
 
@@ -233,7 +234,6 @@ export class ProjectIdComponent implements OnInit {
     } else {
       this.organ = '';
     }
-    this.generateProjectId();
   }
 
   private onOrganismChange(val: any) {
