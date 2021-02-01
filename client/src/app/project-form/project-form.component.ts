@@ -218,11 +218,7 @@ export class ProjectFormComponent implements OnInit {
         );
     } else {
       this.patch = formValue;
-      return this.ingestService.partiallyPatchProject(this.projectResource, this.patch)
-        .pipe(concatMap(project => {
-          const draftLink = project._links['draft']['href'];
-          return this.ingestService.put<Project>(draftLink, {});
-        }));
+      return this.ingestService.partiallyPatchProject(this.projectResource, this.patch);
     }
   }
 }
