@@ -9,7 +9,7 @@ import {LoaderService} from '../shared/services/loader.service';
 import {MetadataDocument} from '../shared/models/metadata-document';
 import {MetadataFormComponent} from '../metadata-schema-form/metadata-form/metadata-form.component';
 import {AlertService} from '../shared/services/alert.service';
-import * as _ from 'lodash';
+import isEqual from 'lodash/isEqual';
 
 @Component({
   selector: 'app-metadata-details',
@@ -83,7 +83,7 @@ export class MetadataDetailsDialogComponent implements OnInit {
     const formData = this.metadataFormComponent.getFormData();
     const selfLink = this.metadata._links['self']['href'];
     const newContent = formData['value'];
-    if (_.isEqual(this.metadata['content'], newContent)) {
+    if (isEqual(this.metadata['content'], newContent)) {
       this.errorMessage = 'There are no changes done.';
     } else {
       this.metadata['content'] = newContent;
