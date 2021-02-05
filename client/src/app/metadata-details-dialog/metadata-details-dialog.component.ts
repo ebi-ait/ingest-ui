@@ -4,14 +4,12 @@ import {MetadataFormLayout, MetadataFormTab} from '../metadata-schema-form/model
 import {ActivatedRoute} from '@angular/router';
 import {IngestService} from '../shared/services/ingest.service';
 import {SchemaService} from '../shared/services/schema.service';
-import {concatMap, map, tap} from 'rxjs/operators';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {LoaderService} from '../shared/services/loader.service';
 import {MetadataDocument} from '../shared/models/metadata-document';
-import {Observable, of} from 'rxjs';
-import {ListResult} from '../shared/models/hateoas';
 import {MetadataFormComponent} from '../metadata-schema-form/metadata-form/metadata-form.component';
 import {AlertService} from '../shared/services/alert.service';
+import isEqual from 'lodash/isEqual';
 
 @Component({
   selector: 'app-metadata-details',
@@ -42,6 +40,7 @@ export class MetadataDetailsDialogComponent implements OnInit {
 
   type: string;
   id: string;
+  errorMessage: string;
 
 
   constructor(private route: ActivatedRoute,
@@ -82,34 +81,26 @@ export class MetadataDetailsDialogComponent implements OnInit {
 
   onSave() {
     const formData = this.metadataFormComponent.getFormData();
-    console.log('saving data', formData);
     const selfLink = this.metadata._links['self']['href'];
     const newContent = formData['value'];
-    this.metadata['content'] = newContent;
-    this.ingestService.patch<MetadataDocument>(selfLink, this.metadata)
-      .subscribe(response => {
-        console.log('successful update', response);
-        this.alertService.clear();
-        this.alertService.success('Success',
-          `${this.type} ${this.id} has been successfully updated`);
-        this.dialogRef.close();
-      }, err => {
-        this.alertService.clear();
-        this.alertService.error('Error',
-          `${this.type} ${this.id} has not been updated due to ${err.toString()}`);
-        this.dialogRef.close();
-      });
-
+    if (isEqual(this.metadata['content'], newContent)) {
+      this.errorMessage = 'There are no changes done.';
+    } else {
+      this.metadata['content'] = newContent;
+      const patch = {'content': newContent};
+      this.ingestService.patch<MetadataDocument>(selfLink, patch)
+        .subscribe(response => {
+          this.alertService.clear();
+          this.alertService.success('Success',
+            `${this.type} ${this.id} has been successfully updated`);
+          this.dialogRef.close();
+        }, err => {
+          console.error(err);
+          this.alertService.clear();
+          this.alertService.error('Error',
+            `${this.type} ${this.id} has not been updated due to ${err.toString()}`);
+          this.dialogRef.close();
+        });
+    }
   }
-
-  addInput() {
-    // TODO
-    console.log('add input');
-  }
-
-  removeInput(input: MetadataDocument) {
-    // TODO
-    console.log('remove input');
-  }
-
 }

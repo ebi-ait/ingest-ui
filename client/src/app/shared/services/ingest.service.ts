@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
-import * as _ from 'lodash';
+import values from 'lodash/values';
 
 import {ListResult} from '../models/hateoas';
 import {Summary} from '../models/summary';
@@ -258,7 +258,7 @@ export class IngestService {
       .pipe(map(data => {
         const pagedData: PagedData<MetadataDocument> = {data: [], page: undefined};
         if (data._embedded && data._embedded[entityType]) {
-          pagedData.data = _.values(data._embedded[entityType]);
+          pagedData.data = values(data._embedded[entityType]);
           pagedData.data = IngestService.reduceColumnsForBundleManifests(entityType, pagedData.data);
         } else {
           pagedData.data = [];
