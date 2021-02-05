@@ -4,6 +4,13 @@
   <span class="vf-u-text-color--red" title="{{error['message']}}">{{error['absoluteDataPath']}}
     : {{error['message']}}</span><br>
 </ng-container>
+
+<ng-container *ngIf="errorMessage">
+  <br/>
+  <span class="vf-u-text-color--red" title="{{errorMessage}}">{{errorMessage}}</span>
+  <br>
+</ng-container>
+
 <br/>
 <mat-dialog-content>
 
