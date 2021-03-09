@@ -150,5 +150,6 @@ export class SubmitComponent implements OnInit {
 
   onSubmitMetadataToDspChange() {
     this.submitToDcp = !this.submitMetadataToDcp;
+    this.cleanup = !this.submitMetadataToDcp;
   }
 }
