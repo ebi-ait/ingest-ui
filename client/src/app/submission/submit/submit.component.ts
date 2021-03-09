@@ -22,6 +22,7 @@ export class SubmitComponent implements OnInit {
   @Input() isLinkingDone: boolean;
   @Input() manifest: object;
   submitToArchives: boolean;
+  submitMetadataToDcp: boolean;
   submitToDcp: boolean;
   cleanup: boolean;
   releaseDate: string;
@@ -32,6 +33,7 @@ export class SubmitComponent implements OnInit {
               private loaderService: LoaderService,
               private alertService: AlertService) {
     this.submitToArchives = true;
+    this.submitMetadataToDcp = false;
     this.submitToDcp = true;
     this.cleanup = true;
   }
@@ -51,6 +53,10 @@ export class SubmitComponent implements OnInit {
 
     if (this.submitToDcp) {
       submitActions.push('Export');
+    }
+
+    if (this.submitMetadataToDcp) {
+      submitActions.push('Export_Metadata');
     }
 
     if (this.cleanup) {
@@ -137,6 +143,12 @@ export class SubmitComponent implements OnInit {
   onSubmitToDspChange() {
     if (!this.submitToDcp) {
       this.cleanup = false;
+    } else {
+      this.submitMetadataToDcp = false;
     }
+  }
+
+  onSubmitMetadataToDspChange() {
+    this.submitToDcp = !this.submitMetadataToDcp;
   }
 }

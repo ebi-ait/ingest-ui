@@ -48,9 +48,16 @@
   </div>
   <div>
     <mat-checkbox
+      [(ngModel)]="submitMetadataToDcp" labelPosition="after"
+      (change)="onSubmitMetadataToDspChange()">
+      Submit only metadata to the <a href="https://data.humancellatlas.org" class="vf-link">Human Cell Atlas</a>.
+    </mat-checkbox>
+  </div>
+  <div>
+    <mat-checkbox
       [(ngModel)]="submitToDcp" labelPosition="after"
       (change)="onSubmitToDspChange()">
-      Submit to the <a href="https://data.humancellatlas.org" class="vf-link">Human Cell Atlas</a>. Data will be made
+      Submit metadata and data to the <a href="https://data.humancellatlas.org" class="vf-link">Human Cell Atlas</a>. This will be made
       public with the next snapshot.
     </mat-checkbox>
   </div>
@@ -68,7 +75,7 @@
 
 <br/>
 
-<ng-container *ngIf="submitLink && (this.submitToDcp || this.submitToArchives)">
+<ng-container *ngIf="submitLink && (this.submitToDcp || this.submitMetadataToDcp || this.submitToArchives)">
   <div *ngIf="manifest && !isLinkingDone">
     Linking is in progress... {{getLinkingProgress(manifest)}}% done!
     <mat-progress-bar mode="determinate" value="{{getLinkingProgress(manifest)}}"></mat-progress-bar>
