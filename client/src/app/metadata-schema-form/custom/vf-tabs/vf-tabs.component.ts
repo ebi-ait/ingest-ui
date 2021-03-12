@@ -1,4 +1,4 @@
-import {AfterContentInit, Component, EventEmitter, Output} from '@angular/core';
+import {AfterContentInit, Component, EventEmitter, Output, Input, SimpleChanges, OnChanges} from '@angular/core';
 import {ContentChildren, QueryList} from '@angular/core';
 import {VfTabComponent} from '../vf-tab/vf-tab.component';
 
@@ -7,9 +7,10 @@ import {VfTabComponent} from '../vf-tab/vf-tab.component';
   templateUrl: './vf-tabs.component.html',
   styleUrls: ['./vf-tabs.component.css']
 })
-export class VfTabsComponent implements AfterContentInit {
+export class VfTabsComponent implements AfterContentInit, OnChanges {
   @ContentChildren(VfTabComponent) tabs: QueryList<VfTabComponent>;
   @Output() selectedIndexChange = new EventEmitter();
+  @Input() selectedIndex = 0;
 
   constructor() {}
 
@@ -22,6 +23,13 @@ export class VfTabsComponent implements AfterContentInit {
     }, 0);
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (!changes.selectedIndex || !this.tabs) {
+      return;
+    }
+    this.selectTab(this.tabs.find((item, index) => index === changes.selectedIndex.currentValue));
+  }
+
   selectTab(tab: VfTabComponent): void {
     this.tabs.toArray().forEach(toDeactivate => toDeactivate.active = false);
     if (tab) {
@@ -29,5 +37,4 @@ export class VfTabsComponent implements AfterContentInit {
     }
     this.selectedIndexChange.emit(this.tabs.toArray().indexOf(tab));
   }
-
 }
