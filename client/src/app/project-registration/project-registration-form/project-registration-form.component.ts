@@ -24,7 +24,6 @@ export class ProjectRegistrationFormComponent implements OnInit {
   //  There are some code duplication here with Project form component.
 
   title: string;
-  subtitle: string;
 
   projectMetadataSchema: any = (metadataSchema as any).default;
   projectIngestSchema: any = (ingestSchema as any).default;
@@ -85,8 +84,6 @@ export class ProjectRegistrationFormComponent implements OnInit {
     this.setSchema(this.projectFormData['content']);
 
     this.title = 'New Project';
-    this.subtitle = 'Please provide initial information about your HCA project.\n' +
-      '  You will be able to edit this information as your project develops.';
 
   }
 
