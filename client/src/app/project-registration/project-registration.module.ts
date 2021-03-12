@@ -10,6 +10,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {ContactNameFieldComponent} from './contact-name-field/contact-name-field.component';
 import {ProjectIdComponent} from './project-id/project-id.component';
 import { ProjectRegistrationFormComponent } from './project-registration-form/project-registration-form.component';
+import {MatTabsModule} from '@angular/material/tabs';
 
 
 @NgModule({
@@ -22,13 +23,14 @@ import { ProjectRegistrationFormComponent } from './project-registration-form/pr
     ProjectIdComponent,
     ProjectRegistrationFormComponent
   ],
-  imports: [
-    CommonModule,
-    MetadataSchemaFormModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatIconModule
-  ]
+    imports: [
+        CommonModule,
+        MetadataSchemaFormModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatIconModule,
+        MatTabsModule
+    ]
 })
 export class ProjectRegistrationModule {
 }

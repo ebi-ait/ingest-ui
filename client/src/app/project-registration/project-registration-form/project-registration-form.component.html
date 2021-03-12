@@ -5,16 +5,32 @@
 <br/>
 <br/>
 
+<mat-tab-group>
+  <mat-tab label="1. Project">
+    <ng-container *ngIf="schema">
+      <app-metadata-form name="project"
+                         [useVf]="true"
+                         [schema]="projectIngestSchema"
+                         [data]="projectFormData"
+                         [config]="config"
+                         [selectedTabKey]="formTabKey"
+                         (cancel)="onCancel($event)"
+                         (back)="decrementTab()"
+                         (tabChange)="onTabChange($event)"
+                         (save)="onSave($event)">
+      </app-metadata-form>
+    </ng-container>
+  </mat-tab>
+  <mat-tab label="2. Experiment Information">
 
-<ng-container *ngIf="schema">
-  <app-metadata-form name="project"
-                     [schema]="projectIngestSchema"
-                     [data]="projectFormData"
-                     [config]="config"
-                     [selectedTabKey]="formTabKey"
-                     (cancel)="onCancel($event)"
-                     (back)="decrementTab()"
-                     (tabChange)="onTabChange($event)"
-                     (save)="onSave($event)">
-  </app-metadata-form>
-</ng-container>
+  </mat-tab>
+  <mat-tab label="3. Metadata">
+
+  </mat-tab>
+  <mat-tab label="4. Data">
+
+  </mat-tab>
+  <mat-tab label="5. Review and Submit">
+
+  </mat-tab>
+</mat-tab-group>

@@ -22,7 +22,7 @@ export class MetadataFormComponent implements OnInit {
 
   @Input() selectedTabKey: string;
 
-  @Input() useVf = false;
+  @Input() useVf: boolean = false;
 
   @Input() data: object;
 
