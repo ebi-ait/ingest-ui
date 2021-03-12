@@ -8,7 +8,14 @@ import {ProjectIdComponent} from '../project-id/project-id.component';
 export const projectRegLayout: MetadataFormLayout = {
   tabs: [
     {
-      title: 'Project',
+      title: 'Publications',
+      key: 'project.content.publications',
+      items: [
+        'project.content.publications'
+      ]
+    },
+    {
+      title: 'Project information',
       key: 'project',
       items: [
         'project.content.project_core.project_title',
@@ -37,7 +44,6 @@ export const projectRegLayout: MetadataFormLayout = {
             'project.content.geo_series_accessions',
             'project.content.insdc_project_accessions',
             'project.content.insdc_study_accessions',
-            'project.releaseDate',
             'project.accessionDate'
           ],
           component: AccessionFieldGroupComponent
@@ -60,6 +66,20 @@ export const projectRegLayout: MetadataFormLayout = {
           ],
           component: ContactFieldGroupComponent
         }
+      ]
+    },
+    {
+      title: 'Funders',
+      key: 'project.content.funders',
+      items: [
+        'project.content.funders'
+      ]
+    },
+    {
+      title: 'Release dates',
+      key: 'release',
+      items: [
+        'project.releaseDate',
       ]
     },
     {

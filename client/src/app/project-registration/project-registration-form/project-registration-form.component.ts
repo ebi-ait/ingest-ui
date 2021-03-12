@@ -84,7 +84,6 @@ export class ProjectRegistrationFormComponent implements OnInit {
     this.setSchema(this.projectFormData['content']);
 
     this.title = 'New Project';
-
   }
 
   onSave(formData: object) {
