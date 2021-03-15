@@ -76,13 +76,6 @@ export const projectRegLayout: MetadataFormLayout = {
       ]
     },
     {
-      title: 'Release dates',
-      key: 'release',
-      items: [
-        'project.releaseDate',
-      ]
-    },
-    {
       title: 'Summary',
       key: 'summary',
       items: [
