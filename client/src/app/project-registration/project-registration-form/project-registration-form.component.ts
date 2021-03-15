@@ -32,7 +32,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
   projectContent: object;
 
   projectFormData: object;
-  formTabKey: string;
+  projectFormTabKey: string;
 
   config: MetadataFormConfig;
 
@@ -73,7 +73,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
       cancelButtonLabel: 'Or Cancel project registration'
     };
 
-    this.formTabKey = this.config.layout.tabs[0].key;
+    this.projectFormTabKey = this.config.layout.tabs[0].key;
 
     this.projectResource = null;
     this.projectContent = {};
@@ -110,24 +110,24 @@ export class ProjectRegistrationFormComponent implements OnInit {
   }
 
   onTabChange($tabKey: string) {
-    this.formTabKey = $tabKey;
+    this.projectFormTabKey = $tabKey;
   }
 
   incrementProjectTab() {
-    let index =  projectRegLayout.tabs.findIndex(tab => tab.key === this.formTabKey);
+    let index =  projectRegLayout.tabs.findIndex(tab => tab.key === this.projectFormTabKey);
     if (index + 1 < projectRegLayout.tabs.length) {
       index++;
-      this.formTabKey = projectRegLayout.tabs[index].key;
+      this.projectFormTabKey = projectRegLayout.tabs[index].key;
       return true;
     }
     return false;
   }
 
   decrementProjectTab() {
-    let index =  projectRegLayout.tabs.findIndex(tab => tab.key === this.formTabKey);
+    let index =  projectRegLayout.tabs.findIndex(tab => tab.key === this.projectFormTabKey);
     if (index > 0) {
       index--;
-      this.formTabKey = projectRegLayout.tabs[index].key;
+      this.projectFormTabKey = projectRegLayout.tabs[index].key;
       return true;
     }
     return false;
