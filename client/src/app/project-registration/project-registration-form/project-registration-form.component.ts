@@ -33,6 +33,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
 
   projectFormData: object;
   projectFormTabKey: string;
+  mainTabIndex: number;
 
   config: MetadataFormConfig;
 
@@ -74,6 +75,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
     };
 
     this.projectFormTabKey = this.config.layout.tabs[0].key;
+    this.mainTabIndex = 0;
 
     this.projectResource = null;
     this.projectContent = {};
@@ -147,7 +149,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
     this.createProject(formValue).subscribe(project => {
         console.log('Project saved', project);
         this.loaderService.display(false);
-        this.router.navigate(['/projects']);
+        this.mainTabIndex = 1;
       },
       error => {
         this.loaderService.display(false);
