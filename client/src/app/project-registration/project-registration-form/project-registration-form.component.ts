@@ -90,7 +90,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
     const formValue = formData['value'];
     const valid = formData['valid'];
 
-    if (!this.incrementTab()) {
+    if (!this.incrementProjectTab()) {
       if (valid) {
         this.saveProject(formValue);
       } else {
@@ -113,7 +113,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
     this.formTabKey = $tabKey;
   }
 
-  incrementTab() {
+  incrementProjectTab() {
     let index =  projectRegLayout.tabs.findIndex(tab => tab.key === this.formTabKey);
     if (index + 1 < projectRegLayout.tabs.length) {
       index++;
@@ -123,7 +123,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
     return false;
   }
 
-  decrementTab() {
+  decrementProjectTab() {
     let index =  projectRegLayout.tabs.findIndex(tab => tab.key === this.formTabKey);
     if (index > 0) {
       index--;
