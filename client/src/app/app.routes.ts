@@ -25,7 +25,6 @@ export const ROUTES: Routes = [
   {path: 'home', component: WelcomeComponent},
   {path: 'registration', component: RegistrationComponent, canActivate: [UserIsLoggedInGuard]},
   {path: 'projects', component: MyProjectsComponent, canActivate: [UserIsLoggedInGuard]},
-  {path: 'projects/new', component: ProjectFormComponent, canActivate: [UserIsLoggedInGuard]},
   {path: 'projects/register', component: ProjectRegistrationFormComponent, canActivate: [UserIsLoggedInGuard]},
 
   {path: 'projects/all', component: AllProjectsComponent, canActivate: [UserIsLoggedInGuard, UserIsWranglerGuard]},
