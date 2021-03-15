@@ -40,6 +40,8 @@ export class ProjectRegistrationFormComponent implements OnInit {
 
   schema: string;
 
+  userIsWrangler = false;
+
   @ViewChild('mf') formTabGroup: MatTabGroup;
 
   constructor(private route: ActivatedRoute,
@@ -84,6 +86,8 @@ export class ProjectRegistrationFormComponent implements OnInit {
     this.setSchema(this.projectFormData['content']);
 
     this.title = 'New Project';
+
+    this.ingestService.getUserAccount().subscribe(account => this.userIsWrangler = account.isWrangler());
   }
 
   onSave(formData: object) {
