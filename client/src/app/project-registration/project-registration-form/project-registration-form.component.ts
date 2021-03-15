@@ -149,7 +149,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
     this.createProject(formValue).subscribe(project => {
         console.log('Project saved', project);
         this.loaderService.display(false);
-        this.mainTabIndex = 1;
+        this.router.navigate(['projects', 'detail'], { queryParams: { uuid: project.uuid.uuid } });
       },
       error => {
         this.loaderService.display(false);
