@@ -38,12 +38,49 @@ export class ProjectComponent implements OnInit {
   processesDataSource: MetadataDataSource<MetadataDocument>;
   filesDataSource: MetadataDataSource<MetadataDocument>;
 
+  sharedTabConfig = [
+    {
+      key: 'project',
+      label: '1. Project'
+    },
+    {
+      key: 'experiment-info',
+      label: '2. Experiment Information'
+    },
+  ];
+
+  contributorTabConfig = [
+      ...this.sharedTabConfig,
+    {
+      key: 'send',
+      label: '3. Send'
+    }
+  ];
+
+  wranglerTabConfig = [
+      ...this.sharedTabConfig,
+    {
+      key: 'upload',
+      label: '3. Upload'
+    },
+    {
+      key: 'metadata',
+      label: '4. View Metadata'
+    },
+    {
+      key: 'data',
+      label: '5. View Data'
+    }
+  ];
+
+  tabConfig = this.contributorTabConfig;
+
   constructor(
     private alertService: AlertService,
     private ingestService: IngestService,
     private router: Router,
     private route: ActivatedRoute,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
   ) {
   }
 
@@ -51,6 +88,9 @@ export class ProjectComponent implements OnInit {
     this.initProject();
     this.ingestService.getUserAccount().subscribe(account => {
       this.userIsWrangler = account.isWrangler();
+      if (this.userIsWrangler) {
+        this.tabConfig = this.wranglerTabConfig;
+      }
     });
   }
 
@@ -175,6 +215,7 @@ export class ProjectComponent implements OnInit {
   private initProject() {
     this.route.queryParamMap.subscribe(queryParams => {
       this.projectUuid = queryParams.get('uuid');
+      this.selectedProjectTabKey = queryParams.get('tab') || this.tabConfig[0].key;
     });
 
     this.projectId = this.route.snapshot.paramMap.get('id');
@@ -193,6 +234,9 @@ export class ProjectComponent implements OnInit {
   }
 
   projectTabChange(tabKey: string) {
+    if (!this.tabConfig.map(tab => tab.key).includes(tabKey)) {
+      return;
+    }
     this.selectedProjectTabKey = tabKey;
   }
 
@@ -218,5 +262,13 @@ export class ProjectComponent implements OnInit {
           entityType
       );
     });
+  }
+
+  lookupTabIndex(tabKey: string): number {
+    if (tabKey) {
+      return this.tabConfig.findIndex(tab => tab.key === tabKey);
+    } else {
+      return 0;
+    }
   }
 }
