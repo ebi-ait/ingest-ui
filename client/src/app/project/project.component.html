@@ -5,8 +5,8 @@
 <ng-container *ngIf="project">
   <h1>{{getProjectName()}}</h1>
   <br/>
-  <mat-tab-group>
-    <mat-tab label="1. Project">
+  <mat-tab-group [selectedIndex]="lookupTabIndex(selectedProjectTabKey)">
+    <mat-tab [label]="tabConfig[0].label">
       <div class="vf-u-margin__top--xxl">
         <app-project-summary (tabChange)="projectTabChange($event)" [project]="project"></app-project-summary>
         <a class="vf-button vf-button--sm {{upload ? '' : 'vf-button--primary'}}" role="button"
@@ -16,7 +16,7 @@
           <mat-icon>delete_forever</mat-icon>
         </button>
       </div>
-      <mat-tab label="2. Experiment Information">
+      <mat-tab [label]="tabConfig[1].label">
         <div class="vf-u-margin__top--xxl">
           <app-template-questionnaire></app-template-questionnaire>
         </div>
@@ -24,7 +24,7 @@
     </mat-tab>
 
     <ng-container *ngIf="userIsWrangler">
-      <mat-tab label="3. Upload">
+      <mat-tab [label]="tabConfig[2].label">
         <div class="vf-u-margin__top--xxl">
           <button
             *ngIf="canSubmit(project)"
@@ -84,7 +84,7 @@
           </table>
         </div>
       </mat-tab>
-      <mat-tab label="4. View Metadata">
+      <mat-tab [label]="tabConfig[3].label">
         <div class="vf-u-margin__top--xxl">
           <app-vf-tabs>
             <app-vf-tab title="Biomaterials">
@@ -99,14 +99,14 @@
           </app-vf-tabs>
         </div>
       </mat-tab>
-      <mat-tab label="5. View Data">
+      <mat-tab [label]="tabConfig[4].label">
         <div class="vf-u-margin__top--xxl">
           <app-data-table [dataSource]="filesDataSource" [flatten]="true"></app-data-table>
         </div>
       </mat-tab>
     </ng-container>
     <ng-container *ngIf="!userIsWrangler">
-      <mat-tab label="3. Send">
+      <mat-tab [label]="tabConfig[2].label">
         <div class="vf-u-margin__top--xxl">
           <h1 class="vf-text vf-text-heading--2">Send your template</h1>
           <br/>
@@ -121,5 +121,4 @@
       </mat-tab>
     </ng-container>
   </mat-tab-group>
-
 </ng-container>
