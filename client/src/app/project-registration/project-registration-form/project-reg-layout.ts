@@ -20,6 +20,7 @@ export const projectRegLayout: MetadataFormLayout = {
       items: [
         'project.content.project_core.project_title',
         'project.content.project_core.project_description',
+        'project.dataAccess',
         {
           keys: [
             'project.identifyingOrganisms',
@@ -29,14 +30,7 @@ export const projectRegLayout: MetadataFormLayout = {
           ],
           component: ProjectIdComponent
         },
-        'project.dataAccess.type',
-        {
-          keys: [
-            'project.content.publications.url'
-          ],
-          component: PublicationFieldGroupComponent
-        },
-        'project.content.supplementary_links',
+        'project.accessionDate',
         {
           keys: [
             'project.content.array_express_accessions',
@@ -44,28 +38,19 @@ export const projectRegLayout: MetadataFormLayout = {
             'project.content.geo_series_accessions',
             'project.content.insdc_project_accessions',
             'project.content.insdc_study_accessions',
-            'project.accessionDate'
+            'project.accessionDate',
+            'project.releaseDate'
           ],
           component: AccessionFieldGroupComponent
-        }
+        },
+        'project.content.supplementary_links',
       ]
     },
     {
-      title: 'Contacts',
-      key: 'contacts',
+      title: 'Contributors',
+      key: 'contributors',
       items: [
-        {
-          keys: [
-            'project.content.array_express_accessions',
-            'project.content.biostudies_accessions',
-            'project.content.geo_series_accessions',
-            'project.content.insdc_project_accessions',
-            'project.content.insdc_study_accessions',
-            'project.releaseDate',
-            'project.accessionDate'
-          ],
-          component: ContactFieldGroupComponent
-        }
+        'project.content.contributors'
       ]
     },
     {
