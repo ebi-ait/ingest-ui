@@ -50,7 +50,12 @@ export const projectRegLayout: MetadataFormLayout = {
       title: 'Contributors',
       key: 'contributors',
       items: [
-        'project.content.contributors'
+        {
+          keys: [
+            'project.content.contributors'
+          ],
+          component: ContactFieldGroupComponent
+        }
       ]
     },
     {
