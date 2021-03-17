@@ -11,6 +11,7 @@ import {ContactNameFieldComponent} from './contact-name-field/contact-name-field
 import {ProjectIdComponent} from './project-id/project-id.component';
 import { ProjectRegistrationFormComponent } from './project-registration-form/project-registration-form.component';
 import {MatTabsModule} from '@angular/material/tabs';
+import {FunderFieldGroupComponent} from './funder-field-group/funder-field-group.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import {MatTabsModule} from '@angular/material/tabs';
     ContactFieldGroupComponent,
     ContactNameFieldComponent,
     ProjectIdComponent,
-    ProjectRegistrationFormComponent
+    ProjectRegistrationFormComponent,
+    FunderFieldGroupComponent
   ],
     imports: [
         CommonModule,

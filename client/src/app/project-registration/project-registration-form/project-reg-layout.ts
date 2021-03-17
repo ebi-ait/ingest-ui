@@ -4,6 +4,7 @@ import {PublicationFieldGroupComponent} from '../publication-field-group/publica
 import {ContactFieldGroupComponent} from '../contact-field-group/contact-field-group.component';
 import {ProjectRegistrationSummaryComponent} from '../project-registration-summary/project-registration-summary.component';
 import {ProjectIdComponent} from '../project-id/project-id.component';
+import {FunderFieldGroupComponent} from '../funder-field-group/funder-field-group.component';
 
 export const projectRegLayout: MetadataFormLayout = {
   tabs: [
@@ -61,7 +62,12 @@ export const projectRegLayout: MetadataFormLayout = {
       title: 'Funders',
       key: 'project.content.funders',
       items: [
-        'project.content.funders'
+        {
+          keys: [
+            'project.content.contributors'
+          ],
+          component: FunderFieldGroupComponent
+        }
       ]
     },
     {
