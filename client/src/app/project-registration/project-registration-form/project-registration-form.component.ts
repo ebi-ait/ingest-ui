@@ -68,8 +68,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
         'notes': 'textarea'
       },
       overrideRequiredFields: {
-        'project.content.contributors.project_role.text': false,
-        'project.content.funders': false,
+        'project.content.contributors.project_role.text': false
       },
       submitButtonLabel: 'Register Project',
       cancelButtonLabel: 'Or Cancel project registration'
