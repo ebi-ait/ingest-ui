@@ -30,7 +30,6 @@ export const projectRegLayout: MetadataFormLayout = {
           ],
           component: ProjectIdComponent
         },
-        'project.accessionDate',
         {
           keys: [
             'project.content.array_express_accessions',
