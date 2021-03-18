@@ -75,7 +75,7 @@
 
 <br/>
 
-<ng-container *ngIf="submitLink && (this.submitToDcp || this.submitMetadataToDcp || this.submitToArchives)">
+<ng-container *ngIf="submitLink && isSubmitAction()">
   <div *ngIf="manifest && !isLinkingDone">
     Linking is in progress... {{getLinkingProgress(manifest)}}% done!
     <mat-progress-bar mode="determinate" value="{{getLinkingProgress(manifest)}}"></mat-progress-bar>

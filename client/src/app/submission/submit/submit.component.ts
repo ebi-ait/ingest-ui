@@ -48,19 +48,19 @@ export class SubmitComponent implements OnInit {
     const submitActions = [];
 
     if (this.submitToArchives) {
-      submitActions.push('Archive');
+      submitActions.push(SubmitActions.Archive);
     }
 
     if (this.submitToDcp) {
-      submitActions.push('Export');
+      submitActions.push(SubmitActions.Export);
     }
 
     if (this.submitMetadataToDcp) {
-      submitActions.push('Export_Metadata');
+      submitActions.push(SubmitActions.ExportMetadata);
     }
 
     if (this.cleanup) {
-      submitActions.push('Cleanup');
+      submitActions.push(SubmitActions.Cleanup);
     }
 
     this.requestSubmit(this.submitLink, submitActions);
@@ -152,4 +152,15 @@ export class SubmitComponent implements OnInit {
     this.submitToDcp = !this.submitMetadataToDcp;
     this.cleanup = !this.submitMetadataToDcp;
   }
+
+  isSubmitAction() {
+    return this.submitToDcp || this.submitMetadataToDcp || this.submitToArchives;
+  }
+}
+
+enum SubmitActions {
+  Archive = 'Archive',
+  Export = 'Export',
+  ExportMetadata = 'Export_Metadata',
+  Cleanup = 'Cleanup'
 }
