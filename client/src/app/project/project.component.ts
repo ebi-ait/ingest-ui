@@ -61,7 +61,7 @@ export class ProjectComponent implements OnInit {
       ...this.sharedTabConfig,
     {
       key: 'upload',
-      label: '3. Upload'
+      label: '3. Data upload'
     },
     {
       key: 'metadata',
