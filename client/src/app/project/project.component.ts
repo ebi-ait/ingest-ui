@@ -47,22 +47,14 @@ export class ProjectComponent implements OnInit {
       key: 'experiment-info',
       label: '2. Experiment Information'
     },
-  ];
-
-  contributorTabConfig = [
-      ...this.sharedTabConfig,
     {
-      key: 'send',
-      label: '3. Send'
+      key: 'upload',
+      label: '3. Data upload'
     }
   ];
 
   wranglerTabConfig = [
       ...this.sharedTabConfig,
-    {
-      key: 'upload',
-      label: '3. Data upload'
-    },
     {
       key: 'metadata',
       label: '4. View Metadata'
@@ -73,7 +65,7 @@ export class ProjectComponent implements OnInit {
     }
   ];
 
-  tabConfig = this.contributorTabConfig;
+  tabConfig = this.sharedTabConfig;
 
   constructor(
     private alertService: AlertService,
