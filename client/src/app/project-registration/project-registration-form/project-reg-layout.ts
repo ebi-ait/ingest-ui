@@ -2,7 +2,7 @@ import {MetadataFormLayout} from '../../metadata-schema-form/models/metadata-for
 import {AccessionFieldGroupComponent} from '../accession-field-group/accession-field-group.component';
 import {PublicationFieldGroupComponent} from '../publication-field-group/publication-field-group.component';
 import {ContactFieldGroupComponent} from '../contact-field-group/contact-field-group.component';
-import {ProjectRegistrationSummaryComponent} from '../project-registration-summary/project-registration-summary.component';
+import {ProjectRegistrationSaveComponent} from '../project-registration-summary/project-registration-save.component';
 import {ProjectIdComponent} from '../project-id/project-id.component';
 import {FunderFieldGroupComponent} from '../funder-field-group/funder-field-group.component';
 
@@ -71,12 +71,12 @@ export const projectRegLayout: MetadataFormLayout = {
       ]
     },
     {
-      title: 'Summary',
-      key: 'summary',
+      title: 'Save',
+      key: 'save',
       items: [
         {
           keys: [],
-          component: ProjectRegistrationSummaryComponent
+          component: ProjectRegistrationSaveComponent
         }
       ]
     }
