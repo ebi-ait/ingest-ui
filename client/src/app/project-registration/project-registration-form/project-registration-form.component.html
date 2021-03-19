@@ -20,14 +20,10 @@
     </ng-container>
   </mat-tab>
   <mat-tab label="2. Experiment Information" disabled></mat-tab>
+  <mat-tab label="3. Data upload" disabled></mat-tab>
 
   <ng-container *ngIf="userIsWrangler">
-    <mat-tab label="3. Data upload" disabled></mat-tab>
     <mat-tab label="4. View Metadata" disabled></mat-tab>
     <mat-tab label="5. View Data" disabled></mat-tab>
-  </ng-container>
-
-  <ng-container *ngIf="!userIsWrangler">
-    <mat-tab label="3. Data upload" disabled></mat-tab>
   </ng-container>
 </mat-tab-group>
