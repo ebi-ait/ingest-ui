@@ -64,7 +64,7 @@ export const projectRegLayout: MetadataFormLayout = {
       items: [
         {
           keys: [
-            'project.content.contributors'
+            'project.content.funders'
           ],
           component: FunderFieldGroupComponent
         }
