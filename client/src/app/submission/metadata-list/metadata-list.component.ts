@@ -192,22 +192,15 @@ export class MetadataListComponent implements OnInit, OnDestroy {
     this.schemaService.getDereferencedSchema(schemaUrl)
       .subscribe(data => {
         this.loaderService.display(false);
-        console.log('schema', data);
-
-        const dialogRef = this.dialog.open(MetadataDetailsDialogComponent, {
+        this.dialog.open(MetadataDetailsDialogComponent, {
           data: {metadata: metadata, schema: data},
           width: '60%',
           disableClose: true
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-          console.log('The dialog was closed');
         });
       });
   }
 
   toggleExpandRow(row: object, rowIndex: number) {
-    const metadata = this.metadataList[rowIndex];
     this.table.rowDetail.toggleExpandRow(row);
   }
 }

@@ -31,9 +31,9 @@ export class SubmitComponent implements OnInit {
   constructor(private ingestService: IngestService,
               private loaderService: LoaderService,
               private alertService: AlertService) {
-    this.submitToArchives = true;
-    this.submitToDcp = true;
-    this.cleanup = true;
+    this.submitToArchives = false;
+    this.submitToDcp = false;
+    this.cleanup = false;
   }
 
   ngOnInit() {
