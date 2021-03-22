@@ -22,6 +22,7 @@ export class SubmitComponent implements OnInit {
   @Input() isLinkingDone: boolean;
   @Input() manifest: object;
   submitToArchives: boolean;
+  submitMetadataToDcp: boolean;
   submitToDcp: boolean;
   cleanup: boolean;
   releaseDate: string;
@@ -31,9 +32,11 @@ export class SubmitComponent implements OnInit {
   constructor(private ingestService: IngestService,
               private loaderService: LoaderService,
               private alertService: AlertService) {
+
     this.submitToArchives = false;
     this.submitToDcp = false;
     this.cleanup = false;
+    this.submitMetadataToDcp = false;
   }
 
   ngOnInit() {
@@ -46,15 +49,19 @@ export class SubmitComponent implements OnInit {
     const submitActions = [];
 
     if (this.submitToArchives) {
-      submitActions.push('Archive');
+      submitActions.push(SubmitActions.Archive);
     }
 
     if (this.submitToDcp) {
-      submitActions.push('Export');
+      submitActions.push(SubmitActions.Export);
+    }
+
+    if (this.submitMetadataToDcp) {
+      submitActions.push(SubmitActions.ExportMetadata);
     }
 
     if (this.cleanup) {
-      submitActions.push('Cleanup');
+      submitActions.push(SubmitActions.Cleanup);
     }
 
     this.requestSubmit(this.submitLink, submitActions);
@@ -137,6 +144,24 @@ export class SubmitComponent implements OnInit {
   onSubmitToDspChange() {
     if (!this.submitToDcp) {
       this.cleanup = false;
+    } else {
+      this.submitMetadataToDcp = false;
     }
   }
+
+  onSubmitMetadataToDspChange() {
+    this.submitToDcp = !this.submitMetadataToDcp;
+    this.cleanup = !this.submitMetadataToDcp;
+  }
+
+  isSubmitAction() {
+    return this.submitToDcp || this.submitMetadataToDcp || this.submitToArchives;
+  }
+}
+
+enum SubmitActions {
+  Archive = 'Archive',
+  Export = 'Export',
+  ExportMetadata = 'Export_Metadata',
+  Cleanup = 'Cleanup'
 }
