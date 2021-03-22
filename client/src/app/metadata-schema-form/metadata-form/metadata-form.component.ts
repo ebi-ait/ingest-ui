@@ -102,7 +102,6 @@ export class MetadataFormComponent implements OnInit {
     }
 
     this.save.emit(formData);
-
   }
 
   getFormData() {

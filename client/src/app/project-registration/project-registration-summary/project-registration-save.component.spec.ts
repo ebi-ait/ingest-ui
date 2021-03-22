@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProjectRegistrationSummaryComponent } from './project-registration-summary.component';
+import { ProjectRegistrationSaveComponent } from './project-registration-save.component';
 
 describe('ProjectRegistrationSummaryComponent', () => {
-  let component: ProjectRegistrationSummaryComponent;
-  let fixture: ComponentFixture<ProjectRegistrationSummaryComponent>;
+  let component: ProjectRegistrationSaveComponent;
+  let fixture: ComponentFixture<ProjectRegistrationSaveComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProjectRegistrationSummaryComponent ]
+      declarations: [ ProjectRegistrationSaveComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProjectRegistrationSummaryComponent);
+    fixture = TestBed.createComponent(ProjectRegistrationSaveComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

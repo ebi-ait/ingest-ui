@@ -2,6 +2,9 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Project, ProjectColumn} from '../../models/project';
 import {$enum} from 'ts-enum-util';
 import {formatDate} from '@angular/common';
+import {AuthService} from '../../services/auth.service';
+import {Observable, of} from 'rxjs';
+import {IngestService} from '../../services/ingest.service';
 
 @Component({
   selector: 'app-project-list',
@@ -9,7 +12,7 @@ import {formatDate} from '@angular/common';
   styleUrls: ['./project-list.component.css']
 })
 export class ProjectListComponent implements OnInit {
-  constructor() {
+  constructor(private authService: AuthService, private ingestService: IngestService) {
   }
 
   private _projects: Project[];
@@ -46,6 +49,10 @@ export class ProjectListComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  isWranglerOrOwner(project: Project): Observable<boolean> {
+    return this.authService.isWranglerOrOwner(this.ingestService.getUserAccount(), of(project));
   }
 
   getColumnLabel(column: ProjectColumn): string {

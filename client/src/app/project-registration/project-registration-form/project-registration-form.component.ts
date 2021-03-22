@@ -24,7 +24,6 @@ export class ProjectRegistrationFormComponent implements OnInit {
   //  There are some code duplication here with Project form component.
 
   title: string;
-  subtitle: string;
 
   projectMetadataSchema: any = (metadataSchema as any).default;
   projectIngestSchema: any = (ingestSchema as any).default;
@@ -33,13 +32,15 @@ export class ProjectRegistrationFormComponent implements OnInit {
   projectContent: object;
 
   projectFormData: object;
-  formTabKey: string;
+  projectFormTabKey: string;
 
   config: MetadataFormConfig;
 
   patch: object = {};
 
   schema: string;
+
+  userIsWrangler = false;
 
   @ViewChild('mf') formTabGroup: MatTabGroup;
 
@@ -67,14 +68,13 @@ export class ProjectRegistrationFormComponent implements OnInit {
         'notes': 'textarea'
       },
       overrideRequiredFields: {
-        'project.content.contributors.project_role.text': false,
-        'project.content.funders': false,
+        'project.content.contributors.project_role.text': false
       },
       submitButtonLabel: 'Register Project',
       cancelButtonLabel: 'Or Cancel project registration'
     };
 
-    this.formTabKey = this.config.layout.tabs[0].key;
+    this.projectFormTabKey = this.config.layout.tabs[0].key;
 
     this.projectResource = null;
     this.projectContent = {};
@@ -85,16 +85,15 @@ export class ProjectRegistrationFormComponent implements OnInit {
     this.setSchema(this.projectFormData['content']);
 
     this.title = 'New Project';
-    this.subtitle = 'Please provide initial information about your HCA project.\n' +
-      '  You will be able to edit this information as your project develops.';
 
+    this.ingestService.getUserAccount().subscribe(account => this.userIsWrangler = account.isWrangler());
   }
 
   onSave(formData: object) {
     const formValue = formData['value'];
     const valid = formData['valid'];
 
-    if (!this.incrementTab()) {
+    if (!this.incrementProjectTab()) {
       if (valid) {
         this.saveProject(formValue);
       } else {
@@ -114,24 +113,24 @@ export class ProjectRegistrationFormComponent implements OnInit {
   }
 
   onTabChange($tabKey: string) {
-    this.formTabKey = $tabKey;
+    this.projectFormTabKey = $tabKey;
   }
 
-  incrementTab() {
-    let index =  projectRegLayout.tabs.findIndex(tab => tab.key === this.formTabKey);
+  incrementProjectTab() {
+    let index =  projectRegLayout.tabs.findIndex(tab => tab.key === this.projectFormTabKey);
     if (index + 1 < projectRegLayout.tabs.length) {
       index++;
-      this.formTabKey = projectRegLayout.tabs[index].key;
+      this.projectFormTabKey = projectRegLayout.tabs[index].key;
       return true;
     }
     return false;
   }
 
-  decrementTab() {
-    let index =  projectRegLayout.tabs.findIndex(tab => tab.key === this.formTabKey);
+  decrementProjectTab() {
+    let index =  projectRegLayout.tabs.findIndex(tab => tab.key === this.projectFormTabKey);
     if (index > 0) {
       index--;
-      this.formTabKey = projectRegLayout.tabs[index].key;
+      this.projectFormTabKey = projectRegLayout.tabs[index].key;
       return true;
     }
     return false;
@@ -151,7 +150,12 @@ export class ProjectRegistrationFormComponent implements OnInit {
     this.createProject(formValue).subscribe(project => {
         console.log('Project saved', project);
         this.loaderService.display(false);
-        this.router.navigate(['/projects']);
+        this.router.navigate(['projects', 'detail'], {
+          queryParams: {
+            uuid: project.uuid.uuid,
+            tab: 'experiment-info'
+          }
+        });
       },
       error => {
         this.loaderService.display(false);

@@ -2,17 +2,26 @@ import {MetadataFormLayout} from '../../metadata-schema-form/models/metadata-for
 import {AccessionFieldGroupComponent} from '../accession-field-group/accession-field-group.component';
 import {PublicationFieldGroupComponent} from '../publication-field-group/publication-field-group.component';
 import {ContactFieldGroupComponent} from '../contact-field-group/contact-field-group.component';
-import {ProjectRegistrationSummaryComponent} from '../project-registration-summary/project-registration-summary.component';
+import {ProjectRegistrationSaveComponent} from '../project-registration-summary/project-registration-save.component';
 import {ProjectIdComponent} from '../project-id/project-id.component';
+import {FunderFieldGroupComponent} from '../funder-field-group/funder-field-group.component';
 
 export const projectRegLayout: MetadataFormLayout = {
   tabs: [
     {
-      title: 'Project',
+      title: 'Publications',
+      key: 'project.content.publications',
+      items: [
+        'project.content.publications'
+      ]
+    },
+    {
+      title: 'Project information',
       key: 'project',
       items: [
         'project.content.project_core.project_title',
         'project.content.project_core.project_description',
+        'project.dataAccess',
         {
           keys: [
             'project.identifyingOrganisms',
@@ -22,14 +31,6 @@ export const projectRegLayout: MetadataFormLayout = {
           ],
           component: ProjectIdComponent
         },
-        'project.dataAccess.type',
-        {
-          keys: [
-            'project.content.publications.url'
-          ],
-          component: PublicationFieldGroupComponent
-        },
-        'project.content.supplementary_links',
         {
           keys: [
             'project.content.array_express_accessions',
@@ -37,38 +38,45 @@ export const projectRegLayout: MetadataFormLayout = {
             'project.content.geo_series_accessions',
             'project.content.insdc_project_accessions',
             'project.content.insdc_study_accessions',
-            'project.releaseDate',
-            'project.accessionDate'
+            'project.accessionDate',
+            'project.releaseDate'
           ],
           component: AccessionFieldGroupComponent
-        }
+        },
+        'project.content.supplementary_links',
       ]
     },
     {
-      title: 'Contacts',
-      key: 'contacts',
+      title: 'Contributors',
+      key: 'contributors',
       items: [
         {
           keys: [
-            'project.content.array_express_accessions',
-            'project.content.biostudies_accessions',
-            'project.content.geo_series_accessions',
-            'project.content.insdc_project_accessions',
-            'project.content.insdc_study_accessions',
-            'project.releaseDate',
-            'project.accessionDate'
+            'project.content.contributors'
           ],
           component: ContactFieldGroupComponent
         }
       ]
     },
     {
-      title: 'Summary',
-      key: 'summary',
+      title: 'Funders',
+      key: 'project.content.funders',
+      items: [
+        {
+          keys: [
+            'project.content.funders'
+          ],
+          component: FunderFieldGroupComponent
+        }
+      ]
+    },
+    {
+      title: 'Save',
+      key: 'save',
       items: [
         {
           keys: [],
-          component: ProjectRegistrationSummaryComponent
+          component: ProjectRegistrationSaveComponent
         }
       ]
     }

@@ -63,6 +63,7 @@ import { ProcessDetailsComponent } from './process-details/process-details.compo
 import {NgxGraphModule} from '@swimlane/ngx-graph';
 import { MetadataPickerComponent } from './metadata-picker/metadata-picker.component';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
+import {AuthService} from './shared/services/auth.service';
 
 const BROWSER_LOCALE = navigator.language;
 
@@ -133,6 +134,7 @@ const BROWSER_LOCALE = navigator.language;
     BrokerService,
     FormBuilder,
     AlertService,
+    AuthService,
     LoaderService,
     FlattenService,
     SchemaService,
