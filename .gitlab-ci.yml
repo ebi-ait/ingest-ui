@@ -1,0 +1,10 @@
+include:
+  remote: 'https://raw.githubusercontent.com/ebi-ait/gitlab-ci-templates/master/build-release-deploy.yml'
+
+Unit Test:
+  image: quay.io/ebi-ait/ingest-base-images:node_12.16.3-alpine
+  stage: build
+  script:
+    - cd client/
+    - npm install
+    - npm run test
