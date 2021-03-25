@@ -8,4 +8,4 @@ Lint & Unit Test:
     - cd client/
     - npm install
     - npm run lint
-    - npm run test
+    - ng test --watch false --single-run true
