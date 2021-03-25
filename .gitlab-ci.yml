@@ -7,4 +7,4 @@ Unit Test:
   script:
     - cd client/
     - npm install
-    - ng test --watch false --single-run true
+    - ng test --watch false
