@@ -19,8 +19,8 @@ spec:
         app: ingest-ui
       annotations:
         rollme: {{ randAlphaNum 5 | quote }}
-        app.gitlab.com/app: { { .Values.gitlab_app } }
-        app.gitlab.com/env: { { .Values.gitlab_env } }
+        app.gitlab.com/app: {{ .Values.gitlab_app }}
+        app.gitlab.com/env: {{ .Values.gitlab_env }}
     spec:
       containers:
       - env:
