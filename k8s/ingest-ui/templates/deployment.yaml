@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    app.gitlab.com/app: {{ .Values.gitlab_app }}
+    app.gitlab.com/env: {{ .Values.gitlab_env }}
+  labels:
+    role: ingestion
+  name: ingest-ui
+  namespace: {{ .Values.environment }}-environment
+spec:
+  selector:
+    matchLabels:
+      app: ingest-ui
+  replicas: {{ .Values.replicas }}
+  template:
+    metadata:
+      labels:
+        app: ingest-ui
+      annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
+        app.gitlab.com/app: { { .Values.gitlab_app } }
+        app.gitlab.com/env: { { .Values.gitlab_env } }
+    spec:
+      containers:
+      - env:
+        - name: INGEST_API_URL
+          value: https://{{ .Values.ingest }}
+        - name: BROKER_API_URL
+          value: https://{{ .Values.broker }}
+        - name: SCHEMA_API_URL
+          value: https://{{ .Values.schema }}/
+        - name: DSS_API_URL
+          value: https://{{ .Values.dss }}
+        - name: DOMAIN_WHITELIST
+          value: {{ .Values.domainWhitelist }}
+        - name: SECURED_ENDPOINTS
+          value: {{ .Values.securedEndpoints }}
+        - name: AAI_CLIENT_ID
+          value: {{ .Values.aaiClientId }}
+        - name: AAI_AUTHORITY
+          value: {{ .Values.aaiAuthority }}
+        - name: OLS_URL
+          value: {{ .Values.olsUrl }}
+        image: quay.io/ebi-ait/ingest-ui:{{ .Values.image }}
+        imagePullPolicy: Always
+        name: ingest-ui
+        ports:
+        - containerPort: 4200
+      dnsPolicy: Default
