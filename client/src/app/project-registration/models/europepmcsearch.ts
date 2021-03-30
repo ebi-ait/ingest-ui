@@ -12,6 +12,16 @@ export interface EuropePMCResult {
   doi: string;
   pmid: string;
   authorString: string;
+  grantsList: EuropePMCGrantsList;
+}
+
+export interface EuropePMCGrantsList {
+  grant: EuropePMCGrant[];
+}
+
+export interface EuropePMCGrant {
+  grantId: string;
+  agency: string;
 }
 
 // add more values later as we expand to query via pmid

@@ -17,6 +17,7 @@ export class AutofillProjectService {
   // todo: handle empty result
   // todo: check how Number converts stuff, see if I need to any checks in this
   // todo: sanitize the strings, the description for one of the projects had html stuff in it
+  // todo: add checks to the grant bit here, in case of missing properties
   getProjectDetails(searchUsing: Identifier, searchString: string): Observable<AutofillProject> {
     return this.queryEuropePMC(searchUsing, searchString).pipe(
       map(response => {
@@ -26,7 +27,8 @@ export class AutofillProjectService {
           description: result.abstractText,
           doi: result.doi,
           authors: result.authorString.split(','),
-          pmid: Number(result.pmid)
+          pmid: Number(result.pmid),
+          funders: result.grantsList.grant.map(grant => ({grant_id: grant.grantId, organization: grant.agency}))
         };
         return projectDetails;
       })
