@@ -22,8 +22,9 @@ export class FunderFieldGroupComponent extends InputComponent implements OnInit 
         this.control = this.metadataForm.getControl(fundersSchemaKey);
 
         super.ngOnInit();
-
+        // we can check if the form control has any value set here
+      // either by using valueChanges event or the value property
         // Default to having one funder form item added
-        this.addFormControl(this.metadata, this.control);
+        // this.addFormControl(this.metadata, this.control);
     }
 }

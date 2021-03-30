@@ -13,6 +13,14 @@ import {projectRegLayout} from './project-reg-layout';
 import {Observable} from 'rxjs';
 import {concatMap} from 'rxjs/operators';
 
+// import {DoiService} from '../services/autofill-project.service';
+import {any} from 'codelyzer/util/function';
+import {AutofillProjectService} from '../services/autofill-project.service';
+import {Identifier} from '../models/europepmcsearch';
+import {AutofillProject} from '../models/autofill-project';
+// import 'rxjs/add/operator/filter';
+
+
 @Component({
   selector: 'app-project-registration-form',
   templateUrl: './project-registration-form.component.html',
@@ -28,11 +36,13 @@ export class ProjectRegistrationFormComponent implements OnInit {
   projectMetadataSchema: any = (metadataSchema as any).default;
   projectIngestSchema: any = (ingestSchema as any).default;
 
-  projectResource: Project;
-  projectContent: object;
-
+  // todo need to clean this up
+  // projectResource: Project;
+  // projectContent: object;
+  // projectDetails: ProjectDetails;
   projectFormData: object;
   projectFormTabKey: string;
+  test = true;
 
   config: MetadataFormConfig;
 
@@ -49,12 +59,21 @@ export class ProjectRegistrationFormComponent implements OnInit {
               private ingestService: IngestService,
               private alertService: AlertService,
               private loaderService: LoaderService,
-              private schemaService: SchemaService) {
+              private schemaService: SchemaService,
+              private autofillProjectService: AutofillProjectService,
+  ) {
   }
 
   ngOnInit() {
-    this.projectIngestSchema['properties']['content'] = this.projectMetadataSchema;
 
+    const queryParam = this.route.snapshot.queryParamMap;
+
+    if (queryParam.has(Identifier.DOI)) {
+      this.test = false;
+      this.autofillProjectDetails(Identifier.DOI, queryParam.get(Identifier.DOI));
+    }
+
+    this.projectIngestSchema['properties']['content'] = this.projectMetadataSchema;
     this.config = {
       hideFields: [
         'describedBy',
@@ -70,14 +89,15 @@ export class ProjectRegistrationFormComponent implements OnInit {
       overrideRequiredFields: {
         'project.content.contributors.project_role.text': false
       },
+      disableFields: [
+        'project_description'
+      ],
       submitButtonLabel: 'Register Project',
       cancelButtonLabel: 'Or Cancel project registration'
     };
 
     this.projectFormTabKey = this.config.layout.tabs[0].key;
 
-    this.projectResource = null;
-    this.projectContent = {};
     this.projectFormData = {
       content: {}
     };
@@ -85,9 +105,38 @@ export class ProjectRegistrationFormComponent implements OnInit {
     this.setSchema(this.projectFormData['content']);
 
     this.title = 'New Project';
-
     this.ingestService.getUserAccount().subscribe(account => this.userIsWrangler = account.isWrangler());
   }
+
+  private autofillProjectDetails(id, search) {
+    const project_core = {
+        'project_title': '',
+        'project_description': ''
+    };
+
+    const publication = {
+          'doi': '',
+          'pmid': Number(),
+          'title': '',
+          'authors': []
+        };
+
+    this.autofillProjectService.getProjectDetails(id, search).subscribe((data: AutofillProject) => {
+      project_core['project_title'] = data.title;
+      project_core['project_description'] = data.description;
+      this.projectFormData['content']['project_core'] = project_core;
+
+      publication['doi'] = data.doi;
+      publication['pmid'] = data.pmid;
+      publication['title'] = data.title;
+      publication['authors'] = data.authors;
+
+      this.projectFormData['content']['publications'] = [publication];
+      this.projectFormData['content']['funders'] = data.funders;
+      this.test = true;
+    }
+   );
+}
 
   onSave(formData: object) {
     const formValue = formData['value'];

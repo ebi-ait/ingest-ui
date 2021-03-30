@@ -9,14 +9,7 @@ import {FunderFieldGroupComponent} from '../funder-field-group/funder-field-grou
 export const projectRegLayout: MetadataFormLayout = {
   tabs: [
     {
-      title: 'Publications',
-      key: 'project.content.publications',
-      items: [
-        'project.content.publications'
-      ]
-    },
-    {
-      title: 'Project information',
+      title: 'Project Information',
       key: 'project',
       items: [
         'project.content.project_core.project_title',
@@ -58,6 +51,18 @@ export const projectRegLayout: MetadataFormLayout = {
         }
       ]
     },
+    {
+      title: 'Publications',
+      key: 'project.content.publications',
+      items: [
+        {
+          keys: [
+            'project.content.publications.title'
+          ],
+          component: PublicationFieldGroupComponent
+        }
+      ]
+    } ,
     {
       title: 'Funders',
       key: 'project.content.funders',

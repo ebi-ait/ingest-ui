@@ -12,7 +12,7 @@ import {ProjectIdComponent} from './project-id/project-id.component';
 import { ProjectRegistrationFormComponent } from './project-registration-form/project-registration-form.component';
 import {MatTabsModule} from '@angular/material/tabs';
 import {FunderFieldGroupComponent} from './funder-field-group/funder-field-group.component';
-
+import {AutofillProjectFormComponent} from './autofill-project-form/autofill-project-form.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +23,8 @@ import {FunderFieldGroupComponent} from './funder-field-group/funder-field-group
     ContactNameFieldComponent,
     ProjectIdComponent,
     ProjectRegistrationFormComponent,
-    FunderFieldGroupComponent
+    FunderFieldGroupComponent,
+    AutofillProjectFormComponent,
   ],
     imports: [
         CommonModule,
