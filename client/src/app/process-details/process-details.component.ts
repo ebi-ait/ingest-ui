@@ -26,12 +26,14 @@ export class ProcessDetailsComponent implements OnInit {
   processId: string;
 
   inputBiomaterials: MetadataDocument[];
+  inputFiles: MetadataDocument[];
   protocols: MetadataDocument[];
   derivedBiomaterials: MetadataDocument[];
   derivedFiles: MetadataDocument[];
 
   protocolsToAdd: MetadataDocument[] = [];
   inputBiomaterialsToAdd: MetadataDocument[] = [];
+  inputFilesToAdd: MetadataDocument[] = [];
   outputBiomaterialsToAdd: MetadataDocument[] = [];
   outputFilesToAdd: MetadataDocument[] = [];
 
@@ -78,12 +80,24 @@ export class ProcessDetailsComponent implements OnInit {
     this.inputBiomaterialsToAdd.push($event);
   }
 
+  onInputFilePicked($event: MetadataDocument) {
+    this.inputFilesToAdd.push($event);
+  }
+
   // TODO Add success or error status for add and remove operations
 
   removeInputBiomaterial(biomaterial: MetadataDocument) {
     const biomaterialId = this.getId(biomaterial);
     this.ingestService.deleteInputBiomaterialFromProcess(this.processId, biomaterialId).subscribe(data => {
       console.log('deleteInputBiomaterialFromProcess', data);
+      this.refreshGraph();
+    });
+  }
+
+  removeInputFile(file: MetadataDocument) {
+    const fileId = this.getId(file);
+    this.ingestService.deleteInputFileFromProcess(this.processId, fileId).subscribe(data => {
+      console.log('deleteInputFileFromProcess', data);
       this.refreshGraph();
     });
   }
@@ -145,6 +159,21 @@ export class ProcessDetailsComponent implements OnInit {
     );
   }
 
+  addInputFiles() {
+    const tasks = this.inputFilesToAdd.map(file => {
+      const fileId = this.getId(file);
+      return this.ingestService.addInputFileToProcess(this.processId, fileId);
+    });
+
+    forkJoin(tasks).subscribe(
+      data => {
+        console.log('input files', data);
+        this.inputFilesToAdd = [];
+        this.refreshGraph();
+      }
+    );
+  }
+
   addOutputBiomaterials() {
     const tasks = this.outputBiomaterialsToAdd.map(biomaterial => {
       const biomaterialId = this.getId(biomaterial);
@@ -167,6 +196,7 @@ export class ProcessDetailsComponent implements OnInit {
       {
         protocols: this.getProtocols(this.processUrl),
         inputBiomaterials: this.getInputBiomaterials(this.processUrl),
+        inputFiles: this.getInputFiles(this.processUrl),
         derivedBiomaterials: this.getDerivedBiomaterials(this.processUrl),
         derivedFiles: this.getDerivedFiles(this.processUrl)
       }
@@ -196,6 +226,27 @@ export class ProcessDetailsComponent implements OnInit {
         });
 
         this.inputBiomaterials = inputs;
+      }));
+  }
+
+  private getInputFiles(processUrl: string): Observable<ListResult<MetadataDocument>> {
+    return this.ingestService.get<ListResult<MetadataDocument>>(`${processUrl}/inputFiles`).pipe(
+      tap(data => {
+        const inputs = data._embedded ? data._embedded.files : [];
+        inputs.map(input => {
+          this.nodes.push({
+            id: input.uuid.uuid,
+            label: input.content['file_core']['file_name'],
+          } as NgxNode);
+          this.links.push({
+            id: `input-file-${input.uuid.uuid}`,
+            source: input.uuid.uuid,
+            target: 'process',
+            label: 'input'
+          } as Link);
+        });
+
+        this.inputFiles = inputs;
       }));
   }
 
@@ -278,7 +329,6 @@ export class ProcessDetailsComponent implements OnInit {
     }];
     this.links = [];
   }
-
 
 }
 

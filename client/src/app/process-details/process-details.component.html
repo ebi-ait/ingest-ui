@@ -61,11 +61,26 @@
               <p><strong>name: </strong> {{input?.content['biomaterial_core']['biomaterial_name']}}</p>
               <p><strong>description: </strong> {{input?.content['biomaterial_core']['biomaterial_description']}}</p>
             </mat-card-content>
-            <mat-icon-button (click)="removeInputBiomaterial(input)" style="cursor: pointer"
+            <mat-raised-button (click)="removeInputBiomaterial(input)" style="cursor: pointer"
                              matTooltip="Unlink Biomaterial">
-
-              <mat-icon>delete</mat-icon>
-            </mat-icon-button>
+              Unlink Biomaterial
+            </mat-raised-button>
+          </mat-card>
+        </div>
+      </ng-container>
+      <ng-container *ngFor="let input of inputFiles">
+        <div class="vf-u-padding__bottom--xl">
+          <mat-card class="wrap-text">
+            <mat-card-content>
+              <p class="vf-text-body vf-text-body--3">
+                <strong>id: </strong> {{input?.content['file_core']['file_name']}}</p>
+              <p><strong>concrete type: </strong> {{getConcreteType(input)}}</p>
+              <p><strong>type: </strong> {{input?.content['schema_type']}}</p>
+              <p><strong>uuid: </strong> {{input?.uuid?.uuid}}</p>
+            </mat-card-content>
+            <mat-raised-button (click)="removeInputFile(input)" style="cursor: pointer" matTooltip="Unlink Files">
+              Unlink Files
+            </mat-raised-button>
           </mat-card>
         </div>
       </ng-container>
@@ -90,11 +105,35 @@
           </mat-card>
         </div>
       </ng-container>
-      <mat-icon-button *ngIf="inputBiomaterialsToAdd.length > 0" (click)="addInputBiomaterials()"
+      <mat-raised-button *ngIf="inputBiomaterialsToAdd.length > 0" (click)="addInputBiomaterials()"
                        style="cursor: pointer" matTooltip="Link Biomaterials">
 
-        <mat-icon>add</mat-icon>
-      </mat-icon-button>
+        Link Biomaterials
+      </mat-raised-button>
+      <app-metadata-picker [entityType]="'files'"
+                           [submissionEnvelopeId]="submissionEnvelopeId"
+                           (picked)="onInputFilePicked($event)">
+      </app-metadata-picker>
+
+      <ng-container *ngFor="let input of inputFilesToAdd">
+        <div class="vf-u-padding__bottom--xl">
+          <mat-card class="wrap-text">
+            <mat-card-content>
+              <p class="vf-text-body vf-text-body--3">
+                <strong>id: </strong> {{input?.content['file_core']['file_name']}}</p>
+              <p><strong>concrete type: </strong> {{getConcreteType(input)}}</p>
+              <p><strong>type: </strong> {{input?.content['schema_type']}}</p>
+              <p><strong>uuid: </strong> {{input?.uuid?.uuid}}</p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </ng-container>
+
+      <mat-raised-button *ngIf="inputFilesToAdd.length > 0" (click)="addInputFiles()" style="cursor: pointer"
+                       matTooltip="Link Files">
+        Link Files
+      </mat-raised-button>
+
     </div>
   </div>
 
@@ -113,9 +152,9 @@
               <p><strong>name: </strong> {{protocol?.content['protocol_core']['protocol_name']}}</p>
               <p><strong>description: </strong> {{protocol?.content['protocol_core']['protocol_description']}}</p>
             </mat-card-content>
-            <mat-icon-button (click)="removeProtocol(protocol)" style="cursor: pointer" matTooltip="Unlink Protocol">
-              <mat-icon>delete</mat-icon>
-            </mat-icon-button>
+            <mat-raised-button (click)="removeProtocol(protocol)" style="cursor: pointer" matTooltip="Unlink Protocol">
+              Unlink Protocol
+            </mat-raised-button>
           </mat-card>
         </div>
       </ng-container>
@@ -140,10 +179,10 @@
           </mat-card>
         </div>
       </ng-container>
-      <mat-icon-button *ngIf="protocolsToAdd.length > 0" (click)="addProtocols()" style="cursor: pointer"
+      <mat-raised-button *ngIf="protocolsToAdd.length > 0" (click)="addProtocols()" style="cursor: pointer"
                        matTooltip="Link Protocols">
-        <mat-icon>add</mat-icon>
-      </mat-icon-button>
+        Link Protocols
+      </mat-raised-button>
     </div>
   </div>
   <div>
@@ -161,10 +200,10 @@
               <p><strong>name: </strong> {{output?.content['biomaterial_core']['biomaterial_name']}}</p>
               <p><strong>description: </strong> {{output?.content['biomaterial_core']['biomaterial_description']}}</p>
             </mat-card-content>
-            <mat-icon-button (click)="removeOutputBiomaterial(output)" style="cursor: pointer"
+            <mat-raised-button (click)="removeOutputBiomaterial(output)" style="cursor: pointer"
                              matTooltip="Unlink Biomaterial">
-              <mat-icon>delete</mat-icon>
-            </mat-icon-button>
+              Unlink Biomaterial
+            </mat-raised-button>
           </mat-card>
         </div>
       </ng-container>
@@ -178,9 +217,9 @@
               <p><strong>type: </strong> {{output?.content['schema_type']}}</p>
               <p><strong>uuid: </strong> {{output?.uuid?.uuid}}</p>
             </mat-card-content>
-            <mat-icon-button (click)="removeOutputFile(output)" style="cursor: pointer" matTooltip="Unlink File">
-              <mat-icon>delete</mat-icon>
-            </mat-icon-button>
+            <mat-raised-button (click)="removeOutputFile(output)" style="cursor: pointer" matTooltip="Unlink File">
+              Unlink File
+            </mat-raised-button>
           </mat-card>
         </div>
       </ng-container>
@@ -206,10 +245,10 @@
         </div>
       </ng-container>
 
-      <mat-icon-button *ngIf="outputBiomaterialsToAdd.length > 0" (click)="addOutputBiomaterials()"
+      <mat-raised-button *ngIf="outputBiomaterialsToAdd.length > 0" (click)="addOutputBiomaterials()"
                        style="cursor: pointer" matTooltip="Link Biomaterials">
-        <mat-icon>add</mat-icon>
-      </mat-icon-button>
+        Link Biomaterials
+      </mat-raised-button>
 
       <app-metadata-picker [entityType]="'files'"
                            [submissionEnvelopeId]="submissionEnvelopeId"
@@ -230,10 +269,10 @@
         </div>
       </ng-container>
 
-      <mat-icon-button *ngIf="outputFilesToAdd.length > 0" (click)="addOutputFiles()" style="cursor: pointer"
+      <mat-raised-button *ngIf="outputFilesToAdd.length > 0" (click)="addOutputFiles()" style="cursor: pointer"
                        matTooltip="Link Files">
-        <mat-icon>add</mat-icon>
-      </mat-icon-button>
+        Link Files
+      </mat-raised-button>
     </div>
   </div>
 </div>

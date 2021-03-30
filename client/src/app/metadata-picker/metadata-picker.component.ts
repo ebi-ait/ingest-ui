@@ -33,7 +33,7 @@ export class MetadataPickerComponent implements OnInit {
   private searchField = {
     'biomaterials': 'content.biomaterial_core.biomaterial_id',
     'protocols': 'content.protocol_core.protocol_id',
-    'files': 'content.file_core.file_name',
+    'files': 'content.file_core.file_name'
   };
 
   constructor(private ingestService: IngestService) {

@@ -98,6 +98,7 @@
     <mat-tab label="Biomaterials">
       <ng-template matTabContent>
         <app-metadata-list [dataSource]="biomaterialsDataSource"
+                           [submissionEnvelopeId]="submissionEnvelopeId"
                            [config]="{displayLinking: true}"
                            [expectedCount]="manifest ? manifest['expectedBiomaterials'] : null"></app-metadata-list>
       </ng-template>
@@ -105,12 +106,14 @@
     <mat-tab label="Processes">
       <ng-template matTabContent>
         <app-metadata-list [dataSource]="processesDataSource"
+                           [submissionEnvelopeId]="submissionEnvelopeId"
                            [expectedCount]="manifest ? manifest['expectedProcesses'] : null"></app-metadata-list>
       </ng-template>
     </mat-tab>
     <mat-tab label="Protocols">
       <ng-template matTabContent>
         <app-metadata-list [dataSource]="protocolsDataSource"
+                           [submissionEnvelopeId]="submissionEnvelopeId"
                            [config]="{displayLinking: true}"
                            [expectedCount]="manifest ? manifest['expectedProtocols'] : null"></app-metadata-list>
       </ng-template>
