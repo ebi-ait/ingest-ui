@@ -11,7 +11,6 @@ export class AutofillProjectService {
 
   constructor(private http: HttpClient) {}
 
-  // todo: get the publication url as well
   getProjectDetails(searchUsing: Identifier, searchString: string): Observable<AutofillProject> {
     return this.queryEuropePMC(searchUsing, searchString).pipe(
       map(response => {
