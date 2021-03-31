@@ -1,4 +1,3 @@
-<!--TODO fix formatting-->
 <h1 class="vf-text vf-text-heading--2">
   New Project
 </h1>
@@ -12,12 +11,12 @@
   [isRequired]="true"
 ></app-vf-input>
 
-<button [disabled]="publicationDoiCtrl.invalid"
+<button
         class="next-button vf-button vf-button--primary vf-button vf-u-margin__left--xxl"
-        (click)="onClick()">Next
+        (click)="submitForm()">Next
 </button>
 
 <button
-  class="next-button vf-button vf-button--primary vf-button vf-u-margin__left--xxl" (click)="onClick()">I don't have a Publication DOI for this project
+  class="next-button vf-button vf-button--primary vf-button vf-u-margin__left--xxl" (click)="cancel()">I don't have a Publication DOI for this project
 </button>
 

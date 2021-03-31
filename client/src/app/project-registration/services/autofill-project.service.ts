@@ -1,6 +1,5 @@
 import {Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {environment} from '../../../environments/environment';
 import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {EuropePMCHttpSearchResponse, Identifier} from '../models/europepmcsearch';
@@ -8,7 +7,7 @@ import {AutofillProject} from '../models/autofill-project';
 
 @Injectable()
 export class AutofillProjectService {
-  API_URL: string = environment.EUROPE_PCM_URL;
+  API_URL = 'https://www.ebi.ac.uk/europepmc/webservices/rest/search';
 
   constructor(private http: HttpClient) {}
 

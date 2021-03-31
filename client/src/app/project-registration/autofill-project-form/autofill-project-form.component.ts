@@ -1,9 +1,11 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {AbstractControl, FormControl, Validators} from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {FormControl, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {LoaderService} from '../../shared/services/loader.service';
 import {AlertService} from '../../shared/services/alert.service';
 import {Identifier} from '../models/europepmcsearch';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {IngestService} from '../../shared/services/ingest.service';
 
 @Component({
   selector: 'app-doi-name-field',
@@ -17,7 +19,9 @@ export class AutofillProjectFormComponent implements OnInit {
   publicationDoi: string;
 
   constructor(private route: ActivatedRoute,
-              private router: Router
+              private router: Router,
+              private ingestService: IngestService,
+              private alertService: AlertService
   ) {
   }
 
@@ -38,20 +42,47 @@ export class AutofillProjectFormComponent implements OnInit {
       if (errors['required']) {
         return 'This field is required';
       }
-      // todo add logic here for checking dois in existing projects and showing alerts
     }
   }
 
-  // todo: show that the field is required when publicationDoi is empty and next is clicked
-  onClick() {
-    if (this.publicationDoi) {
-      const params = {
-        [Identifier.DOI]: this.publicationDoi
-      };
-      this.router.navigate(['/projects', 'new'], { queryParams: params});
+
+  submitForm() {
+    if (this.publicationDoiCtrl.invalid) {
+      this.publicationDoiCtrl.markAsTouched();
     } else {
-      this.router.navigate(['/projects', 'new']);
+      if (this.publicationDoiCtrl.value) {
+        const doi = this.publicationDoiCtrl.value;
+        this.doesDoiExist(doi).subscribe(doiExists => {
+          if (doiExists) {
+            this.alertService.error('This doi has already been used. Please contact our wranglers for further assistance', '');
+          } else {
+            const params = {
+              [Identifier.DOI]: this.publicationDoi
+            };
+            this.router.navigate(['/projects', 'new'], { queryParams: params});
+          }
+          },
+          error => {
+            this.alertService.error('An error occurred', error.message);
+          });
+      }
     }
+  }
+
+  cancel() {
+      this.router.navigate(['/projects', 'new']);
+  }
+
+
+  doesDoiExist(doi: string): Observable < boolean > {
+    const query = [];
+    const criteria = {
+      'field': 'content.publications.doi',
+      'operator': 'IS',
+      'value': doi
+    };
+    query.push(criteria);
+    return this.ingestService.queryProjects(query).pipe(map(data => !!data.page.totalElements));
   }
 
 }

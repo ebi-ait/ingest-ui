@@ -12,14 +12,9 @@ import {SchemaService} from '../../shared/services/schema.service';
 import {projectRegLayout} from './project-reg-layout';
 import {Observable} from 'rxjs';
 import {concatMap} from 'rxjs/operators';
-
-// import {DoiService} from '../services/autofill-project.service';
-import {any} from 'codelyzer/util/function';
 import {AutofillProjectService} from '../services/autofill-project.service';
 import {Identifier} from '../models/europepmcsearch';
 import {AutofillProject} from '../models/autofill-project';
-// import 'rxjs/add/operator/filter';
-
 
 @Component({
   selector: 'app-project-registration-form',
@@ -89,9 +84,6 @@ export class ProjectRegistrationFormComponent implements OnInit {
       overrideRequiredFields: {
         'project.content.contributors.project_role.text': false
       },
-      disableFields: [
-        'project_description'
-      ],
       submitButtonLabel: 'Register Project',
       cancelButtonLabel: 'Or Cancel project registration'
     };
