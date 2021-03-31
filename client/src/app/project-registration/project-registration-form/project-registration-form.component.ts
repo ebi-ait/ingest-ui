@@ -31,13 +31,9 @@ export class ProjectRegistrationFormComponent implements OnInit {
   projectMetadataSchema: any = (metadataSchema as any).default;
   projectIngestSchema: any = (ingestSchema as any).default;
 
-  // todo need to clean this up
-  // projectResource: Project;
-  // projectContent: object;
-  // projectDetails: ProjectDetails;
   projectFormData: object;
   projectFormTabKey: string;
-  test = true;
+  loadProject = true;
 
   config: MetadataFormConfig;
 
@@ -64,7 +60,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
     const queryParam = this.route.snapshot.queryParamMap;
 
     if (queryParam.has(Identifier.DOI)) {
-      this.test = false;
+      this.loadProject = false;
       this.autofillProjectDetails(Identifier.DOI, queryParam.get(Identifier.DOI));
     }
 
@@ -125,7 +121,11 @@ export class ProjectRegistrationFormComponent implements OnInit {
 
       this.projectFormData['content']['publications'] = [publication];
       this.projectFormData['content']['funders'] = data.funders;
-      this.test = true;
+      this.loadProject = true;
+    },
+    error => {
+      this.alertService.error('An error occurred, unable to autofill project details', error.message);
+      this.loadProject = true;
     }
    );
 }
