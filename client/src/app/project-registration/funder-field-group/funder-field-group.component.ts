@@ -25,7 +25,7 @@ export class FunderFieldGroupComponent extends InputComponent implements OnInit 
 
     // Default to having one funder form item added
     // if no funders have been added via the autofill service
-    if (!!this.control.value) {
+    if (!this.control.value || !this.control.value.length) {
       this.addFormControl(this.metadata, this.control);
     }
   }

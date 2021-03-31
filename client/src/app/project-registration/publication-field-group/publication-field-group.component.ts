@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+
 import {InputComponent} from '../../metadata-schema-form/metadata-field-types/input/input.component';
 
 @Component({
@@ -20,13 +21,12 @@ export class PublicationFieldGroupComponent extends InputComponent implements On
     const publicationsSchemaKey = 'project.content.publications';
     this.metadata = this.metadataForm.get(publicationsSchemaKey);
     this.control = this.metadataForm.getControl(publicationsSchemaKey);
-    // console.log(typeof this.control);
 
     super.ngOnInit();
 
     // Default to having one funder form item added
     // if no publications have been added via the autofill service
-    if (!!this.control.value) {
+    if (!this.control.value || !this.control.value.length) {
       this.addFormControl(this.metadata, this.control);
     }
   }
