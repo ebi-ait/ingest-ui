@@ -16,7 +16,6 @@ import {IngestService} from '../../shared/services/ingest.service';
 
 export class AutofillProjectFormComponent implements OnInit {
   publicationDoiCtrl: FormControl;
-  publicationDoi: string;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -27,12 +26,6 @@ export class AutofillProjectFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.publicationDoiCtrl = new FormControl( '', Validators.required);
-    this.publicationDoi = '';
-
-
-    this.publicationDoiCtrl.valueChanges.subscribe(doi => {
-      this.publicationDoi = doi;
-    });
   }
 
   showError(control: FormControl): string {
@@ -45,7 +38,6 @@ export class AutofillProjectFormComponent implements OnInit {
     }
   }
 
-
   submitForm() {
     if (this.publicationDoiCtrl.invalid) {
       this.publicationDoiCtrl.markAsTouched();
@@ -57,7 +49,7 @@ export class AutofillProjectFormComponent implements OnInit {
             this.alertService.error('This doi has already been used. Please contact our wranglers for further assistance', '');
           } else {
             const params = {
-              [Identifier.DOI]: this.publicationDoi
+              [Identifier.DOI]: doi
             };
             this.router.navigate(['/projects', 'new'], { queryParams: params});
           }
