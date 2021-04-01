@@ -106,7 +106,8 @@ export class ProjectRegistrationFormComponent implements OnInit {
           'doi': '',
           'pmid': Number(),
           'title': '',
-          'authors': []
+          'authors': [],
+          'url': ''
         };
 
     this.autofillProjectService.getProjectDetails(id, search).subscribe((data: AutofillProject) => {
@@ -122,6 +123,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
 
       this.projectFormData['content']['publications'] = [publication];
       this.projectFormData['content']['funders'] = data.funders;
+      this.projectFormData['content']['contributors'] = data.contributors;
       this.loadProject = true;
     },
     error => {

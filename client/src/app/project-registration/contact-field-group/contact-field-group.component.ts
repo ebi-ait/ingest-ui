@@ -40,7 +40,7 @@ export class ContactFieldGroupComponent implements OnInit {
   ngOnInit(): void {
     this.contributorsControl = this.metadataForm.getControl(this.contactKey);
     this.contributorMetadata = this.metadataForm.get(this.contactKey);
-    this.addFormControl(this.contributorMetadata, this.contributorsControl);
+    // this.addFormControl(this.contributorMetadata, this.contributorsControl);
 
     const fieldList = this.contactFieldList;
 
@@ -51,19 +51,19 @@ export class ContactFieldGroupComponent implements OnInit {
     const correspondingCtrl = this.contributorsControl['controls'][0]['controls']['corresponding_contributor'];
 
     // default
-    correspondingCtrl.setValue(true);
+    // correspondingCtrl.setValue(true);
 
-    this.aai.getUser().subscribe(user => {
-      if (AaiService.loggedIn(user) && !this.userInfo && user.profile) {
-        this.userInfo = user.profile;
-        const previousValue = contactNameCtrl.value;
-        const name = [this.userInfo.given_name, '', this.userInfo.family_name].join(',');
-        if (previousValue !== name) {
-          contactNameCtrl.setValue(name);
-          contactEmailCtrl.setValue(this.userInfo.email);
-        }
-      }
-    });
+    // this.aai.getUser().subscribe(user => {
+    //   if (AaiService.loggedIn(user) && !this.userInfo && user.profile) {
+    //     this.userInfo = user.profile;
+    //     const previousValue = contactNameCtrl.value;
+    //     const name = [this.userInfo.given_name, '', this.userInfo.family_name].join(',');
+    //     if (previousValue !== name) {
+    //       contactNameCtrl.setValue(name);
+    //       contactEmailCtrl.setValue(this.userInfo.email);
+    //     }
+    //   }
+    // });
   }
 
   removeFormControl(control: AbstractControl, i: number) {
