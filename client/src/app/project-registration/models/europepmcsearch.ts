@@ -34,7 +34,6 @@ export interface EuropePMCAuthor {
   lastName: string;
   authorAffiliationDetailsList: EuropePMCAuthorAffiliationDetailsList;
   authorId: EuropePMCAuthorId;
-  // add stuff about orcid here
 }
 
 export interface EuropePMCAuthorAffiliationDetailsList {

@@ -97,20 +97,10 @@ export class ProjectRegistrationFormComponent implements OnInit {
   }
 
   private autofillProjectDetails(id, search) {
-    const project_core = {
-        'project_title': '',
-        'project_description': ''
-    };
-
-    const publication = {
-          'doi': '',
-          'pmid': Number(),
-          'title': '',
-          'authors': [],
-          'url': ''
-        };
-
     this.autofillProjectService.getProjectDetails(id, search).subscribe((data: AutofillProject) => {
+      const project_core = {};
+      const publication = {};
+
       project_core['project_title'] = data.title;
       project_core['project_description'] = data.description;
       this.projectFormData['content']['project_core'] = project_core;

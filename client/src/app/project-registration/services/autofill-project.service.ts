@@ -26,8 +26,7 @@ export class AutofillProjectService {
             url: this.DOI_BASE_URL + result.doi,
             funders: result.grantsList && result.grantsList.grant ?
               result.grantsList.grant.map(grant => ({grant_id: grant.grantId, organization: grant.agency})) : [],
-            // todo: add better checks here
-            contributors: result.authorList && result.authorList.author ?
+            contributors: result.authorList && result.authorList.author && result.authorList.author.length ?
               result.authorList.author.map(author => ({
                 name: author.firstName + ',,' + author.lastName,
                 institution: author.authorAffiliationDetailsList && author.authorAffiliationDetailsList.authorAffiliation ?
@@ -35,17 +34,6 @@ export class AutofillProjectService {
                 orcid_id: author.authorId && author.authorId.type === 'ORCID' ? author.authorId.value : ''
               })) : []
           };
-
-          // if (result.authorList && result.authorList.author) {
-          //   const authors = result.authorList.author;
-          //   const contributor = {};
-          //   authors.forEach(function(author) {
-          //     contributor['name'] = author.firstName + ',,' + author.lastName;
-          //     contributor['institution'] = author.authorAffiliationDetailsList && author.authorAffiliationDetailsList.authorAffiliation ?
-          //       author.authorAffiliationDetailsList.authorAffiliation[0].affiliation : '';
-          //   });
-          // }
-
           return projectDetails;
       } else {
           throw throwError(response);
