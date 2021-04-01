@@ -24,7 +24,7 @@ export class PublicationFieldGroupComponent extends InputComponent implements On
 
     super.ngOnInit();
 
-    // Default to having one funder form item added
+    // Default to having one publication form item added
     // if no publications have been added via the autofill service
     if (!this.control.value || !this.control.value.length) {
       this.addFormControl(this.metadata, this.control);
