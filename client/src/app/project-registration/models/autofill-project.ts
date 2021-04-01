@@ -4,6 +4,7 @@ export interface AutofillProject {
   doi: string;
   pmid: number;
   authors: string[];
+  url: string;
   funders: Funder[];
 }
 

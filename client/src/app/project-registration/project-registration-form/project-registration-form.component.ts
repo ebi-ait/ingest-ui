@@ -118,6 +118,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
       publication['pmid'] = data.pmid;
       publication['title'] = data.title;
       publication['authors'] = data.authors;
+      publication['url'] = data.url;
 
       this.projectFormData['content']['publications'] = [publication];
       this.projectFormData['content']['funders'] = data.funders;

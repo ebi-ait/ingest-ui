@@ -8,6 +8,7 @@ import {AutofillProject} from '../models/autofill-project';
 @Injectable()
 export class AutofillProjectService {
   API_URL = 'https://www.ebi.ac.uk/europepmc/webservices/rest/search';
+  DOI_BASE_URL = 'https://doi.org/';
 
   constructor(private http: HttpClient) {}
 
@@ -21,7 +22,8 @@ export class AutofillProjectService {
             description: result.abstractText.replace(/(<([^>]+)>)/gi, ''),
             doi: result.doi,
             authors: result.authorString.replace('.', '').split(','),
-            pmid: Number(result.pmid),
+            pmid: result.pmid ? Number(result.pmid) : null,
+            url: this.DOI_BASE_URL + result.doi,
             funders: result.grantsList && result.grantsList.grant ?
               result.grantsList.grant.map(grant => ({grant_id: grant.grantId, organization: grant.agency})) : []
           };
