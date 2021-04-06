@@ -25,7 +25,7 @@ export class AutofillProjectFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.publicationDoiCtrl = new FormControl( '', Validators.required);
+    this.publicationDoiCtrl = new FormControl('', Validators.required);
   }
 
   showError(control: FormControl): string {
@@ -45,14 +45,14 @@ export class AutofillProjectFormComponent implements OnInit {
       if (this.publicationDoiCtrl.value) {
         const doi = this.publicationDoiCtrl.value;
         this.doesDoiExist(doi).subscribe(doiExists => {
-          if (doiExists) {
-            this.alertService.error('This doi has already been used. Please contact our wranglers for further assistance', '');
-          } else {
-            const params = {
-              [Identifier.DOI]: doi
-            };
-            this.router.navigate(['/projects', 'new'], { queryParams: params});
-          }
+            if (doiExists) {
+              this.alertService.error('This doi has already been used. Please contact our wranglers for further assistance', '');
+            } else {
+              const params = {
+                [Identifier.DOI]: doi
+              };
+              this.router.navigate(['/projects', 'new'], {queryParams: params});
+            }
           },
           error => {
             this.alertService.error('An error occurred', error.message);
@@ -62,11 +62,11 @@ export class AutofillProjectFormComponent implements OnInit {
   }
 
   cancel() {
-      this.router.navigate(['/projects', 'new']);
+    this.router.navigate(['/projects', 'new']);
   }
 
 
-  doesDoiExist(doi: string): Observable < boolean > {
+  doesDoiExist(doi: string): Observable<boolean> {
     const query = [];
     const criteria = {
       'field': 'content.publications.doi',

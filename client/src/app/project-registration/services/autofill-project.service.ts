@@ -10,7 +10,8 @@ export class AutofillProjectService {
   API_URL = 'https://www.ebi.ac.uk/europepmc/webservices/rest/search';
   DOI_BASE_URL = 'https://doi.org/';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   getProjectDetails(searchUsing: Identifier, searchString: string): Observable<AutofillProject> {
     return this.queryEuropePMC(searchUsing, searchString).pipe(
@@ -30,14 +31,14 @@ export class AutofillProjectService {
               result.authorList.author.map(author => ({
                 name: author.firstName + ',,' + author.lastName,
                 institution: author.authorAffiliationDetailsList && author.authorAffiliationDetailsList.authorAffiliation ?
-                author.authorAffiliationDetailsList.authorAffiliation[0].affiliation : '',
+                  author.authorAffiliationDetailsList.authorAffiliation[0].affiliation : '',
                 orcid_id: author.authorId && author.authorId.type === 'ORCID' ? author.authorId.value : ''
               })) : []
           };
           return projectDetails;
-      } else {
+        } else {
           throw throwError(response);
-      }
+        }
       })
     );
   }

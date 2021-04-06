@@ -96,33 +96,6 @@ export class ProjectRegistrationFormComponent implements OnInit {
     this.ingestService.getUserAccount().subscribe(account => this.userIsWrangler = account.isWrangler());
   }
 
-  private autofillProjectDetails(id, search) {
-    this.autofillProjectService.getProjectDetails(id, search).subscribe((data: AutofillProject) => {
-      const project_core = {};
-      const publication = {};
-
-      project_core['project_title'] = data.title;
-      project_core['project_description'] = data.description;
-      this.projectFormData['content']['project_core'] = project_core;
-
-      publication['doi'] = data.doi;
-      publication['pmid'] = data.pmid;
-      publication['title'] = data.title;
-      publication['authors'] = data.authors;
-      publication['url'] = data.url;
-
-      this.projectFormData['content']['publications'] = [publication];
-      this.projectFormData['content']['funders'] = data.funders;
-      this.projectFormData['content']['contributors'] = data.contributors;
-      this.loadProject = true;
-    },
-    error => {
-      this.alertService.error('An error occurred, unable to autofill project details', error.message);
-      this.loadProject = true;
-    }
-   );
-}
-
   onSave(formData: object) {
     const formValue = formData['value'];
     const valid = formData['valid'];
@@ -151,7 +124,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
   }
 
   incrementProjectTab() {
-    let index =  projectRegLayout.tabs.findIndex(tab => tab.key === this.projectFormTabKey);
+    let index = projectRegLayout.tabs.findIndex(tab => tab.key === this.projectFormTabKey);
     if (index + 1 < projectRegLayout.tabs.length) {
       index++;
       this.projectFormTabKey = projectRegLayout.tabs[index].key;
@@ -161,13 +134,40 @@ export class ProjectRegistrationFormComponent implements OnInit {
   }
 
   decrementProjectTab() {
-    let index =  projectRegLayout.tabs.findIndex(tab => tab.key === this.projectFormTabKey);
+    let index = projectRegLayout.tabs.findIndex(tab => tab.key === this.projectFormTabKey);
     if (index > 0) {
       index--;
       this.projectFormTabKey = projectRegLayout.tabs[index].key;
       return true;
     }
     return false;
+  }
+
+  private autofillProjectDetails(id, search) {
+    this.autofillProjectService.getProjectDetails(id, search).subscribe((data: AutofillProject) => {
+        const project_core = {};
+        const publication = {};
+
+        project_core['project_title'] = data.title;
+        project_core['project_description'] = data.description;
+        this.projectFormData['content']['project_core'] = project_core;
+
+        publication['doi'] = data.doi;
+        publication['pmid'] = data.pmid;
+        publication['title'] = data.title;
+        publication['authors'] = data.authors;
+        publication['url'] = data.url;
+
+        this.projectFormData['content']['publications'] = [publication];
+        this.projectFormData['content']['funders'] = data.funders;
+        this.projectFormData['content']['contributors'] = data.contributors;
+        this.loadProject = true;
+      },
+      error => {
+        this.alertService.error('An error occurred, unable to autofill project details', error.message);
+        this.loadProject = true;
+      }
+    );
   }
 
   private setSchema(obj: object) {

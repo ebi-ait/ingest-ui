@@ -62,7 +62,7 @@ export const projectRegLayout: MetadataFormLayout = {
           component: PublicationFieldGroupComponent
         }
       ]
-    } ,
+    },
     {
       title: 'Funders',
       key: 'project.content.funders',

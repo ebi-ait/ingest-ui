@@ -3,17 +3,17 @@
 </h1>
 
 <app-vf-input
-  [label]="'Publication DOI'"
   [dataType]="'string'"
-  [helperText]="'Get started by entering a DOI to help us retrieve your project information'"
-  [formControl]="publicationDoiCtrl"
   [error]="showError(publicationDoiCtrl)"
+  [formControl]="publicationDoiCtrl"
+  [helperText]="'Get started by entering a DOI to help us retrieve your project information'"
   [isRequired]="true"
+  [label]="'Publication DOI'"
 ></app-vf-input>
 
 <button
-        class="next-button vf-button vf-button--primary vf-button vf-u-margin__left--xxl"
-        (click)="submitForm()">Next
+  (click)="submitForm()"
+  class="next-button vf-button vf-button--primary vf-button vf-u-margin__left--xxl">Next
 </button>
 
 
