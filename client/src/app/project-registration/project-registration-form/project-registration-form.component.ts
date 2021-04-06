@@ -33,7 +33,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
 
   projectFormData: object;
   projectFormTabKey: string;
-  loadProject = true;
+  autofillProjectData$: Observable<AutofillProject>;
 
   config: MetadataFormConfig;
 
@@ -60,7 +60,6 @@ export class ProjectRegistrationFormComponent implements OnInit {
     const queryParam = this.route.snapshot.queryParamMap;
 
     if (queryParam.has(Identifier.DOI)) {
-      this.loadProject = false;
       this.autofillProjectDetails(Identifier.DOI, queryParam.get(Identifier.DOI));
     }
 
@@ -144,7 +143,9 @@ export class ProjectRegistrationFormComponent implements OnInit {
   }
 
   private autofillProjectDetails(id, search) {
-    this.autofillProjectService.getProjectDetails(id, search).subscribe((data: AutofillProject) => {
+    this.autofillProjectData$ = this.autofillProjectService.getProjectDetails(id, search);
+
+    this.autofillProjectData$.subscribe((data: AutofillProject) => {
         const project_core = {};
         const publication = {};
 
@@ -161,11 +162,9 @@ export class ProjectRegistrationFormComponent implements OnInit {
         this.projectFormData['content']['publications'] = [publication];
         this.projectFormData['content']['funders'] = data.funders;
         this.projectFormData['content']['contributors'] = data.contributors;
-        this.loadProject = true;
       },
       error => {
         this.alertService.error('An error occurred, unable to autofill project details', error.message);
-        this.loadProject = true;
       }
     );
   }
