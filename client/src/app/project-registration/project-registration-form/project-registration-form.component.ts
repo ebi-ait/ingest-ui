@@ -13,7 +13,7 @@ import {projectRegLayout} from './project-reg-layout';
 import {Observable} from 'rxjs';
 import {concatMap} from 'rxjs/operators';
 import {AutofillProjectService} from '../services/autofill-project.service';
-import {Identifier} from '../models/europepmcsearch';
+import {Identifier} from '../models/europe-pmc-search';
 import {AutofillProject} from '../models/autofill-project';
 
 @Component({

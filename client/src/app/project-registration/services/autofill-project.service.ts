@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {map} from 'rxjs/operators';
 import {Observable, throwError} from 'rxjs';
-import {EuropePMCHttpSearchResponse, Identifier} from '../models/europepmcsearch';
+import {EuropePMCHttpSearchResponse, Identifier} from '../models/europe-pmc-search';
 import {AutofillProject} from '../models/autofill-project';
 
 @Injectable()

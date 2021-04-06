@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AlertService} from '../../shared/services/alert.service';
-import {Identifier} from '../models/europepmcsearch';
+import {Identifier} from '../models/europe-pmc-search';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {IngestService} from '../../shared/services/ingest.service';
