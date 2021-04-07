@@ -61,11 +61,6 @@ export class AutofillProjectFormComponent implements OnInit {
     }
   }
 
-  cancel() {
-    this.router.navigate(['/projects', 'new']);
-  }
-
-
   doesDoiExist(doi: string): Observable<boolean> {
     const query = [];
     const criteria = {
