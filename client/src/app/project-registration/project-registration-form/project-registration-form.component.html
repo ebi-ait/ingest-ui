@@ -4,8 +4,9 @@
 
 <mat-tab-group>
   <mat-tab label="1. Project">
-    <ng-container *ngIf="schema && (fillProjectManually || (autofillProjectData$ | async))">
+    <ng-container *ngIf="projectFormData">
       <div class="vf-u-margin__top--xxl">&nbsp;</div>
+
       <app-metadata-form name="project"
                          [useVf]="true"
                          [schema]="projectIngestSchema"
