@@ -61,10 +61,10 @@
               <p><strong>name: </strong> {{input?.content['biomaterial_core']['biomaterial_name']}}</p>
               <p><strong>description: </strong> {{input?.content['biomaterial_core']['biomaterial_description']}}</p>
             </mat-card-content>
-            <mat-raised-button (click)="removeInputBiomaterial(input)" style="cursor: pointer"
-                             matTooltip="Unlink Biomaterial">
+            <button (click)="removeInputBiomaterial(input)" style="cursor: pointer"
+                             matTooltip="This will not remove the biomaterial from the submission. This will only remove the linking between this biomaterial to this process.">
               Unlink Biomaterial
-            </mat-raised-button>
+            </button>
           </mat-card>
         </div>
       </ng-container>
@@ -78,9 +78,9 @@
               <p><strong>type: </strong> {{input?.content['schema_type']}}</p>
               <p><strong>uuid: </strong> {{input?.uuid?.uuid}}</p>
             </mat-card-content>
-            <mat-raised-button (click)="removeInputFile(input)" style="cursor: pointer" matTooltip="Unlink Files">
+            <button (click)="removeInputFile(input)" style="cursor: pointer" matTooltip="Unlink Files">
               Unlink Files
-            </mat-raised-button>
+            </button>
           </mat-card>
         </div>
       </ng-container>
@@ -105,11 +105,11 @@
           </mat-card>
         </div>
       </ng-container>
-      <mat-raised-button *ngIf="inputBiomaterialsToAdd.length > 0" (click)="addInputBiomaterials()"
+      <button *ngIf="inputBiomaterialsToAdd.length > 0" (click)="addInputBiomaterials()"
                        style="cursor: pointer" matTooltip="Link Biomaterials">
 
         Link Biomaterials
-      </mat-raised-button>
+      </button>
       <app-metadata-picker [entityType]="'files'"
                            [submissionEnvelopeId]="submissionEnvelopeId"
                            (picked)="onInputFilePicked($event)">
@@ -129,10 +129,10 @@
         </div>
       </ng-container>
 
-      <mat-raised-button *ngIf="inputFilesToAdd.length > 0" (click)="addInputFiles()" style="cursor: pointer"
+      <button *ngIf="inputFilesToAdd.length > 0" (click)="addInputFiles()" style="cursor: pointer"
                        matTooltip="Link Files">
         Link Files
-      </mat-raised-button>
+      </button>
 
     </div>
   </div>
@@ -152,9 +152,9 @@
               <p><strong>name: </strong> {{protocol?.content['protocol_core']['protocol_name']}}</p>
               <p><strong>description: </strong> {{protocol?.content['protocol_core']['protocol_description']}}</p>
             </mat-card-content>
-            <mat-raised-button (click)="removeProtocol(protocol)" style="cursor: pointer" matTooltip="Unlink Protocol">
+            <button (click)="removeProtocol(protocol)" style="cursor: pointer" matTooltip="Unlink Protocol">
               Unlink Protocol
-            </mat-raised-button>
+            </button>
           </mat-card>
         </div>
       </ng-container>
@@ -179,10 +179,10 @@
           </mat-card>
         </div>
       </ng-container>
-      <mat-raised-button *ngIf="protocolsToAdd.length > 0" (click)="addProtocols()" style="cursor: pointer"
+      <button *ngIf="protocolsToAdd.length > 0" (click)="addProtocols()" style="cursor: pointer"
                        matTooltip="Link Protocols">
         Link Protocols
-      </mat-raised-button>
+      </button>
     </div>
   </div>
   <div>
@@ -200,10 +200,10 @@
               <p><strong>name: </strong> {{output?.content['biomaterial_core']['biomaterial_name']}}</p>
               <p><strong>description: </strong> {{output?.content['biomaterial_core']['biomaterial_description']}}</p>
             </mat-card-content>
-            <mat-raised-button (click)="removeOutputBiomaterial(output)" style="cursor: pointer"
+            <button (click)="removeOutputBiomaterial(output)" style="cursor: pointer"
                              matTooltip="Unlink Biomaterial">
               Unlink Biomaterial
-            </mat-raised-button>
+            </button>
           </mat-card>
         </div>
       </ng-container>
@@ -217,9 +217,9 @@
               <p><strong>type: </strong> {{output?.content['schema_type']}}</p>
               <p><strong>uuid: </strong> {{output?.uuid?.uuid}}</p>
             </mat-card-content>
-            <mat-raised-button (click)="removeOutputFile(output)" style="cursor: pointer" matTooltip="Unlink File">
+            <button (click)="removeOutputFile(output)" style="cursor: pointer" matTooltip="Unlink File">
               Unlink File
-            </mat-raised-button>
+            </button>
           </mat-card>
         </div>
       </ng-container>
@@ -245,10 +245,10 @@
         </div>
       </ng-container>
 
-      <mat-raised-button *ngIf="outputBiomaterialsToAdd.length > 0" (click)="addOutputBiomaterials()"
+      <button *ngIf="outputBiomaterialsToAdd.length > 0" (click)="addOutputBiomaterials()"
                        style="cursor: pointer" matTooltip="Link Biomaterials">
         Link Biomaterials
-      </mat-raised-button>
+      </button>
 
       <app-metadata-picker [entityType]="'files'"
                            [submissionEnvelopeId]="submissionEnvelopeId"
@@ -269,10 +269,10 @@
         </div>
       </ng-container>
 
-      <mat-raised-button *ngIf="outputFilesToAdd.length > 0" (click)="addOutputFiles()" style="cursor: pointer"
+      <button *ngIf="outputFilesToAdd.length > 0" (click)="addOutputFiles()" style="cursor: pointer"
                        matTooltip="Link Files">
         Link Files
-      </mat-raised-button>
+      </button>
     </div>
   </div>
 </div>
