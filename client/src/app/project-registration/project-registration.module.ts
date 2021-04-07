@@ -13,6 +13,7 @@ import {ProjectRegistrationFormComponent} from './project-registration-form/proj
 import {MatTabsModule} from '@angular/material/tabs';
 import {FunderFieldGroupComponent} from './funder-field-group/funder-field-group.component';
 import {AutofillProjectFormComponent} from './autofill-project-form/autofill-project-form.component';
+import {RouterModule} from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import {AutofillProjectFormComponent} from './autofill-project-form/autofill-pro
     FormsModule,
     ReactiveFormsModule,
     MatIconModule,
-    MatTabsModule
+    MatTabsModule,
+    RouterModule
   ]
 })
 export class ProjectRegistrationModule {
