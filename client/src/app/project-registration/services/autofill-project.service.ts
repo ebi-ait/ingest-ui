@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {map} from 'rxjs/operators';
 import {Observable, throwError} from 'rxjs';
-import {EuropePMCHttpSearchResponse, Identifier} from '../models/europe-pmc-search';
+import {EuropePMCHttpSearchResponse, EuropePMCResult, Identifier} from '../models/europe-pmc-search';
 import {AutofillProject} from '../models/autofill-project';
 
 @Injectable()
@@ -18,29 +18,33 @@ export class AutofillProjectService {
       map(response => {
         const result = response.resultList.result[0];
         if (result) {
-          const projectDetails: AutofillProject = {
-            title: result.title,
-            description: result.abstractText.replace(/(<([^>]+)>)/gi, ''),
-            doi: result.doi,
-            authors: result.authorString.replace('.', '').split(','),
-            pmid: result.pmid ? Number(result.pmid) : null,
-            url: this.DOI_BASE_URL + result.doi,
-            funders: result.grantsList && result.grantsList.grant ?
-              result.grantsList.grant.map(grant => ({grant_id: grant.grantId, organization: grant.agency})) : [],
-            contributors: result.authorList && result.authorList.author && result.authorList.author.length ?
-              result.authorList.author.map(author => ({
-                name: author.firstName + ',,' + author.lastName,
-                institution: author.authorAffiliationDetailsList && author.authorAffiliationDetailsList.authorAffiliation ?
-                  author.authorAffiliationDetailsList.authorAffiliation[0].affiliation : '',
-                orcid_id: author.authorId && author.authorId.type === 'ORCID' ? author.authorId.value : ''
-              })) : []
-          };
-          return projectDetails;
+          return this.createAutoFillProject(result);
         } else {
           throw throwError(response);
         }
       })
     );
+  }
+
+  createAutoFillProject(result: EuropePMCResult): AutofillProject {
+    return {
+      title: result.title,
+      description: this.removeHTMLTags(result.abstractText),
+      doi: result.doi,
+      authors: result.authorString.replace('.', '').split(','),
+      pmid: result.pmid ? Number(result.pmid) : null,
+      url: this.DOI_BASE_URL + result.doi,
+      funders: result.grantsList && result.grantsList.grant ?
+        result.grantsList.grant.map(grant => ({grant_id: grant.grantId, organization: grant.agency})) : [],
+      contributors: result.authorList && result.authorList.author && result.authorList.author.length ?
+        result.authorList.author.map(author => ({
+          name: author.firstName + ',,' + author.lastName,
+          institution: author.authorAffiliationDetailsList && author.authorAffiliationDetailsList.authorAffiliation ?
+            author.authorAffiliationDetailsList.authorAffiliation[0].affiliation : '',
+          orcid_id: author.authorId && author.authorId.type === 'ORCID' ? author.authorId.value : ''
+        })) : []
+    };
+
   }
 
   queryEuropePMC(queryId: string, queryString: string): Observable<EuropePMCHttpSearchResponse> {
@@ -50,5 +54,9 @@ export class AutofillProjectService {
       format: 'json'
     };
     return this.http.get<EuropePMCHttpSearchResponse>(this.API_URL, {params});
+  }
+
+  removeHTMLTags(input: string): string {
+    return input.replace(/(<([^>]+)>)/gi, '');
   }
 }
