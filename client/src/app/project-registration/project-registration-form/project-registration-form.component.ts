@@ -34,6 +34,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
   projectFormData: object;
   projectFormTabKey: string;
   autofillProjectData$: Observable<AutofillProject>;
+  fillProjectManually = true;
 
   config: MetadataFormConfig;
 
@@ -60,6 +61,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
     const queryParam = this.route.snapshot.queryParamMap;
 
     if (queryParam.has(Identifier.DOI)) {
+      this.fillProjectManually = false;
       this.autofillProjectDetails(Identifier.DOI, queryParam.get(Identifier.DOI));
     }
 
