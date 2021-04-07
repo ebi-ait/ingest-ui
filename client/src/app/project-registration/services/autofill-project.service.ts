@@ -38,13 +38,13 @@ export class AutofillProjectService {
         result.grantsList.grant.map(grant => ({grant_id: grant.grantId, organization: grant.agency})) : [],
       contributors: result.authorList && result.authorList.author && result.authorList.author.length ?
         result.authorList.author.map(author => ({
-          name: author.firstName + ',,' + author.lastName,
+          first_name: author.firstName,
+          last_name: author.lastName,
           institution: author.authorAffiliationDetailsList && author.authorAffiliationDetailsList.authorAffiliation ?
             author.authorAffiliationDetailsList.authorAffiliation[0].affiliation : '',
           orcid_id: author.authorId && author.authorId.type === 'ORCID' ? author.authorId.value : ''
         })) : []
     };
-
   }
 
   queryEuropePMC(queryId: string, queryString: string): Observable<EuropePMCHttpSearchResponse> {

@@ -15,7 +15,8 @@ export interface Funder {
 }
 
 export interface Contributor {
-  name: string;
+  first_name: string;
+  last_name: string;
   institution: string;
   orcid_id: string;
 }

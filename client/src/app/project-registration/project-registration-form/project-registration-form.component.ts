@@ -163,7 +163,11 @@ export class ProjectRegistrationFormComponent implements OnInit {
 
         this.projectFormData['content']['publications'] = [publication];
         this.projectFormData['content']['funders'] = data.funders;
-        this.projectFormData['content']['contributors'] = data.contributors;
+        this.projectFormData['content']['contributors'] = data.contributors.map(contributor => ({
+          name: contributor.first_name + ',,' + contributor.last_name,
+          institution: contributor.institution,
+          orcid_id: contributor.orcid_id
+        }));
       },
       error => {
         this.alertService.error('An error occurred, unable to autofill project details', error.message);
