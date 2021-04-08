@@ -41,23 +41,24 @@ export class AutofillProjectFormComponent implements OnInit {
   submitForm() {
     if (this.publicationDoiCtrl.invalid) {
       this.publicationDoiCtrl.markAsTouched();
-    } else {
-      if (this.publicationDoiCtrl.value) {
-        const doi = this.publicationDoiCtrl.value;
-        this.doesDoiExist(doi).subscribe(doiExists => {
-            if (doiExists) {
-              this.alertService.error('This doi has already been used. Please contact our wranglers for further assistance', '');
-            } else {
-              const params = {
-                [Identifier.DOI]: doi
-              };
-              this.router.navigate(['/projects', 'new'], {queryParams: params});
-            }
-          },
-          error => {
-            this.alertService.error('An error occurred', error.message);
-          });
-      }
+      return;
+    }
+
+    if (this.publicationDoiCtrl.value) {
+      const doi = this.publicationDoiCtrl.value;
+      this.doesDoiExist(doi).subscribe(doiExists => {
+          if (doiExists) {
+            this.alertService.error('This doi has already been used. Please contact our wranglers for further assistance', '');
+            return;
+          }
+          const params = {
+            [Identifier.DOI]: doi
+          };
+          this.router.navigate(['/projects', 'new'], {queryParams: params});
+        },
+        error => {
+          this.alertService.error('An error occurred', error.message);
+        });
     }
   }
 
