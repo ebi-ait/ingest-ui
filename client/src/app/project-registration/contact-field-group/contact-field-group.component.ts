@@ -50,9 +50,11 @@ export class ContactFieldGroupComponent implements OnInit {
 
       this.addFormControl(this.contributorMetadata, this.contributorsControl);
 
-      const contactEmailCtrl = this.contributorsControl['controls'][0]['controls']['email'];
-      const contactNameCtrl = this.contributorsControl['controls'][0]['controls']['name'];
-      const correspondingCtrl = this.contributorsControl['controls'][0]['controls']['corresponding_contributor'];
+      const {
+        email: contactEmailCtrl,
+        name: contactNameCtrl,
+        corresponding_contributor: correspondingCtrl
+      } = this.contributorsControl['controls'][0]['controls'];
 
       // default
       correspondingCtrl.setValue(true);
