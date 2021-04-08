@@ -34,8 +34,6 @@ export class ProjectRegistrationFormComponent implements OnInit {
   projectFormData$: Observable<object>;
   projectFormData: object;
   projectFormTabKey: string;
-  autofillProjectData$: Observable<AutofillProject>;
-  fillProjectManually = true;
 
   config: MetadataFormConfig;
 
@@ -46,8 +44,6 @@ export class ProjectRegistrationFormComponent implements OnInit {
   userIsWrangler = false;
 
   @ViewChild('mf') formTabGroup: MatTabGroup;
-
-  private emptyProject = {content: {}};
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -61,10 +57,10 @@ export class ProjectRegistrationFormComponent implements OnInit {
 
   ngOnInit() {
     const queryParam = this.route.snapshot.queryParamMap;
-    this.projectFormData$ = of(this.emptyProject);
+    const emptyProject = {content: {}};
+    this.projectFormData$ = of(emptyProject);
 
     if (queryParam.has(Identifier.DOI)) {
-      this.fillProjectManually = false;
       this.projectFormData$ = this.autofillProjectDetails(Identifier.DOI, queryParam.get(Identifier.DOI));
     }
 
@@ -77,7 +73,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
       },
       error => {
         this.alertService.error('An error occurred, unable to load project details', error.message);
-        this.projectFormData = this.emptyProject;
+        this.projectFormData = emptyProject;
       }
     );
 
@@ -156,9 +152,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
   }
 
   private autofillProjectDetails(id, search): Observable<object> {
-    this.autofillProjectData$ = this.autofillProjectService.getProjectDetails(id, search);
-
-    return this.autofillProjectData$
+    return this.autofillProjectService.getProjectDetails(id, search)
       .pipe(
         map(
           (data: AutofillProject) => {
