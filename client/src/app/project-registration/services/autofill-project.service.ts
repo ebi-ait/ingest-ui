@@ -34,16 +34,13 @@ export class AutofillProjectService {
       authors: result.authorString.replace('.', '').split(','),
       pmid: result.pmid ? Number(result.pmid) : null,
       url: this.DOI_BASE_URL + result.doi,
-      funders: result.grantsList && result.grantsList.grant ?
-        result.grantsList.grant.map(grant => ({grant_id: grant.grantId, organization: grant.agency})) : [],
-      contributors: result.authorList && result.authorList.author && result.authorList.author.length ?
-        result.authorList.author.map(author => ({
+      funders: result.grantsList?.grant?.map(grant => ({grant_id: grant.grantId, organization: grant.agency})) ?? [],
+      contributors: result.authorList?.author?.map(author => ({
           first_name: author.firstName,
           last_name: author.lastName,
-          institution: author.authorAffiliationDetailsList && author.authorAffiliationDetailsList.authorAffiliation ?
-            author.authorAffiliationDetailsList.authorAffiliation[0].affiliation : '',
-          orcid_id: author.authorId && author.authorId.type === 'ORCID' ? author.authorId.value : ''
-        })) : []
+          institution: author.authorAffiliationDetailsList?.authorAffiliation?.[0]?.affiliation ?? '',
+          orcid_id: author.authorId?.type === 'ORCID' ? author.authorId.value : ''
+        })) ?? []
     };
   }
 
