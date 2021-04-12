@@ -10,8 +10,11 @@ import {AlertService} from '../../shared/services/alert.service';
 import {LoaderService} from '../../shared/services/loader.service';
 import {SchemaService} from '../../shared/services/schema.service';
 import {projectRegLayout} from './project-reg-layout';
-import {Observable} from 'rxjs';
-import {concatMap} from 'rxjs/operators';
+import {Observable, of} from 'rxjs';
+import {concatMap, map} from 'rxjs/operators';
+import {AutofillProjectService} from '../services/autofill-project.service';
+import {Identifier} from '../models/europe-pmc-search';
+import {AutofillProject} from '../models/autofill-project';
 
 @Component({
   selector: 'app-project-registration-form',
@@ -28,9 +31,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
   projectMetadataSchema: any = (metadataSchema as any).default;
   projectIngestSchema: any = (ingestSchema as any).default;
 
-  projectResource: Project;
-  projectContent: object;
-
+  projectFormData$: Observable<object>;
   projectFormData: object;
   projectFormTabKey: string;
 
@@ -49,12 +50,34 @@ export class ProjectRegistrationFormComponent implements OnInit {
               private ingestService: IngestService,
               private alertService: AlertService,
               private loaderService: LoaderService,
-              private schemaService: SchemaService) {
+              private schemaService: SchemaService,
+              private autofillProjectService: AutofillProjectService,
+  ) {
   }
 
   ngOnInit() {
-    this.projectIngestSchema['properties']['content'] = this.projectMetadataSchema;
+    const queryParam = this.route.snapshot.queryParamMap;
+    const emptyProject = {content: {}};
+    this.projectFormData$ = of(emptyProject);
 
+    if (queryParam.has(Identifier.DOI)) {
+      this.projectFormData$ = this.autofillProjectDetails(Identifier.DOI, queryParam.get(Identifier.DOI));
+    }
+
+    this.projectFormData$
+      .pipe(
+        concatMap(project => this.setSchema(project))
+      ).subscribe(
+      data => {
+        this.projectFormData = data;
+      },
+      error => {
+        this.alertService.error('An error occurred, unable to load project details', error.message);
+        this.projectFormData = emptyProject;
+      }
+    );
+
+    this.projectIngestSchema['properties']['content'] = this.projectMetadataSchema;
     this.config = {
       hideFields: [
         'describedBy',
@@ -76,16 +99,8 @@ export class ProjectRegistrationFormComponent implements OnInit {
 
     this.projectFormTabKey = this.config.layout.tabs[0].key;
 
-    this.projectResource = null;
-    this.projectContent = {};
-    this.projectFormData = {
-      content: {}
-    };
-
-    this.setSchema(this.projectFormData['content']);
 
     this.title = 'New Project';
-
     this.ingestService.getUserAccount().subscribe(account => this.userIsWrangler = account.isWrangler());
   }
 
@@ -117,7 +132,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
   }
 
   incrementProjectTab() {
-    let index =  projectRegLayout.tabs.findIndex(tab => tab.key === this.projectFormTabKey);
+    let index = projectRegLayout.tabs.findIndex(tab => tab.key === this.projectFormTabKey);
     if (index + 1 < projectRegLayout.tabs.length) {
       index++;
       this.projectFormTabKey = projectRegLayout.tabs[index].key;
@@ -127,7 +142,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
   }
 
   decrementProjectTab() {
-    let index =  projectRegLayout.tabs.findIndex(tab => tab.key === this.projectFormTabKey);
+    let index = projectRegLayout.tabs.findIndex(tab => tab.key === this.projectFormTabKey);
     if (index > 0) {
       index--;
       this.projectFormTabKey = projectRegLayout.tabs[index].key;
@@ -136,12 +151,50 @@ export class ProjectRegistrationFormComponent implements OnInit {
     return false;
   }
 
-  private setSchema(obj: object) {
-    this.schemaService.getUrlOfLatestSchema('project').subscribe(schemaUrl => {
-      obj['describedBy'] = schemaUrl;
-      obj['schema_type'] = 'project';
-      this.schema = schemaUrl;
-    });
+  private autofillProjectDetails(id, search): Observable<object> {
+    return this.autofillProjectService.getProjectDetails(id, search)
+      .pipe(
+        map(
+          (data: AutofillProject) => {
+            const project_core = {};
+            const publication = {};
+
+            const projectFormData = {
+              content: {}
+            };
+
+            project_core['project_title'] = data.title;
+            project_core['project_description'] = data.description;
+
+            projectFormData['content']['project_core'] = project_core;
+
+            publication['doi'] = data.doi;
+            publication['pmid'] = data.pmid;
+            publication['title'] = data.title;
+            publication['authors'] = data.authors;
+            publication['url'] = data.url;
+
+            projectFormData['content']['publications'] = [publication];
+            projectFormData['content']['funders'] = data.funders;
+            projectFormData['content']['contributors'] = data.contributors.map(contributor => ({
+              name: contributor.first_name + ',,' + contributor.last_name,
+              institution: contributor.institution,
+              orcid_id: contributor.orcid_id
+            }));
+            return projectFormData;
+          }
+        ));
+  }
+
+  private setSchema(project): Observable<object> {
+    return this.schemaService.getUrlOfLatestSchema('project').pipe(
+      map(schemaUrl => {
+        project['content']['describedBy'] = schemaUrl;
+        project['content']['schema_type'] = 'project';
+        this.schema = schemaUrl;
+        return project;
+      })
+    );
   }
 
   private saveProject(formValue) {

@@ -9,10 +9,11 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatIconModule} from '@angular/material/icon';
 import {ContactNameFieldComponent} from './contact-name-field/contact-name-field.component';
 import {ProjectIdComponent} from './project-id/project-id.component';
-import { ProjectRegistrationFormComponent } from './project-registration-form/project-registration-form.component';
+import {ProjectRegistrationFormComponent} from './project-registration-form/project-registration-form.component';
 import {MatTabsModule} from '@angular/material/tabs';
 import {FunderFieldGroupComponent} from './funder-field-group/funder-field-group.component';
-
+import {AutofillProjectFormComponent} from './autofill-project-form/autofill-project-form.component';
+import {RouterModule} from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -23,16 +24,18 @@ import {FunderFieldGroupComponent} from './funder-field-group/funder-field-group
     ContactNameFieldComponent,
     ProjectIdComponent,
     ProjectRegistrationFormComponent,
-    FunderFieldGroupComponent
+    FunderFieldGroupComponent,
+    AutofillProjectFormComponent,
   ],
-    imports: [
-        CommonModule,
-        MetadataSchemaFormModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatIconModule,
-        MatTabsModule
-    ]
+  imports: [
+    CommonModule,
+    MetadataSchemaFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    MatTabsModule,
+    RouterModule
+  ]
 })
 export class ProjectRegistrationModule {
 }
