@@ -59,12 +59,13 @@ import {HttpErrorInterceptor} from './http-interceptors/http-error-interceptor';
 import {GlobalFooterComponent} from './global-footer/global-footer.component';
 import {MetadataDetailsDialogComponent} from './metadata-details-dialog/metadata-details-dialog.component';
 import {MatDialogModule} from '@angular/material/dialog';
-import { ProcessDetailsComponent } from './process-details/process-details.component';
+import {ProcessDetailsComponent} from './process-details/process-details.component';
 import {NgxGraphModule} from '@swimlane/ngx-graph';
-import { MetadataPickerComponent } from './metadata-picker/metadata-picker.component';
+import {MetadataPickerComponent} from './metadata-picker/metadata-picker.component';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
 import {AuthService} from './shared/services/auth.service';
 import {UuidComponent} from './shared/components/uuid/uuid.component';
+import {AutofillProjectService} from './project-registration/services/autofill-project.service';
 
 const BROWSER_LOCALE = navigator.language;
 
@@ -140,6 +141,7 @@ const BROWSER_LOCALE = navigator.language;
     LoaderService,
     FlattenService,
     SchemaService,
+    AutofillProjectService
   ],
   bootstrap: [AppComponent]
 })

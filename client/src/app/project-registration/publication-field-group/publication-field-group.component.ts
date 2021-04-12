@@ -1,47 +1,33 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Metadata} from '../../metadata-schema-form/models/metadata';
-import {AbstractControl, FormArray, FormGroup} from '@angular/forms';
-import {MetadataForm} from '../../metadata-schema-form/models/metadata-form';
-import {MetadataFormHelper} from '../../metadata-schema-form/models/metadata-form-helper';
+
+import {InputComponent} from '../../metadata-schema-form/metadata-field-types/input/input.component';
 
 @Component({
   selector: 'app-publication-field-group',
-  templateUrl: './publication-field-group.component.html',
-  styleUrls: ['./publication-field-group.component.css']
+  templateUrl: '../../metadata-schema-form/metadata-field-types/input/input.component.html',
+  styleUrls: ['../../metadata-schema-form/metadata-field-types/input/input.component.css']
 })
-export class PublicationFieldGroupComponent implements OnInit {
-  @Input()
-  metadataForm: MetadataForm;
 
-  formHelper: MetadataFormHelper;
-
-  publicationUrlMetadata: Metadata;
-  publicationUrlControl: AbstractControl;
-
-  publicationUrlId = 'project.content.publications.url';
-  publicationKey = 'project.content.publications';
+/* Simple class that extends InputComponent to enable having one publication item added by default
+ */
+export class PublicationFieldGroupComponent extends InputComponent implements OnInit {
+  @Input() metadataForm;
 
   constructor() {
-    this.formHelper = new MetadataFormHelper();
+    super();
   }
 
   ngOnInit(): void {
-    this.publicationUrlMetadata = this.metadataForm.get(this.publicationUrlId);
-    const publicationsControl = this.metadataForm.getControl(this.publicationKey);
-    const publicationsMetadata = this.metadataForm.get(this.publicationKey);
-    this.addFormControl(publicationsMetadata, publicationsControl);
-    this.publicationUrlControl = publicationsControl['controls'][0]['controls']['url'];
+    const publicationsSchemaKey = 'project.content.publications';
+    this.metadata = this.metadataForm.get(publicationsSchemaKey);
+    this.control = this.metadataForm.getControl(publicationsSchemaKey);
 
-    const publication = publicationsControl['controls'][0] as FormGroup;
-    publication.removeControl('authors');
-    publication.removeControl('title');
-  }
+    super.ngOnInit();
 
-  addFormControl(metadata: Metadata, formControl: AbstractControl) {
-    const formArray = formControl as FormArray;
-    const count = formArray.length;
-
-    const formGroup: FormGroup = this.formHelper.toFormGroup(metadata.itemMetadata);
-    formArray.insert(count, formGroup);
+    // Default to having one publication form item added
+    // if no publications have been added via the autofill service
+    if (!this.control.value || !this.control.value.length) {
+      this.addFormControl(this.metadata, this.control);
+    }
   }
 }
