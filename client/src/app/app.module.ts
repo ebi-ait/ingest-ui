@@ -64,6 +64,7 @@ import {NgxGraphModule} from '@swimlane/ngx-graph';
 import { MetadataPickerComponent } from './metadata-picker/metadata-picker.component';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
 import {AuthService} from './shared/services/auth.service';
+import {UuidComponent} from './shared/components/uuid/uuid.component';
 
 const BROWSER_LOCALE = navigator.language;
 
@@ -96,7 +97,8 @@ const BROWSER_LOCALE = navigator.language;
     GlobalFooterComponent,
     MetadataDetailsDialogComponent,
     ProcessDetailsComponent,
-    MetadataPickerComponent
+    MetadataPickerComponent,
+    UuidComponent
   ],
   imports: [
     BrowserModule,

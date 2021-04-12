@@ -3,6 +3,7 @@
 </ng-container>
 
 <ng-container *ngIf="project">
+  <app-uuid [uuid]="projectUuid"></app-uuid>
   <h1>{{getProjectName()}}</h1>
   <br/>
   <mat-tab-group [selectedIndex]="lookupTabIndex(selectedProjectTabKey)">
