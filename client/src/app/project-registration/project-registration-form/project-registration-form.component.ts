@@ -11,7 +11,7 @@ import {LoaderService} from '../../shared/services/loader.service';
 import {SchemaService} from '../../shared/services/schema.service';
 import {projectRegLayout} from './project-reg-layout';
 import {Observable, of, Subject} from 'rxjs';
-import {concatMap, delay, distinctUntilChanged, map, takeUntil} from 'rxjs/operators';
+import {concatMap, delay, map, takeUntil} from 'rxjs/operators';
 import {AutofillProjectService} from '../services/autofill-project.service';
 import {Identifier} from '../models/europe-pmc-search';
 import {AutofillProject} from '../models/autofill-project';
@@ -235,11 +235,9 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
       );
   }
 
-  // todo: finalise the way timing works here
   onFormValueChange(formData: Observable<object>) {
     formData.pipe(
-      delay(10000), // 10 second
-      distinctUntilChanged(), // todo: do we need this here?s
+      delay(10000), // 10 seconds
       takeUntil(this.unsubscribe)
     ).subscribe(
       (formValue) => {
