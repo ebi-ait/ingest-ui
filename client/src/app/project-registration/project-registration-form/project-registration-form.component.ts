@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import * as metadataSchema from '../../project-form/project-metadata-schema.json';
 import * as ingestSchema from '../../project-form/project-ingest-schema.json';
 import {Project} from '../../shared/models/project';
@@ -10,18 +10,20 @@ import {AlertService} from '../../shared/services/alert.service';
 import {LoaderService} from '../../shared/services/loader.service';
 import {SchemaService} from '../../shared/services/schema.service';
 import {projectRegLayout} from './project-reg-layout';
-import {Observable, of} from 'rxjs';
-import {concatMap, map} from 'rxjs/operators';
+import {Observable, of, Subject} from 'rxjs';
+import {concatMap, delay, distinctUntilChanged, map, takeUntil} from 'rxjs/operators';
 import {AutofillProjectService} from '../services/autofill-project.service';
 import {Identifier} from '../models/europe-pmc-search';
 import {AutofillProject} from '../models/autofill-project';
+import {CacheProjectService} from '../services/cache-project.service';
 
 @Component({
   selector: 'app-project-registration-form',
   templateUrl: './project-registration-form.component.html',
   styleUrls: ['./project-registration-form.component.css']
 })
-export class ProjectRegistrationFormComponent implements OnInit {
+
+export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
 
   //  TODO This code needs a bit of refactoring.
   //  There are some code duplication here with Project form component.
@@ -43,6 +45,8 @@ export class ProjectRegistrationFormComponent implements OnInit {
 
   userIsWrangler = false;
 
+  private unsubscribe = new Subject<void>();
+
   @ViewChild('mf') formTabGroup: MatTabGroup;
 
   constructor(private route: ActivatedRoute,
@@ -52,6 +56,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
               private loaderService: LoaderService,
               private schemaService: SchemaService,
               private autofillProjectService: AutofillProjectService,
+              private cacheProjectService: CacheProjectService
   ) {
   }
 
@@ -62,6 +67,9 @@ export class ProjectRegistrationFormComponent implements OnInit {
 
     if (queryParam.has(Identifier.DOI)) {
       this.projectFormData$ = this.autofillProjectDetails(Identifier.DOI, queryParam.get(Identifier.DOI));
+    } else if (queryParam.has('restore')) {
+      this.cacheProjectService.getProject().subscribe(() =>
+        this.projectFormData$ = this.loadProjectFromCache());
     }
 
     this.projectFormData$
@@ -98,7 +106,6 @@ export class ProjectRegistrationFormComponent implements OnInit {
     };
 
     this.projectFormTabKey = this.config.layout.tabs[0].key;
-
 
     this.title = 'New Project';
     this.ingestService.getUserAccount().subscribe(account => this.userIsWrangler = account.isWrangler());
@@ -203,6 +210,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
     this.createProject(formValue).subscribe(project => {
         console.log('Project saved', project);
         this.loaderService.display(false);
+        this.cacheProjectService.removeProject();
         this.router.navigate(['projects', 'detail'], {
           queryParams: {
             uuid: project.uuid.uuid,
@@ -225,5 +233,28 @@ export class ProjectRegistrationFormComponent implements OnInit {
         // save fields outside content
         concatMap(createdProject => this.ingestService.partiallyPatchProject(createdProject, this.patch))
       );
+  }
+
+  // todo: finalise the way timing works here
+  onFormValueChange(formData: Observable<object>) {
+    formData.pipe(
+      delay(10000), // 10 second
+      distinctUntilChanged(), // todo: do we need this here?s
+      takeUntil(this.unsubscribe)
+    ).subscribe(
+      (formValue) => {
+        console.log('cached project to local storage');
+        this.cacheProjectService.saveProject(formValue['value']);
+      }
+    );
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe.next();
+  }
+
+  loadProjectFromCache() {
+    console.log('fetching project from cache');
+    return this.cacheProjectService.getProject();
   }
 }

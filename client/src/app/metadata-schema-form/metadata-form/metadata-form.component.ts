@@ -5,6 +5,7 @@ import {JsonSchema} from '../models/json-schema';
 import {MetadataFormConfig} from '../models/metadata-form-config';
 import {MetadataForm} from '../models/metadata-form';
 import {MetadataFormTab} from '../models/metadata-form-layout';
+import {of} from 'rxjs';
 
 @Component({
   selector: 'app-metadata-form',
@@ -36,6 +37,8 @@ export class MetadataFormComponent implements OnInit {
 
   @Output() tabChange = new EventEmitter<string>();
 
+  @Output() formValueChange = new EventEmitter<object>();
+
   formGroup: FormGroup;
 
   metadataForm: MetadataForm;
@@ -59,6 +62,8 @@ export class MetadataFormComponent implements OnInit {
       this.selectedTabKey = this.visibleTabs[0].key;
     }
     this.done = true;
+
+    this.onFormChange();
   }
 
   lookupTabIndex(tabKey: string): number {
@@ -91,6 +96,9 @@ export class MetadataFormComponent implements OnInit {
     return true;
   }
 
+  onFormChange() {
+    this.formGroup.valueChanges.subscribe( () => this.formValueChange.emit(of(this.getFormData())));
+  }
 
   onSubmit(e) {
     e.preventDefault();

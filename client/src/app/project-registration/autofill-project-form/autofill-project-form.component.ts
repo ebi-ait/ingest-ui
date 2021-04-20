@@ -6,6 +6,7 @@ import {Identifier} from '../models/europe-pmc-search';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {IngestService} from '../../shared/services/ingest.service';
+import {CacheProjectService} from '../services/cache-project.service';
 
 @Component({
   selector: 'app-doi-name-field',
@@ -16,16 +17,19 @@ import {IngestService} from '../../shared/services/ingest.service';
 
 export class AutofillProjectFormComponent implements OnInit {
   publicationDoiCtrl: FormControl;
+  projectInCache$: Observable<any>;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private ingestService: IngestService,
-              private alertService: AlertService
+              private alertService: AlertService,
+              private cacheProjectService: CacheProjectService
   ) {
   }
 
   ngOnInit(): void {
     this.publicationDoiCtrl = new FormControl('', Validators.required);
+    this.projectInCache$ = this.cacheProjectService.getProject();
   }
 
   showError(control: FormControl): string {
@@ -73,4 +77,10 @@ export class AutofillProjectFormComponent implements OnInit {
     return this.ingestService.queryProjects(query).pipe(map(data => !!data.page.totalElements));
   }
 
+  restoreProject() {
+    const params = {
+      restore: 'true'
+    };
+    this.router.navigate(['/projects', 'new'], {queryParams: params});
+  }
 }

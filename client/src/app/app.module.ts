@@ -65,6 +65,7 @@ import {MetadataPickerComponent} from './metadata-picker/metadata-picker.compone
 import {NgxChartsModule} from '@swimlane/ngx-charts';
 import {AuthService} from './shared/services/auth.service';
 import {AutofillProjectService} from './project-registration/services/autofill-project.service';
+import {CacheProjectService} from './project-registration/services/cache-project.service';
 
 const BROWSER_LOCALE = navigator.language;
 
@@ -139,7 +140,8 @@ const BROWSER_LOCALE = navigator.language;
     LoaderService,
     FlattenService,
     SchemaService,
-    AutofillProjectService
+    AutofillProjectService,
+    CacheProjectService
   ],
   bootstrap: [AppComponent]
 })
