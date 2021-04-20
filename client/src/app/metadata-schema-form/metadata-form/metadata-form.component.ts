@@ -5,7 +5,7 @@ import {JsonSchema} from '../models/json-schema';
 import {MetadataFormConfig} from '../models/metadata-form-config';
 import {MetadataForm} from '../models/metadata-form';
 import {MetadataFormTab} from '../models/metadata-form-layout';
-import {of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 
 @Component({
   selector: 'app-metadata-form',
@@ -37,7 +37,7 @@ export class MetadataFormComponent implements OnInit {
 
   @Output() tabChange = new EventEmitter<string>();
 
-  @Output() formValueChange = new EventEmitter<object>();
+  @Output() formValueChange = new EventEmitter<Observable<object>>();
 
   formGroup: FormGroup;
 
