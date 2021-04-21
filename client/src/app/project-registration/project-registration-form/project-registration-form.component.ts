@@ -251,7 +251,7 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
     this.unsubscribe.next();
   }
 
-  loadProjectFromCache() {
+  loadProjectFromCache(): Observable<Project> {
     console.log('fetching project from cache');
     return this.cacheProjectService.getProject();
   }

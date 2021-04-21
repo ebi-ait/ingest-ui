@@ -7,6 +7,7 @@ import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {IngestService} from '../../shared/services/ingest.service';
 import {CacheProjectService} from '../services/cache-project.service';
+import {Project} from '../../shared/models/project';
 
 @Component({
   selector: 'app-doi-name-field',
@@ -17,7 +18,7 @@ import {CacheProjectService} from '../services/cache-project.service';
 
 export class AutofillProjectFormComponent implements OnInit {
   publicationDoiCtrl: FormControl;
-  projectInCache$: Observable<any>;
+  projectInCache$: Observable<Project>;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
