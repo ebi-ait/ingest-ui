@@ -16,6 +16,7 @@ import {AutofillProjectService} from '../services/autofill-project.service';
 import {Identifier} from '../models/europe-pmc-search';
 import {AutofillProject} from '../models/autofill-project';
 import {CacheProjectService} from '../services/cache-project.service';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-project-registration-form',
@@ -237,7 +238,7 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
 
   onFormValueChange(formData: Observable<object>) {
     formData.pipe(
-      delay(10000), // 10 seconds
+      delay(environment.AUTOSAVE_TIME),
       takeUntil(this.unsubscribe)
     ).subscribe(
       (formValue) => {
