@@ -1,0 +1,11 @@
+<app-select-list
+  [id]="id"
+  [label]="label"
+  [isRequired]="isRequired"
+  [disabled]="disabled"
+  [placeholder]="defaultOption"
+  [value]="control.value"
+  [helperText]="helperText"
+  [options]="options"
+  (valueChanged)="onValueChange($event)"
+></app-select-list>

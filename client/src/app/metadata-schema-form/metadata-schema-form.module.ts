@@ -30,6 +30,7 @@ import {EnumRadioInlineComponent} from './metadata-field-types/enum-radio-inline
 import {FormItemComponent} from './form-item/form-item.component';
 import { VfTabsComponent } from './custom/vf-tabs/vf-tabs.component';
 import { VfTabComponent } from './custom/vf-tab/vf-tab.component';
+import {WranglerListInputComponent} from './metadata-field-types/wrangler-list-input/wrangler-list-input.component';
 
 
 @NgModule({
@@ -67,7 +68,8 @@ import { VfTabComponent } from './custom/vf-tab/vf-tab.component';
     BaseInputComponent,
     FormItemComponent,
     VfTabsComponent,
-    VfTabComponent
+    VfTabComponent,
+    WranglerListInputComponent
   ],
   exports: [
     MetadataFormComponent,

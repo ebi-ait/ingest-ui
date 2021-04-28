@@ -43,6 +43,13 @@ export const layout: MetadataFormLayout = {
       items: [
         'project.content.funders'
       ]
+    },
+    {
+      title: 'Admin Area',
+      key: 'project_admin',
+      items: [
+        'project.primaryWrangler'
+      ]
     }
   ]
 };

@@ -14,6 +14,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {FunderFieldGroupComponent} from './funder-field-group/funder-field-group.component';
 import {AutofillProjectFormComponent} from './autofill-project-form/autofill-project-form.component';
 import {RouterModule} from '@angular/router';
+import {AdminAreaComponent} from './admin-area/admin-area.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import {RouterModule} from '@angular/router';
     ProjectRegistrationFormComponent,
     FunderFieldGroupComponent,
     AutofillProjectFormComponent,
+    AdminAreaComponent
   ],
   imports: [
     CommonModule,
