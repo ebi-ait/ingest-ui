@@ -15,7 +15,7 @@ import {concatMap, delay, map, takeUntil} from 'rxjs/operators';
 import {AutofillProjectService} from '../services/autofill-project.service';
 import {Identifier} from '../models/europe-pmc-search';
 import {AutofillProject} from '../models/autofill-project';
-import {CacheProjectService} from '../services/cache-project.service';
+import {ProjectCacheService} from '../services/project-cache.service';
 import {environment} from '../../../environments/environment';
 
 @Component({
@@ -57,7 +57,7 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
               private loaderService: LoaderService,
               private schemaService: SchemaService,
               private autofillProjectService: AutofillProjectService,
-              private cacheProjectService: CacheProjectService
+              private cacheProjectService: ProjectCacheService
   ) {
   }
 

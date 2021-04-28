@@ -6,7 +6,7 @@ import {Identifier} from '../models/europe-pmc-search';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {IngestService} from '../../shared/services/ingest.service';
-import {CacheProjectService} from '../services/cache-project.service';
+import {ProjectCacheService} from '../services/project-cache.service';
 import {Project} from '../../shared/models/project';
 
 @Component({
@@ -24,7 +24,7 @@ export class AutofillProjectFormComponent implements OnInit {
               private router: Router,
               private ingestService: IngestService,
               private alertService: AlertService,
-              private cacheProjectService: CacheProjectService
+              private cacheProjectService: ProjectCacheService
   ) {
   }
 

@@ -5,7 +5,7 @@ import {Observable} from 'rxjs';
 import {Project} from '../../shared/models/project';
 
 @Injectable()
-export class CacheProjectService {
+export class ProjectCacheService {
 
   constructor(private aai: AaiService) {}
 
