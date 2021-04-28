@@ -55,7 +55,7 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
               private loaderService: LoaderService,
               private schemaService: SchemaService,
               private autofillProjectService: AutofillProjectService,
-              private cacheProjectService: ProjectCacheService
+              private projectCacheService: ProjectCacheService
   ) {
   }
 
@@ -77,7 +77,7 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
     if (args.has(Identifier.DOI)) {
       this.projectFormData$ = this.autofillProjectDetails(Identifier.DOI, args.get(Identifier.DOI));
     } else if (args.has('restore')) {
-      this.cacheProjectService.getProject().subscribe(() =>
+      this.projectCacheService.getProject().subscribe(() =>
         this.projectFormData$ = this.loadProjectFromCache());
     }
 
@@ -170,7 +170,7 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
     ).subscribe(
       (formValue) => {
         console.log('cached project to local storage');
-        this.cacheProjectService.saveProject(formValue['value']);
+        this.projectCacheService.saveProject(formValue['value']);
       }
     );
   }
@@ -181,7 +181,7 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
 
   loadProjectFromCache(): Observable<Project> {
     console.log('fetching project from cache');
-    return this.cacheProjectService.getProject();
+    return this.projectCacheService.getProject();
   }
 
   private autofillProjectDetails(id, search): Observable<object> {
@@ -236,7 +236,7 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
     this.createProject(formValue).subscribe(project => {
         console.log('Project saved', project);
         this.loaderService.display(false);
-        this.cacheProjectService.removeProject();
+        this.projectCacheService.removeProject();
         this.router.navigate(['projects', 'detail'], {
           queryParams: {
             uuid: project.uuid.uuid,

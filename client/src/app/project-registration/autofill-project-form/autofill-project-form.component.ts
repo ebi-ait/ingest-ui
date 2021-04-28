@@ -24,13 +24,13 @@ export class AutofillProjectFormComponent implements OnInit {
               private router: Router,
               private ingestService: IngestService,
               private alertService: AlertService,
-              private cacheProjectService: ProjectCacheService
+              private projectCacheService: ProjectCacheService
   ) {
   }
 
   ngOnInit(): void {
     this.publicationDoiCtrl = new FormControl('', Validators.required);
-    this.projectInCache$ = this.cacheProjectService.getProject();
+    this.projectInCache$ = this.projectCacheService.getProject();
   }
 
   showError(control: FormControl): string {
