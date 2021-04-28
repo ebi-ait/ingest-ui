@@ -61,7 +61,7 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const queryParam = this.route.snapshot.queryParamMap;
-    this.setFormData(queryParam);
+    this.loadProjectData(queryParam);
     this.projectIngestSchema['properties']['content'] = this.projectMetadataSchema;
     this.setFormConfig();
     this.projectFormTabKey = this.config.layout.tabs[0].key;
@@ -70,7 +70,7 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
     this.ingestService.getUserAccount().subscribe(account => this.userIsWrangler = account.isWrangler());
   }
 
-  setFormData(args: ParamMap) {
+  loadProjectData(args: ParamMap) {
     const emptyProject = {content: {}};
     this.projectFormData$ = of(emptyProject);
 
