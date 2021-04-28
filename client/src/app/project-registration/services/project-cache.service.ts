@@ -7,14 +7,14 @@ import {Project} from '../../shared/models/project';
 @Injectable()
 export class ProjectCacheService {
 
-  constructor(private aai: AaiService) {}
+  constructor(private aaiService: AaiService) {}
 
   saveProject(project: Project) {
     this.getProjectKey().subscribe(projectKey => localStorage.setItem(projectKey, JSON.stringify(project)));
   }
 
   getProjectKey(): Observable<string> {
-      return this.aai.getUser().pipe(map(user => (user?.profile?.email ?? '') + '-' + 'project'));
+      return this.aaiService.getUser().pipe(map(user => (user?.profile?.email ?? '') + '-' + 'project'));
   }
 
   removeProject() {
