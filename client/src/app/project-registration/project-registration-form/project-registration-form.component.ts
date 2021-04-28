@@ -4,7 +4,7 @@ import * as ingestSchema from '../../project-form/project-ingest-schema.json';
 import {Project} from '../../shared/models/project';
 import {MetadataFormConfig} from '../../metadata-schema-form/models/metadata-form-config';
 import {MatTabGroup} from '@angular/material/tabs';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {IngestService} from '../../shared/services/ingest.service';
 import {AlertService} from '../../shared/services/alert.service';
 import {LoaderService} from '../../shared/services/loader.service';
@@ -45,10 +45,8 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
   schema: string;
 
   userIsWrangler = false;
-
-  private unsubscribe = new Subject<void>();
-
   @ViewChild('mf') formTabGroup: MatTabGroup;
+  private unsubscribe = new Subject<void>();
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -63,12 +61,22 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const queryParam = this.route.snapshot.queryParamMap;
+    this.setFormData(queryParam);
+    this.projectIngestSchema['properties']['content'] = this.projectMetadataSchema;
+    this.setFormConfig();
+    this.projectFormTabKey = this.config.layout.tabs[0].key;
+
+    this.title = 'New Project';
+    this.ingestService.getUserAccount().subscribe(account => this.userIsWrangler = account.isWrangler());
+  }
+
+  setFormData(args: ParamMap) {
     const emptyProject = {content: {}};
     this.projectFormData$ = of(emptyProject);
 
-    if (queryParam.has(Identifier.DOI)) {
-      this.projectFormData$ = this.autofillProjectDetails(Identifier.DOI, queryParam.get(Identifier.DOI));
-    } else if (queryParam.has('restore')) {
+    if (args.has(Identifier.DOI)) {
+      this.projectFormData$ = this.autofillProjectDetails(Identifier.DOI, args.get(Identifier.DOI));
+    } else if (args.has('restore')) {
       this.cacheProjectService.getProject().subscribe(() =>
         this.projectFormData$ = this.loadProjectFromCache());
     }
@@ -85,8 +93,9 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
         this.projectFormData = emptyProject;
       }
     );
+  }
 
-    this.projectIngestSchema['properties']['content'] = this.projectMetadataSchema;
+  setFormConfig() {
     this.config = {
       hideFields: [
         'describedBy',
@@ -105,11 +114,6 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
       submitButtonLabel: 'Register Project',
       cancelButtonLabel: 'Or Cancel project registration'
     };
-
-    this.projectFormTabKey = this.config.layout.tabs[0].key;
-
-    this.title = 'New Project';
-    this.ingestService.getUserAccount().subscribe(account => this.userIsWrangler = account.isWrangler());
   }
 
   onSave(formData: object) {
@@ -157,6 +161,27 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
       return true;
     }
     return false;
+  }
+
+  saveProjectInCache(formData: Observable<object>) {
+    formData.pipe(
+      delay(environment.AUTOSAVE_PERIOD_MILLIS),
+      takeUntil(this.unsubscribe)
+    ).subscribe(
+      (formValue) => {
+        console.log('cached project to local storage');
+        this.cacheProjectService.saveProject(formValue['value']);
+      }
+    );
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe.next();
+  }
+
+  loadProjectFromCache(): Observable<Project> {
+    console.log('fetching project from cache');
+    return this.cacheProjectService.getProject();
   }
 
   private autofillProjectDetails(id, search): Observable<object> {
@@ -234,26 +259,5 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
         // save fields outside content
         concatMap(createdProject => this.ingestService.partiallyPatchProject(createdProject, this.patch))
       );
-  }
-
-  saveProjectInCache(formData: Observable<object>) {
-    formData.pipe(
-      delay(environment.AUTOSAVE_PERIOD_MILLIS),
-      takeUntil(this.unsubscribe)
-    ).subscribe(
-      (formValue) => {
-        console.log('cached project to local storage');
-        this.cacheProjectService.saveProject(formValue['value']);
-      }
-    );
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-  }
-
-  loadProjectFromCache(): Observable<Project> {
-    console.log('fetching project from cache');
-    return this.cacheProjectService.getProject();
   }
 }
