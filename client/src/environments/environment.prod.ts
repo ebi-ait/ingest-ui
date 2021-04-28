@@ -12,5 +12,5 @@ export const environment = {
 
   OLS_URL: 'https://ontology.archive.data.humancellatlas.org',
 
-  AUTOSAVE_TIME: 10 * 1000
+  AUTOSAVE_PERIOD_MILLIS: 10 * 1000
 };

@@ -238,7 +238,7 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
 
   onFormValueChange(formData: Observable<object>) {
     formData.pipe(
-      delay(environment.AUTOSAVE_TIME),
+      delay(environment.AUTOSAVE_PERIOD_MILLIS),
       takeUntil(this.unsubscribe)
     ).subscribe(
       (formValue) => {

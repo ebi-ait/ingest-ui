@@ -14,7 +14,7 @@ export class ProjectCacheService {
   }
 
   getProjectKey(): Observable<string> {
-      return this.aaiService.getUser().pipe(map(user => (user?.profile?.email ?? '') + '-' + 'project'));
+      return this.aaiService.getUser().pipe(map(user => (`${user?.profile?.email ?? ''}-project`)));
   }
 
   removeProject() {
