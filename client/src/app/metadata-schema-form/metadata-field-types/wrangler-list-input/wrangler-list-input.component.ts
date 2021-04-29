@@ -1,9 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {BaseInputComponent} from '../base-input/base-input.component';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {IngestService} from '../../../shared/services/ingest.service';
 import {AaiService} from '../../../aai/aai.service';
+import {Metadata} from '../../models/metadata';
+import {AbstractControl} from '@angular/forms';
 
 @Component({
   selector: 'app-wrangler-list-input',
@@ -11,11 +13,18 @@ import {AaiService} from '../../../aai/aai.service';
   styleUrls: ['./wrangler-list-input.component.css']
 })
 export class WranglerListInputComponent extends BaseInputComponent implements OnInit {
+  @Input() metadata: Metadata;
+  @Input() control: AbstractControl;
+  @Input() id: string;
+
   options: string[];
   defaultOption: string;
 
   constructor(private ingestService: IngestService, private aaiService: AaiService) {
     super();
+    super.metadata = this.metadata;
+    super.control = this.control;
+    super.id = this.id;
   }
 
   ngOnInit(): void {

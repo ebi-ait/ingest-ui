@@ -78,7 +78,8 @@ import {WranglerListInputComponent} from './metadata-field-types/wrangler-list-i
     SelectRadioComponent,
     EnumListInputComponent,
     VfTabsComponent,
-    VfTabComponent
+    VfTabComponent,
+    WranglerListInputComponent
   ],
   providers: []
 })

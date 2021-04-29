@@ -1,4 +1,5 @@
 import {MetadataFormLayout} from '../metadata-schema-form/models/metadata-form-layout';
+import {AdminAreaComponent} from '../project-registration/admin-area/admin-area.component';
 
 export const layout: MetadataFormLayout = {
   tabs: [
@@ -48,7 +49,12 @@ export const layout: MetadataFormLayout = {
       title: 'Admin Area',
       key: 'project_admin',
       items: [
-        'project.primaryWrangler'
+        {
+          keys: [
+            'project.primaryWrangler'
+          ],
+          component: AdminAreaComponent
+        }
       ]
     }
   ]
