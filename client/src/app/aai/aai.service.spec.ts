@@ -62,7 +62,8 @@ describe('Complete Authentication', () => {
     ingestSvc.getUserAccount.and.returnValue(of(new Account({
       id: '',
       providerReference: '',
-      roles: []
+      roles: [],
+      name: ''
     })));
 
     // expect:
@@ -86,7 +87,8 @@ describe('Complete Authentication', () => {
     ingestSvc.getUserAccount.and.returnValue(of(new Account({
       id: '',
       providerReference: '',
-      roles: []
+      roles: [],
+      name: ''
     })));
 
     // expect:
