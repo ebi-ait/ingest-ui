@@ -5,7 +5,7 @@ import {map} from 'rxjs/operators';
 import {IngestService} from '../../../shared/services/ingest.service';
 import {AaiService} from '../../../aai/aai.service';
 import {Metadata} from '../../models/metadata';
-import {AbstractControl} from '@angular/forms';
+import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'app-wrangler-list-input',
@@ -14,7 +14,7 @@ import {AbstractControl} from '@angular/forms';
 })
 export class WranglerListInputComponent extends BaseInputComponent implements OnInit {
   @Input() metadata: Metadata;
-  @Input() control: AbstractControl;
+  @Input() control: FormControl;
   @Input() id: string;
 
   options: string[];
