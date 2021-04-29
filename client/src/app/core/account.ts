@@ -8,7 +8,7 @@ export class Account {
     id: string,
     providerReference: string,
     roles?: string[]
-    name: string
+    name?: string
   }) {
     this.id = account.id;
     this.providerReference = account.providerReference;
