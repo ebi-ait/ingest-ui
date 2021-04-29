@@ -17,6 +17,8 @@ import {Identifier} from '../models/europe-pmc-search';
 import {AutofillProject} from '../models/autofill-project';
 import {ProjectCacheService} from '../services/project-cache.service';
 import {environment} from '../../../environments/environment';
+import {Account} from '../../core/account';
+import {MetadataFormLayout, MetadataFormTab} from '../../metadata-schema-form/models/metadata-form-layout';
 
 @Component({
   selector: 'app-project-registration-form',
@@ -37,6 +39,7 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
   projectFormData$: Observable<object>;
   projectFormData: object;
   projectFormTabKey: string;
+  projectFormLayout: MetadataFormLayout;
 
   config: MetadataFormConfig;
 
@@ -44,7 +47,9 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
 
   schema: string;
 
-  userIsWrangler = false;
+  userAccount$: Observable<Account>;
+  userIsWrangler: boolean;
+
   @ViewChild('mf') formTabGroup: MatTabGroup;
   private unsubscribe = new Subject<void>();
 
@@ -55,18 +60,25 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
               private loaderService: LoaderService,
               private schemaService: SchemaService,
               private autofillProjectService: AutofillProjectService,
-              private projectCacheService: ProjectCacheService
+              private projectCacheService: ProjectCacheService,
   ) {
   }
 
   ngOnInit() {
+
     const queryParam = this.route.snapshot.queryParamMap;
-    this.loadProjectData(queryParam);
-    this.setFormConfig();
-    this.setCurrentTab(this.getFormConfig().layout.tabs[0].key);
+
     this.title = 'New Project';
     this.projectIngestSchema['properties']['content'] = this.projectMetadataSchema;
-    this.ingestService.getUserAccount().subscribe(account => this.userIsWrangler = account.isWrangler());
+    this.userAccount$ = this.ingestService.getUserAccount();
+    this.userAccount$
+      .subscribe((account) => {
+        this.userIsWrangler = account.isWrangler();
+        this.setTabLayout(projectRegLayout);
+        this.setFormConfig();
+        this.setCurrentTab(this.getTabLayout().tabs[0].key);
+      });
+    this.loadProjectData(queryParam);
   }
 
   loadProjectData(args: ParamMap) {
@@ -102,7 +114,7 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
         'schema_type',
         'provenance'
       ],
-      layout: projectRegLayout,
+      layout: this.getTabLayout(),
       inputType: {
         'project_description': 'textarea',
         'notes': 'textarea'
@@ -154,21 +166,37 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
     this.setCurrentTab($tabKey);
   }
 
+  setTabLayout(layout: MetadataFormLayout) {
+    layout.tabs = this.hideTabsFromLayout(layout.tabs);
+    this.projectFormLayout = layout;
+  }
+
+  getTabLayout(): MetadataFormLayout {
+    return this.projectFormLayout;
+  }
+
+  private hideTabsFromLayout(tabs: MetadataFormTab[]): MetadataFormTab[] {
+    if (!this.userIsWrangler) {
+      return tabs.filter(tab => tab.key !== 'project_admin');
+    }
+    return tabs;
+  }
+
   incrementProjectTab() {
-    let index = projectRegLayout.tabs.findIndex(tab => tab.key === this.getCurrentTab());
-    if (index + 1 < projectRegLayout.tabs.length) {
+    let index = this.getTabLayout().tabs.findIndex(tab => tab.key === this.getCurrentTab());
+    if (index + 1 < this.getTabLayout().tabs.length) {
       index++;
-      this.setCurrentTab(projectRegLayout.tabs[index].key);
+      this.setCurrentTab(this.getTabLayout().tabs[index].key);
       return true;
     }
     return false;
   }
 
   decrementProjectTab() {
-    let index = projectRegLayout.tabs.findIndex(tab => tab.key === this.getCurrentTab());
+    let index = this.getTabLayout().tabs.findIndex(tab => tab.key === this.getCurrentTab());
     if (index > 0) {
       index--;
-      this.setCurrentTab(projectRegLayout.tabs[index].key);
+      this.setCurrentTab(this.getTabLayout().tabs[index].key);
       return true;
     }
     return false;
