@@ -12,11 +12,12 @@
                          [schema]="projectIngestSchema"
                          [data]="projectFormData"
                          [config]="config"
-                         [selectedTabKey]="projectFormTabKey"
+                         [selectedTabKey]="getCurrentTab()"
                          (cancel)="onCancel($event)"
                          (back)="decrementProjectTab()"
                          (tabChange)="onTabChange($event)"
-                         (save)="onSave($event)">
+                         (save)="onSave($event)"
+                         (formValueChange)="saveProjectInCache($event)">
       </app-metadata-form>
     </ng-container>
   </mat-tab>
