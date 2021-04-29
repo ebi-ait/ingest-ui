@@ -5,6 +5,7 @@ import {ContactFieldGroupComponent} from '../contact-field-group/contact-field-g
 import {ProjectRegistrationSaveComponent} from '../project-registration-summary/project-registration-save.component';
 import {ProjectIdComponent} from '../project-id/project-id.component';
 import {FunderFieldGroupComponent} from '../funder-field-group/funder-field-group.component';
+import {AdminAreaComponent} from '../admin-area/admin-area.component';
 
 export const projectRegLayout: MetadataFormLayout = {
   tabs: [
@@ -79,7 +80,12 @@ export const projectRegLayout: MetadataFormLayout = {
       title: 'Admin Area',
       key: 'project_admin',
       items: [
-          'project.primaryWrangler'
+        {
+          keys: [
+            'project.primaryWrangler'
+          ],
+          component: AdminAreaComponent
+        }
       ]
     },
     {
