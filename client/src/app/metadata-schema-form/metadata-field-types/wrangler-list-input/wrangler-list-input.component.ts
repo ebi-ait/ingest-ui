@@ -35,10 +35,11 @@ export class WranglerListInputComponent extends BaseInputComponent implements On
 
   private setDefaultWrangler() {
     this.aaiService.getUser().pipe(map(user => user?.profile?.name)).
-    // subscribe(name => this.control.setValue(name));
       subscribe(name => {
         this.defaultOption = name;
-        this.control.setValue(name);
+        if (!this.control.value) {
+          this.control.setValue(name);
+        }
       });
 
   }
