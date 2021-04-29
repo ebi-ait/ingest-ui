@@ -62,11 +62,10 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const queryParam = this.route.snapshot.queryParamMap;
     this.loadProjectData(queryParam);
-    this.projectIngestSchema['properties']['content'] = this.projectMetadataSchema;
     this.setFormConfig();
-    this.projectFormTabKey = this.config.layout.tabs[0].key;
-
+    this.setCurrentTab(this.getFormConfig().layout.tabs[0].key);
     this.title = 'New Project';
+    this.projectIngestSchema['properties']['content'] = this.projectMetadataSchema;
     this.ingestService.getUserAccount().subscribe(account => this.userIsWrangler = account.isWrangler());
   }
 
@@ -116,6 +115,18 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
     };
   }
 
+  getFormConfig(): MetadataFormConfig {
+    return this.config;
+  }
+
+  setCurrentTab(tab: string) {
+    this.projectFormTabKey = tab;
+  }
+
+  getCurrentTab(): string {
+    return this.projectFormTabKey;
+  }
+
   onSave(formData: object) {
     const formValue = formData['value'];
     const valid = formData['valid'];
@@ -140,24 +151,24 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
   }
 
   onTabChange($tabKey: string) {
-    this.projectFormTabKey = $tabKey;
+    this.setCurrentTab($tabKey);
   }
 
   incrementProjectTab() {
-    let index = projectRegLayout.tabs.findIndex(tab => tab.key === this.projectFormTabKey);
+    let index = projectRegLayout.tabs.findIndex(tab => tab.key === this.getCurrentTab());
     if (index + 1 < projectRegLayout.tabs.length) {
       index++;
-      this.projectFormTabKey = projectRegLayout.tabs[index].key;
+      this.setCurrentTab(projectRegLayout.tabs[index].key);
       return true;
     }
     return false;
   }
 
   decrementProjectTab() {
-    let index = projectRegLayout.tabs.findIndex(tab => tab.key === this.projectFormTabKey);
+    let index = projectRegLayout.tabs.findIndex(tab => tab.key === this.getCurrentTab());
     if (index > 0) {
       index--;
-      this.projectFormTabKey = projectRegLayout.tabs[index].key;
+      this.setCurrentTab(projectRegLayout.tabs[index].key);
       return true;
     }
     return false;
