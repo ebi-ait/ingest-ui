@@ -66,6 +66,7 @@ import {NgxChartsModule} from '@swimlane/ngx-charts';
 import {AuthService} from './shared/services/auth.service';
 import {UuidComponent} from './shared/components/uuid/uuid.component';
 import {AutofillProjectService} from './project-registration/services/autofill-project.service';
+import {ProjectCacheService} from './project-registration/services/project-cache.service';
 
 const BROWSER_LOCALE = navigator.language;
 
@@ -141,7 +142,8 @@ const BROWSER_LOCALE = navigator.language;
     LoaderService,
     FlattenService,
     SchemaService,
-    AutofillProjectService
+    AutofillProjectService,
+    ProjectCacheService
   ],
   bootstrap: [AppComponent]
 })

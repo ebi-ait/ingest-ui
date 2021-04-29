@@ -11,6 +11,7 @@ AAI_CLIENT_ID=${AAI_CLIENT_ID:-"e2041c2d-9449-4468-856e-e84711cebd21"}
 AAI_AUTHORITY=${AAI_AUTHORITY:-"https://login.elixir-czech.org/oidc"}
 OLS_URL=${OLS_URL:-"https://ontology.dev.archive.data.humancellatlas.org"}
 
+
 # Replace template with values in main bundle files
 sed -i "s#<%= INGEST_API_URL %>#$INGEST_API_URL#g" /usr/share/nginx/html/main-*.js
 sed -i "s#<%= BROKER_API_URL %>#$BROKER_API_URL#g" /usr/share/nginx/html/main-*.js

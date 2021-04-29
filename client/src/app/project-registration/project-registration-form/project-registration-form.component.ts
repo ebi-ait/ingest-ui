@@ -1,27 +1,30 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import * as metadataSchema from '../../project-form/project-metadata-schema.json';
 import * as ingestSchema from '../../project-form/project-ingest-schema.json';
 import {Project} from '../../shared/models/project';
 import {MetadataFormConfig} from '../../metadata-schema-form/models/metadata-form-config';
 import {MatTabGroup} from '@angular/material/tabs';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {IngestService} from '../../shared/services/ingest.service';
 import {AlertService} from '../../shared/services/alert.service';
 import {LoaderService} from '../../shared/services/loader.service';
 import {SchemaService} from '../../shared/services/schema.service';
 import {projectRegLayout} from './project-reg-layout';
-import {Observable, of} from 'rxjs';
-import {concatMap, map} from 'rxjs/operators';
+import {Observable, of, Subject} from 'rxjs';
+import {concatMap, delay, map, takeUntil} from 'rxjs/operators';
 import {AutofillProjectService} from '../services/autofill-project.service';
 import {Identifier} from '../models/europe-pmc-search';
 import {AutofillProject} from '../models/autofill-project';
+import {ProjectCacheService} from '../services/project-cache.service';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-project-registration-form',
   templateUrl: './project-registration-form.component.html',
   styleUrls: ['./project-registration-form.component.css']
 })
-export class ProjectRegistrationFormComponent implements OnInit {
+
+export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
 
   //  TODO This code needs a bit of refactoring.
   //  There are some code duplication here with Project form component.
@@ -42,8 +45,8 @@ export class ProjectRegistrationFormComponent implements OnInit {
   schema: string;
 
   userIsWrangler = false;
-
   @ViewChild('mf') formTabGroup: MatTabGroup;
+  private unsubscribe = new Subject<void>();
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -52,16 +55,29 @@ export class ProjectRegistrationFormComponent implements OnInit {
               private loaderService: LoaderService,
               private schemaService: SchemaService,
               private autofillProjectService: AutofillProjectService,
+              private projectCacheService: ProjectCacheService
   ) {
   }
 
   ngOnInit() {
     const queryParam = this.route.snapshot.queryParamMap;
+    this.loadProjectData(queryParam);
+    this.setFormConfig();
+    this.setCurrentTab(this.getFormConfig().layout.tabs[0].key);
+    this.title = 'New Project';
+    this.projectIngestSchema['properties']['content'] = this.projectMetadataSchema;
+    this.ingestService.getUserAccount().subscribe(account => this.userIsWrangler = account.isWrangler());
+  }
+
+  loadProjectData(args: ParamMap) {
     const emptyProject = {content: {}};
     this.projectFormData$ = of(emptyProject);
 
-    if (queryParam.has(Identifier.DOI)) {
-      this.projectFormData$ = this.autofillProjectDetails(Identifier.DOI, queryParam.get(Identifier.DOI));
+    if (args.has(Identifier.DOI)) {
+      this.projectFormData$ = this.autofillProjectDetails(Identifier.DOI, args.get(Identifier.DOI));
+    } else if (args.has('restore')) {
+      this.projectCacheService.getProject().subscribe(() =>
+        this.projectFormData$ = this.loadProjectFromCache());
     }
 
     this.projectFormData$
@@ -76,8 +92,9 @@ export class ProjectRegistrationFormComponent implements OnInit {
         this.projectFormData = emptyProject;
       }
     );
+  }
 
-    this.projectIngestSchema['properties']['content'] = this.projectMetadataSchema;
+  setFormConfig() {
     this.config = {
       hideFields: [
         'describedBy',
@@ -96,12 +113,18 @@ export class ProjectRegistrationFormComponent implements OnInit {
       submitButtonLabel: 'Register Project',
       cancelButtonLabel: 'Or Cancel project registration'
     };
+  }
 
-    this.projectFormTabKey = this.config.layout.tabs[0].key;
+  getFormConfig(): MetadataFormConfig {
+    return this.config;
+  }
 
+  setCurrentTab(tab: string) {
+    this.projectFormTabKey = tab;
+  }
 
-    this.title = 'New Project';
-    this.ingestService.getUserAccount().subscribe(account => this.userIsWrangler = account.isWrangler());
+  getCurrentTab(): string {
+    return this.projectFormTabKey;
   }
 
   onSave(formData: object) {
@@ -128,27 +151,48 @@ export class ProjectRegistrationFormComponent implements OnInit {
   }
 
   onTabChange($tabKey: string) {
-    this.projectFormTabKey = $tabKey;
+    this.setCurrentTab($tabKey);
   }
 
   incrementProjectTab() {
-    let index = projectRegLayout.tabs.findIndex(tab => tab.key === this.projectFormTabKey);
+    let index = projectRegLayout.tabs.findIndex(tab => tab.key === this.getCurrentTab());
     if (index + 1 < projectRegLayout.tabs.length) {
       index++;
-      this.projectFormTabKey = projectRegLayout.tabs[index].key;
+      this.setCurrentTab(projectRegLayout.tabs[index].key);
       return true;
     }
     return false;
   }
 
   decrementProjectTab() {
-    let index = projectRegLayout.tabs.findIndex(tab => tab.key === this.projectFormTabKey);
+    let index = projectRegLayout.tabs.findIndex(tab => tab.key === this.getCurrentTab());
     if (index > 0) {
       index--;
-      this.projectFormTabKey = projectRegLayout.tabs[index].key;
+      this.setCurrentTab(projectRegLayout.tabs[index].key);
       return true;
     }
     return false;
+  }
+
+  saveProjectInCache(formData: Observable<object>) {
+    formData.pipe(
+      delay(environment.AUTOSAVE_PERIOD_MILLIS),
+      takeUntil(this.unsubscribe)
+    ).subscribe(
+      (formValue) => {
+        console.log('cached project to local storage');
+        this.projectCacheService.saveProject(formValue['value']);
+      }
+    );
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe.next();
+  }
+
+  loadProjectFromCache(): Observable<Project> {
+    console.log('fetching project from cache');
+    return this.projectCacheService.getProject();
   }
 
   private autofillProjectDetails(id, search): Observable<object> {
@@ -203,6 +247,7 @@ export class ProjectRegistrationFormComponent implements OnInit {
     this.createProject(formValue).subscribe(project => {
         console.log('Project saved', project);
         this.loaderService.display(false);
+        this.projectCacheService.removeProject();
         this.router.navigate(['projects', 'detail'], {
           queryParams: {
             uuid: project.uuid.uuid,

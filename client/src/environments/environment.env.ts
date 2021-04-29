@@ -10,5 +10,7 @@ export const environment = {
   AAI_CLIENT_ID: '<%= AAI_CLIENT_ID %>',
   AAI_AUTHORITY: '<%= AAI_AUTHORITY %>',
 
-  OLS_URL: '<%= OLS_URL %>'
+  OLS_URL: '<%= OLS_URL %>',
+
+  AUTOSAVE_PERIOD_MILLIS: 10 * 1000
 };
