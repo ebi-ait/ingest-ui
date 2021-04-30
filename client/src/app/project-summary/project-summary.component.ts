@@ -5,6 +5,9 @@ import * as metadataSchema from '../project-form/project-metadata-schema.json';
 import * as ingestSchema from '../project-form/project-ingest-schema.json';
 import {layout} from '../project-form/layout';
 import {MetadataFormConfig} from '../metadata-schema-form/models/metadata-form-config';
+import {Observable} from 'rxjs';
+import {IngestService} from '../shared/services/ingest.service';
+import {Account} from '../core/account';
 
 
 @Component({
@@ -19,20 +22,30 @@ export class ProjectSummaryComponent implements OnInit {
   subtitle: string;
   projectMetadataSchema: any = (metadataSchema as any).default;
   projectIngestSchema: any = (ingestSchema as any).default;
+  userAccount$: Observable<Account>;
+  config: MetadataFormConfig;
 
-  config: MetadataFormConfig = {
-    hideFields: ['describedBy', 'schema_version', 'schema_type', 'provenance'],
-    viewMode: true,
-    removeEmptyFields: true,
-    layout: layout
-  };
-
-  constructor(private alertService: AlertService) {
+  constructor(private alertService: AlertService, private ingestService: IngestService) {
   }
 
   ngOnInit() {
     this.projectIngestSchema['properties']['content'] = this.projectMetadataSchema;
     this.displayPostValidationErrors();
+
+    this.userAccount$ = this.ingestService.getUserAccount();
+    this.userAccount$
+      .subscribe((account) => {
+        const userIsWrangler = account.isWrangler();
+        if (!userIsWrangler) {
+          layout.tabs = layout.tabs.filter(tab => tab.key !== 'project_admin');
+        }
+        this.config = {
+          hideFields: ['describedBy', 'schema_version', 'schema_type', 'provenance'],
+          viewMode: true,
+          removeEmptyFields: true,
+          layout: layout
+        };
+      });
   }
 
   displayPostValidationErrors() {
