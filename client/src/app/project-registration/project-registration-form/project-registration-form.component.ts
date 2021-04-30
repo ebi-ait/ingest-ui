@@ -65,7 +65,6 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-
     const queryParam = this.route.snapshot.queryParamMap;
 
     this.title = 'New Project';
@@ -81,9 +80,10 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
 
   setUpProjectForm(userIsWrangler: boolean, layout: MetadataFormLayout) {
     let tabs = layout.tabs;
-    if (!this.userIsWrangler) {
+    if (!userIsWrangler) {
       tabs = tabs.filter(tab => tab.key !== 'project_admin');
     }
+
     layout.tabs = tabs;
     this.setTabLayout(layout);
     this.setFormConfig(this.getTabLayout());
@@ -182,10 +182,6 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
   getTabLayout(): MetadataFormLayout {
     return this.projectFormLayout;
   }
-
-  // private hideTabsFromLayout(tabs: MetadataFormTab[]): MetadataFormTab[] {
-  //   return tabs.filter(tab => tab.key !== 'project_admin');
-  // }
 
   incrementProjectTab() {
     let index = this.getTabLayout().tabs.findIndex(tab => tab.key === this.getCurrentTab());
