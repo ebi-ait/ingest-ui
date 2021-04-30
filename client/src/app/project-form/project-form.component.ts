@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {IngestService} from '../shared/services/ingest.service';
 import {AlertService} from '../shared/services/alert.service';
 import {SchemaService} from '../shared/services/schema.service';
@@ -11,9 +11,9 @@ import {LoaderService} from '../shared/services/loader.service';
 import {Observable} from 'rxjs';
 import {MatTabGroup} from '@angular/material/tabs';
 import {MetadataFormConfig} from '../metadata-schema-form/models/metadata-form-config';
-import {concatMap, map} from 'rxjs/operators';
-import {MetadataDocument} from '../shared/models/metadata-document';
-
+import {concatMap} from 'rxjs/operators';
+import {MetadataFormLayout} from '../metadata-schema-form/models/metadata-form-layout';
+import {Account} from '../core/account';
 
 @Component({
   selector: 'app-project-form',
@@ -36,22 +36,10 @@ export class ProjectFormComponent implements OnInit {
   formValidationErrors: any = null;
   formIsValid: boolean = null;
   formTabKey: string;
-
-  config: MetadataFormConfig = {
-    hideFields: [
-      'describedBy',
-      'schema_version',
-      'schema_type',
-      'provenance'
-    ],
-    layout: layout,
-    inputType: {
-      'project_description': 'textarea',
-      'notes': 'textarea'
-    },
-    showCancelButton: true,
-    showResetButton: false
-  };
+  projectFormLayout: MetadataFormLayout;
+  userAccount$: Observable<Account>;
+  userIsWrangler: boolean;
+  config: MetadataFormConfig;
 
   patch: object = {};
 
@@ -70,12 +58,8 @@ export class ProjectFormComponent implements OnInit {
   ngOnInit() {
     this.projectIngestSchema['properties']['content'] = this.projectMetadataSchema;
 
-    const projectUuid: string = this.route.snapshot.paramMap.get('uuid');
-    if (this.route.snapshot.paramMap.has('tab')) {
-      this.formTabKey = this.route.snapshot.paramMap.get('tab');
-    } else {
-      this.formTabKey = this.config.layout.tabs[0].key;
-    }
+    const pathVariables = this.route.snapshot.paramMap;
+    const projectUuid: string = pathVariables.get('uuid');
 
     this.projectResource = null;
     this.formIsValid = null;
@@ -95,7 +79,67 @@ export class ProjectFormComponent implements OnInit {
     this.title = this.createMode ? 'New Project' : 'Edit Project';
     this.subtitle = this.createMode ? 'Please provide initial information about your HCA project.\n' +
       '  You will be able to edit this information as your project develops.' : '';
-    this.config.showCancelButton = !this.createMode;
+
+    this.userAccount$ = this.ingestService.getUserAccount();
+    this.userAccount$
+      .subscribe((account) => {
+        this.userIsWrangler = account.isWrangler();
+        this.setUpProjectForm(this.userIsWrangler, layout, this.createMode, pathVariables);
+      });
+  }
+
+  setUpProjectForm(userIsWrangler: boolean, tabLayout: MetadataFormLayout, createMode: boolean, pathVariables: ParamMap) {
+    let tabs = tabLayout.tabs;
+    if (!userIsWrangler) {
+      tabs = tabs.filter(tab => tab.key !== 'project_admin');
+    }
+
+    tabLayout.tabs = tabs;
+    this.setTabLayout(tabLayout);
+    this.setFormConfig(this.getTabLayout(), createMode);
+    if (pathVariables.has('tab')) {
+      this.setCurrentTab(pathVariables.get('tab'));
+    } else {
+      this.setCurrentTab(this.getTabLayout().tabs[0].key);
+    }
+  }
+
+  setCurrentTab(tab: string) {
+    this.formTabKey = tab;
+  }
+
+  getCurrentTab(): string {
+    return this.formTabKey;
+  }
+
+  setTabLayout(tabLayout: MetadataFormLayout) {
+    this.projectFormLayout = tabLayout;
+  }
+
+  getTabLayout(): MetadataFormLayout {
+    return this.projectFormLayout;
+  }
+
+  setFormConfig(tabLayout: MetadataFormLayout, createMode: boolean) {
+    this.config = {
+      hideFields: [
+        'describedBy',
+        'schema_version',
+        'schema_type',
+        'provenance'
+      ],
+      layout: tabLayout,
+      inputType: {
+      'project_description': 'textarea',
+        'notes': 'textarea'
+    },
+      showCancelButton: !createMode,
+      showResetButton: false
+    };
+  }
+
+  getFormConfig(): MetadataFormConfig {
+    return this.config;
   }
 
   setProjectContent(projectUuid) {
@@ -125,7 +169,7 @@ export class ProjectFormComponent implements OnInit {
   }
 
   onTabChange($tabKey: string) {
-    this.formTabKey = $tabKey;
+    this.setCurrentTab($tabKey);
   }
 
   onSave(formData: object) {
@@ -190,19 +234,19 @@ export class ProjectFormComponent implements OnInit {
   }
 
   private incrementTab() {
-    let index = layout.tabs.findIndex(tab => tab.key === this.formTabKey);
+    let index = layout.tabs.findIndex(tab => tab.key === this.getCurrentTab());
     index++;
     if (index >= layout.tabs.length) {
       this.router.navigateByUrl(`/projects/detail?uuid=${this.projectResource['uuid']['uuid']}`);
     } else {
-      this.formTabKey = layout.tabs[index].key;
+      this.setCurrentTab(layout.tabs[index].key);
     }
   }
 
   private decrementTab() {
-    const index = layout.tabs.findIndex(tab => tab.key === this.formTabKey);
+    const index = layout.tabs.findIndex(tab => tab.key === this.getCurrentTab());
     if (index > 0) {
-      this.formTabKey = layout.tabs[index - 1].key;
+      this.setCurrentTab(layout.tabs[index - 1].key);
     }
   }
 
