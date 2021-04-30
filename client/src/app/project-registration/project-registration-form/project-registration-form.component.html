@@ -2,9 +2,9 @@
 <br/>
 <br/>
 
-<mat-tab-group *ngIf="userAccount$ | async">
+<mat-tab-group>
   <mat-tab label="1. Project">
-    <ng-container *ngIf="projectFormData">
+    <ng-container *ngIf= "(userAccount$ | async) && projectFormData">
       <div class="vf-u-margin__top--xxl">&nbsp;</div>
 
       <app-metadata-form name="project"

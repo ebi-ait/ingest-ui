@@ -18,7 +18,7 @@ import {AutofillProject} from '../models/autofill-project';
 import {ProjectCacheService} from '../services/project-cache.service';
 import {environment} from '../../../environments/environment';
 import {Account} from '../../core/account';
-import {MetadataFormLayout, MetadataFormTab} from '../../metadata-schema-form/models/metadata-form-layout';
+import {MetadataFormLayout} from '../../metadata-schema-form/models/metadata-form-layout';
 
 @Component({
   selector: 'app-project-registration-form',
@@ -74,11 +74,20 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
     this.userAccount$
       .subscribe((account) => {
         this.userIsWrangler = account.isWrangler();
-        this.setTabLayout(projectRegLayout);
-        this.setFormConfig();
-        this.setCurrentTab(this.getTabLayout().tabs[0].key);
+        this.setUpProjectForm(this.userIsWrangler, projectRegLayout);
       });
     this.loadProjectData(queryParam);
+  }
+
+  setUpProjectForm(userIsWrangler: boolean, layout: MetadataFormLayout) {
+    let tabs = layout.tabs;
+    if (!this.userIsWrangler) {
+      tabs = tabs.filter(tab => tab.key !== 'project_admin');
+    }
+    layout.tabs = tabs;
+    this.setTabLayout(layout);
+    this.setFormConfig(this.getTabLayout());
+    this.setCurrentTab(this.getTabLayout().tabs[0].key);
   }
 
   loadProjectData(args: ParamMap) {
@@ -106,7 +115,7 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
     );
   }
 
-  setFormConfig() {
+  setFormConfig(layout: MetadataFormLayout) {
     this.config = {
       hideFields: [
         'describedBy',
@@ -114,7 +123,7 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
         'schema_type',
         'provenance'
       ],
-      layout: this.getTabLayout(),
+      layout: layout,
       inputType: {
         'project_description': 'textarea',
         'notes': 'textarea'
@@ -167,7 +176,6 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
   }
 
   setTabLayout(layout: MetadataFormLayout) {
-    layout.tabs = this.hideTabsFromLayout(layout.tabs);
     this.projectFormLayout = layout;
   }
 
@@ -175,12 +183,9 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
     return this.projectFormLayout;
   }
 
-  private hideTabsFromLayout(tabs: MetadataFormTab[]): MetadataFormTab[] {
-    if (!this.userIsWrangler) {
-      return tabs.filter(tab => tab.key !== 'project_admin');
-    }
-    return tabs;
-  }
+  // private hideTabsFromLayout(tabs: MetadataFormTab[]): MetadataFormTab[] {
+  //   return tabs.filter(tab => tab.key !== 'project_admin');
+  // }
 
   incrementProjectTab() {
     let index = this.getTabLayout().tabs.findIndex(tab => tab.key === this.getCurrentTab());
