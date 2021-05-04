@@ -78,24 +78,18 @@ export class IngestService {
   public getUserAccount(): Observable<Account> {
     return this.http
       .get(`${this.API_URL}/auth/account`)
-      .pipe(map(data => new Account({
-        id: data['id'],
-        providerReference: data['providerReference'],
-        roles: data['roles'],
-        name: data['name']
-      })));
+      .pipe(map(data => this.createAccount(data)));
   }
 
   public getWranglers(): Observable<Account[]> {
     return this.http
       .get<Account[]>(`${this.API_URL}/user/list`, {params: {'role': 'WRANGLER'}})
-      .pipe(map(wranglers => wranglers?.map(wrangler => new Account({
-        id: wrangler['id'],
-        providerReference: wrangler['providerReference'],
-        roles: wrangler['roles'],
-        name: wrangler['name']
-        })) ?? []
+      .pipe(map(wranglers => wranglers?.map(wrangler => this.createAccount(wrangler)) ?? []
       ));
+  }
+
+  private createAccount(user): Account {
+    return new Account(user);
   }
 
   public deleteSubmission(submissionId) {

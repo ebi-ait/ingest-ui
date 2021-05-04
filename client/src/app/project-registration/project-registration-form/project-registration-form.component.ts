@@ -184,7 +184,7 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
   }
 
   incrementProjectTab() {
-    let index = this.getTabLayout().tabs.findIndex(tab => tab.key === this.getCurrentTab());
+    let index = this.findCurrentTabIndex();
     if (index + 1 < this.getTabLayout().tabs.length) {
       index++;
       this.setCurrentTab(this.getTabLayout().tabs[index].key);
@@ -194,13 +194,17 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
   }
 
   decrementProjectTab() {
-    let index = this.getTabLayout().tabs.findIndex(tab => tab.key === this.getCurrentTab());
+    let index = this.findCurrentTabIndex();
     if (index > 0) {
       index--;
       this.setCurrentTab(this.getTabLayout().tabs[index].key);
       return true;
     }
     return false;
+  }
+
+  private findCurrentTabIndex() {
+    return this.getTabLayout().tabs.findIndex(tab => tab.key === this.getCurrentTab());
   }
 
   saveProjectInCache(formData: Observable<object>) {

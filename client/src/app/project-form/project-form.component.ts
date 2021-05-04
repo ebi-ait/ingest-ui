@@ -96,7 +96,7 @@ export class ProjectFormComponent implements OnInit {
 
     tabLayout.tabs = tabs;
     this.setTabLayout(tabLayout);
-    this.setFormConfig(this.getTabLayout(), createMode);
+    this.createFormConfig(this.getTabLayout(), createMode);
     if (pathVariables.has('tab')) {
       this.setCurrentTab(pathVariables.get('tab'));
     } else {
@@ -120,7 +120,7 @@ export class ProjectFormComponent implements OnInit {
     return this.projectFormLayout;
   }
 
-  setFormConfig(tabLayout: MetadataFormLayout, createMode: boolean) {
+  createFormConfig(tabLayout: MetadataFormLayout, createMode: boolean) {
     this.config = {
       hideFields: [
         'describedBy',
