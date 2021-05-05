@@ -9,7 +9,7 @@
 
 <p *ngIf="!schema || !(projectResource || createMode)">Loading project...</p>
 
-<ng-container *ngIf="schema && (projectResource || createMode)">
+<ng-container *ngIf="schema && (projectResource || createMode) && (userAccount$ | async)">
   <app-metadata-form name="project"
                      [schema]="projectIngestSchema"
                      [data]="projectFormData"

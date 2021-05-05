@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable, of} from 'rxjs';
+import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import values from 'lodash/values';
 
 import {ListResult} from '../models/hateoas';
 import {Summary} from '../models/summary';
-import {Page, PagedData} from '../models/page';
+import {PagedData} from '../models/page';
 import {SubmissionEnvelope} from '../models/submissionEnvelope';
 
 import {environment} from '../../../environments/environment';
@@ -78,11 +78,18 @@ export class IngestService {
   public getUserAccount(): Observable<Account> {
     return this.http
       .get(`${this.API_URL}/auth/account`)
-      .pipe(map(data => new Account({
-        id: data['id'],
-        providerReference: data['providerReference'],
-        roles: data['roles']
-      })));
+      .pipe(map(data => this.createAccount(data)));
+  }
+
+  public getWranglers(): Observable<Account[]> {
+    return this.http
+      .get<Account[]>(`${this.API_URL}/user/list`, {params: {'role': 'WRANGLER'}})
+      .pipe(map(wranglers => wranglers?.map(wrangler => this.createAccount(wrangler)) ?? []
+      ));
+  }
+
+  private createAccount(user): Account {
+    return new Account(user);
   }
 
   public deleteSubmission(submissionId) {

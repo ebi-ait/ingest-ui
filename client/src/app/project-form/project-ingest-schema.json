@@ -187,6 +187,13 @@
         }
       }
     },
+    "primaryWrangler": {
+      "title": "Primary Wrangler",
+      "guidelines": "Primary wrangler for this project.",
+      "type": "string",
+      "user_friendly": "Primary Wrangler",
+      "example": "John Doe"
+    },
     "content": {}
   },
   "required": ["dataAccess", "identifyingOrganisms", "technology", "organ", "releaseDate"],
