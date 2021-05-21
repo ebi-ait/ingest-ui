@@ -1,11 +1,14 @@
-<app-select-list
+<app-select *ngIf="!control.value || selectedWrangler"
   [id]="id"
   [label]="label"
   [isRequired]="isRequired"
   [disabled]="disabled"
-  [placeholder]="defaultOption"
-  [value]="control.value"
+  [placeholder]="placeholder"
   [helperText]="helperText"
-  [options]="options"
-  (valueChanged)="onValueChange($event)"
-></app-select-list>
+  [options$]="options$"
+  [displayWith]="displayWranglerName"
+  [value]="selectedWrangler"
+  [error]="checkForErrors(control)"
+  (searchValueChanged)="searchControl.setValue($event);"
+  (selectedValueChanged)="updateControl($event)"
+></app-select>
