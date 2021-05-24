@@ -176,6 +176,7 @@ export class ProjectFormComponent implements OnInit {
     const formValue = formData['value'];
     this.loaderService.display(true);
     this.alertService.clear();
+    console.log('project form', formValue);
     this.createOrSaveProject(formValue)
       .subscribe(project => {
           console.log('Project saved', project);
