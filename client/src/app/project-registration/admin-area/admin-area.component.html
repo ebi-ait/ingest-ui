@@ -1,4 +1,20 @@
-<app-wrangler-list-input [metadata]="primaryWranglersMetadata"
-                    [control]="primaryWranglersControl"
-                    [id]="primaryWranglersMetadata.key">
+<app-wrangler-list-input [metadata]="primaryWranglerMetadata"
+                    [control]="primaryWranglerControl"
+                    [id]="primaryWranglerMetadata.key">
 </app-wrangler-list-input>
+
+
+<app-wrangler-list-input [metadata]="secondaryWranglerMetadata"
+                         [control]="secondaryWranglersControl"
+                         [id]="secondaryWranglerMetadata.key">
+</app-wrangler-list-input>
+
+<app-metadata-field [metadata]="wranglingStatusMetadata"
+                    [control]="wranglingStatusControl"
+                    [id]="wranglingStatusMetadata.key">
+</app-metadata-field>
+
+<app-metadata-field [metadata]="wranglingPriorityMetadata"
+                    [control]="wranglingPriorityControl"
+                    [id]="wranglingPriorityMetadata.key">
+</app-metadata-field>
