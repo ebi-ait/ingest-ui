@@ -126,7 +126,8 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
       layout: layout,
       inputType: {
         'project_description': 'textarea',
-        'notes': 'textarea'
+        'notes': 'textarea',
+        'wranglingNotes': 'textarea'
       },
       overrideRequiredFields: {
         'project.content.contributors.project_role.text': false

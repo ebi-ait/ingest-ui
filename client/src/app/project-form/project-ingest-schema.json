@@ -223,6 +223,11 @@
       "user_friendly": "Wrangling Priority",
       "example": "1"
     },
+    "wranglingNotes": {
+      "guidelines": "Notes",
+      "type": "string",
+      "user_friendly": "Notes"
+    },
     "content": {}
   },
   "required": ["dataAccess", "identifyingOrganisms", "technology", "organ", "releaseDate"],

@@ -25,6 +25,9 @@ export class AdminAreaComponent implements OnInit {
   wranglingPriorityControl: FormControl;
   wranglingPriorityMetadata: Metadata;
 
+  wranglingNotesControl: FormControl;
+  wranglingNotesMetadata: Metadata;
+
   constructor() {
   }
 
@@ -42,12 +45,15 @@ export class AdminAreaComponent implements OnInit {
     this.wranglingStatusMetadata = this.metadataForm.get(wranglingStatusSchemaKey);
     this.wranglingStatusControl = this.metadataForm.getControl(wranglingStatusSchemaKey) as FormControl;
     const wranglingState = this.wranglingStatusControl.value;
-    this.wranglingStatusControl.setValue(wranglingState.toUpperCase().replace(' ', '_' ));
-
+    if (wranglingState) {
+      this.wranglingStatusControl.setValue(wranglingState.toUpperCase().replace(' ', '_'));
+    }
     const wranglingPrioritySchemaKey = 'project.wranglingPriority';
     this.wranglingPriorityMetadata = this.metadataForm.get(wranglingPrioritySchemaKey);
     this.wranglingPriorityControl = this.metadataForm.getControl(wranglingPrioritySchemaKey) as FormControl;
 
-
+    const wranglingNotesSchemaKey = 'project.wranglingNotes';
+    this.wranglingNotesMetadata = this.metadataForm.get(wranglingNotesSchemaKey);
+    this.wranglingNotesControl = this.metadataForm.getControl(wranglingNotesSchemaKey) as FormControl;
   }
 }

@@ -131,7 +131,8 @@ export class ProjectFormComponent implements OnInit {
       layout: tabLayout,
       inputType: {
       'project_description': 'textarea',
-        'notes': 'textarea'
+      'notes': 'textarea',
+      'wranglingNotes': 'textarea'
     },
       showCancelButton: !createMode,
       showResetButton: false
