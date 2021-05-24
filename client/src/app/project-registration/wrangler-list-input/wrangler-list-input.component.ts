@@ -48,16 +48,21 @@ export class WranglerListInputComponent extends BaseInputComponent implements On
         distinctUntilChanged(),
         switchMap(newSearch => this.onSearchValueChanged(newSearch))
       );
-    this._filter(this.control.value).subscribe(
-      wranglers => {
-        if (wranglers.length === 1) {
-          this.selectedWrangler = wranglers[0];
-        } else {
-          this.alertService.error('Error', 'The wrangler for this project could not be identified.' +
-            ' Please email hca-ingest-dev@ebi.ac.uk .');
+
+    const wrangler = this.control.value;
+    if (wrangler) {
+      this._filter(wrangler).subscribe(
+        wranglers => {
+          if (wranglers.length === 1) {
+            this.selectedWrangler = wranglers[0];
+          } else {
+            this.alertService.error('Error', 'The wrangler for this project could not be identified.' +
+              ' Please email hca-ingest-dev@ebi.ac.uk .');
+          }
         }
-      }
-    );
+      );
+    }
+
   }
 
   createSearchControl(value: string) {
