@@ -91,7 +91,10 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
   }
 
   loadProjectData(args: ParamMap) {
-    const emptyProject = {content: {}};
+    const emptyProject = {
+      content: {},
+      publishedToCatalogue: true,
+    };
     this.projectFormData$ = of(emptyProject);
 
     if (args.has(Identifier.DOI)) {
@@ -238,7 +241,8 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
             const publication = {};
 
             const projectFormData = {
-              content: {}
+              content: {},
+              publishedToCatalogue: true
             };
 
             project_core['project_title'] = data.title;
