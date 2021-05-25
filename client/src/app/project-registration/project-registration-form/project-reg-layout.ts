@@ -37,6 +37,7 @@ export const projectRegLayout: MetadataFormLayout = {
           ],
           component: AccessionFieldGroupComponent
         },
+        'project.publishedToCatalogue',
         'project.content.supplementary_links',
       ]
     },
