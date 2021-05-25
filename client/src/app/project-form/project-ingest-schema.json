@@ -194,6 +194,40 @@
       "user_friendly": "Primary Wrangler",
       "example": "John Doe"
     },
+    "secondaryWrangler": {
+      "title": "Secondary Wrangler",
+      "guidelines": "Secondary wrangler for this project.",
+      "type": "string",
+      "user_friendly": "Secondary Wrangler",
+      "example": "Jane Doe"
+    },
+    "wranglingState": {
+      "guidelines": "Wrangling status for this project",
+      "type": "string",
+      "enum": [
+        "NEW",
+        "ELIGIBLE",
+        "NOT_ELIGIBLE",
+        "IN_PROGRESS",
+        "STALLED",
+        "SUBMITTED",
+        "PUBLISHED_IN_DCP",
+        "DELETED"
+      ],
+      "user_friendly": "Wrangling status"
+    },
+    "wranglingPriority": {
+      "description": "Specify order of priority, 1 is the highest",
+      "type": "integer",
+      "pattern": "^[0-9]{1,}$",
+      "user_friendly": "Wrangling Priority",
+      "example": "1"
+    },
+    "wranglingNotes": {
+      "guidelines": "Notes",
+      "type": "string",
+      "user_friendly": "Notes"
+    },
     "content": {}
   },
   "required": ["dataAccess", "identifyingOrganisms", "technology", "organ", "releaseDate"],

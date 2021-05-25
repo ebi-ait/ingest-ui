@@ -15,6 +15,7 @@ import {FunderFieldGroupComponent} from './funder-field-group/funder-field-group
 import {AutofillProjectFormComponent} from './autofill-project-form/autofill-project-form.component';
 import {RouterModule} from '@angular/router';
 import {AdminAreaComponent} from './admin-area/admin-area.component';
+import {WranglerListInputComponent} from './wrangler-list-input/wrangler-list-input.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import {AdminAreaComponent} from './admin-area/admin-area.component';
     ProjectRegistrationFormComponent,
     FunderFieldGroupComponent,
     AutofillProjectFormComponent,
-    AdminAreaComponent
+    AdminAreaComponent,
+    WranglerListInputComponent
   ],
   imports: [
     CommonModule,

@@ -13,16 +13,52 @@ export class AdminAreaComponent implements OnInit {
 
   @Input() metadataForm: MetadataForm;
 
-  primaryWranglersControl: FormControl;
-  primaryWranglersMetadata: Metadata;
+  primaryWranglerControl: FormControl;
+  primaryWranglerMetadata: Metadata;
+
+  secondaryWranglersControl: FormControl;
+  secondaryWranglerMetadata: Metadata;
+
+  wranglingStatusControl: FormControl;
+  wranglingStatusMetadata: Metadata;
+
+  wranglingPriorityControl: FormControl;
+  wranglingPriorityMetadata: Metadata;
+
+  wranglingNotesControl: FormControl;
+  wranglingNotesMetadata: Metadata;
 
   constructor() {
   }
 
   ngOnInit(): void {
 
-    const primaryWranglersSchemaKey = 'project.primaryWrangler';
-    this.primaryWranglersMetadata = this.metadataForm.get(primaryWranglersSchemaKey);
-    this.primaryWranglersControl = this.metadataForm.getControl(primaryWranglersSchemaKey) as FormControl;
+    const primaryWranglerSchemaKey = 'project.primaryWrangler';
+    this.primaryWranglerMetadata = this.metadataForm.get(primaryWranglerSchemaKey);
+    this.primaryWranglerControl = this.metadataForm.getControl(primaryWranglerSchemaKey) as FormControl;
+
+    const secondaryWranglerSchemaKey = 'project.secondaryWrangler';
+    this.secondaryWranglerMetadata = this.metadataForm.get(secondaryWranglerSchemaKey);
+    this.secondaryWranglersControl = this.metadataForm.getControl(secondaryWranglerSchemaKey) as FormControl;
+
+    const wranglingStatusSchemaKey = 'project.wranglingState';
+    this.wranglingStatusMetadata = this.metadataForm.get(wranglingStatusSchemaKey);
+    this.wranglingStatusControl = this.metadataForm.getControl(wranglingStatusSchemaKey) as FormControl;
+    const wranglingState = this.wranglingStatusControl.value;
+
+    if (wranglingState) {
+      this.wranglingStatusControl.setValue(wranglingState.toUpperCase().replace(' ', '_'));
+    }
+
+    const wranglingPrioritySchemaKey = 'project.wranglingPriority';
+    this.wranglingPriorityMetadata = this.metadataForm.get(wranglingPrioritySchemaKey);
+    this.wranglingPriorityControl = this.metadataForm.getControl(wranglingPrioritySchemaKey) as FormControl;
+
+    const wranglingNotesSchemaKey = 'project.wranglingNotes';
+    this.wranglingNotesMetadata = this.metadataForm.get(wranglingNotesSchemaKey);
+    this.wranglingNotesControl = this.metadataForm.getControl(wranglingNotesSchemaKey) as FormControl;
+
   }
+
+
 }
