@@ -11,6 +11,7 @@
     <ng-template #checkboxInput>
       <input type="checkbox" id="check_{{id}}" [(ngModel)]="value" class="vf-form__checkbox" (change)="change($event)">
       <label *ngIf="label" for="check_{{id}}" class="vf-form__label">{{label}} </label>
+      <app-vf-asterisk *ngIf="!data.disabled" [isRequired]="data.isRequired"></app-vf-asterisk>
     </ng-template>
     <p class="vf-form__helper vf-form__helper--error">{{error}}</p>
   </div>
