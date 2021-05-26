@@ -5,6 +5,7 @@ import {formatDate} from '@angular/common';
 import {AuthService} from '../../services/auth.service';
 import {Observable, of} from 'rxjs';
 import {IngestService} from '../../services/ingest.service';
+import {Account} from '../../../core/account';
 
 @Component({
   selector: 'app-project-list',
@@ -12,7 +13,12 @@ import {IngestService} from '../../services/ingest.service';
   styleUrls: ['./project-list.component.css']
 })
 export class ProjectListComponent implements OnInit {
+  private wranglers: Account[];
+
   constructor(private authService: AuthService, private ingestService: IngestService) {
+    this.ingestService.getWranglers().subscribe(wranglers => {
+      this.wranglers = wranglers;
+    });
   }
 
   private _projects: Project[];
@@ -61,6 +67,7 @@ export class ProjectListComponent implements OnInit {
       [ProjectColumn.short_name]: 'HCA Project ID',
       [ProjectColumn.project_title]: 'Project Title',
       [ProjectColumn.last_updated]: 'Last Updated',
+      [ProjectColumn.wrangling_status]: 'Wrangling Status',
       [ProjectColumn.primary_contributor]: 'Primary Contributor',
       [ProjectColumn.primary_wrangler]: 'Primary Wrangler'
     });
@@ -73,8 +80,9 @@ export class ProjectListComponent implements OnInit {
       [ProjectColumn.project_title]: this.getTitle(project),
       [ProjectColumn.last_updated]: this.getLastUpdated(project),
       [ProjectColumn.primary_contributor]: this.getContributor(project),
-      [ProjectColumn.primary_wrangler]: 'Wrangler Name'
+      [ProjectColumn.primary_wrangler]: this.getWranglerName(project),
       // ToDo: Include Wrangler and User Account objects in ingest-core Project object.
+      [ProjectColumn.wrangling_status]: project?.wranglingState
     });
   }
 
@@ -111,5 +119,10 @@ export class ProjectListComponent implements OnInit {
     contributors = contributors ? project.content['contributors'] : [];
     const correspondents = contributors.filter(contributor => contributor['corresponding_contributor'] === true);
     return correspondents.map(c => c['name']).join(' | ');
+  }
+
+  private getWranglerName(project: Project) : string {
+    const wranglersFound = project.primaryWrangler ? this.wranglers.filter(account => account.id === project.primaryWrangler) : undefined;
+    return wranglersFound && wranglersFound.length > 0 ? wranglersFound[0].name : undefined;
   }
 }
