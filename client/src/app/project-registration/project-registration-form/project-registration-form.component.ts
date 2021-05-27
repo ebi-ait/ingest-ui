@@ -50,6 +50,11 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
   userAccount$: Observable<Account>;
   userIsWrangler: boolean;
 
+  private readonly _emptyProject = {
+    content: {},
+    isInCatalogue: true,
+  };
+
   @ViewChild('mf') formTabGroup: MatTabGroup;
   private unsubscribe = new Subject<void>();
 
@@ -91,11 +96,7 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
   }
 
   loadProjectData(args: ParamMap) {
-    const emptyProject = {
-      content: {},
-      isInCatalogue: true,
-    };
-    this.projectFormData$ = of(emptyProject);
+    this.projectFormData$ = of(this._emptyProject);
 
     if (args.has(Identifier.DOI)) {
       this.projectFormData$ = this.autofillProjectDetails(Identifier.DOI, args.get(Identifier.DOI));
@@ -113,7 +114,7 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
       },
       error => {
         this.alertService.error('An error occurred, unable to load project details', error.message);
-        this.projectFormData = emptyProject;
+        this.projectFormData = this._emptyProject;
       }
     );
   }
@@ -241,8 +242,7 @@ export class ProjectRegistrationFormComponent implements OnInit, OnDestroy {
             const publication = {};
 
             const projectFormData = {
-              content: {},
-              isInCatalogue: true
+              ...this._emptyProject
             };
 
             project_core['project_title'] = data.title;
