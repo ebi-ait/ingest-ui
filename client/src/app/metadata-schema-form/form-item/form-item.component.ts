@@ -32,4 +32,11 @@ export class FormItemComponent {
     Object.assign(this._rootClass, rootClass);
   }
 
+  readOnlyOrNotCheckbox() {
+    return this.data.disabled || !this.rootClass['vf-form__item--checkbox'];
+  }
+
+  notReadOnlyOrCheckbox() {
+    return !(this.data.disabled || this.rootClass['vf-form__item--checkbox']);
+  }
 }

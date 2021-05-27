@@ -1,7 +1,7 @@
 <div [ngClass]="rootClass">
   <div [ngClass]="{'label': true, 'read-only': data.disabled}">
-    <label class="vf-form__label" *ngIf="data.disabled || !rootClass['vf-form__item--checkbox']">{{data.label}}</label>
-    <app-vf-asterisk *ngIf="!(data.disabled || rootClass['vf-form__item--checkbox'])" [isRequired]="data.isRequired"></app-vf-asterisk>
+    <label class="vf-form__label" *ngIf="this.readOnlyOrNotCheckbox()">{{data.label}}</label>
+    <app-vf-asterisk *ngIf="this.notReadOnlyOrCheckbox()" [isRequired]="data.isRequired"></app-vf-asterisk>
   </div>
   <div></div>
 
