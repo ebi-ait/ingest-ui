@@ -28,8 +28,6 @@ export class AdminAreaComponent implements OnInit {
   wranglingNotesControl: FormControl;
   wranglingNotesMetadata: Metadata;
 
-  wranglingStatusMapping: Map<string, string>;
-
   constructor() {
   }
 
