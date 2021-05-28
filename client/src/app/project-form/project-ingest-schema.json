@@ -216,8 +216,8 @@
       "enum": [
         "New",
         "Eligible",
-        "Not Eligible",
-        "In Progress",
+        "Not eligible",
+        "In progress",
         "Stalled",
         "Submitted",
         "Published in DCP",

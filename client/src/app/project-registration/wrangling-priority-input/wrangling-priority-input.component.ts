@@ -30,7 +30,8 @@ export class WranglingPriorityInputComponent extends BaseInputComponent implemen
     this.options = [
       'N/A',
       '1',
-      '2'
+      '2',
+      '3'
     ];
   }
 
