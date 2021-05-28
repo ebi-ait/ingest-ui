@@ -6,7 +6,7 @@
   <div></div>
   <div *ngIf="!disabled">
     <select class="vf-form__select" id="{{id}}" [disabled]="disabled" (change)="onSelectedValueChange($event.target.value)">
-      <option [defaultSelected]="true"></option>
+      <option *ngIf="!removeBlankOption" [defaultSelected]="true"></option>
       <option *ngFor="let option of options" [defaultSelected]="(value ? value : placeholder) === option" [ngValue]="option">
         {{option}}
       </option>
