@@ -33,7 +33,7 @@
             "A mixture of open and managed",
             "It's complicated"
           ],
-          "user_friendly":  "Do the data require controlled access?"
+          "user_friendly": "Do the data require controlled access?"
         },
         "notes": {
           "description": "Data Access Notes",
@@ -42,13 +42,15 @@
           "guidelines": "Any data access notes?"
         }
       },
-      "required": ["type"]
+      "required": [
+        "type"
+      ]
     },
     "identifyingOrganisms": {
       "description": "Organism the samples were generated from",
       "guidelines": "You can select multiple entries",
       "type": "array",
-      "items":{
+      "items": {
         "type": "string"
       },
       "enum": [
@@ -56,12 +58,12 @@
         "Mouse",
         "Other"
       ],
-      "user_friendly":  "Organism the samples were generated from"
+      "user_friendly": "Organism the samples were generated from"
     },
     "technology": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "description":  "Technology",
-      "title":  "Technology",
+      "description": "Technology",
+      "title": "Technology",
       "name": "technology",
       "type": "object",
       "required": [
@@ -166,9 +168,16 @@
                 "description": "An ontology term identifier in the form prefix:accession.",
                 "type": "string",
                 "graph_restriction": {
-                  "ontologies": ["obo:hcao", "obo:uberon"],
-                  "classes": ["UBERON:0000465"],
-                  "relations": ["rdfs:subClassOf"],
+                  "ontologies": [
+                    "obo:hcao",
+                    "obo:uberon"
+                  ],
+                  "classes": [
+                    "UBERON:0000465"
+                  ],
+                  "relations": [
+                    "rdfs:subClassOf"
+                  ],
                   "direct": false,
                   "include_self": true
                 },
@@ -205,21 +214,20 @@
       "guidelines": "Wrangling status for this project",
       "type": "string",
       "enum": [
-        "NEW",
-        "ELIGIBLE",
-        "NOT_ELIGIBLE",
-        "IN_PROGRESS",
-        "STALLED",
-        "SUBMITTED",
-        "PUBLISHED_IN_DCP",
-        "DELETED"
+        "New",
+        "Eligible",
+        "Not Eligible",
+        "In Progress",
+        "Stalled",
+        "Submitted",
+        "Published in DCP",
+        "Deleted"
       ],
       "user_friendly": "Wrangling status"
     },
     "wranglingPriority": {
       "description": "Specify order of priority, 1 is the highest",
       "type": "integer",
-      "pattern": "^[0-9]{1,}$",
       "user_friendly": "Wrangling Priority",
       "example": "1"
     },
@@ -235,7 +243,13 @@
     },
     "content": {}
   },
-  "required": ["dataAccess", "identifyingOrganisms", "technology", "organ", "releaseDate"],
+  "required": [
+    "dataAccess",
+    "identifyingOrganisms",
+    "technology",
+    "organ",
+    "releaseDate"
+  ],
   "title": "Ingest Project",
   "type": "object"
 }
