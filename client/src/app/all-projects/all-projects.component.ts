@@ -16,13 +16,13 @@ import {MetadataDocument} from '../shared/models/metadata-document';
 export class AllProjectsComponent implements OnInit, OnDestroy {
   projects: Project[];
   columns: ProjectColumn[] = [
-    ProjectColumn.api_link,
-    ProjectColumn.short_name,
-    ProjectColumn.project_title,
-    ProjectColumn.primary_contributor,
-    ProjectColumn.last_updated,
-    ProjectColumn.primary_wrangler,
-    ProjectColumn.wrangling_status
+    ProjectColumn.apiLink,
+    ProjectColumn.shortName,
+    ProjectColumn.projectTitle,
+    ProjectColumn.primaryContributor,
+    ProjectColumn.lastUpdated,
+    ProjectColumn.primaryWrangler,
+    ProjectColumn.wranglingState
   ];
   isWrangler: Boolean = true;
 

@@ -43,20 +43,20 @@ export class MyProjectsComponent implements OnInit, OnDestroy {
         if (this.isWrangler) {
           this.introduction = 'These are your assigned projects.';
           this.columns = [
-            ProjectColumn.api_link,
-            ProjectColumn.short_name,
-            ProjectColumn.project_title,
-            ProjectColumn.primary_contributor,
-            ProjectColumn.last_updated,
-            ProjectColumn.primary_wrangler,
-            ProjectColumn.wrangling_status
+            ProjectColumn.apiLink,
+            ProjectColumn.shortName,
+            ProjectColumn.projectTitle,
+            ProjectColumn.primaryContributor,
+            ProjectColumn.lastUpdated,
+            ProjectColumn.primaryWrangler,
+            ProjectColumn.wranglingState
           ];
         } else {
           this.introduction = 'These are your projects created for the Human Cell Atlas.';
           this.columns = [
-            ProjectColumn.short_name,
-            ProjectColumn.project_title,
-            ProjectColumn.last_updated
+            ProjectColumn.shortName,
+            ProjectColumn.projectTitle,
+            ProjectColumn.lastUpdated
           ];
         }
       });

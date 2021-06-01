@@ -6,6 +6,7 @@ import {AuthService} from '../../services/auth.service';
 import {Observable, of} from 'rxjs';
 import {IngestService} from '../../services/ingest.service';
 import {Account} from '../../../core/account';
+import {tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-project-list',
@@ -16,9 +17,6 @@ export class ProjectListComponent implements OnInit {
   private wranglers: Account[];
 
   constructor(private authService: AuthService, private ingestService: IngestService) {
-    this.ingestService.getWranglers().subscribe(wranglers => {
-      this.wranglers = wranglers;
-    });
   }
 
   private _projects: Project[];
@@ -55,6 +53,9 @@ export class ProjectListComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.ingestService.getWranglers().subscribe(wranglers =>
+      this.wranglers = wranglers
+    );
   }
 
   isWranglerOrOwner(project: Project): Observable<boolean> {
@@ -63,26 +64,26 @@ export class ProjectListComponent implements OnInit {
 
   getColumnLabel(column: ProjectColumn): string {
     return $enum.mapValue(column).with({
-      [ProjectColumn.api_link]: '',
-      [ProjectColumn.short_name]: 'HCA Project ID',
-      [ProjectColumn.project_title]: 'Project Title',
-      [ProjectColumn.last_updated]: 'Last Updated',
-      [ProjectColumn.wrangling_status]: 'Wrangling Status',
-      [ProjectColumn.primary_contributor]: 'Primary Contributor',
-      [ProjectColumn.primary_wrangler]: 'Primary Wrangler'
+      [ProjectColumn.apiLink]: '',
+      [ProjectColumn.shortName]: 'HCA Project ID',
+      [ProjectColumn.projectTitle]: 'Project Title',
+      [ProjectColumn.lastUpdated]: 'Last Updated',
+      [ProjectColumn.wranglingState]: 'Wrangling Status',
+      [ProjectColumn.primaryContributor]: 'Primary Contributor',
+      [ProjectColumn.primaryWrangler]: 'Primary Wrangler'
     });
   }
 
   getContent(column: ProjectColumn, project: Project): string {
     return $enum.mapValue(column).with({
-      [ProjectColumn.api_link]: this.getApiLink(project),
-      [ProjectColumn.short_name]: this.getShortName(project),
-      [ProjectColumn.project_title]: this.getTitle(project),
-      [ProjectColumn.last_updated]: this.getLastUpdated(project),
-      [ProjectColumn.primary_contributor]: this.getContributor(project),
-      [ProjectColumn.primary_wrangler]: this.getWranglerName(project),
+      [ProjectColumn.apiLink]: this.getApiLink(project),
+      [ProjectColumn.shortName]: this.getShortName(project),
+      [ProjectColumn.projectTitle]: this.getTitle(project),
+      [ProjectColumn.lastUpdated]: this.getLastUpdated(project),
+      [ProjectColumn.primaryContributor]: this.getContributor(project),
+      [ProjectColumn.primaryWrangler]: this.getWranglerName(project),
       // ToDo: Include Wrangler and User Account objects in ingest-core Project object.
-      [ProjectColumn.wrangling_status]: project?.wranglingState
+      [ProjectColumn.wranglingState]: project?.wranglingState
     });
   }
 
@@ -121,8 +122,8 @@ export class ProjectListComponent implements OnInit {
     return correspondents.map(c => c['name']).join(' | ');
   }
 
-  private getWranglerName(project: Project) : string {
-    const wranglersFound = project.primaryWrangler ? this.wranglers.filter(account => account.id === project.primaryWrangler) : undefined;
+  private getWranglerName(project: Project): string {
+    const wranglersFound = project.primaryWrangler && this.wranglers ? this.wranglers.filter(account => account.id === project.primaryWrangler) : undefined;
     return wranglersFound && wranglersFound.length > 0 ? wranglersFound[0].name : undefined;
   }
 }
