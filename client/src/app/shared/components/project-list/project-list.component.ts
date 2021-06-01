@@ -23,9 +23,6 @@ export class ProjectListComponent implements OnInit {
   @Input()
   columns: ProjectColumn[];
 
-  @Input()
-  showUnassignedActions: Boolean;
-
   account$: Observable<Account>;
 
   isWrangler: Boolean;
