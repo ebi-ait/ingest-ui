@@ -6,8 +6,9 @@
 </app-wrangler-list-input>
 
 <app-metadata-field [metadata]="wranglingStatusMetadata"
-                    [control]="wranglingStatusControl"
-                    [id]="wranglingStatusMetadata.key">
+                   [control]="wranglingStatusControl"
+                   [id]="wranglingStatusMetadata.key"
+>
 </app-metadata-field>
 
 <app-wrangler-list-input [metadata]="secondaryWranglerMetadata"
@@ -15,10 +16,10 @@
                          [id]="secondaryWranglerMetadata.key">
 </app-wrangler-list-input>
 
-<app-metadata-field [metadata]="wranglingPriorityMetadata"
+<app-wrangling-priority-input [metadata]="wranglingPriorityMetadata"
                     [control]="wranglingPriorityControl"
                     [id]="wranglingPriorityMetadata.key">
-</app-metadata-field>
+</app-wrangling-priority-input>
 
 <app-metadata-field [metadata]="wranglingNotesMetadata"
                     [control]="wranglingNotesControl"

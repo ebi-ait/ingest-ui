@@ -5,6 +5,9 @@ export interface Project extends MetadataDocument {
   releaseDate?: string;
   accessionDate?: string;
   primaryWrangler?: string;
+  secondaryWrangler?: string;
+  wranglingState?: string;
+  wranglingNotes?: string;
   dataAccess?: object;
   technology?: object;
   identifyingOrganisms?: object;
@@ -12,10 +15,11 @@ export interface Project extends MetadataDocument {
 }
 
 export const enum ProjectColumn {
-  api_link,
-  short_name,
-  project_title,
-  last_updated,
-  primary_contributor,
-  primary_wrangler,
+  apiLink,
+  shortName,
+  projectTitle,
+  lastUpdated,
+  primaryContributor,
+  primaryWrangler,
+  wranglingState
 }

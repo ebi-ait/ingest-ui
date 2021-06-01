@@ -33,8 +33,12 @@ export class SelectListComponent {
   @Input()
   options: string[];
 
+  @Input()
+  removeBlankOption: boolean;
+
   @Output()
   valueChanged = new EventEmitter<string>();
+
 
   onSelectedValueChange(value) {
     this.valueChanged.emit(value);
