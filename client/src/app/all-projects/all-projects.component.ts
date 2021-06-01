@@ -1,12 +1,9 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, Query, ViewChild} from '@angular/core';
-import {MatPaginator, PageEvent} from '@angular/material/paginator';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {MatPaginator} from '@angular/material/paginator';
 import {Project, ProjectColumn} from '../shared/models/project';
 import {IngestService} from '../shared/services/ingest.service';
-import {timer} from 'rxjs';
-import {map, takeWhile, tap} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import {Criteria} from '../shared/models/criteria';
-import {ListResult} from '../shared/models/hateoas';
-import {PaginatedDataSource} from '../shared/data-sources/paginated-data-source';
 import {MetadataDataSource} from '../shared/data-sources/metadata-data-source';
 import {PagedData} from '../shared/models/page';
 import {MetadataDocument} from '../shared/models/metadata-document';
@@ -19,11 +16,13 @@ import {MetadataDocument} from '../shared/models/metadata-document';
 export class AllProjectsComponent implements OnInit, OnDestroy {
   projects: Project[];
   columns: ProjectColumn[] = [
-    ProjectColumn.api_link,
-    ProjectColumn.short_name,
-    ProjectColumn.project_title,
-    ProjectColumn.primary_contributor,
-    ProjectColumn.last_updated
+    ProjectColumn.apiLink,
+    ProjectColumn.shortName,
+    ProjectColumn.projectTitle,
+    ProjectColumn.primaryContributor,
+    ProjectColumn.lastUpdated,
+    ProjectColumn.primaryWrangler,
+    ProjectColumn.wranglingState
   ];
   isWrangler: Boolean = true;
 

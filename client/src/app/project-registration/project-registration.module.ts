@@ -16,6 +16,7 @@ import {AutofillProjectFormComponent} from './autofill-project-form/autofill-pro
 import {RouterModule} from '@angular/router';
 import {AdminAreaComponent} from './admin-area/admin-area.component';
 import {WranglerListInputComponent} from './wrangler-list-input/wrangler-list-input.component';
+import { WranglingPriorityInputComponent } from './wrangling-priority-input/wrangling-priority-input.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import {WranglerListInputComponent} from './wrangler-list-input/wrangler-list-in
     FunderFieldGroupComponent,
     AutofillProjectFormComponent,
     AdminAreaComponent,
-    WranglerListInputComponent
+    WranglerListInputComponent,
+    WranglingPriorityInputComponent
   ],
   imports: [
     CommonModule,

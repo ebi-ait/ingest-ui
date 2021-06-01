@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Metadata} from '../../models/metadata';
 import {AbstractControl, FormControl} from '@angular/forms';
 import {FormItemData} from '../../form-item/form-item.component';
@@ -9,8 +9,11 @@ import {FormItemData} from '../../form-item/form-item.component';
   styles: []
 })
 export class BaseInputComponent implements OnInit {
+  @Input()
   metadata: Metadata;
+  @Input()
   control: AbstractControl;
+  @Input()
   id: string;
 
   // TODO consolidate form item data
