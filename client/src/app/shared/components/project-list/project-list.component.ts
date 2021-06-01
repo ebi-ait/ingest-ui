@@ -6,7 +6,8 @@ import {AuthService} from '../../services/auth.service';
 import {Observable, of} from 'rxjs';
 import {IngestService} from '../../services/ingest.service';
 import {Account} from '../../../core/account';
-import {tap} from 'rxjs/operators';
+import {concatMap, tap} from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-project-list',
@@ -14,52 +15,38 @@ import {tap} from 'rxjs/operators';
   styleUrls: ['./project-list.component.css']
 })
 export class ProjectListComponent implements OnInit {
-  private wranglers: Account[];
+  wranglers: Account[];
+
+  @Input()
+  projects: Project[];
+
+  @Input()
+  columns: ProjectColumn[];
+
+  @Input()
+  showUnassignedActions: Boolean;
+
+  account$: Observable<Account>;
+
+  isWrangler: Boolean;
 
   constructor(private authService: AuthService, private ingestService: IngestService) {
   }
 
-  private _projects: Project[];
-
-  get projects(): Project[] {
-    return this._projects;
-  }
-
-  @Input()
-  set projects(projects: Project[]) {
-    this._projects = projects;
-  }
-
-  private _columns: ProjectColumn[];
-
-  get columns(): ProjectColumn[] {
-    return this._columns;
-  }
-
-  @Input()
-  set columns(columns: ProjectColumn[]) {
-    this._columns = columns;
-  }
-
-  private _showUnassignedActions: Boolean = false;
-
-  get showUnassignedActions(): Boolean {
-    return this._showUnassignedActions;
-  }
-
-  @Input()
-  set showUnassignedActions(showUnassignedActions: Boolean) {
-    this._showUnassignedActions = showUnassignedActions;
-  }
-
   ngOnInit() {
-    this.ingestService.getWranglers().subscribe(wranglers =>
+    this.account$ = this.ingestService.getUserAccount();
+    this.authService.isWrangler(this.account$)
+      .pipe(
+        tap(isWrangler => this.isWrangler = isWrangler),
+        concatMap(isWrangler => {
+          return isWrangler ? this.ingestService.getWranglers() : [];
+        })).subscribe(wranglers =>
       this.wranglers = wranglers
     );
   }
 
   isWranglerOrOwner(project: Project): Observable<boolean> {
-    return this.authService.isWranglerOrOwner(this.ingestService.getUserAccount(), of(project));
+    return this.authService.isWranglerOrOwner(this.account$, of(project));
   }
 
   getColumnLabel(column: ProjectColumn): string {
