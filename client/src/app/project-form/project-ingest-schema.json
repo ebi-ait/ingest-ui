@@ -231,6 +231,12 @@
       "user_friendly": "Wrangling Priority",
       "example": "1"
     },
+    "cellCount": {
+      "description": "Specify cell count",
+      "type": "integer",
+      "user_friendly": "Cell Count",
+      "example": "1"
+    },
     "wranglingNotes": {
       "guidelines": "Notes",
       "type": "string",
