@@ -14,17 +14,17 @@
       "guidelines": "Enter the ideal date when you would have accessions available for your project. We generally require a minimum of 2 weeks to provide an accession. We will endeavour to provide your accessions by the date given",
       "type": "string",
       "format": "date-time",
-      "user_friendly": "Accession Time Frame"
+      "user_friendly": "Accession time frame"
     },
     "dataAccess": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "description": "Data Access",
-      "title": "Data Access",
+      "description": "Data access",
+      "title": "Data access",
       "name": "dataAccess",
       "type": "object",
       "properties": {
         "type": {
-          "description": "Data Access",
+          "description": "Data access",
           "guidelines": "",
           "type": "string",
           "enum": [
@@ -36,9 +36,9 @@
           "user_friendly": "Do the data require controlled access?"
         },
         "notes": {
-          "description": "Data Access Notes",
+          "description": "Data access notes",
           "type": "string",
-          "user_friendly": "Data Access Notes",
+          "user_friendly": "Data access notes",
           "guidelines": "Any data access notes?"
         }
       },
@@ -197,17 +197,17 @@
       }
     },
     "primaryWrangler": {
-      "title": "Primary Wrangler",
+      "title": "Primary wrangler",
       "guidelines": "Primary wrangler for this project.",
       "type": "string",
-      "user_friendly": "Primary Wrangler",
+      "user_friendly": "Primary wrangler",
       "example": "John Doe"
     },
     "secondaryWrangler": {
-      "title": "Secondary Wrangler",
+      "title": "Secondary wrangler",
       "guidelines": "Secondary wrangler for this project.",
       "type": "string",
-      "user_friendly": "Secondary Wrangler",
+      "user_friendly": "Secondary wrangler",
       "example": "Jane Doe"
     },
     "wranglingState": {
@@ -228,13 +228,13 @@
     "wranglingPriority": {
       "description": "Specify order of priority, 1 is the highest",
       "type": "integer",
-      "user_friendly": "Wrangling Priority",
+      "user_friendly": "Wrangling priority",
       "example": "1"
     },
     "cellCount": {
       "description": "Specify cell count",
       "type": "integer",
-      "user_friendly": "Cell Count",
+      "user_friendly": "Cell count",
       "example": "1"
     },
     "wranglingNotes": {
