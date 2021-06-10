@@ -14,6 +14,7 @@ export const layout: MetadataFormLayout = {
         'project.identifyingOrganisms',
         'project.technology',
         'project.organ',
+        'project.cellCount',
         'project.releaseDate',
         'project.accessionDate',
         'project.content.array_express_accessions',
