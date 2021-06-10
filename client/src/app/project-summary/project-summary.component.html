@@ -7,7 +7,7 @@
 
 <p *ngIf="!project">Loading project...</p>
 
-<ng-container *ngIf="project && (userAccount$ | async)">
+<ng-container *ngIf="project && (userAccount$ | async) && config">
   <p style="margin: 0.5rem 0 2rem 0">General information about your project.</p>
   <app-metadata-form name="project"
                      [schema]="projectIngestSchema"
