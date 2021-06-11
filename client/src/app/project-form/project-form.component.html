@@ -7,9 +7,7 @@
 <br/>
 <br/>
 
-<p *ngIf="!schema || !(projectResource || createMode)">Loading project...</p>
-
-<ng-container *ngIf="schema && (projectResource || createMode) && (userAccount$ | async)">
+<ng-container *ngIf="isInitialised(); else loading">
   <app-metadata-form name="project"
                      [schema]="projectIngestSchema"
                      [data]="projectFormData"
@@ -20,6 +18,8 @@
                      (save)="onSave($event)"
                      (tabChange)="onTabChange($event)">
   </app-metadata-form>
-
-
 </ng-container>
+
+<ng-template #loading>
+  <p>Loading project...</p>
+</ng-template>
