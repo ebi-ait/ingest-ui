@@ -24,6 +24,7 @@ export class ProjectSummaryComponent implements OnInit {
   projectIngestSchema: any = (ingestSchema as any).default;
   userAccount$: Observable<Account>;
   config: MetadataFormConfig;
+  private userAccount: Account;
 
   constructor(private alertService: AlertService, private ingestService: IngestService) {
   }
@@ -45,8 +46,14 @@ export class ProjectSummaryComponent implements OnInit {
           removeEmptyFields: true,
           layout: layout
         };
+        this.userAccount = account;
       });
   }
+
+  isInitialised(): boolean {
+    return !!(this.project && this.userAccount && this.config);
+  }
+
 
   displayPostValidationErrors() {
     if (!this.project) {

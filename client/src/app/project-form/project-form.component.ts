@@ -46,6 +46,7 @@ export class ProjectFormComponent implements OnInit {
   schema: string;
 
   @ViewChild('mf') formTabGroup: MatTabGroup;
+  private userAccount: Account;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -85,7 +86,12 @@ export class ProjectFormComponent implements OnInit {
       .subscribe((account) => {
         this.userIsWrangler = account.isWrangler();
         this.setUpProjectForm(this.userIsWrangler, layout, this.createMode, pathVariables);
+        this.userAccount = account;
       });
+  }
+
+  isInitialised(): boolean {
+    return !!(this.schema && (this.projectResource || this.createMode) && this.userAccount && this.config);
   }
 
   setUpProjectForm(userIsWrangler: boolean, tabLayout: MetadataFormLayout, createMode: boolean, pathVariables: ParamMap) {
