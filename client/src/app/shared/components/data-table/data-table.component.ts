@@ -67,6 +67,6 @@ export class DataTableComponent implements OnInit, OnDestroy {
   }
 
   isUrl(value: string) {
-    Utils.isUrl(value);
+    return Utils.isUrl(value);
   }
 }
