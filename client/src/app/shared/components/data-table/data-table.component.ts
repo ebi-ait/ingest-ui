@@ -2,6 +2,7 @@ import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FlattenService} from '../../services/flatten.service';
 import {PageEvent} from './ngx/page-event';
 import {PaginatedDataSource} from '../../data-sources/paginated-data-source';
+import Utils from '../../utils';
 
 @Component({
   selector: 'app-data-table',
@@ -66,11 +67,6 @@ export class DataTableComponent implements OnInit, OnDestroy {
   }
 
   isUrl(value: string) {
-    try {
-      const url = new URL(value);
-    } catch (_) {
-      return false;
-    }
-    return true;
+    Utils.isUrl(value);
   }
 }

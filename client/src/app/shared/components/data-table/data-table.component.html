@@ -23,7 +23,7 @@
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
           <span *ngIf="isUrl(value); else showAsText">
             <a target="_blank" href="{{value}}">
-              <mat-icon matTooltip="See Ingest API JSON" [ngStyle]="{'color': 'lightgrey'}">link</mat-icon>
+              <mat-icon style="color: lightgrey">link</mat-icon>
             </a>
           </span>
           <ng-template #showAsText>{{value}}</ng-template>

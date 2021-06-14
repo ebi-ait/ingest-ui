@@ -21,6 +21,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {DataTableComponent} from './components/data-table/data-table.component';
 import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 import {EllipsisComponent} from './components/ellipsis/ellipsis.component';
+import Utils from './utils';
 
 
 @NgModule({
@@ -47,7 +48,8 @@ import {EllipsisComponent} from './components/ellipsis/ellipsis.component';
     SubmissionStateComponent,
     MetadataStateComponent,
     DataTableComponent,
-    EllipsisComponent
+    EllipsisComponent,
+    Utils
   ],
   exports: [
     ClipboardDirective,
