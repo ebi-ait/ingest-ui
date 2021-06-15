@@ -1,6 +1,6 @@
 export default class Utils {
 
-  static isUrl(value: string) {
+  static isUrl(value: string): boolean {
     if (!(value.toString().startsWith('http'))) {
       return false;
     }
