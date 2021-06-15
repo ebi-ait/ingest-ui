@@ -20,6 +20,12 @@ describe('Utils', () => {
     expect(Utils.isUrl(invalidUrl)).toEqual(false);
   });
 
+  it(`should return false for a text starting with http but not a valid URL`, () => {
+    const invalidUrl = 'httpsomething';
+
+    expect(Utils.isUrl(invalidUrl)).toEqual(false);
+  });
+
   it(`should return true for a valid URL`, () => {
     const invalidUrl = 'http://example.com';
 
