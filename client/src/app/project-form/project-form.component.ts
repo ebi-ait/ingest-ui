@@ -155,7 +155,7 @@ export class ProjectFormComponent implements OnInit {
           console.log('Retrieved project', projectResource);
           this.projectResource = projectResource;
           if (projectResource && projectResource.content &&
-            !projectResource.content.hasOwnProperty('describedBy') || !projectResource.content.hasOwnProperty('schema_type')) {
+            (!projectResource.content.hasOwnProperty('describedBy') || !projectResource.content.hasOwnProperty('schema_type'))) {
             this.schemaService.getUrlOfLatestSchema('project')
               .subscribe(schemaUrl => {
                 projectResource.content['describedBy'] = schemaUrl;
