@@ -136,10 +136,10 @@ export class ProjectFormComponent implements OnInit {
       ],
       layout: tabLayout,
       inputType: {
-      'project_description': 'textarea',
-      'notes': 'textarea',
-      'wranglingNotes': 'textarea'
-    },
+        'project_description': 'textarea',
+        'notes': 'textarea',
+        'wranglingNotes': 'textarea'
+      },
       showCancelButton: !createMode,
       showResetButton: false
     };
@@ -154,17 +154,18 @@ export class ProjectFormComponent implements OnInit {
       .subscribe(projectResource => {
           console.log('Retrieved project', projectResource);
           this.projectResource = projectResource;
-          if (projectResource && projectResource.content &&
-            !projectResource.content.hasOwnProperty('describedBy') || !projectResource.content.hasOwnProperty('schema_type')) {
-            this.schemaService.getUrlOfLatestSchema('project')
-              .subscribe(schemaUrl => {
+          if (projectResource?.content) {
+            if (!projectResource?.content.hasOwnProperty('describedBy')
+              || !projectResource?.content.hasOwnProperty('schema_type')) {
+              this.schemaService.getUrlOfLatestSchema('project').subscribe(schemaUrl => {
                 projectResource.content['describedBy'] = schemaUrl;
                 projectResource.content['schema_type'] = 'project';
                 this.schema = projectResource.content['describedBy'];
               });
+            } else {
+              this.schema = projectResource.content['describedBy'];
+            }
           }
-
-          this.schema = projectResource.content['describedBy'];
 
           this.projectContent = projectResource.content;
           this.projectFormData = this.projectResource;
