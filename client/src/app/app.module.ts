@@ -67,6 +67,7 @@ import {AuthService} from './shared/services/auth.service';
 import {UuidComponent} from './shared/components/uuid/uuid.component';
 import {AutofillProjectService} from './project-registration/services/autofill-project.service';
 import {ProjectCacheService} from './project-registration/services/project-cache.service';
+import {MatMenuModule} from '@angular/material/menu';
 
 const BROWSER_LOCALE = navigator.language;
 
@@ -102,26 +103,27 @@ const BROWSER_LOCALE = navigator.language;
     MetadataPickerComponent,
     UuidComponent
   ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    HttpClientModule,
-    RouterModule.forRoot(ROUTES),
-    SharedModule,
-    ReactiveFormsModule,
-    NoopAnimationsModule,
-    NgxDatatableModule,
-    FlexLayoutModule,
-    BrowserAnimationsModule,
-    MaterialModule,
-    AaiSecurity,
-    MetadataSchemaFormModule,
-    ProjectRegistrationModule,
-    TemplateQuestionnaireModule,
-    MatDialogModule,
-    NgxGraphModule,
-    NgxChartsModule
-  ],
+    imports: [
+        BrowserModule,
+        FormsModule,
+        HttpClientModule,
+        RouterModule.forRoot(ROUTES),
+        SharedModule,
+        ReactiveFormsModule,
+        NoopAnimationsModule,
+        NgxDatatableModule,
+        FlexLayoutModule,
+        BrowserAnimationsModule,
+        MaterialModule,
+        AaiSecurity,
+        MetadataSchemaFormModule,
+        ProjectRegistrationModule,
+        TemplateQuestionnaireModule,
+        MatDialogModule,
+        NgxGraphModule,
+        NgxChartsModule,
+        MatMenuModule
+    ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

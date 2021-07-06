@@ -14,27 +14,26 @@ import {LoaderService} from '../../services/loader.service';
 })
 export class UploadComponent implements OnInit {
 
-  @ViewChild('fileInput', { static: true }) fileInput;
-  @ViewChild('projectUuidInput', { static: true }) projectIdInput;
+  @ViewChild('fileInput', {static: true}) fileInput;
 
   error$: Observable<String>;
 
   uploadResults$: Observable<UploadResults>;
 
   @Input() projectUuid;
+  @Input() submissionUuid;
+  @Input() isUpdate = false;
 
   @Output() fileUpload = new EventEmitter();
-
-  isUpdate = false;
 
   constructor(private brokerService: BrokerService,
               private router: Router,
               private alertService: AlertService,
               private loaderService: LoaderService) {
-    this.isUpdate = false;
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   upload() {
     const fileBrowser = this.fileInput.nativeElement;
@@ -43,19 +42,21 @@ export class UploadComponent implements OnInit {
       const formData = new FormData();
       formData.append('file', fileBrowser.files[0]);
 
-      const projectUuid = this.projectIdInput.nativeElement.value;
+      if (this.projectUuid) {
+        formData.append('projectUuid', this.projectUuid);
+      }
 
-      if (projectUuid) {
-        formData.append('projectUuid', projectUuid );
+      if (this.submissionUuid) {
+        formData.append('submissionUuid', this.submissionUuid);
       }
 
       this.brokerService.uploadSpreadsheet(formData, this.isUpdate).subscribe({
         next: data => {
           this.uploadResults$ = <any>data;
-          const submissionId = this.uploadResults$['details']['submission_id'];
+          const submissionUuid = this.uploadResults$['details']['submission_uuid'];
           this.loaderService.display(false);
           this.alertService.success('Upload Success', this.uploadResults$['message'], true, true);
-          this.router.navigate(['/submissions/detail'], { queryParams: { id: submissionId, project: this.projectUuid } } );
+          this.router.navigate(['/submissions/detail'], {queryParams: {uuid: submissionUuid, project: this.projectUuid}});
         },
         error: err => {
           this.error$ = <any>err;

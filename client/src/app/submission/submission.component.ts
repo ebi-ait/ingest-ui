@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
@@ -58,6 +58,9 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   archiveEntityDataSource: PaginatedDataSource<ArchiveEntity>;
 
   private MAX_ERRORS = 1;
+  upload = false;
+
+  @ViewChild('spreadsheetFileInput') spreadsheetFileInput;
 
   constructor(
     private alertService: AlertService,
@@ -343,4 +346,5 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       sourceFilter.dataSource.filterByState(sourceFilter.filterState);
     }
   }
+
 }
