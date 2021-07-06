@@ -83,7 +83,7 @@ export class MetadataFormComponent implements OnInit {
         keys.shift();
 
         for (const key of keys) {
-          if ((key in data)) {
+          if (data?.[key]) {
             data = data[key];
           } else {
             chain = false;
