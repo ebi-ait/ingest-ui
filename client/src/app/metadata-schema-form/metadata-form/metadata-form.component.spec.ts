@@ -100,6 +100,6 @@ describe('MetadataFormComponent', () => {
   });
 
   it('tabIsVisible should pass with null content', () => {
-    component.tabIsVisible(contentTab);
+    expect(component.tabIsVisible(contentTab)).toBe(false);
   });
 });
