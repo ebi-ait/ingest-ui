@@ -58,7 +58,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   archiveEntityDataSource: PaginatedDataSource<ArchiveEntity>;
 
   private MAX_ERRORS = 1;
-  upload = false;
 
   @ViewChild('spreadsheetFileInput') spreadsheetFileInput;
 

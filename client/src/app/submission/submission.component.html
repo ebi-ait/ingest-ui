@@ -26,9 +26,9 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu" xPosition="before">
-        <button mat-menu-item (click)="upload=true">
+        <button mat-menu-item (click)="selectedIndex=4">
           <mat-icon>upload_file</mat-icon>
-          <span>Update metadata using a spreadsheet</span>
+          <span>Import a spreadsheet</span>
         </button>
       </mat-menu>
       <app-submission-state [state]="submissionState">{{submissionState}}</app-submission-state>
@@ -123,18 +123,6 @@
   <br/>
   <br/>
   <mat-tab-group *ngIf="submissionEnvelopeId" [(selectedIndex)]="selectedIndex">
-    <mat-tab label="Update Metadata" *ngIf="upload">
-      <ng-template matTabContent>
-        <div class="vf-u-margin__top--xxl">
-          <app-upload [projectUuid]="projectUuid" [submissionUuid]="submissionEnvelopeUuid" [isUpdate]="true"></app-upload>
-          <button
-            type="button" class="vf-button vf-button--sm"
-            (click)="upload=false">Cancel
-          </button>
-          <br/>
-        </div>
-      </ng-template>
-    </mat-tab>
     <mat-tab label="Biomaterials">
       <ng-template matTabContent>
         <app-metadata-list [dataSource]="biomaterialsDataSource"
@@ -164,6 +152,24 @@
         </app-files>
       </ng-template>
     </mat-tab>
+
+    <mat-tab label="Spreadsheet">
+      <ng-template matTabContent>
+        <div class="vf-u-margin__top--xxl">
+
+          <h3 class="vf-text vf-text-heading--4">Import a spreadsheet</h3>
+          <p>You could import a spreadsheet to update the metadata in this submission.
+          The spreadsheet should contain the uuid's of the metadata you want to update.
+          </p>
+          <div class="vf-u-margin__top--xxl">
+            <app-upload [projectUuid]="projectUuid" [submissionUuid]="submissionEnvelopeUuid"
+                        [isUpdate]="true"></app-upload>
+            <br/>
+          </div>
+        </div>
+      </ng-template>
+    </mat-tab>
+
     <mat-tab label="Assays" *ngIf="isSubmitted">
       <ng-template matTabContent>
         <app-metadata-list
