@@ -27,9 +27,9 @@ function getData() {
 function createTab(title) {
   return {
     title: title,
-    key: '1.' + title,
+    key: 'project.' + title,
     items: [
-      '1.' + title
+      'project.' + title
     ]
   } as MetadataFormTab;
 }
@@ -68,7 +68,7 @@ describe('MetadataFormComponent', () => {
 
   let metadataFormSvc: SpyObj<MetadataFormService>;
 
-  const contentTab = createTab('content');
+  const contentTab = createTab('content.contributors');
   const adminTab = createTab('admin');
   const tabs = [contentTab, adminTab];
 
