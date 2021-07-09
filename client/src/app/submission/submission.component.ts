@@ -343,4 +343,5 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       sourceFilter.dataSource.filterByState(sourceFilter.filterState);
     }
   }
+
 }

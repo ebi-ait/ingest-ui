@@ -13,6 +13,7 @@ import { Router} from '@angular/router';
 /** Handle http error response in one place. */
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
+  MAX_RETRIES = 5;
 
   constructor(private router: Router) {}
 
@@ -21,7 +22,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
 
-    return next.handle(req).pipe(retry(5), catchError(
+    return next.handle(req).pipe(retry(this.MAX_RETRIES), catchError(
       (error: HttpErrorResponse) => {
 
         if (this.router.url.startsWith('/error')) {

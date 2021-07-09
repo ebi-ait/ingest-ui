@@ -194,7 +194,6 @@ export class ProjectComponent implements OnInit {
 
   onSwitchUpload() {
     this.upload = !this.upload;
-
   }
 
   canSubmit(project: Project) {
