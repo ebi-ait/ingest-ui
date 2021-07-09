@@ -56,14 +56,19 @@ describe('UploadComponent', () => {
       .compileComponents();
   }));
 
+  function makeSpreadsheetBlob() {
+    const blob = new Blob([''], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    blob['lastModifiedDate'] = '';
+    blob['name'] = 'filename.xlsx';
+    return blob;
+  }
+
   beforeEach(() => {
     fixture = TestBed.createComponent(UploadComponent);
     component = fixture.componentInstance;
     const mockNativeElement = {
       get files() {
-        const blob = new Blob([''], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-        blob['lastModifiedDate'] = '';
-        blob['name'] = 'filename.xlsx';
+        const blob = makeSpreadsheetBlob();
         const file = <File>blob;
         const fileList = {
           0: file
