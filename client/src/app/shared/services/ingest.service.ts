@@ -19,6 +19,7 @@ import {ArchiveEntity} from '../models/archiveEntity';
 import {Criteria} from '../models/criteria';
 import {INVALID_FILE_TYPES} from '../constants';
 import {SubmissionSummary} from '../models/submissionSummary';
+import {QueryData} from '../models/paginatedEndpoint';
 
 
 @Injectable()
@@ -320,5 +321,9 @@ export class IngestService {
 
   public getArchiveEntity(dspUuid: string): Observable<ArchiveEntity> {
     return this.http.get<ArchiveEntity>(`${this.API_URL}/archiveEntities/search/findByDspUuid?dspUuid=${dspUuid}`);
+  }
+
+  public getFilteredProjects(params: QueryData): Observable<ListResult<Project>> {
+    return this.http.get(`${this.API_URL}/projects/filter`, {params: params}).pipe((map(data => data as ListResult<Project>)));
   }
 }
