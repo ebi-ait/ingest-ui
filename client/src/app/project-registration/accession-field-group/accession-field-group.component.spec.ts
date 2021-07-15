@@ -13,6 +13,7 @@ describe('AccessionFieldGroupComponent', () => {
   let insdcProjCtrl: FormArray;
   let insdcStudyCtrl: FormArray;
   let bioStudiesCtrl: FormArray;
+  let egaCtrl: FormArray;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -83,7 +84,18 @@ describe('AccessionFieldGroupComponent', () => {
           },
           'type': 'array',
           'user_friendly': 'INSDC study accession'
-        }
+        },
+        'ega_accessions': {
+          'description': 'A list of European Genome phenome Archive dataset or study accessions.',
+          'type': 'array',
+          'items': {
+            'type': 'string',
+            'pattern': 'EGA[DS][0-9]{11}'
+          },
+          'example': 'EGAS00000000001; EGAD00000000002',
+          'guidelines': 'Enter any EGA study or dataset accessions that relate to the project. Should start with EGAD or EGAS, study accession preferred.',
+          'user_friendly': 'EGA Study/Dataset Accession(s)'
+        },
       },
       'title': 'Project',
       'type': 'object'
@@ -97,7 +109,8 @@ describe('AccessionFieldGroupComponent', () => {
       'project.biostudies_accessions',
       'project.geo_series_accessions',
       'project.insdc_project_accessions',
-      'project.insdc_study_accessions'
+      'project.insdc_study_accessions',
+      'project.ega_accessions'
     ];
     component.defaultAccessionField = 'project.array_express_accessions';
 
@@ -108,6 +121,7 @@ describe('AccessionFieldGroupComponent', () => {
     insdcProjCtrl = component.metadataForm.getControl('project.insdc_project_accessions') as FormArray;
     insdcStudyCtrl = component.metadataForm.getControl('project.insdc_study_accessions') as FormArray;
     bioStudiesCtrl = component.metadataForm.getControl('project.biostudies_accessions') as FormArray;
+    egaCtrl = component.metadataForm.getControl('project.ega_accessions') as FormArray;
   });
 
   it('should create', () => {
@@ -123,6 +137,7 @@ describe('AccessionFieldGroupComponent', () => {
       expect(insdcStudyCtrl.value).toEqual([]);
       expect(arrayExpressCtrl.value).toEqual([]);
       expect(geoSeriesCtrl.value).toEqual([]);
+      expect(egaCtrl.value).toEqual([]);
     });
 
     it('should set the ArrayExpress accession field', () => {
@@ -133,6 +148,7 @@ describe('AccessionFieldGroupComponent', () => {
       expect(insdcStudyCtrl.value).toEqual([]);
       expect(geoSeriesCtrl.value).toEqual([]);
       expect(bioStudiesCtrl.value).toEqual([]);
+      expect(egaCtrl.value).toEqual([]);
     });
 
     it('should set the GEO series accession field', () => {
@@ -143,7 +159,7 @@ describe('AccessionFieldGroupComponent', () => {
       expect(insdcStudyCtrl.value).toEqual([]);
       expect(arrayExpressCtrl.value).toEqual([]);
       expect(bioStudiesCtrl.value).toEqual([]);
-
+      expect(egaCtrl.value).toEqual([]);
     });
 
     it('should set the INSDC study accession field', () => {
@@ -154,6 +170,7 @@ describe('AccessionFieldGroupComponent', () => {
       expect(arrayExpressCtrl.value).toEqual([]);
       expect(geoSeriesCtrl.value).toEqual([]);
       expect(bioStudiesCtrl.value).toEqual([]);
+      expect(egaCtrl.value).toEqual([]);
     });
 
     it('should set the INSDC project accession field', () => {
@@ -164,6 +181,18 @@ describe('AccessionFieldGroupComponent', () => {
       expect(insdcStudyCtrl.value).toEqual([]);
       expect(geoSeriesCtrl.value).toEqual([]);
       expect(bioStudiesCtrl.value).toEqual([]);
+      expect(egaCtrl.value).toEqual([]);
+    });
+
+    it('should set the EGA accession field', () => {
+      component.onProjectAccessionIdChange('EGAS00000000001');
+      expect(egaCtrl.value).toEqual(['EGAS00000000001']);
+
+      expect(arrayExpressCtrl.value).toEqual([]);
+      expect(insdcStudyCtrl.value).toEqual([]);
+      expect(geoSeriesCtrl.value).toEqual([]);
+      expect(bioStudiesCtrl.value).toEqual([]);
+      expect(insdcProjCtrl.value).toEqual([]);
     });
 
     it('should set unrecognised accession to a default accession field', () => {
@@ -174,8 +203,7 @@ describe('AccessionFieldGroupComponent', () => {
       expect(insdcStudyCtrl.value).toEqual([]);
       expect(geoSeriesCtrl.value).toEqual([]);
       expect(bioStudiesCtrl.value).toEqual([]);
+      expect(egaCtrl.value).toEqual([]);
     });
-
   });
-
 });
