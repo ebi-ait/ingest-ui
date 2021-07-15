@@ -22,6 +22,7 @@ export const layout: MetadataFormLayout = {
         'project.content.geo_series_accessions',
         'project.content.insdc_project_accessions',
         'project.content.insdc_study_accessions',
+        'project.content.ega_accessions',
         'project.isInCatalogue',
         'project.content.supplementary_links'
       ]
