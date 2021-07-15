@@ -1,7 +1,7 @@
 <app-select-radio
   [id]="'is-accessioned'"
   [label]="'Is there an existing accession ID for the project?'"
-  [helperText]="'An accession is usually an identifier you receive for your project if you have submitted it to a repository such as GEO, Arrayexpress, ENA, SRA'"
+  [helperText]="'An accession is usually an identifier you receive for your project if you have submitted it to a repository such as GEO, Arrayexpress, ENA, SRA, or EGA'"
   [options]="['Yes', 'No']"
   (valueChanged)="onIsAccessionedChange($event)"
 ></app-select-radio>
@@ -10,7 +10,7 @@
   [(ngModel)]="accessionId"
   [label]="'Existing project accession ID'"
   [dataType]="'string'"
-  [helperText]="'Enter a project accession ID from a data repository e.g. Geo or Arrayexpress'"
+  [helperText]="'Enter a project accession ID from a data repository e.g. Geo, EGA, or Arrayexpress'"
   (change)="onProjectAccessionIdChange(accessionId)">
 </app-vf-input>
 
