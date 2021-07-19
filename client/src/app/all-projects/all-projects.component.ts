@@ -82,11 +82,12 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
       }
     ));
   }
-  onKeyEnter(value) {
+
+  onSearch(value) {
     this.dataSource.search(value);
   }
 
-  onFilterByState($event) {
+  onFilterByWranglingState($event) {
     this.dataSource.filterByWranglingState($event.value);
   }
 
