@@ -17,6 +17,38 @@ import {SimpleDataSource} from '../shared/data-sources/simple-data-source';
 import {PaginatedDataSource} from '../shared/data-sources/paginated-data-source';
 import {ListResult} from '../shared/models/hateoas';
 
+enum SubmissionState {
+  Draft = 'Draft',
+  Invalid = 'Invalid',
+  Valid = 'Valid',
+  Submitted = 'Submitted',
+  Processing = 'Processing',
+  Archiving = 'Archiving',
+  Archived = 'Archived',
+  Exporting = 'Exporting',
+  Exported = 'Exported',
+  Cleanup = 'Cleanup',
+  Complete = 'Complete'
+}
+
+const SUBMITTED_STATES = [
+  SubmissionState.Submitted,
+  SubmissionState.Processing,
+  SubmissionState.Archiving,
+  SubmissionState.Archived,
+  SubmissionState.Exporting,
+  SubmissionState.Exported,
+  SubmissionState.Cleanup,
+  SubmissionState.Complete
+];
+
+enum SubmissionTab {
+  BIOMATERIALS = 0,
+  PROCESSES = 1,
+  PROTOCOLS = 2,
+  FILES = 3
+}
+
 @Component({
   selector: 'app-submission',
   templateUrl: './submission.component.html',
@@ -58,6 +90,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   archiveEntityDataSource: PaginatedDataSource<ArchiveEntity>;
 
   private MAX_ERRORS = 1;
+  SubmissionTab = SubmissionTab;
 
   constructor(
     private alertService: AlertService,
@@ -96,7 +129,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       this.submissionEnvelopeId = SubmissionComponent.getSubmissionId(submissionEnvelope);
       this.isValid = this.checkIfValid(submissionEnvelope);
       this.submissionState = submissionEnvelope['submissionState'];
-      this.isSubmitted = this.isStateSubmitted(submissionEnvelope.submissionState);
+      this.isSubmitted = this.isStateSubmitted(SubmissionState[submissionEnvelope.submissionState]);
       this.submitLink = this.getLink(submissionEnvelope, 'submit');
       this.exportLink = this.getLink(submissionEnvelope, 'export');
       this.cleanupLink = this.getLink(submissionEnvelope, 'cleanup');
@@ -110,10 +143,10 @@ export class SubmissionComponent implements OnInit, OnDestroy {
         const link = this.submissionEnvelope._links.submissionEnvelopeErrors.href;
         const message = `Cannot show more than ${this.MAX_ERRORS} errors.`;
         this.alertService.error(
-            `${this.submissionErrors.length - this.MAX_ERRORS} Other Errors`,
-            `${message} <a href="${link}">View all ${this.submissionErrors.length} errors.</a>`,
-            false,
-            false);
+          `${this.submissionErrors.length - this.MAX_ERRORS} Other Errors`,
+          `${message} <a href="${link}">View all ${this.submissionErrors.length} errors.</a>`,
+          false,
+          false);
       }
       let errors_displayed = 0;
       for (const err of this.submissionErrors) {
@@ -144,45 +177,45 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     }
 
     const submissionEnvelope$ = this.submissionEnvelopeId ?
-            this.ingestService.getSubmission(this.submissionEnvelopeId) :
-            this.ingestService.getSubmissionByUuid(this.submissionEnvelopeUuid);
+      this.ingestService.getSubmission(this.submissionEnvelopeId) :
+      this.ingestService.getSubmissionByUuid(this.submissionEnvelopeUuid);
 
     return submissionEnvelope$.pipe(
-        mergeMap(
-            this.submissionErrorsEndpoint.bind(this),
-            (submissionEnvelope, errors) => ({ ...submissionEnvelope, errors })
-        ),
-        mergeMap(
-            this.submissionManifestEndpoint.bind(this),
-            (submissionEnvelope, manifest) => ({ ...submissionEnvelope, manifest })
-        ),
-        mergeMap(
-            submissionEnvelope => this.ingestService.getSubmissionSummary(SubmissionComponent.getSubmissionId(submissionEnvelope)),
-            (submissionEnvelope, summary) => ({ ...submissionEnvelope, summary })
-        )
+      mergeMap(
+        this.submissionErrorsEndpoint.bind(this),
+        (submissionEnvelope, errors) => ({...submissionEnvelope, errors})
+      ),
+      mergeMap(
+        this.submissionManifestEndpoint.bind(this),
+        (submissionEnvelope, manifest) => ({...submissionEnvelope, manifest})
+      ),
+      mergeMap(
+        submissionEnvelope => this.ingestService.getSubmissionSummary(SubmissionComponent.getSubmissionId(submissionEnvelope)),
+        (submissionEnvelope, summary) => ({...submissionEnvelope, summary})
+      )
     );
   }
 
   private submissionErrorsEndpoint(submissionEnvelope) {
     return this.ingestService.get(submissionEnvelope['_links']['submissionEnvelopeErrors']['href']).pipe(
-        map(data => {
-          return data['_embedded'] ? data['_embedded']['submissionErrors'] : [];
-        })
+      map(data => {
+        return data['_embedded'] ? data['_embedded']['submissionErrors'] : [];
+      })
     );
   }
 
   private submissionManifestEndpoint(submissionEnvelope) {
     return this.ingestService.get(submissionEnvelope['_links']['submissionManifest']['href']).pipe(
-        catchError(err => {
-          if (err instanceof HttpErrorResponse && err.status === 404) {
-            // do nothing, the endpoint throws error when no submission manifest is found
-            this.isLinkingDone = true;
-          } else {
-            console.error(err);
-          }
-          // do nothing
-          return of([]);
-        })
+      catchError(err => {
+        if (err instanceof HttpErrorResponse && err.status === 404) {
+          // do nothing, the endpoint throws error when no submission manifest is found
+          this.isLinkingDone = true;
+        } else {
+          console.error(err);
+        }
+        // do nothing
+        return of([]);
+      })
     );
   }
 
@@ -206,7 +239,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
 
   checkIfValid(submission) {
     const status = submission['submissionState'];
-    return (status === 'Valid' || this.isStateSubmitted(status));
+    return (status === 'Valid' || this.isStateSubmitted(SubmissionState[status]));
   }
 
   setProject(project) {
@@ -232,9 +265,8 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     return this.project && this.project['uuid'] ? this.project['uuid']['uuid'] : '';
   }
 
-  isStateSubmitted(state) {
-    const submittedStates = ['Submitted', 'Processing', 'Archiving', 'Archived', 'Exporting', 'Exported', 'Cleanup', 'Complete'];
-    return (submittedStates.indexOf(state) >= 0);
+  isStateSubmitted(state: SubmissionState) {
+    return (SUBMITTED_STATES.indexOf(state) >= 0);
   }
 
   getLink(submissionEnvelope, linkName) {
@@ -308,16 +340,16 @@ export class SubmissionComponent implements OnInit, OnDestroy {
           if (archiveSubmission) {
             const entitiesUrl = archiveSubmission['_links']['entities']['href'];
             this.archiveEntityDataSource = new PaginatedDataSource<ArchiveEntity>(
-                params => this.ingestService.get(entitiesUrl, {params}).pipe(
-                    // TODO: This gets done a lot, refactor
-                    map(data => data as ListResult<any>),
-                    map(data => {
-                      return {
-                        data: data && data._embedded ? data._embedded['archiveEntities'] : [],
-                        page: data.page
-                      };
-                    })
-                )
+              params => this.ingestService.get(entitiesUrl, {params}).pipe(
+                // TODO: This gets done a lot, refactor
+                map(data => data as ListResult<any>),
+                map(data => {
+                  return {
+                    data: data && data._embedded ? data._embedded['archiveEntities'] : [],
+                    page: data.page
+                  };
+                })
+              )
             );
           }
         }
@@ -337,11 +369,33 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     });
   }
 
-  navigateToTab(index: number, sourceFilter?: { dataSource?: MetadataDataSource<any>, filterState?: string }): void {
+  navigateToTab(tabName: SubmissionTab, sourceFilter?: { dataSource?: MetadataDataSource<any>, filterState?: string }): void {
+    const index = tabName.valueOf();
     this.selectedIndex = index;
     if (sourceFilter && sourceFilter.dataSource && sourceFilter.filterState) {
       sourceFilter.dataSource.filterByState(sourceFilter.filterState);
     }
   }
 
+  displaySubmitTab(): boolean {
+    return [
+      SubmissionState.Submitted,
+      SubmissionState.Processing,
+      SubmissionState.Archiving,
+      SubmissionState.Exporting,
+      SubmissionState.Cleanup,
+      SubmissionState.Complete
+    ].indexOf(SubmissionState[this.submissionState]) < 0;
+  }
+
+  displayAccessionTab(): boolean {
+    return [
+      SubmissionState.Archiving,
+      SubmissionState.Archived,
+      SubmissionState.Exported,
+      SubmissionState.Cleanup,
+      SubmissionState.Cleanup,
+      SubmissionState.Complete
+    ].indexOf(SubmissionState[this.submissionState]) >= 0;
+  }
 }
