@@ -78,6 +78,7 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
       sort: `${params.sort.column},${params.sort.direction}`
     };
 
+    delete urlParams.filterState;
     return this.getFilteredProjects(urlParams);
   }
 
