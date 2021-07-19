@@ -3,12 +3,11 @@ import {MatPaginator} from '@angular/material/paginator';
 import {Project, ProjectColumn} from '../shared/models/project';
 import {IngestService} from '../shared/services/ingest.service';
 import {map} from 'rxjs/operators';
-import {MetadataDataSource} from '../shared/data-sources/metadata-data-source';
 import {PagedData} from '../shared/models/page';
-import {MetadataDocument} from '../shared/models/metadata-document';
 import * as ingestSchema from '../project-form/project-ingest-schema.json';
 import {Observable} from 'rxjs';
 import {Account} from '../core/account';
+import {ProjectDataSource} from '../shared/data-sources/project-data-source';
 
 @Component({
   selector: 'app-all-projects',
@@ -33,18 +32,15 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
-  searchText: string;
-
-  dataSource: MetadataDataSource<Project>;
+  dataSource: ProjectDataSource;
   wranglingStates = ingestSchema.properties.wranglingState.enum;
   wranglers$: Observable<Account[]>;
-  filterState = {};
 
   constructor(private ingestService: IngestService) {
   }
 
   ngOnInit() {
-    this.dataSource = new MetadataDataSource<Project>(this.getProjects.bind(this), 'projects');
+    this.dataSource = new ProjectDataSource(this.getProjects.bind(this));
     this.dataSource.sortBy('updateDate', 'desc');
     this.dataSource.connect(true).subscribe({
       next: data => {
@@ -71,21 +67,21 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
     this.dataSource.disconnect();
   }
 
-  getProjects(params) {
+  getProjects(params): Observable<PagedData<Project>> {
     const urlParams = {
       ...params,
-      ...params?.filterState,
       sort: `${params.sort.column},${params.sort.direction}`
     };
 
-    delete urlParams.filterState;
+    delete params.sort;
+
     return this.getFilteredProjects(urlParams);
   }
 
-  private getFilteredProjects(params) {
+  private getFilteredProjects(params): Observable<PagedData<Project>> {
     return this.ingestService.getFilteredProjects(params).pipe(map(
       data => {
-        const pagedData: PagedData<MetadataDocument> = {data: [], page: undefined};
+        const pagedData: PagedData<Project> = {data: [], page: undefined};
         pagedData.data = data._embedded ? data._embedded.projects : [];
         pagedData.page = data.page;
         return pagedData;
@@ -93,21 +89,15 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
     ));
   }
   onKeyEnter(value) {
-    this.filterState['search'] = value;
-    this.dataSource.filterByState(this.filterState);
+    this.dataSource.search(value);
   }
 
   onFilterByState($event) {
-    this.filterState['wranglingState'] = $event.value;
-
-    if (!$event.value) { delete this.filterState['wranglingState']; }
-    this.dataSource.filterByState(this.filterState);
+    this.dataSource.filterByWranglingState($event.value);
   }
 
   onFilterByWrangler($event) {
-    this.filterState['wrangler'] = $event.value;
-    if (!$event.value) { delete this.filterState['wrangler']; }
-    this.dataSource.filterByState(this.filterState);
+    this.dataSource.filterByWrangler($event.value);
   }
 
   onPageChange({ pageIndex, pageSize }) {
