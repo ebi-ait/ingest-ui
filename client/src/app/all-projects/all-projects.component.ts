@@ -53,12 +53,6 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
     this.wranglers$ = this.ingestService.getWranglers();
   }
 
-  getProjectId(project) {
-    let links: any;
-    links = project['_links'];
-    return links && links['self'] && links['self']['href'] ? links['self']['href'].split('/').pop() : '';
-  }
-
   getProjectUuid(project) {
     return project['uuid'] ? project['uuid']['uuid'] : '';
   }
