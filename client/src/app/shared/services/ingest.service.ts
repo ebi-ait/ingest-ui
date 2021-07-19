@@ -324,6 +324,9 @@ export class IngestService {
   }
 
   public getFilteredProjects(params: QueryData): Observable<ListResult<Project>> {
+    if (params.search === '') {
+      delete params.search;
+    }
     return this.http.get(`${this.API_URL}/projects/filter`, {params: params}).pipe((map(data => data as ListResult<Project>)));
   }
 }
