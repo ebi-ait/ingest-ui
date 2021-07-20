@@ -5,9 +5,17 @@ import { EditProjectComponent } from './pages/edit-project/edit-project.componen
 import { CreateProjectComponent } from './pages/create-project/create-project.component';
 import {AutofillProjectFormComponent} from './pages/autofill-project-form/autofill-project-form.component';
 import {ProjectCreateEditRoutingModule} from './project-create-edit-routing.module';
+import {VfInputComponent} from '../metadata-schema-form/custom/vf-input/vf-input.component';
 
 @NgModule({
-  declarations: [ProjectMetadataFormComponent, EditProjectComponent, CreateProjectComponent, AutofillProjectFormComponent],
+  declarations: [
+    ProjectMetadataFormComponent,
+    EditProjectComponent,
+    CreateProjectComponent,
+    AutofillProjectFormComponent,
+    // TODO move this into a common module
+    VfInputComponent
+  ],
   imports: [
     CommonModule,
     ProjectCreateEditRoutingModule
