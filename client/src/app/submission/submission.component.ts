@@ -276,6 +276,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
 
   downloadFile() {
     const uuid = this.submissionEnvelope['uuid']['uuid'];
+    this.loaderService.display(true);
     this.brokerService.downloadSpreadsheet(uuid).subscribe(response => {
       const filename = response['filename'];
       const newBlob = new Blob([response['data']]);
@@ -295,6 +296,8 @@ export class SubmissionComponent implements OnInit, OnDestroy {
         window.URL.revokeObjectURL(data);
         link.remove();
       }, 100);
+
+      this.loaderService.display(false);
     });
   }
 
