@@ -27,8 +27,17 @@ export const ROUTES: Routes = [
   {path: 'home', component: WelcomeComponent},
   {path: 'registration', component: RegistrationComponent, canActivate: [UserIsLoggedInGuard]},
   {path: 'projects', component: MyProjectsComponent, canActivate: [UserIsLoggedInGuard]},
+  // TODO do routing from within modules
   {path: 'projects/register', component: AutofillProjectFormComponent, canActivate: [UserIsLoggedInGuard]},
   {path: 'projects/new', component: ProjectRegistrationFormComponent, canActivate: [UserIsLoggedInGuard]},
+
+
+  {
+    path: 'new-form',
+    loadChildren: () =>
+      import('./project-create-edit/project-create-edit.module').then((m) => m.ProjectCreateEdit),
+  },
+
   {path: 'projects/all', component: AllProjectsComponent, canActivate: [UserIsLoggedInGuard, UserIsWranglerGuard]},
   {path: 'submissions/list', component: SubmissionListComponent,  canActivate: [UserIsLoggedInGuard, UserIsWranglerGuard]},
 
