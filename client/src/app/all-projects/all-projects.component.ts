@@ -85,12 +85,13 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
     return this.ingestService.getFilteredProjects(params).pipe(map(
       data => {
         const pagedData: PagedData<MetadataDocument> = {data: [], page: undefined};
-        pagedData.data = data._embedded ? data._embedded.projects : [];
+        pagedData.data = data._embedded?.projects || [];
         pagedData.page = data.page;
         return pagedData;
       }
     ));
   }
+
   onKeyEnter(value) {
     this.filterState['search'] = value;
     this.dataSource.filterByState(this.filterState);
