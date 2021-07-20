@@ -5,20 +5,23 @@ import { EditProjectComponent } from './pages/edit-project/edit-project.componen
 import { CreateProjectComponent } from './pages/create-project/create-project.component';
 import {AutofillProjectFormComponent} from './pages/autofill-project-form/autofill-project-form.component';
 import {ProjectCreateEditRoutingModule} from './project-create-edit-routing.module';
-import {VfInputComponent} from '../metadata-schema-form/custom/vf-input/vf-input.component';
+import {MetadataSchemaFormModule} from '../metadata-schema-form/metadata-schema-form.module';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
     ProjectMetadataFormComponent,
     EditProjectComponent,
     CreateProjectComponent,
-    AutofillProjectFormComponent,
-    // TODO move this into a common module
-    VfInputComponent
+    AutofillProjectFormComponent
   ],
   imports: [
     CommonModule,
-    ProjectCreateEditRoutingModule
+    ProjectCreateEditRoutingModule,
+    MetadataSchemaFormModule,
+    MetadataSchemaFormModule,
+    FormsModule,
+    ReactiveFormsModule,
   ]
 })
 export class ProjectCreateEdit { }
