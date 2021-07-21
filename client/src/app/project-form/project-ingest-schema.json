@@ -221,7 +221,8 @@
         "Stalled",
         "Submitted",
         "Published in DCP",
-        "Deleted"
+        "Deleted",
+        "New Suggestion"
       ],
       "user_friendly": "Wrangling status"
     },
