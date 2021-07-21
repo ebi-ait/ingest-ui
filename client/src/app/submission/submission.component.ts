@@ -90,7 +90,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   archiveEntityDataSource: PaginatedDataSource<ArchiveEntity>;
 
   private MAX_ERRORS = 1;
-  SubmissionTab = SubmissionTab;
+  submissionTab = SubmissionTab;
 
   constructor(
     private alertService: AlertService,
