@@ -12,7 +12,7 @@ import {LoaderService} from '../../services/loader.service';
   styleUrls: ['./upload.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class UploadComponent implements OnInit {
+export class UploadComponent {
 
   @ViewChild('fileInput', {static: true}) fileInput;
 
@@ -30,9 +30,6 @@ export class UploadComponent implements OnInit {
               private router: Router,
               private alertService: AlertService,
               private loaderService: LoaderService) {
-  }
-
-  ngOnInit() {
   }
 
   upload() {
