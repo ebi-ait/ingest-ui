@@ -10,14 +10,14 @@
 
   <mat-form-field class="search-bar">
     <mat-icon matPrefix>search</mat-icon>
-    <input matInput placeholder="Search Projects" [(ngModel)]="searchText" (keydown.enter)="onKeyEnter(searchText)">
-    <button mat-button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="searchText=''; onKeyEnter(searchText)">
+    <input matInput placeholder="Search Projects" (keydown.enter)="onSearch($event.target.value)">
+    <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="onSearch('')">
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>
 
   <mat-form-field>
-    <mat-select placeholder="Filter by status" (selectionChange)="onFilterByState($event)">
+    <mat-select placeholder="Filter by status" (selectionChange)="onFilterByWranglingState($event)">
       <mat-option>None</mat-option>
       <mat-option *ngFor="let state of wranglingStates" [value]="transformWranglingState(state)">{{state}}</mat-option>
     </mat-select>
