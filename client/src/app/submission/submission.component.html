@@ -22,38 +22,60 @@
          href="{{submissionEnvelope?._links?.self?.href}}">
         <mat-icon matTooltip="See Ingest API JSON">open_in_new</mat-icon>
       </a>
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu" xPosition="before">
+        <button mat-menu-item (click)="selectedIndex=4">
+          <mat-icon>upload_file</mat-icon>
+          <span>Import a spreadsheet</span>
+        </button>
+      </mat-menu>
       <app-submission-state [state]="submissionState">{{submissionState}}</app-submission-state>
     </div>
+
   </div>
+
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+    <div>
+      <div class="vf-text-body vf-text-body--2">{{projectTitle}}</div>
+      <div class="vf-text-body vf-text-body--3">{{getContributors(project)}}</div>
+    </div>
+    <div></div>
+  </div>
+
   <div>
-    <div class="vf-text-body vf-text-body--2">{{projectTitle}}</div>
-    <div class="vf-text-body vf-text-body--3">{{getContributors(project)}}</div>
     <div *ngIf="validationSummary && validationSummary.totalInvalid > 0">
-      <p>Your validation returned <span class="error-text">{{validationSummary.totalInvalid}} error(s)</span>. Review and fix them below.</p>
+      <p>Your validation returned <span class="error-text">{{validationSummary.totalInvalid}} error(s)</span>. Review
+        and fix them below.</p>
 
       <ul id="validation-error-types">
         <li *ngIf="validationSummary.invalidBiomaterials > 0">
           Biomaterials:
-          <a href="javascript: void(0)" (click)="navigateToTab(0, { dataSource: biomaterialsDataSource, filterState: 'Invalid'})">
+          <a href="javascript: void(0)"
+             (click)="navigateToTab(SubmissionTab.BIOMATERIALS, { dataSource: biomaterialsDataSource, filterState: 'Invalid'})">
             {{validationSummary.invalidBiomaterials}} error(s)
           </a>
         </li>
         <li *ngIf="validationSummary.invalidProcesses > 0">
           Processes:
-          <a href="javascript: void(0)"(click)="navigateToTab(1, { dataSource: processesDataSource, filterState: 'Invalid' })">
+          <a href="javascript: void(0)"
+             (click)="navigateToTab(SubmissionTab.PROCESSES, { dataSource: processesDataSource, filterState: 'Invalid' })">
             {{validationSummary.invalidProcesses}} error(s)
           </a>
         </li>
         <li *ngIf="validationSummary.invalidProtocols > 0">
           Protocols:
-          <a href="javascript: void(0)"(click)="navigateToTab(2, { dataSource: protocolsDataSource, filterState: 'Invalid' })">
+          <a href="javascript: void(0)"
+             (click)="navigateToTab(SubmissionTab.PROTOCOLS, { dataSource: protocolsDataSource, filterState: 'Invalid' })">
             {{validationSummary.invalidProtocols}} error(s)
           </a>
         </li>
         <li *ngIf="validationSummary.invalidFiles > 0">
           Data files:
           <ng-container *ngIf="validationSummary.fileMetadataErrors">
-            <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Invalid Metadata'})">
+            <a href="javascript: void(0)"
+               (click)="navigateToTab(SubmissionTab.FILES, { dataSource: filesDataSource, filterState: 'Invalid Metadata'})">
               {{validationSummary.fileMetadataErrors}}
               <ng-container [ngPlural]="validationSummary.fileMetadataErrors">
                 <ng-template ngPluralCase="one">metadata error</ng-template>
@@ -61,9 +83,10 @@
               </ng-container>
             </a>
           </ng-container>
-          <ng-container *ngIf="validationSummary.fileMetadataErrors && validationSummary.fileErrors">, </ng-container>
+          <ng-container *ngIf="validationSummary.fileMetadataErrors && validationSummary.fileErrors">,</ng-container>
           <ng-container *ngIf="validationSummary.fileErrors">
-            <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Invalid File'})">
+            <a href="javascript: void(0)"
+               (click)="navigateToTab(SubmissionTab.FILES, { dataSource: filesDataSource, filterState: 'Invalid File'})">
               {{validationSummary.fileErrors}}
               <ng-container [ngPlural]="validationSummary.fileErrors">
                 <ng-template ngPluralCase="one">file error</ng-template>
@@ -71,9 +94,13 @@
               </ng-container>
             </a>
           </ng-container>
-          <ng-container *ngIf="(validationSummary.fileMetadataErrors || validationSummary.fileErrors) && validationSummary.missingFiles">, </ng-container>
+          <ng-container
+            *ngIf="(validationSummary.fileMetadataErrors || validationSummary.fileErrors) && validationSummary.missingFiles">
+            ,
+          </ng-container>
           <ng-container *ngIf="validationSummary.missingFiles">
-            <a href="javascript: void(0)" (click)="navigateToTab(3, { dataSource: filesDataSource, filterState: 'Not Uploaded'})">
+            <a href="javascript: void(0)"
+               (click)="navigateToTab(SubmissionTab.FILES, { dataSource: filesDataSource, filterState: 'Not Uploaded'})">
               {{validationSummary.missingFiles}}
               <ng-container [ngPlural]="validationSummary.missingFiles">
                 <ng-template ngPluralCase="one">file missing</ng-template>
@@ -84,6 +111,7 @@
         </li>
       </ul>
     </div>
+
     <div *ngIf=" project?.validationErrors && project?.validationErrors.length > 0">
       <span class="vf-text-body vf-text-body--3 vf-u-text-color--red">Project is Invalid. Please go back and edit the project.</span><br/>
       <ng-container *ngFor="let error of project?.validationErrors">
@@ -124,6 +152,24 @@
         </app-files>
       </ng-template>
     </mat-tab>
+
+    <mat-tab label="Spreadsheet">
+      <ng-template matTabContent>
+        <div class="vf-u-margin__top--xxl">
+          <h3 class="vf-text vf-text-heading--4">Import a spreadsheet</h3>
+          <p>You could import a spreadsheet to update the metadata in this submission.
+            The spreadsheet should contain the uuid's of the metadata you want to update.</p>
+          <p>Please note that updating the linking between entities is not supported via spreadsheets yet.</p>
+
+          <div class="vf-u-margin__top--xxl">
+            <app-upload [projectUuid]="projectUuid" [submissionUuid]="submissionEnvelopeUuid"
+                        [isUpdate]="true"></app-upload>
+            <br/>
+          </div>
+        </div>
+      </ng-template>
+    </mat-tab>
+
     <mat-tab label="Assays" *ngIf="isSubmitted">
       <ng-template matTabContent>
         <app-metadata-list
@@ -133,7 +179,7 @@
       </ng-template>
     </mat-tab>
 
-    <mat-tab label="Accessions" *ngIf="['Archiving', 'Archived', 'Exported', 'Cleanup', 'Completed'].indexOf(submissionState) >= 0">
+    <mat-tab label="Accessions" *ngIf="displayAccessionTab()">
       <ng-template matTabContent>
         <br/>
         <app-data-table [dataSource]="archiveEntityDataSource"
@@ -143,8 +189,7 @@
       </ng-template>
     </mat-tab>
 
-    <mat-tab label="Submit" [disabled]="!isValid"
-             *ngIf="[ 'Submitted', 'Processing', 'Archiving', 'Exporting', 'Cleanup', 'Complete'].indexOf(submissionState) < 0">
+    <mat-tab label="Submit" [disabled]="!isValid" *ngIf="displaySubmitTab()">
       <ng-template matTabContent>
         <app-submit
           [project$]="project$"
