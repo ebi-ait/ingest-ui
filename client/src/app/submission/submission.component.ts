@@ -123,52 +123,60 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   connectSubmissionEnvelope() {
     this.submissionDataSource = new SimpleDataSource<SubmissionEnvelope>(this.submissionEnvelopeEndpoint.bind(this));
     this.submissionDataSource.connect(true, 15000).subscribe(submissionEnvelope => {
-      // NOTE: this should be broken up and/or just use dataSource attributes directly in template but
-      // we're getting rid of submissions anyway.
-      this.submissionEnvelope = submissionEnvelope;
-      this.submissionEnvelopeId = SubmissionComponent.getSubmissionId(submissionEnvelope);
-      this.isValid = this.checkIfValid(submissionEnvelope);
-      this.submissionState = submissionEnvelope['submissionState'];
-      this.isSubmitted = this.isStateSubmitted(SubmissionState[submissionEnvelope.submissionState]);
-      this.submitLink = this.getLink(submissionEnvelope, 'submit');
-      this.exportLink = this.getLink(submissionEnvelope, 'export');
-      this.cleanupLink = this.getLink(submissionEnvelope, 'cleanup');
-      this.url = this.getLink(submissionEnvelope, 'self');
-
-      this.submissionErrors = submissionEnvelope['errors'];
-      if (this.submissionErrors.length > 0) {
-        this.alertService.clear();
-      }
-      if (this.submissionErrors.length > this.MAX_ERRORS) {
-        const link = this.submissionEnvelope._links.submissionEnvelopeErrors.href;
-        const message = `Cannot show more than ${this.MAX_ERRORS} errors.`;
-        this.alertService.error(
-          `${this.submissionErrors.length - this.MAX_ERRORS} Other Errors`,
-          `${message} <a href="${link}">View all ${this.submissionErrors.length} errors.</a>`,
-          false,
-          false);
-      }
-      let errors_displayed = 0;
-      for (const err of this.submissionErrors) {
-        if (errors_displayed >= this.MAX_ERRORS) {
-          break;
-        }
-        this.alertService.error(err['title'], err['detail'], false, false);
-        errors_displayed++;
-      }
-
-      this.manifest = submissionEnvelope['manifest'];
-      const actualLinks = this.manifest['actualLinks'];
-      const expectedLinks = this.manifest['expectedLinks'];
-      if (!expectedLinks || (actualLinks === expectedLinks)) {
-        this.isLinkingDone = true;
-      }
-
+      this.initSubmissionAttributes(submissionEnvelope);
+      this.displaySubmissionErrors(submissionEnvelope);
+      this.checkFromManifestIfLinkingIsDone(submissionEnvelope);
       this.validationSummary = submissionEnvelope['summary'];
-
       this.initDataSources();
       this.connectProject(this.submissionEnvelopeId);
     });
+  }
+
+  private checkFromManifestIfLinkingIsDone(submissionEnvelope: SubmissionEnvelope) {
+    this.manifest = submissionEnvelope['manifest'];
+    const actualLinks = this.manifest['actualLinks'];
+    const expectedLinks = this.manifest['expectedLinks'];
+    if (!expectedLinks || (actualLinks === expectedLinks)) {
+      this.isLinkingDone = true;
+    }
+  }
+
+  private displaySubmissionErrors(submissionEnvelope: SubmissionEnvelope) {
+    this.submissionErrors = submissionEnvelope['errors'];
+    if (this.submissionErrors.length > 0) {
+      this.alertService.clear();
+    }
+    if (this.submissionErrors.length > this.MAX_ERRORS) {
+      const link = this.submissionEnvelope._links.submissionEnvelopeErrors.href;
+      const message = `Cannot show more than ${this.MAX_ERRORS} errors.`;
+      this.alertService.error(
+        `${this.submissionErrors.length - this.MAX_ERRORS} Other Errors`,
+        `${message} <a href="${link}">View all ${this.submissionErrors.length} errors.</a>`,
+        false,
+        false);
+    }
+    let errors_displayed = 0;
+    for (const err of this.submissionErrors) {
+      if (errors_displayed >= this.MAX_ERRORS) {
+        break;
+      }
+      this.alertService.error(err['title'], err['detail'], false, false);
+      errors_displayed++;
+    }
+  }
+
+  private initSubmissionAttributes(submissionEnvelope: SubmissionEnvelope) {
+    // NOTE: this should be broken up and/or just use dataSource attributes directly in template but
+    // we're getting rid of submissions anyway.
+    this.submissionEnvelope = submissionEnvelope;
+    this.submissionEnvelopeId = SubmissionComponent.getSubmissionId(submissionEnvelope);
+    this.isValid = this.checkIfValid(submissionEnvelope);
+    this.submissionState = submissionEnvelope['submissionState'];
+    this.isSubmitted = this.isStateSubmitted(SubmissionState[submissionEnvelope.submissionState]);
+    this.submitLink = this.getLink(submissionEnvelope, 'submit');
+    this.exportLink = this.getLink(submissionEnvelope, 'export');
+    this.cleanupLink = this.getLink(submissionEnvelope, 'cleanup');
+    this.url = this.getLink(submissionEnvelope, 'self');
   }
 
   private submissionEnvelopeEndpoint() {
