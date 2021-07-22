@@ -5,9 +5,9 @@ import {EditProjectComponent} from './pages/edit-project/edit-project.component'
 import {CreateProjectComponent} from './pages/create-project/create-project.component';
 
 const routes: Routes = [
-  { path: 'register', component: AutofillProjectFormComponent },
+  { path: 'register/autofill', component: AutofillProjectFormComponent },
+  { path: 'register', component: CreateProjectComponent },
   { path: ':uuid/edit/:tab', component: EditProjectComponent },
-  { path: 'edit', component: CreateProjectComponent }
 ];
 
 @NgModule({
