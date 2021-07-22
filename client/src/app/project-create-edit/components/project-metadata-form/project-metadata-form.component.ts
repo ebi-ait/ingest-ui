@@ -26,6 +26,7 @@ import {environment} from '../../../../environments/environment';
 export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
 
   @Input() project: any;
+  @Input() autosave = true;
 
   projectMetadataSchema: any = (metadataSchema as any).default;
   projectIngestSchema: any = (ingestSchema as any).default;
@@ -228,6 +229,9 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
   }
 
   saveProjectInCache(formData: Observable<object>) {
+    if (!this.autosave) {
+      return;
+    }
     formData.pipe(
       delay(environment.AUTOSAVE_PERIOD_MILLIS),
       takeUntil(this.unsubscribe)
