@@ -1,5 +1,3 @@
-<ng-container *ngIf="project">
-  <app-project-metadata-form
-    [project]="project"
-  ></app-project-metadata-form>
-</ng-container>
+<app-project-metadata-form
+  [project]="project$ | async"
+></app-project-metadata-form>

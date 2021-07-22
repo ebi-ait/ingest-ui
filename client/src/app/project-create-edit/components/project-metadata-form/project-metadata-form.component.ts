@@ -178,17 +178,23 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
     this.unsubscribe.next();
   }
 
-  private setSchema(project): Observable<object> {
-    return this.schemaService.getUrlOfLatestSchema('project').pipe(
+  private setSchema(): void {
+    if (this.project?.content) {
+      if (this.project?.content.hasOwnProperty('describedBy')
+        && this.project?.content.hasOwnProperty('schema_type')) {
+        this.schema = this.project.content['describedBy'];
+        return;
+      }
+    }
+
+    this.schemaService.getUrlOfLatestSchema('project').pipe(
       map(schemaUrl => {
-        project['content']['describedBy'] = schemaUrl;
-        project['content']['schema_type'] = 'project';
+        this.project['content']['describedBy'] = schemaUrl;
+        this.project['content']['schema_type'] = 'project';
         this.schema = schemaUrl;
-        return project;
       })
     );
   }
-
 
   private saveProject(formValue) {
     this.loaderService.display(true);
