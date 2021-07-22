@@ -1,6 +1,4 @@
 <ng-container *ngIf= "(userAccount$ | async) && project; else loading">
-  <div class="vf-u-margin__top--xxl">&nbsp;</div>
-
   <app-metadata-form name="project"
                      [useVf]="true"
                      [schema]="projectIngestSchema"
