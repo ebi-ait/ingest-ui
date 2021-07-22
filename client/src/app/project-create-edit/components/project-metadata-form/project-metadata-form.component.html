@@ -1,10 +1,10 @@
-<ng-container *ngIf= "(userAccount$ | async) && project">
+<ng-container *ngIf= "(userAccount$ | async) && project; else loading">
   <div class="vf-u-margin__top--xxl">&nbsp;</div>
 
   <app-metadata-form name="project"
                      [useVf]="true"
                      [schema]="projectIngestSchema"
-                     [data]="projectFormData"
+                     [data]="project"
                      [config]="config"
                      [selectedTabKey]="getCurrentTab()"
                      (cancel)="onCancel($event)"
@@ -14,3 +14,7 @@
                      (formValueChange)="saveProjectInCache($event)">
   </app-metadata-form>
 </ng-container>
+
+<ng-template #loading>
+  <p>Loading...</p>
+</ng-template>
