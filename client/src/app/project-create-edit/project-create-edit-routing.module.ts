@@ -6,7 +6,7 @@ import {CreateProjectComponent} from './pages/create-project/create-project.comp
 
 const routes: Routes = [
   { path: 'register', component: AutofillProjectFormComponent },
-  { path: 'edit/:uuid', component: EditProjectComponent },
+  { path: ':uuid/edit/:tab', component: EditProjectComponent },
   { path: 'edit', component: CreateProjectComponent }
 ];
 

@@ -11,7 +11,7 @@
       <div class="vf-u-margin__top--xxl">
         <app-project-summary (tabChange)="projectTabChange($event)" [project]="project"></app-project-summary>
         <a class="vf-button vf-button--sm {{upload ? '' : 'vf-button--primary'}}" role="button"
-           routerLink="/projects/{{project?.uuid?.uuid}}/{{selectedProjectTabKey}}">Edit Project</a>
+           routerLink="/projects/{{project?.uuid?.uuid}}/edit/{{selectedProjectTabKey}}">Edit Project</a>
         <button *ngIf="submissionEnvelopes && submissionEnvelopes.length === 0" mat-icon-button
                 (click)="onDeleteProject()">
           <mat-icon>delete_forever</mat-icon>
