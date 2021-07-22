@@ -18,6 +18,8 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatTabsModule} from '@angular/material/tabs';
 import {WranglerListInputComponent} from './components/wrangler-list-input/wrangler-list-input.component';
 import {WranglingPriorityInputComponent} from './components/wrangling-priority-input/wrangling-priority-input.component';
+import {ProjectCacheService} from "./services/project-cache.service";
+import {AutofillProjectService} from "./services/autofill-project.service";
 
 @NgModule({
   declarations: [
@@ -43,6 +45,10 @@ import {WranglingPriorityInputComponent} from './components/wrangling-priority-i
     ReactiveFormsModule,
     MatIconModule,
     MatTabsModule,
+  ],
+  providers: [
+    ProjectCacheService,
+    AutofillProjectService
   ]
 })
 export class ProjectCreateEdit { }
