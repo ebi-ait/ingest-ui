@@ -7,7 +7,7 @@ import {ProjectIdComponent} from '../project-id/project-id.component';
 import {FunderFieldGroupComponent} from '../funder-field-group/funder-field-group.component';
 import {AdminAreaComponent} from '../admin-area/admin-area.component';
 
-export const projectRegLayout: MetadataFormLayout = {
+export const layout: MetadataFormLayout = {
   tabs: [
     {
       title: 'Project Information',

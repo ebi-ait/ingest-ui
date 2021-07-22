@@ -4,21 +4,19 @@ import * as ingestSchema from '../../schemas/project-ingest-schema.json';
 import {Project} from '../../../shared/models/project';
 import {MetadataFormConfig} from '../../../metadata-schema-form/models/metadata-form-config';
 import {MatTabGroup} from '@angular/material/tabs';
-import {ActivatedRoute, ParamMap, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {IngestService} from '../../../shared/services/ingest.service';
 import {AlertService} from '../../../shared/services/alert.service';
 import {LoaderService} from '../../../shared/services/loader.service';
 import {SchemaService} from '../../../shared/services/schema.service';
-import {projectRegLayout} from './project-reg-layout';
-import {Observable, of, Subject} from 'rxjs';
-import {concatMap, delay, map, takeUntil} from 'rxjs/operators';
+import {layout} from './layout';
+import {Observable, Subject} from 'rxjs';
+import {concatMap, delay, takeUntil} from 'rxjs/operators';
 import {AutofillProjectService} from '../../services/autofill-project.service';
-import {Identifier} from '../../models/europe-pmc-search';
-import {AutofillProject} from '../../models/autofill-project';
 import {ProjectCacheService} from '../../services/project-cache.service';
-import {environment} from '../../../../environments/environment';
 import {Account} from '../../../core/account';
 import {MetadataFormLayout} from '../../../metadata-schema-form/models/metadata-form-layout';
+import {environment} from "../../../../environments/environment";
 
 @Component({
   selector: 'app-project-metadata-form',
@@ -46,12 +44,12 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
   userAccount$: Observable<Account>;
   userIsWrangler: boolean;
 
-  @Input() project: any;
-
   private readonly _emptyProject = {
     content: {},
     isInCatalogue: true,
   };
+
+  @Input() project: any = this._emptyProject;
 
   @ViewChild('mf') formTabGroup: MatTabGroup;
   private unsubscribe = new Subject<void>();
@@ -73,7 +71,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
     this.userAccount$
       .subscribe((account) => {
         this.userIsWrangler = account.isWrangler();
-        this.setUpProjectForm(this.userIsWrangler, projectRegLayout);
+        this.setUpProjectForm(this.userIsWrangler, layout);
       });
   }
 
@@ -182,25 +180,8 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
     return this.getTabLayout().tabs.findIndex(tab => tab.key === this.getCurrentTab());
   }
 
-  saveProjectInCache(formData: Observable<object>) {
-    formData.pipe(
-      delay(environment.AUTOSAVE_PERIOD_MILLIS),
-      takeUntil(this.unsubscribe)
-    ).subscribe(
-      (formValue) => {
-        console.log('cached project to local storage');
-        this.projectCacheService.saveProject(formValue['value']);
-      }
-    );
-  }
-
   ngOnDestroy() {
     this.unsubscribe.next();
-  }
-
-  loadProjectFromCache(): Observable<Project> {
-    console.log('fetching project from cache');
-    return this.projectCacheService.getProject();
   }
 
   private saveProject(formValue) {
@@ -232,5 +213,17 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
         // save fields outside content
         concatMap(createdProject => this.ingestService.partiallyPatchProject(createdProject, this.patch))
       );
+  }
+
+  saveProjectInCache(formData: Observable<object>) {
+    formData.pipe(
+      delay(environment.AUTOSAVE_PERIOD_MILLIS),
+      takeUntil(this.unsubscribe)
+    ).subscribe(
+      (formValue) => {
+        console.log('cached project to local storage');
+        this.projectCacheService.saveProject(formValue['value']);
+      }
+    );
   }
 }
