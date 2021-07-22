@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import {ActivatedRoute} from "@angular/router";
+import {query} from "@angular/animations";
+import {Identifier} from "../../models/europe-pmc-search";
+import {AutofillProjectService} from "../../services/autofill-project.service";
+import {ProjectCacheService} from "../../services/project-cache.service";
 
 @Component({
   selector: 'app-edit-project',
@@ -7,9 +12,5 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EditProjectComponent implements OnInit {
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

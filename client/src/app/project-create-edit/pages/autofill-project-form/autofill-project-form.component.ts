@@ -60,7 +60,7 @@ export class AutofillProjectFormComponent implements OnInit {
           const params = {
             [Identifier.DOI]: doi
           };
-          this.router.navigate(['/projects', 'new'], {queryParams: params});
+          this.router.navigate(['/projects', 'edit'], {queryParams: params});
         },
         error => {
           this.alertService.error('An error occurred', error.message);
@@ -83,6 +83,6 @@ export class AutofillProjectFormComponent implements OnInit {
     const params = {
       restore: 'true'
     };
-    this.router.navigate(['/projects', 'new'], {queryParams: params});
+    this.router.navigate(['/projects', 'edit'], {queryParams: params});
   }
 }

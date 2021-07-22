@@ -11,12 +11,12 @@ import {LoaderService} from '../../../shared/services/loader.service';
 import {SchemaService} from '../../../shared/services/schema.service';
 import {layout} from './layout';
 import {Observable, Subject} from 'rxjs';
-import {concatMap, delay, takeUntil} from 'rxjs/operators';
+import {concatMap, delay, map, takeUntil} from 'rxjs/operators';
 import {AutofillProjectService} from '../../services/autofill-project.service';
 import {ProjectCacheService} from '../../services/project-cache.service';
 import {Account} from '../../../core/account';
 import {MetadataFormLayout} from '../../../metadata-schema-form/models/metadata-form-layout';
-import {environment} from "../../../../environments/environment";
+import {environment} from '../../../../environments/environment';
 
 @Component({
   selector: 'app-project-metadata-form',
@@ -25,13 +25,10 @@ import {environment} from "../../../../environments/environment";
 })
 export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
 
-  title: string;
+  @Input() project: any;
 
   projectMetadataSchema: any = (metadataSchema as any).default;
   projectIngestSchema: any = (ingestSchema as any).default;
-
-  projectFormData$: Observable<object>;
-  projectFormData: object;
   projectFormTabKey: string;
   projectFormLayout: MetadataFormLayout;
 
@@ -43,13 +40,6 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
 
   userAccount$: Observable<Account>;
   userIsWrangler: boolean;
-
-  private readonly _emptyProject = {
-    content: {},
-    isInCatalogue: true,
-  };
-
-  @Input() project: any = this._emptyProject;
 
   @ViewChild('mf') formTabGroup: MatTabGroup;
   private unsubscribe = new Subject<void>();
@@ -73,6 +63,10 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
         this.userIsWrangler = account.isWrangler();
         this.setUpProjectForm(this.userIsWrangler, layout);
       });
+
+    if (this.project) {
+      this.setSchema(this.project);
+    }
   }
 
   setUpProjectForm(userIsWrangler: boolean, layout: MetadataFormLayout) {
@@ -183,6 +177,18 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.unsubscribe.next();
   }
+
+  private setSchema(project): Observable<object> {
+    return this.schemaService.getUrlOfLatestSchema('project').pipe(
+      map(schemaUrl => {
+        project['content']['describedBy'] = schemaUrl;
+        project['content']['schema_type'] = 'project';
+        this.schema = schemaUrl;
+        return project;
+      })
+    );
+  }
+
 
   private saveProject(formValue) {
     this.loaderService.display(true);

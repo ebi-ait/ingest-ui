@@ -1,1 +1,5 @@
-<p>edit-project works!</p>
+<ng-container *ngIf="project">
+  <app-project-metadata-form
+    [project]="project"
+  ></app-project-metadata-form>
+</ng-container>
