@@ -1,11 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
 
-import {InputComponent} from '../../metadata-schema-form/metadata-field-types/input/input.component';
+import {InputComponent} from '../../../metadata-schema-form/metadata-field-types/input/input.component';
 
 @Component({
   selector: 'app-publication-field-group',
-  templateUrl: '../../metadata-schema-form/metadata-field-types/input/input.component.html',
-  styleUrls: ['../../metadata-schema-form/metadata-field-types/input/input.component.css']
+  templateUrl: '../../../metadata-schema-form/metadata-field-types/input/input.component.html',
+  styleUrls: ['../../../metadata-schema-form/metadata-field-types/input/input.component.css']
 })
 
 /* Simple class that extends InputComponent to enable having one publication item added by default

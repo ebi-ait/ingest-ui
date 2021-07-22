@@ -1,1 +1,16 @@
-<p>project-metadata-form works!</p>
+<ng-container *ngIf= "(userAccount$ | async) && projectFormData">
+  <div class="vf-u-margin__top--xxl">&nbsp;</div>
+
+  <app-metadata-form name="project"
+                     [useVf]="true"
+                     [schema]="projectIngestSchema"
+                     [data]="projectFormData"
+                     [config]="config"
+                     [selectedTabKey]="getCurrentTab()"
+                     (cancel)="onCancel($event)"
+                     (back)="decrementProjectTab()"
+                     (tabChange)="onTabChange($event)"
+                     (save)="onSave($event)"
+                     (formValueChange)="saveProjectInCache($event)">
+  </app-metadata-form>
+</ng-container>

@@ -3,21 +3,20 @@ import {FormControl, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AlertService} from '../../../shared/services/alert.service';
 // TODO
-import {Identifier} from '../../../project-registration/models/europe-pmc-search';
+// TODO
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {IngestService} from '../../../shared/services/ingest.service';
 // TODO
-import {ProjectCacheService} from '../../../project-registration/services/project-cache.service';
 import {Project} from '../../../shared/models/project';
+import {ProjectCacheService} from "../../services/project-cache.service";
+import {Identifier} from "../../models/europe-pmc-search";
 
 @Component({
   selector: 'app-doi-name-field',
   templateUrl: './autofill-project-form.component.html',
   styleUrls: ['./autofill-project-form.component.css']
 })
-
-
 export class AutofillProjectFormComponent implements OnInit {
   publicationDoiCtrl: FormControl;
   projectInCache$: Observable<Project>;

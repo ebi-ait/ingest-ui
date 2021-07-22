@@ -80,7 +80,7 @@ import { VfTabComponent } from './custom/vf-tab/vf-tab.component';
     BaseInputComponent,
     SelectComponent,
     EnumDropDownComponent,
-    SelectListComponent
+    SelectListComponent,
   ],
   providers: []
 })

@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {MetadataForm} from '../../metadata-schema-form/models/metadata-form';
 import {AbstractControl, FormArray, FormGroup} from '@angular/forms';
-import {Metadata} from '../../metadata-schema-form/models/metadata';
-import {MetadataFormHelper} from '../../metadata-schema-form/models/metadata-form-helper';
-import {AaiService} from '../../aai/aai.service';
+// TODO move these into shared
+import {MetadataForm} from '../../../metadata-schema-form/models/metadata-form';
+import {Metadata} from '../../../metadata-schema-form/models/metadata';
+import {MetadataFormHelper} from '../../../metadata-schema-form/models/metadata-form-helper';
+import {AaiService} from '../../../aai/aai.service';
 import {Profile} from 'oidc-client';
 
 @Component({

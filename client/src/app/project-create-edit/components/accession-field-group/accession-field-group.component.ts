@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {MetadataForm} from '../../metadata-schema-form/models/metadata-form';
+// TODO move these into shared
+import {MetadataForm} from '../../../metadata-schema-form/models/metadata-form';
 import {FormArray} from '@angular/forms';
-import {MetadataFormHelper} from '../../metadata-schema-form/models/metadata-form-helper';
+import {MetadataFormHelper} from '../../../metadata-schema-form/models/metadata-form-helper';
 
 @Component({
   selector: 'app-accession-field-group',

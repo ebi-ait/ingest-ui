@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {BaseInputComponent} from '../../metadata-schema-form/metadata-field-types/base-input/base-input.component';
-import {Metadata} from '../../metadata-schema-form/models/metadata';
+import {BaseInputComponent} from '../../../metadata-schema-form/metadata-field-types/base-input/base-input.component';
+import {Metadata} from '../../../metadata-schema-form/models/metadata';
 import {FormControl} from '@angular/forms';
 
 

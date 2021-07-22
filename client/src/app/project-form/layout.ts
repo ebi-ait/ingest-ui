@@ -1,5 +1,5 @@
 import {MetadataFormLayout} from '../metadata-schema-form/models/metadata-form-layout';
-import {AdminAreaComponent} from '../project-registration/admin-area/admin-area.component';
+import {AdminAreaComponent} from "../project-create-edit/components/admin-area/admin-area.component";
 
 export const layout: MetadataFormLayout = {
   tabs: [

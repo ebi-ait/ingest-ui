@@ -1,7 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {Metadata} from '../../metadata-schema-form/models/metadata';
-import {MetadataForm} from '../../metadata-schema-form/models/metadata-form';
+// TODO move these into shared
+import {Metadata} from '../../../metadata-schema-form/models/metadata';
+import {MetadataForm} from '../../../metadata-schema-form/models/metadata-form';
 
 @Component({
   selector: 'app-admin-area',

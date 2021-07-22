@@ -7,21 +7,42 @@ import {AutofillProjectFormComponent} from './pages/autofill-project-form/autofi
 import {ProjectCreateEditRoutingModule} from './project-create-edit-routing.module';
 import {MetadataSchemaFormModule} from '../metadata-schema-form/metadata-schema-form.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {AccessionFieldGroupComponent} from './components/accession-field-group/accession-field-group.component';
+import {AdminAreaComponent} from './components/admin-area/admin-area.component';
+import {ContactFieldGroupComponent} from './components/contact-field-group/contact-field-group.component';
+import {FunderFieldGroupComponent} from './components/funder-field-group/funder-field-group.component';
+import {ProjectIdComponent} from './components/project-id/project-id.component';
+import {ProjectRegistrationSaveComponent} from './components/project-registration-summary/project-registration-save.component';
+import {PublicationFieldGroupComponent} from './components/publication-field-group/publication-field-group.component';
+import {MatIconModule} from '@angular/material/icon';
+import {MatTabsModule} from '@angular/material/tabs';
+import {WranglerListInputComponent} from './components/wrangler-list-input/wrangler-list-input.component';
+import {WranglingPriorityInputComponent} from './components/wrangling-priority-input/wrangling-priority-input.component';
 
 @NgModule({
   declarations: [
     ProjectMetadataFormComponent,
     EditProjectComponent,
     CreateProjectComponent,
-    AutofillProjectFormComponent
+    AutofillProjectFormComponent,
+    AccessionFieldGroupComponent,
+    AdminAreaComponent,
+    ContactFieldGroupComponent,
+    FunderFieldGroupComponent,
+    ProjectIdComponent,
+    ProjectRegistrationSaveComponent,
+    PublicationFieldGroupComponent,
+    WranglerListInputComponent,
+    WranglingPriorityInputComponent
   ],
   imports: [
     CommonModule,
     ProjectCreateEditRoutingModule,
     MetadataSchemaFormModule,
-    MetadataSchemaFormModule,
     FormsModule,
     ReactiveFormsModule,
+    MatIconModule,
+    MatTabsModule,
   ]
 })
 export class ProjectCreateEdit { }

@@ -12,8 +12,6 @@ import {UserIsLoggedInGuard} from './shared/guards/user-is-logged-in.guard';
 import {UserIsWranglerGuard} from './shared/guards/user-is-wrangler.guard';
 import {WranglerOrOwnerGuard} from './shared/guards/wrangler-or-owner.guard';
 import {WelcomeComponent} from './welcome/welcome.component';
-import {ProjectRegistrationFormComponent} from './project-registration/project-registration-form/project-registration-form.component';
-import {AutofillProjectFormComponent} from './project-registration/autofill-project-form/autofill-project-form.component';
 
 // tslint:disable-next-line:max-line-length
 import {TemplateQuestionnaireFormComponent} from './template-questionnaire/template-questionnaire-form/template-questionnaire-form.component';
@@ -27,9 +25,9 @@ export const ROUTES: Routes = [
   {path: 'home', component: WelcomeComponent},
   {path: 'registration', component: RegistrationComponent, canActivate: [UserIsLoggedInGuard]},
   {path: 'projects', component: MyProjectsComponent, canActivate: [UserIsLoggedInGuard]},
-  // TODO do routing from within modules
-  {path: 'projects/register', component: AutofillProjectFormComponent, canActivate: [UserIsLoggedInGuard]},
-  {path: 'projects/new', component: ProjectRegistrationFormComponent, canActivate: [UserIsLoggedInGuard]},
+  // // TODO do routing from within modules
+  // {path: 'projects/register', component: AutofillProjectFormComponent, canActivate: [UserIsLoggedInGuard]},
+  // {path: 'projects/new', component: ProjectRegistrationFormComponent, canActivate: [UserIsLoggedInGuard]},
 
 
   {

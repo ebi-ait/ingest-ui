@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Metadata} from '../../metadata-schema-form/models/metadata';
+import {Metadata} from '../../../metadata-schema-form/models/metadata';
 import {AbstractControl, FormControl, Validators} from '@angular/forms';
 
 @Component({

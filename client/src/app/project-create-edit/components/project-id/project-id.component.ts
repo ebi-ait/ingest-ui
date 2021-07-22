@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {MetadataForm} from '../../metadata-schema-form/models/metadata-form';
 import {AbstractControl, FormControl, ValidationErrors} from '@angular/forms';
-import {Metadata} from '../../metadata-schema-form/models/metadata';
-import {MetadataFormService} from '../../metadata-schema-form/metadata-form.service';
-import {IngestService} from '../../shared/services/ingest.service';
+// TODO move into shared
+import {MetadataForm} from '../../../metadata-schema-form/models/metadata-form';
+import {Metadata} from '../../../metadata-schema-form/models/metadata';
+import {MetadataFormService} from '../../../metadata-schema-form/metadata-form.service';
+import {IngestService} from '../../../shared/services/ingest.service';
 import {Observable} from 'rxjs';
 import {first, map} from 'rxjs/operators';
 

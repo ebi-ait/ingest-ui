@@ -51,7 +51,6 @@ import {RegistrationComponent} from './registration/registration.component';
 import {MetadataSchemaFormModule} from './metadata-schema-form/metadata-schema-form.module';
 import {MaterialModule} from './material.module';
 import {MAT_DATE_LOCALE} from '@angular/material/core';
-import {ProjectRegistrationModule} from './project-registration/project-registration.module';
 import {WelcomeComponent} from './welcome/welcome.component';
 import {TemplateQuestionnaireModule} from './template-questionnaire/template-questionnaire.module';
 import {ErrorComponent} from './error/error.component';
@@ -65,8 +64,7 @@ import {MetadataPickerComponent} from './metadata-picker/metadata-picker.compone
 import {NgxChartsModule} from '@swimlane/ngx-charts';
 import {AuthService} from './shared/services/auth.service';
 import {UuidComponent} from './shared/components/uuid/uuid.component';
-import {AutofillProjectService} from './project-registration/services/autofill-project.service';
-import {ProjectCacheService} from './project-registration/services/project-cache.service';
+import {ProjectCreateEdit} from './project-create-edit/project-create-edit.module';
 
 const BROWSER_LOCALE = navigator.language;
 
@@ -116,11 +114,11 @@ const BROWSER_LOCALE = navigator.language;
     MaterialModule,
     AaiSecurity,
     MetadataSchemaFormModule,
-    ProjectRegistrationModule,
     TemplateQuestionnaireModule,
     MatDialogModule,
     NgxGraphModule,
-    NgxChartsModule
+    NgxChartsModule,
+    ProjectCreateEdit
   ],
   providers: [
     {
@@ -142,8 +140,6 @@ const BROWSER_LOCALE = navigator.language;
     LoaderService,
     FlattenService,
     SchemaService,
-    AutofillProjectService,
-    ProjectCacheService
   ],
   bootstrap: [AppComponent]
 })

@@ -1,10 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {InputComponent} from '../../metadata-schema-form/metadata-field-types/input/input.component';
+// TODO move into shared
+import {InputComponent} from '../../../metadata-schema-form/metadata-field-types/input/input.component';
 
 @Component({
   selector: 'app-funder-field-group',
-  templateUrl: '../../metadata-schema-form/metadata-field-types/input/input.component.html',
-  styleUrls: ['../../metadata-schema-form/metadata-field-types/input/input.component.css']
+  templateUrl: '../../../metadata-schema-form/metadata-field-types/input/input.component.html',
+  styleUrls: ['../../../metadata-schema-form/metadata-field-types/input/input.component.css']
 })
 /**
  * Simple class that extends InputComponent to enable having one funder item added by default

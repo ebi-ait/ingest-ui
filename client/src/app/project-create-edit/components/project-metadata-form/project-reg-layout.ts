@@ -1,4 +1,4 @@
-import {MetadataFormLayout} from '../../metadata-schema-form/models/metadata-form-layout';
+import {MetadataFormLayout} from '../../../metadata-schema-form/models/metadata-form-layout';
 import {AccessionFieldGroupComponent} from '../accession-field-group/accession-field-group.component';
 import {PublicationFieldGroupComponent} from '../publication-field-group/publication-field-group.component';
 import {ContactFieldGroupComponent} from '../contact-field-group/contact-field-group.component';
