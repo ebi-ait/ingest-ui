@@ -6,6 +6,7 @@ import {Identifier} from '../../models/europe-pmc-search';
 import {Observable, of} from 'rxjs';
 import { map } from 'rxjs/operators';
 import {AutofillProject} from '../../models/autofill-project';
+import {IngestService} from "../../../shared/services/ingest.service";
 
 const EMPTY_PROJECT = {
   content: {},
@@ -21,10 +22,12 @@ const EMPTY_PROJECT = {
 export class CreateProjectComponent implements OnInit {
 
   project$: Observable<any>;
+  userIsWrangler: boolean;
 
   constructor(private route: ActivatedRoute,
               private autofillProjectService: AutofillProjectService,
-              private projectCacheService: ProjectCacheService
+              private projectCacheService: ProjectCacheService,
+              private ingestService: IngestService,
   ) { }
 
   ngOnInit(): void {
@@ -37,6 +40,11 @@ export class CreateProjectComponent implements OnInit {
     } else {
       this.project$ = of(EMPTY_PROJECT);
     }
+
+    this.ingestService.getUserAccount()
+      .subscribe((account) => {
+        this.userIsWrangler = account.isWrangler();
+      });
   }
 
   private autofillProjectDetails(id, search): Observable<object> {

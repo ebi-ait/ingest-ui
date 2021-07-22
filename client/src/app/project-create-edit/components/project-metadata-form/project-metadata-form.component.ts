@@ -65,7 +65,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
       });
 
     if (this.project) {
-      this.setSchema(this.project);
+      this.setSchema();
     }
   }
 
