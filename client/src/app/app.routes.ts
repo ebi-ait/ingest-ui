@@ -30,6 +30,7 @@ export const ROUTES: Routes = [
     path: 'projects',
     loadChildren: () =>
       import('./project-create-edit/project-create-edit.module').then((m) => m.ProjectCreateEdit),
+    canActivate: [UserIsLoggedInGuard]
   },
 
   {path: 'projects/all', component: AllProjectsComponent, canActivate: [UserIsLoggedInGuard, UserIsWranglerGuard]},
