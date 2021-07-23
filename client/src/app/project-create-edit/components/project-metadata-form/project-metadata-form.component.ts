@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import * as metadataSchema from '../../schemas/project-metadata-schema.json';
 import * as ingestSchema from '../../schemas/project-ingest-schema.json';
 import {Project} from '../../../shared/models/project';
@@ -10,14 +10,13 @@ import {AlertService} from '../../../shared/services/alert.service';
 import {LoaderService} from '../../../shared/services/loader.service';
 import {SchemaService} from '../../../shared/services/schema.service';
 import layout from './layout';
-import {Observable, Subject} from 'rxjs';
-import {concatMap, delay, map, takeUntil} from 'rxjs/operators';
+import {Observable, of, Subject} from 'rxjs';
+import {concatMap, map} from 'rxjs/operators';
 import {AutofillProjectService} from '../../services/autofill-project.service';
 import {ProjectCacheService} from '../../services/project-cache.service';
 import {Account} from '../../../core/account';
 import {MetadataFormLayout} from '../../../metadata-schema-form/models/metadata-form-layout';
-import {environment} from "../../../../environments/environment";
-import {AccessionFieldGroupComponent} from "../accession-field-group/accession-field-group.component";
+import {AccessionFieldGroupComponent} from '../accession-field-group/accession-field-group.component';
 
 @Component({
   selector: 'app-project-metadata-form',
@@ -29,6 +28,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
   @Input() project: any;
   @Input() autosave = true;
   @Input() create = false;
+  @Output() formValueChange = new EventEmitter<Observable<object>>();
 
   projectMetadataSchema: any = (metadataSchema as any).default;
   projectIngestSchema: any = (ingestSchema as any).default;
@@ -70,6 +70,10 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
     if (this.project) {
       this.setSchema();
     }
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe.next();
   }
 
   setUpProjectForm(userIsWrangler: boolean) {
@@ -171,10 +175,6 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
     return this.projectFormLayout.tabs.findIndex(tab => tab.key === this.getCurrentTab());
   }
 
-  ngOnDestroy() {
-    this.unsubscribe.next();
-  }
-
   private setSchema(): void {
     if (this.project?.content) {
       if (this.project?.content.hasOwnProperty('describedBy')
@@ -227,16 +227,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
     return this.ingestService.partiallyPatchProject(this.project, patch);
   }
 
-  saveProjectInCache(formData: Observable<object>) {
-    // TODO move this into create page
-    formData.pipe(
-      delay(environment.AUTOSAVE_PERIOD_MILLIS),
-      takeUntil(this.unsubscribe)
-    ).subscribe(
-      (formValue) => {
-        console.log('cached project to local storage');
-        this.projectCacheService.saveProject(formValue['value']);
-      }
-    );
+  onFormValueChange($event) {
+    this.formValueChange.emit($event);
   }
 }

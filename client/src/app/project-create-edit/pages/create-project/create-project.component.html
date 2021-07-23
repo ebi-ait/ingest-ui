@@ -5,7 +5,7 @@
 <mat-tab-group>
   <mat-tab label="1. Project">
     <div class="vf-u-margin__top--xxl">&nbsp;</div>
-    <app-project-metadata-form [project]="project$ | async"></app-project-metadata-form>
+    <app-project-metadata-form [project]="project$ | async" [create]="true" (formValueChange)="saveProjectInCache($event)"></app-project-metadata-form>
   </mat-tab>
   <mat-tab label="2. Experiment Information" disabled></mat-tab>
   <mat-tab label="3. Data upload" disabled></mat-tab>

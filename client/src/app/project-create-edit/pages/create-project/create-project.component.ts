@@ -1,28 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {AutofillProjectService} from '../../services/autofill-project.service';
 import {ProjectCacheService} from '../../services/project-cache.service';
 import {Identifier} from '../../models/europe-pmc-search';
-import {Observable, of} from 'rxjs';
-import { map } from 'rxjs/operators';
+import {Observable, of, Subject} from 'rxjs';
+import {delay, map, takeUntil} from 'rxjs/operators';
 import {AutofillProject} from '../../models/autofill-project';
-import {IngestService} from "../../../shared/services/ingest.service";
+import {IngestService} from '../../../shared/services/ingest.service';
+import {environment} from "../../../../environments/environment";
 
 const EMPTY_PROJECT = {
   content: {},
   isInCatalogue: true,
 };
 
-
 @Component({
   selector: 'app-create-project',
   templateUrl: './create-project.component.html',
   styleUrls: ['./create-project.component.css']
 })
-export class CreateProjectComponent implements OnInit {
+export class CreateProjectComponent implements OnInit, OnDestroy {
 
   project$: Observable<any>;
   userIsWrangler: boolean;
+
+  private unsubscribe = new Subject<void>();
 
   constructor(private route: ActivatedRoute,
               private autofillProjectService: AutofillProjectService,
@@ -45,6 +47,10 @@ export class CreateProjectComponent implements OnInit {
       .subscribe((account) => {
         this.userIsWrangler = account.isWrangler();
       });
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe.next();
   }
 
   private autofillProjectDetails(id, search): Observable<object> {
@@ -82,4 +88,16 @@ export class CreateProjectComponent implements OnInit {
         ));
   }
 
+  saveProjectInCache(formData: Observable<object>) {
+    // TODO move this into create page
+    formData.pipe(
+      delay(environment.AUTOSAVE_PERIOD_MILLIS),
+      takeUntil(this.unsubscribe)
+    ).subscribe(
+      (formValue) => {
+        console.log('cached project to local storage');
+        this.projectCacheService.saveProject(formValue['value']);
+      }
+    );
+  }
 }
