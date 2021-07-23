@@ -56,7 +56,7 @@ export default {
     },
     {
       title: 'Publications',
-      key: 'project.content.publications',
+      key: 'publications',
       items: [
         {
           keys: [
@@ -68,7 +68,7 @@ export default {
     },
     {
       title: 'Funders',
-      key: 'project.content.funders',
+      key: 'funders',
       items: [
         {
           keys: [

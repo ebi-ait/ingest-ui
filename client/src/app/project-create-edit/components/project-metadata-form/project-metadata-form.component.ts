@@ -92,7 +92,12 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
 
     this.projectFormLayout = projectFormLayout;
     this.setFormConfig();
-    this.setCurrentTab(this.projectFormLayout.tabs[0].key);
+
+    if (this.route.snapshot.paramMap.has('tab')) {
+      this.setCurrentTab(this.route.snapshot.paramMap.get('tab'));
+    } else {
+      this.setCurrentTab(this.projectFormLayout.tabs[0].key);
+    }
   }
 
   setFormConfig() {
@@ -119,10 +124,6 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
 
   setCurrentTab(tab: string) {
     this.projectFormTabKey = tab;
-  }
-
-  getCurrentTab(): string {
-    return this.projectFormTabKey;
   }
 
   onSave(formData: object) {
@@ -173,7 +174,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
   }
 
   private findCurrentTabIndex() {
-    return this.projectFormLayout.tabs.findIndex(tab => tab.key === this.getCurrentTab());
+    return this.projectFormLayout.tabs.findIndex(tab => tab.key === this.projectFormTabKey);
   }
 
   private setSchema(): void {
