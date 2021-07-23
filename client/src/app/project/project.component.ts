@@ -226,9 +226,6 @@ export class ProjectComponent implements OnInit {
   }
 
   projectTabChange(tabKey: string) {
-    if (!this.tabConfig.map(tab => tab.key).includes(tabKey)) {
-      return;
-    }
     this.selectedProjectTabKey = tabKey;
   }
 
