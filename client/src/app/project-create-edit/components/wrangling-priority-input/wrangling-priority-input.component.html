@@ -1,0 +1,13 @@
+<app-select-list
+  [id]="id"
+  [label]="label"
+  [isRequired]="isRequired"
+  [disabled]="disabled"
+  [placeholder]="placeholder"
+  [helperText]="helperText"
+  [options]="options"
+  [removeBlankOption]=true
+  [value]="valueOf(control.value)"
+  [error]="checkForErrors(control)"
+  (valueChanged)="updateControl($event)"
+></app-select-list>
