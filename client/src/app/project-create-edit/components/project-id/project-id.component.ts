@@ -109,7 +109,7 @@ export class ProjectIdComponent implements OnInit {
     this.parentOrganCtrl.updateValueAndValidity();
 
 
-    this.projectIdCtrl.setAsyncValidators([uniqueProjectIdAsyncValidator(this.ingestService)]);
+    this.projectIdCtrl.setAsyncValidators([uniqueProjectIdAsyncValidator(this.ingestService, this.metadataForm.data?.uuid?.uuid)]);
     this.projectIdCtrl.updateValueAndValidity();
 
     this.setUpValueChangeHandlers();
@@ -245,16 +245,20 @@ export class ProjectIdComponent implements OnInit {
 
 }
 
-export const uniqueProjectIdAsyncValidator = (ingestService: IngestService) => {
+export const uniqueProjectIdAsyncValidator = (ingestService: IngestService, projectUuid: string) => {
   return (input: FormControl) => {
     const query = [{
       'field': 'content.project_core.project_short_name',
       'operator': 'IS',
       'value': input.value
     }];
-    return ingestService.queryProjects(query).pipe(
+
+    return ingestService.queryProjects(query, { 'operator': 'and'}).pipe(
       first(),
-      map(response => response.page.totalElements === 0 ? null : {exists: true} as ValidationErrors)
+      map(response =>
+        response.page.totalElements === 0 ||
+        (response.page.totalElements === 1 && response._embedded.projects[0].uuid.uuid === projectUuid)
+          ? null : {exists: true} as ValidationErrors)
     );
   };
 };
