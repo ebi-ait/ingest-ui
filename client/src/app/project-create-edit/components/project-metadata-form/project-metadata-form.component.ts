@@ -9,14 +9,15 @@ import {IngestService} from '../../../shared/services/ingest.service';
 import {AlertService} from '../../../shared/services/alert.service';
 import {LoaderService} from '../../../shared/services/loader.service';
 import {SchemaService} from '../../../shared/services/schema.service';
-import {layout} from './layout';
+import layout from './layout';
 import {Observable, Subject} from 'rxjs';
 import {concatMap, delay, map, takeUntil} from 'rxjs/operators';
 import {AutofillProjectService} from '../../services/autofill-project.service';
 import {ProjectCacheService} from '../../services/project-cache.service';
 import {Account} from '../../../core/account';
 import {MetadataFormLayout} from '../../../metadata-schema-form/models/metadata-form-layout';
-import {environment} from '../../../../environments/environment';
+import {environment} from "../../../../environments/environment";
+import {AccessionFieldGroupComponent} from "../accession-field-group/accession-field-group.component";
 
 @Component({
   selector: 'app-project-metadata-form',
@@ -27,6 +28,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
 
   @Input() project: any;
   @Input() autosave = true;
+  @Input() create = false;
 
   projectMetadataSchema: any = (metadataSchema as any).default;
   projectIngestSchema: any = (ingestSchema as any).default;
@@ -62,7 +64,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
     this.userAccount$
       .subscribe((account) => {
         this.userIsWrangler = account.isWrangler();
-        this.setUpProjectForm(this.userIsWrangler, layout);
+        this.setUpProjectForm(this.userIsWrangler);
       });
 
     if (this.project) {
@@ -70,19 +72,25 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  setUpProjectForm(userIsWrangler: boolean, layout: MetadataFormLayout) {
-    let tabs = layout.tabs;
+  setUpProjectForm(userIsWrangler: boolean) {
+    const projectFormLayout = layout;
     if (!userIsWrangler) {
-      tabs = tabs.filter(tab => tab.key !== 'project_admin');
+      projectFormLayout.tabs = projectFormLayout.tabs.filter(tab => tab.key !== 'project_admin');
+    }
+    if (!this.create) {
+      projectFormLayout.tabs = projectFormLayout.tabs.filter(tab => tab.key !== 'save');
+
+      const accessionsIndex = projectFormLayout.tabs[0].items.findIndex(item => item?.component === AccessionFieldGroupComponent);
+      const accessionsKeys: [string] = projectFormLayout.tabs[0].items[accessionsIndex].keys;
+      projectFormLayout.tabs[0].items.splice(accessionsIndex, 1, ...accessionsKeys);
     }
 
-    layout.tabs = tabs;
-    this.setTabLayout(layout);
-    this.setFormConfig(this.getTabLayout());
-    this.setCurrentTab(this.getTabLayout().tabs[0].key);
+    this.projectFormLayout = projectFormLayout;
+    this.setFormConfig();
+    this.setCurrentTab(this.projectFormLayout.tabs[0].key);
   }
 
-  setFormConfig(layout: MetadataFormLayout) {
+  setFormConfig() {
     this.config = {
       hideFields: [
         'describedBy',
@@ -90,7 +98,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
         'schema_type',
         'provenance'
       ],
-      layout: layout,
+      layout: this.projectFormLayout,
       inputType: {
         'project_description': 'textarea',
         'notes': 'textarea',
@@ -99,13 +107,9 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
       overrideRequiredFields: {
         'project.content.contributors.project_role.text': false
       },
-      submitButtonLabel: 'Register Project',
-      cancelButtonLabel: 'Or Cancel project registration'
+      submitButtonLabel: this.create ? 'Register Project' : 'Save',
+      cancelButtonLabel: this.create ? 'Or Cancel project registration' : ' Cancel'
     };
-  }
-
-  getFormConfig(): MetadataFormConfig {
-    return this.config;
   }
 
   setCurrentTab(tab: string) {
@@ -143,19 +147,11 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
     this.setCurrentTab($tabKey);
   }
 
-  setTabLayout(layout: MetadataFormLayout) {
-    this.projectFormLayout = layout;
-  }
-
-  getTabLayout(): MetadataFormLayout {
-    return this.projectFormLayout;
-  }
-
   incrementProjectTab() {
     let index = this.findCurrentTabIndex();
-    if (index + 1 < this.getTabLayout().tabs.length) {
+    if (index + 1 < this.projectFormLayout.tabs.length) {
       index++;
-      this.setCurrentTab(this.getTabLayout().tabs[index].key);
+      this.setCurrentTab(this.projectFormLayout.tabs[index].key);
       return true;
     }
     return false;
@@ -165,14 +161,14 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
     let index = this.findCurrentTabIndex();
     if (index > 0) {
       index--;
-      this.setCurrentTab(this.getTabLayout().tabs[index].key);
+      this.setCurrentTab(this.projectFormLayout.tabs[index].key);
       return true;
     }
     return false;
   }
 
   private findCurrentTabIndex() {
-    return this.getTabLayout().tabs.findIndex(tab => tab.key === this.getCurrentTab());
+    return this.projectFormLayout.tabs.findIndex(tab => tab.key === this.getCurrentTab());
   }
 
   ngOnDestroy() {
@@ -200,7 +196,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
   private saveProject(formValue) {
     this.loaderService.display(true);
     this.alertService.clear();
-    this.createProject(formValue).subscribe(project => {
+    this.createOrUpdateProject(formValue).subscribe(project => {
         console.log('Project saved', project);
         this.loaderService.display(false);
         this.projectCacheService.removeProject();
@@ -217,21 +213,22 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
       });
   }
 
-  private createProject(formValue: object): Observable<Project> {
+  private createOrUpdateProject(formValue: object): Observable<Project> {
     console.log('formValue', formValue);
-    this.patch = formValue;
-    return this.ingestService
-      .postProject(this.patch)
-      .pipe(
-        // save fields outside content
-        concatMap(createdProject => this.ingestService.partiallyPatchProject(createdProject, this.patch))
-      );
+    const patch = formValue;
+    if (this.create) {
+      return this.ingestService
+        .postProject(patch)
+        .pipe(
+          // save fields outside content
+          concatMap(createdProject => this.ingestService.partiallyPatchProject(createdProject, patch))
+        );
+    }
+    return this.ingestService.partiallyPatchProject(this.project, patch);
   }
 
   saveProjectInCache(formData: Observable<object>) {
-    if (!this.autosave) {
-      return;
-    }
+    // TODO move this into create page
     formData.pipe(
       delay(environment.AUTOSAVE_PERIOD_MILLIS),
       takeUntil(this.unsubscribe)
