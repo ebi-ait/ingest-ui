@@ -21,6 +21,6 @@ export class EditProjectComponent implements OnInit {
   ngOnInit() {
     const pathVariables = this.route.snapshot.paramMap;
     const projectUuid: string = pathVariables.get('uuid');
-    this.project$ = this.ingestService.getProjectByUuid(projectUuid); // handle errors
+    this.project$ = this.ingestService.getProjectByUuid(projectUuid); // TODO handle errors
   }
 }

@@ -20,6 +20,8 @@ import {WranglerListInputComponent} from './components/wrangler-list-input/wrang
 import {WranglingPriorityInputComponent} from './components/wrangling-priority-input/wrangling-priority-input.component';
 import {ProjectCacheService} from "./services/project-cache.service";
 import {AutofillProjectService} from "./services/autofill-project.service";
+import {SharedModule} from "../shared/shared.module";
+import {UuidComponent} from "../shared/components/uuid/uuid.component";
 
 @NgModule({
   declarations: [
@@ -35,7 +37,7 @@ import {AutofillProjectService} from "./services/autofill-project.service";
     ProjectRegistrationSaveComponent,
     PublicationFieldGroupComponent,
     WranglerListInputComponent,
-    WranglingPriorityInputComponent
+    WranglingPriorityInputComponent,
   ],
   imports: [
     CommonModule,
@@ -45,6 +47,7 @@ import {AutofillProjectService} from "./services/autofill-project.service";
     ReactiveFormsModule,
     MatIconModule,
     MatTabsModule,
+    SharedModule
   ],
   providers: [
     ProjectCacheService,

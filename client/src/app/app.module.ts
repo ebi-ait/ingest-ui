@@ -98,7 +98,6 @@ const BROWSER_LOCALE = navigator.language;
     MetadataDetailsDialogComponent,
     ProcessDetailsComponent,
     MetadataPickerComponent,
-    UuidComponent,
   ],
   imports: [
     BrowserModule,
