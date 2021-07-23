@@ -10,7 +10,7 @@ import {AlertService} from '../../../shared/services/alert.service';
 import {LoaderService} from '../../../shared/services/loader.service';
 import {SchemaService} from '../../../shared/services/schema.service';
 import layout from './layout';
-import {Observable, of, Subject} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {concatMap, map} from 'rxjs/operators';
 import {AutofillProjectService} from '../../services/autofill-project.service';
 import {ProjectCacheService} from '../../services/project-cache.service';
@@ -85,6 +85,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
       projectFormLayout.tabs = projectFormLayout.tabs.filter(tab => tab.key !== 'save');
 
       const accessionsIndex = projectFormLayout.tabs[0].items.findIndex(item => item?.component === AccessionFieldGroupComponent);
+      // @ts-ignore
       const accessionsKeys: [string] = projectFormLayout.tabs[0].items[accessionsIndex].keys;
       projectFormLayout.tabs[0].items.splice(accessionsIndex, 1, ...accessionsKeys);
     }

@@ -89,7 +89,6 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
   }
 
   saveProjectInCache(formData: Observable<object>) {
-    // TODO move this into create page
     formData.pipe(
       delay(environment.AUTOSAVE_PERIOD_MILLIS),
       takeUntil(this.unsubscribe)
