@@ -193,13 +193,11 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.schemaService.getUrlOfLatestSchema('project').pipe(
-      map(schemaUrl => {
-        this.project['content']['describedBy'] = schemaUrl;
-        this.project['content']['schema_type'] = 'project';
-        this.schema = schemaUrl;
-      })
-    );
+    this.schemaService.getUrlOfLatestSchema('project').subscribe(schemaUrl => {
+      this.project['content']['describedBy'] = schemaUrl;
+      this.project['content']['schema_type'] = 'project';
+      this.schema = schemaUrl;
+    });
   }
 
   private saveProject(formValue) {
