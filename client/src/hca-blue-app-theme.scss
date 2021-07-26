@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @import '~@angular/material/theming';
 
 $hca-blue-palette: (
@@ -32,8 +33,6 @@ $hca-blue-palette: (
     A700 : #000000,
   )
 );
-
-@use '~@angular/material' as mat;
 
 $hca-blue-app-primary:  mat.define-palette($hca-blue-palette);
 $hca-blue-app-accent: mat.define-palette($mat-blue-grey, A200, A100, A400);
