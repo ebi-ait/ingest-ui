@@ -60,7 +60,6 @@
     "codelyzer": "^6.0.0",
     "fstream": ">=1.0.12",
     "handlebars": "^4.7.7",
-    "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
     "js-yaml": ">=4.1.0",
     "karma": "^6.3.4",
