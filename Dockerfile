@@ -11,8 +11,8 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 # install and cache app dependencies
 COPY ./client/package.json /app/package.json
-COPY ./client/package-lock.json /app/package-lock.json
-RUN yarn install
+COPY ./client/yarn.lock /app/yarn.lock
+RUN yarn install --frozen-lockfile
 
 # add app
 COPY ./client /app
