@@ -1,8 +1,5 @@
 // custom angular material theme
-@use '~@angular/material' as mat;
-@include mat.core();
 @import 'hca-blue-app-theme';
-@include mat.core-theme($hca-blue-app-theme);
 
 .starter-template {
   padding: 3rem 1.5rem;
