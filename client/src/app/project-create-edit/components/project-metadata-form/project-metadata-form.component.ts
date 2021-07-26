@@ -26,7 +26,6 @@ import {AccessionFieldGroupComponent} from '../accession-field-group/accession-f
 export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
 
   @Input() project: any;
-  @Input() autosave = true;
   @Input() create = false;
   @Output() formValueChange = new EventEmitter<Observable<object>>();
 

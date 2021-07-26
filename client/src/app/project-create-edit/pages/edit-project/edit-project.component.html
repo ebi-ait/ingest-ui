@@ -1,11 +1,12 @@
 <ng-container *ngIf="project$ | async as project">
   <app-uuid  [uuid]="project.uuid.uuid"></app-uuid>
-</ng-container>
-<h1 class="vf-text vf-text-heading--2">Edit Project</h1>
-<br/>
-<br/>
 
-<app-project-metadata-form
-  [project]="project$ | async"
-  [autosave]="false"
-></app-project-metadata-form>
+  <h1 class="vf-text vf-text-heading--2">Edit Project</h1>
+  <br/>
+  <br/>
+
+  <app-project-metadata-form
+    [project]="project"
+    [create]="false"
+  ></app-project-metadata-form>
+</ng-container>
