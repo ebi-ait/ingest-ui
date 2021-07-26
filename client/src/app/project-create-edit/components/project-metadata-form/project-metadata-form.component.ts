@@ -9,7 +9,7 @@ import {IngestService} from '../../../shared/services/ingest.service';
 import {AlertService} from '../../../shared/services/alert.service';
 import {LoaderService} from '../../../shared/services/loader.service';
 import {SchemaService} from '../../../shared/services/schema.service';
-import layout from './layout';
+import getLayout from './layout';
 import {Observable, Subject} from 'rxjs';
 import {concatMap, map} from 'rxjs/operators';
 import {AutofillProjectService} from '../../services/autofill-project.service';
@@ -63,7 +63,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
     this.userAccount$
       .subscribe((account) => {
         this.userIsWrangler = account.isWrangler();
-        this.setUpProjectForm(this.userIsWrangler);
+        this.setUpProjectForm();
       });
 
     if (this.project) {
@@ -75,21 +75,8 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
     this.unsubscribe.next();
   }
 
-  setUpProjectForm(userIsWrangler: boolean) {
-    const projectFormLayout = layout;
-    if (!userIsWrangler) {
-      projectFormLayout.tabs = projectFormLayout.tabs.filter(tab => tab.key !== 'project_admin');
-    }
-    if (!this.create) {
-      projectFormLayout.tabs = projectFormLayout.tabs.filter(tab => tab.key !== 'save');
-
-      const accessionsIndex = projectFormLayout.tabs[0].items.findIndex(item => item?.component === AccessionFieldGroupComponent);
-      // @ts-ignore
-      const accessionsKeys: [string] = projectFormLayout.tabs[0].items[accessionsIndex].keys;
-      projectFormLayout.tabs[0].items.splice(accessionsIndex, 1, ...accessionsKeys);
-    }
-
-    this.projectFormLayout = projectFormLayout;
+  setUpProjectForm() {
+    this.projectFormLayout = getLayout(this.create, this.userIsWrangler);
     this.setFormConfig();
 
     if (this.route.snapshot.queryParamMap.has('tab')) {

@@ -7,7 +7,8 @@ import {ProjectIdComponent} from '../project-id/project-id.component';
 import {FunderFieldGroupComponent} from '../funder-field-group/funder-field-group.component';
 import {AdminAreaComponent} from '../admin-area/admin-area.component';
 
-export default {
+// Factory function to get the full layout stops any side effects from editing the layout
+const getFullLayout = () => ({
   tabs: [
     {
       title: 'Project Information',
@@ -101,4 +102,23 @@ export default {
       ]
     }
   ]
+});
+
+export default (createMode = false, showWranglerTools = false) => {
+  const layout = getFullLayout();
+  if (!createMode) {
+    layout.tabs = layout.tabs.filter(tab => tab.key !== 'save');
+
+    [ProjectIdComponent, AccessionFieldGroupComponent].forEach(component => {
+      // Place ID in the route and not within the group component
+      const index = layout.tabs[0].items.findIndex(item => item?.component === component);
+      // @ts-ignore
+      const keys: [string] = layout.tabs[0].items[index].keys;
+      layout.tabs[0].items.splice(index, 1, ...keys);
+    });
+  }
+  if (!showWranglerTools) {
+    layout.tabs = layout.tabs.filter(tab => tab.key !== 'project_admin');
+  }
+  return layout;
 };
