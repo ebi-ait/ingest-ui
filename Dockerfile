@@ -12,11 +12,11 @@ ENV PATH /app/node_modules/.bin:$PATH
 # install and cache app dependencies
 COPY ./client/package.json /app/package.json
 COPY ./client/package-lock.json /app/package-lock.json
-RUN npm install
+RUN yarn install
 
 # add app
 COPY ./client /app
-RUN npm install
+RUN yarn install
 
 # build app
 RUN ng build -c=env
