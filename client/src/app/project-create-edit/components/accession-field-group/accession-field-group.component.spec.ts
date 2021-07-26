@@ -1,7 +1,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {AccessionFieldGroupComponent} from './accession-field-group.component';
-import {MetadataForm} from '../../metadata-schema-form/models/metadata-form';
+import {MetadataForm} from '../../../metadata-schema-form/models/metadata-form';
 import {FormArray} from '@angular/forms';
 
 describe('AccessionFieldGroupComponent', () => {

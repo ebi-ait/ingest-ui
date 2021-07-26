@@ -4,7 +4,7 @@ import {Project, ProjectColumn} from '../shared/models/project';
 import {IngestService} from '../shared/services/ingest.service';
 import {map} from 'rxjs/operators';
 import {PagedData} from '../shared/models/page';
-import { default as ingestSchema } from '../project-create-edit/schemas/project-ingest-schema.json';
+import ingestSchema from '../project-create-edit/schemas/project-ingest-schema.json';
 import {Observable} from 'rxjs';
 import {Account} from '../core/account';
 import {ProjectDataSource} from '../shared/data-sources/project-data-source';
