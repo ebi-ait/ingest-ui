@@ -110,7 +110,7 @@ export default (createMode = false, showWranglerTools = false) => {
     layout.tabs = layout.tabs.filter(tab => tab.key !== 'save');
 
     [ProjectIdComponent, AccessionFieldGroupComponent].forEach(component => {
-      // Place ID in the route and not within the group component
+      // Place in the route and not within the group component
       const index = layout.tabs[0].items.findIndex(item => item?.component === component);
       // @ts-ignore
       const keys: [string] = layout.tabs[0].items[index].keys;
