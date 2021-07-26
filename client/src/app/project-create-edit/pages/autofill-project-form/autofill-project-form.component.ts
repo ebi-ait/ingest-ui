@@ -9,8 +9,8 @@ import {map} from 'rxjs/operators';
 import {IngestService} from '../../../shared/services/ingest.service';
 // TODO
 import {Project} from '../../../shared/models/project';
-import {ProjectCacheService} from "../../services/project-cache.service";
-import {Identifier} from "../../models/europe-pmc-search";
+import {ProjectCacheService} from '../../services/project-cache.service';
+import {Identifier} from '../../models/europe-pmc-search';
 
 @Component({
   selector: 'app-doi-name-field',
