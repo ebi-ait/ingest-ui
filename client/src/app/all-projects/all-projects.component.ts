@@ -4,7 +4,7 @@ import {Project, ProjectColumn} from '../shared/models/project';
 import {IngestService} from '../shared/services/ingest.service';
 import {map} from 'rxjs/operators';
 import {PagedData} from '../shared/models/page';
-import * as ingestSchema from '../project-create-edit/schemas/project-ingest-schema.json';
+import { default as ingestSchema } from '../project-create-edit/schemas/project-ingest-schema.json';
 import {Observable} from 'rxjs';
 import {Account} from '../core/account';
 import {ProjectDataSource} from '../shared/data-sources/project-data-source';
@@ -33,7 +33,7 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   dataSource: ProjectDataSource;
-  wranglingStates = ingestSchema.properties.wranglingState.enum;
+  wranglingStates = ingestSchema['properties']['wranglingState']['enum'];
   wranglers$: Observable<Account[]>;
 
   constructor(private ingestService: IngestService) {

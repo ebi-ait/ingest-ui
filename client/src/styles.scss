@@ -8,10 +8,10 @@
 @import '~@swimlane/ngx-datatable/assets/icons.css';
 
 // custom angular material theme
-@import '~@angular/material/theming';
-@include mat-core();
+@use '~@angular/material' as mat;
+@include mat.core();
 @import 'hca-blue-app-theme';
-@include angular-material-theme($hca-blue-app-theme);
+@include mat.core-theme($hca-blue-app-theme);
 
 
 $grey-color: #f2f2f2;
