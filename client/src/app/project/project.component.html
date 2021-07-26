@@ -6,7 +6,7 @@
   <app-uuid [uuid]="projectUuid"></app-uuid>
   <h1>{{getProjectName()}}</h1>
   <br/>
-  <mat-tab-group [selectedIndex]="lookupTabIndex(selectedProjectTabKey)">
+  <mat-tab-group [selectedIndex]="lookupTabIndex(selectedMainTabKey)" (selectedTabChange)="mainTabChange($event)">
     <mat-tab [label]="tabConfig[0].label">
       <div class="vf-u-margin__top--xxl">
         <app-project-summary (tabChange)="projectTabChange($event)" [project]="project"></app-project-summary>

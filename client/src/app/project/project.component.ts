@@ -31,6 +31,7 @@ export class ProjectComponent implements OnInit {
   projectUuid: string;
   upload = false;
   selectedProjectTabKey: string;
+  selectedMainTabKey: string;
   userIsWrangler: boolean;
 
   biomaterialsDataSource: MetadataDataSource<MetadataDocument>;
@@ -206,7 +207,7 @@ export class ProjectComponent implements OnInit {
   private initProject() {
     this.route.queryParamMap.subscribe(queryParams => {
       this.projectUuid = queryParams.get('uuid');
-      this.selectedProjectTabKey = queryParams.get('tab') || this.tabConfig[0].key;
+      this.selectedMainTabKey = queryParams.get('tab') || this.tabConfig[0].key;
     });
 
     this.projectId = this.route.snapshot.paramMap.get('id');
@@ -226,6 +227,17 @@ export class ProjectComponent implements OnInit {
 
   projectTabChange(tabKey: string) {
     this.selectedProjectTabKey = tabKey;
+  }
+
+  mainTabChange($event) {
+    this.selectedMainTabKey = this.tabConfig[$event.index].key;
+    this.router.navigate(
+      [],
+      {
+        relativeTo: this.route,
+        queryParams: { tab: this.selectedMainTabKey },
+        queryParamsHandling: 'merge'
+      });
   }
 
   private fetchProjectEntities(projectData, entityType: string, params?): Observable<PagedData<any>> {
