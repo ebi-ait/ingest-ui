@@ -3,10 +3,11 @@ import {MatPaginator} from '@angular/material/paginator';
 import {Project, ProjectColumn} from '../shared/models/project';
 import {IngestService} from '../shared/services/ingest.service';
 import {map} from 'rxjs/operators';
-import {Criteria} from '../shared/models/criteria';
-import {MetadataDataSource} from '../shared/data-sources/metadata-data-source';
 import {PagedData} from '../shared/models/page';
-import {MetadataDocument} from '../shared/models/metadata-document';
+import * as ingestSchema from '../project-create-edit/schemas/project-ingest-schema.json';
+import {Observable} from 'rxjs';
+import {Account} from '../core/account';
+import {ProjectDataSource} from '../shared/data-sources/project-data-source';
 
 @Component({
   selector: 'app-all-projects',
@@ -31,16 +32,15 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
-  searchText: string;
-  value: any;
-
-  dataSource: MetadataDataSource<Project>;
+  dataSource: ProjectDataSource;
+  wranglingStates = ingestSchema.properties.wranglingState.enum;
+  wranglers$: Observable<Account[]>;
 
   constructor(private ingestService: IngestService) {
   }
 
   ngOnInit() {
-    this.dataSource = new MetadataDataSource<Project>(this.getProjects.bind(this), 'projects');
+    this.dataSource = new ProjectDataSource(this.getProjects.bind(this));
     this.dataSource.sortBy('updateDate', 'desc');
     this.dataSource.connect(true).subscribe({
       next: data => {
@@ -50,12 +50,7 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
         console.error('err', err);
       }
     });
-  }
-
-  getProjectId(project) {
-    let links: any;
-    links = project['_links'];
-    return links && links['self'] && links['self']['href'] ? links['self']['href'].split('/').pop() : '';
+    this.wranglers$ = this.ingestService.getWranglers();
   }
 
   getProjectUuid(project) {
@@ -66,65 +61,45 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
     this.dataSource.disconnect();
   }
 
-  getProjects(params) {
+  getProjects(params): Observable<PagedData<Project>> {
     const urlParams = {
       ...params,
       sort: `${params.sort.column},${params.sort.direction}`
     };
-    if (params.filterState) {
-      return this.searchProjects(urlParams);
-    }
-    return this.getDefaultProjects(urlParams);
+
+    delete params.sort;
+
+    return this.getFilteredProjects(urlParams);
   }
 
-  searchProjects(params) {
-    const query = [];
-    const fields = [
-      'content.project_core.project_description',
-      'content.project_core.project_title',
-      'content.project_core.project_short_name'
-    ];
-
-    for (const field of fields) {
-      const criteria = {
-        'field': field,
-        'operator': 'REGEX',
-        'value': params.filterState.replace(/\s+/g, '\\s+')
-      };
-      query.push(criteria);
-    }
-
-    delete params.filterState;
-
-    params['operator'] = 'or';
-    return this.queryProjects(query, params);
+  private getFilteredProjects(params): Observable<PagedData<Project>> {
+    return this.ingestService.getFilteredProjects(params).pipe(map(
+      data => {
+        const pagedData: PagedData<Project> = {data: [], page: undefined};
+        pagedData.data = data._embedded ? data._embedded.projects : [];
+        pagedData.page = data.page;
+        return pagedData;
+      }
+    ));
   }
 
-  getDefaultProjects(params) {
-    const criteria = {
-      field: 'isUpdate',
-      operator: 'IS',
-      value: false
-    } as Criteria;
-    params['operator'] = 'and';
-    return this.queryProjects([criteria], params);
+  onSearch(value) {
+    this.dataSource.search(value);
   }
 
-  private queryProjects(query: Criteria[], params) {
-    return this.ingestService.queryProjects(query, params).pipe(map(data => {
-      // TODO: Merge ListResult and PagedData and get rid of PagedData
-      const pagedData: PagedData<MetadataDocument> = {data: [], page: undefined};
-      pagedData.data = data._embedded ? data._embedded.projects : [];
-      pagedData.page = data.page;
-      return pagedData;
-    }));
+  onFilterByWranglingState($event) {
+    this.dataSource.filterByWranglingState($event.value);
   }
 
-  onKeyEnter(value) {
-    this.dataSource.filterByState(value);
+  onFilterByWrangler($event) {
+    this.dataSource.filterByWrangler($event.value);
   }
 
   onPageChange({ pageIndex, pageSize }) {
     this.dataSource.fetch(pageIndex, pageSize);
+  }
+
+  transformWranglingState(wranglingState: String) {
+    return wranglingState.replace(/\s+/g, '_').toUpperCase();
   }
 }

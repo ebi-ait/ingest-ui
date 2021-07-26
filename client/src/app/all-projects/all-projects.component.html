@@ -5,13 +5,32 @@
   </div>
 </div>
 <p class="vf-text-body vf-text-body--3 vf-u-text-color--grey">These are all the projects created for the Human Cell Atlas.</p>
-<mat-form-field class="search-bar">
-  <mat-icon matPrefix>search</mat-icon>
-  <input matInput placeholder="Search Projects" [(ngModel)]="value" (keydown.enter)="onKeyEnter(value)">
-  <button mat-button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''; onKeyEnter(value)">
-    <mat-icon>close</mat-icon>
-  </button>
-</mat-form-field>
+
+<li class="mat-form-field--inline">
+
+  <mat-form-field class="search-bar">
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput placeholder="Search Projects" (keydown.enter)="onSearch($event.target.value)">
+    <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="onSearch('')">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-select placeholder="Filter by status" (selectionChange)="onFilterByWranglingState($event)">
+      <mat-option>None</mat-option>
+      <mat-option *ngFor="let state of wranglingStates" [value]="transformWranglingState(state)">{{state}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field *ngIf="wranglers$ | async" >
+    <mat-select placeholder="Filter by wrangler" (selectionChange)="onFilterByWrangler($event)">
+      <mat-option>None</mat-option>
+      <mat-option *ngFor="let wrangler of wranglers$ | async" [value]="wrangler.id">{{wrangler.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+</li>
 
 <app-project-list [projects]=projects [columns]="columns"></app-project-list>
 

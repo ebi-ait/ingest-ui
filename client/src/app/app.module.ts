@@ -62,8 +62,8 @@ import {NgxGraphModule} from '@swimlane/ngx-graph';
 import {MetadataPickerComponent} from './metadata-picker/metadata-picker.component';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
 import {AuthService} from './shared/services/auth.service';
-import {UuidComponent} from './shared/components/uuid/uuid.component';
 import {ProjectCreateEdit} from './project-create-edit/project-create-edit.module';
+import {MatMenuModule} from '@angular/material/menu';
 
 const BROWSER_LOCALE = navigator.language;
 
@@ -98,24 +98,29 @@ const BROWSER_LOCALE = navigator.language;
     MetadataPickerComponent,
   ],
   imports: [
+    AaiSecurity,
     BrowserModule,
+    BrowserAnimationsModule,
+    FlexLayoutModule,
     FormsModule,
     HttpClientModule,
-    RouterModule.forRoot(ROUTES),
-    SharedModule,
-    ReactiveFormsModule,
-    NoopAnimationsModule,
-    NgxDatatableModule,
-    FlexLayoutModule,
-    BrowserAnimationsModule,
+    MatDialogModule,
     MaterialModule,
-    AaiSecurity,
+    MatMenuModule,
     MetadataSchemaFormModule,
     TemplateQuestionnaireModule,
     MatDialogModule,
     NgxGraphModule,
     NgxChartsModule,
-    ProjectCreateEdit
+    ProjectCreateEdit,
+    NgxGraphModule,
+    NgxChartsModule,
+    NgxDatatableModule,
+    NoopAnimationsModule,
+    ReactiveFormsModule,
+    RouterModule.forRoot(ROUTES),
+    SharedModule,
+    TemplateQuestionnaireModule
   ],
   providers: [
     {
