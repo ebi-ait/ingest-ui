@@ -24,15 +24,15 @@ import {SharedModule} from '../shared/shared.module';
 
 @NgModule({
   declarations: [
-    ProjectMetadataFormComponent,
-    EditProjectComponent,
-    CreateProjectComponent,
     AutofillProjectFormComponent,
     AccessionFieldGroupComponent,
     AdminAreaComponent,
     ContactFieldGroupComponent,
+    CreateProjectComponent,
+    EditProjectComponent,
     FunderFieldGroupComponent,
     ProjectIdComponent,
+    ProjectMetadataFormComponent,
     ProjectRegistrationSaveComponent,
     PublicationFieldGroupComponent,
     WranglerListInputComponent,
@@ -40,17 +40,17 @@ import {SharedModule} from '../shared/shared.module';
   ],
   imports: [
     CommonModule,
-    ProjectCreateEditRoutingModule,
-    MetadataSchemaFormModule,
     FormsModule,
-    ReactiveFormsModule,
     MatIconModule,
     MatTabsModule,
-    SharedModule
+    MetadataSchemaFormModule,
+    ProjectCreateEditRoutingModule,
+    ReactiveFormsModule,
+    SharedModule,
   ],
   providers: [
+    AutofillProjectService,
     ProjectCacheService,
-    AutofillProjectService
   ]
 })
 export class ProjectCreateEdit { }
