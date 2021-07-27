@@ -1,8 +1,6 @@
-import {MetadataFormConfig} from './metadata-form-config';
-import {JsonSchema} from './json-schema';
-import {Metadata} from './metadata';
-import {JsonSchemaProperty} from './json-schema-property';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
+import {Metadata} from './metadata';
+import {MetadataFormConfig} from './metadata-form-config';
 
 
 export class MetadataFormHelper {

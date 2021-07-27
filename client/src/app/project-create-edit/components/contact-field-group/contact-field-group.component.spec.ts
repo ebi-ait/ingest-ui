@@ -1,11 +1,11 @@
 /* tslint:disable:max-line-length */
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {Profile, User} from 'oidc-client';
+import {BehaviorSubject} from 'rxjs';
+import {AaiService} from '../../../aai/aai.service';
+import {MetadataForm} from '../../../metadata-schema-form/models/metadata-form';
 
 import {ContactFieldGroupComponent} from './contact-field-group.component';
-import {MetadataForm} from '../../../metadata-schema-form/models/metadata-form';
-import {AaiService} from '../../../aai/aai.service';
-import {BehaviorSubject} from 'rxjs';
-import {Profile, User} from 'oidc-client';
 
 let component: ContactFieldGroupComponent;
 let fixture: ComponentFixture<ContactFieldGroupComponent>;

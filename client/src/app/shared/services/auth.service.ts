@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {combineLatest, Observable} from 'rxjs';
-import {Account} from '../../core/account';
 import {map} from 'rxjs/operators';
+import {Account} from '../../core/account';
 import {Project} from '../models/project';
 
 @Injectable()

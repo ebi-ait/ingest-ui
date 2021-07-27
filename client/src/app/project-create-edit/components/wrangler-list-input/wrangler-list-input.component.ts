@@ -1,13 +1,13 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {BaseInputComponent} from '../../../metadata-schema-form/metadata-field-types/base-input/base-input.component';
-import {Observable, of} from 'rxjs';
-import {debounceTime, distinctUntilChanged, filter, map, startWith, switchMap} from 'rxjs/operators';
-import {IngestService} from '../../../shared/services/ingest.service';
-import {AaiService} from '../../../aai/aai.service';
-import {Metadata} from '../../../metadata-schema-form/models/metadata';
 import {FormControl} from '@angular/forms';
+import {Observable} from 'rxjs';
+import {debounceTime, distinctUntilChanged, filter, map, startWith, switchMap} from 'rxjs/operators';
+import {AaiService} from '../../../aai/aai.service';
 import {Account} from '../../../core/account';
+import {BaseInputComponent} from '../../../metadata-schema-form/metadata-field-types/base-input/base-input.component';
+import {Metadata} from '../../../metadata-schema-form/models/metadata';
 import {AlertService} from '../../../shared/services/alert.service';
+import {IngestService} from '../../../shared/services/ingest.service';
 
 @Component({
   selector: 'app-wrangler-list-input',

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {AaiService} from '../../aai/aai.service';
-import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {AaiService} from '../../aai/aai.service';
 import {Project} from '../../shared/models/project';
 
 @Injectable()

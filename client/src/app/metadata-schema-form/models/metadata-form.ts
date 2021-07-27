@@ -1,7 +1,7 @@
-import {JsonSchema} from './json-schema';
-import {MetadataFormConfig} from './metadata-form-config';
-import {Metadata} from './metadata';
 import {AbstractControl, FormGroup} from '@angular/forms';
+import {JsonSchema} from './json-schema';
+import {Metadata} from './metadata';
+import {MetadataFormConfig} from './metadata-form-config';
 import {MetadataFormHelper} from './metadata-form-helper';
 import {MetadataRegistry} from './metadata-registry';
 

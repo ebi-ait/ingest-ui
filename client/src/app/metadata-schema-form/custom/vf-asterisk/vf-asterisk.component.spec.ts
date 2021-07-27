@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { VfAsteriskComponent } from './vf-asterisk.component';
+import {VfAsteriskComponent} from './vf-asterisk.component';
 
 describe('VfAsteriskComponent', () => {
   let component: VfAsteriskComponent;

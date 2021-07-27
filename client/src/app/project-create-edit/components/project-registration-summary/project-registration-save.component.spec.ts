@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ProjectRegistrationSaveComponent } from './project-registration-save.component';
+import {ProjectRegistrationSaveComponent} from './project-registration-save.component';
 
 describe('ProjectRegistrationSummaryComponent', () => {
   let component: ProjectRegistrationSaveComponent;

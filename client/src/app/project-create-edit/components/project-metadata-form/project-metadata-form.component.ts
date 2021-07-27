@@ -1,22 +1,21 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
-import * as metadataSchema from '../../schemas/project-metadata-schema.json';
-import * as ingestSchema from '../../schemas/project-ingest-schema.json';
-import {Project} from '../../../shared/models/project';
-import {MetadataFormConfig} from '../../../metadata-schema-form/models/metadata-form-config';
 import {MatTabGroup} from '@angular/material/tabs';
 import {ActivatedRoute, Router} from '@angular/router';
-import {IngestService} from '../../../shared/services/ingest.service';
+import {Observable, Subject} from 'rxjs';
+import {concatMap} from 'rxjs/operators';
+import {Account} from '../../../core/account';
+import {MetadataFormConfig} from '../../../metadata-schema-form/models/metadata-form-config';
+import {MetadataFormLayout} from '../../../metadata-schema-form/models/metadata-form-layout';
+import {Project} from '../../../shared/models/project';
 import {AlertService} from '../../../shared/services/alert.service';
+import {IngestService} from '../../../shared/services/ingest.service';
 import {LoaderService} from '../../../shared/services/loader.service';
 import {SchemaService} from '../../../shared/services/schema.service';
-import getLayout from './layout';
-import {Observable, Subject} from 'rxjs';
-import {concatMap, map} from 'rxjs/operators';
+import * as ingestSchema from '../../schemas/project-ingest-schema.json';
+import * as metadataSchema from '../../schemas/project-metadata-schema.json';
 import {AutofillProjectService} from '../../services/autofill-project.service';
 import {ProjectCacheService} from '../../services/project-cache.service';
-import {Account} from '../../../core/account';
-import {MetadataFormLayout} from '../../../metadata-schema-form/models/metadata-form-layout';
-import {AccessionFieldGroupComponent} from '../accession-field-group/accession-field-group.component';
+import getLayout from './layout';
 
 @Component({
   selector: 'app-project-metadata-form',

@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {AbstractControl, FormControl, ValidationErrors} from '@angular/forms';
-// TODO move into shared
-import {MetadataForm} from '../../../metadata-schema-form/models/metadata-form';
-import {Metadata} from '../../../metadata-schema-form/models/metadata';
-import {MetadataFormService} from '../../../metadata-schema-form/metadata-form.service';
-import {IngestService} from '../../../shared/services/ingest.service';
 import {Observable} from 'rxjs';
 import {first, map} from 'rxjs/operators';
+import {MetadataFormService} from '../../../metadata-schema-form/metadata-form.service';
+import {Metadata} from '../../../metadata-schema-form/models/metadata';
+// TODO move into shared
+import {MetadataForm} from '../../../metadata-schema-form/models/metadata-form';
+import {IngestService} from '../../../shared/services/ingest.service';
 
 @Component({
   selector: 'app-project-id',

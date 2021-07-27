@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {map} from 'rxjs/operators';
+import {Injectable} from '@angular/core';
 import {Observable, throwError} from 'rxjs';
-import {EuropePMCHttpSearchResponse, EuropePMCResult, Identifier} from '../models/europe-pmc-search';
+import {map} from 'rxjs/operators';
 import {AutofillProject} from '../models/autofill-project';
+import {EuropePMCHttpSearchResponse, EuropePMCResult, Identifier} from '../models/europe-pmc-search';
 
 @Injectable()
 export class AutofillProjectService {

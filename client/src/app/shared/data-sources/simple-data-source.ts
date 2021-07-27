@@ -1,7 +1,7 @@
-import {DataSource} from '../models/data-source';
 import {BehaviorSubject, Observable, ReplaySubject, Subject, throwError, timer} from 'rxjs';
-import {Endpoint, QueryData} from '../models/paginatedEndpoint';
 import {catchError, retry, switchMap, takeWhile, tap} from 'rxjs/operators';
+import {DataSource} from '../models/data-source';
+import {Endpoint, QueryData} from '../models/paginatedEndpoint';
 
 export class SimpleDataSource<T> implements  DataSource<T> {
   protected queryData: BehaviorSubject<QueryData>;

@@ -1,5 +1,5 @@
-import {Component, Input } from '@angular/core';
-import { ClipboardService } from '../../services/clipboard.service';
+import {Component, Input} from '@angular/core';
+import {ClipboardService} from '../../services/clipboard.service';
 
 @Component({
     selector: 'app-uuid',

@@ -1,12 +1,12 @@
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {BehaviorSubject, from, Observable, of, Subscription} from 'rxjs';
 import {User, UserManager} from 'oidc-client';
+import {BehaviorSubject, from, Observable, of, Subscription} from 'rxjs';
+import {map, tap} from 'rxjs/operators';
 import {AlertService} from '../shared/services/alert.service';
 import {IngestService} from '../shared/services/ingest.service';
 import {AaiSecurity} from './aai.module';
-import {map, tap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: AaiSecurity,

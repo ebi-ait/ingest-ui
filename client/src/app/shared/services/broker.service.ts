@@ -1,10 +1,13 @@
-import {Injectable} from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 import {Observable, throwError} from 'rxjs';
 import {catchError, map, tap} from 'rxjs/operators';
-import {UploadResults} from '../models/uploadResults';
 import {environment} from '../../../environments/environment';
-import {TemplateGenerationRequestParam, TemplateGenerationResponse} from '../../template-questionnaire/template-generator.service';
+import {
+  TemplateGenerationRequestParam,
+  TemplateGenerationResponse
+} from '../../template-questionnaire/template-generator.service';
+import {UploadResults} from '../models/uploadResults';
 
 // Making use of https://stackoverflow.com/questions/35326689/how-to-catch-exception-correctly-from-http-request
 

@@ -1,13 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {FormArray, FormGroup} from '@angular/forms';
+import {Observable} from 'rxjs';
+import {distinctUntilChanged, startWith, switchMap} from 'rxjs/operators';
 import {Ontology} from '../../../shared/models/ontology';
 import {OntologyService} from '../../../shared/services/ontology.service';
+import {MetadataFormService} from '../../metadata-form.service';
 import {JsonSchema} from '../../models/json-schema';
 import {MetadataFormHelper} from '../../models/metadata-form-helper';
 import {OntologyBaseComponent} from '../ontology-base/ontology-base.component';
-import {Observable} from 'rxjs';
-import {MetadataFormService} from '../../metadata-form.service';
-import {distinctUntilChanged, startWith, switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-ontology-list-input',

@@ -1,8 +1,7 @@
 // source: https://www.bennadel.com/blog/3235-creating-a-simple-copy-to-clipboard-directive-in-angular-2-4-9.htm
 // Import the core angular services.
-import { DOCUMENT } from "@angular/common";
-import { Inject } from "@angular/core";
-import { Injectable } from "@angular/core";
+import {DOCUMENT} from "@angular/common";
+import {Inject, Injectable} from "@angular/core";
 
 @Injectable()
 export class ClipboardService {

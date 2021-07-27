@@ -1,20 +1,20 @@
 import {Routes} from '@angular/router';
-import {ProjectComponent} from './project/project.component';
-import {SubmissionComponent} from './submission/submission.component';
-import {AllProjectsComponent} from './all-projects/all-projects.component';
-import {LoginComponent} from './login/login.component';
 import {AaiCallbackComponent} from './aai-callback/aai-callback.component';
+import {AllProjectsComponent} from './all-projects/all-projects.component';
+import {ErrorComponent} from './error/error.component';
+import {LoginComponent} from './login/login.component';
 import {MyProjectsComponent} from './my-projects/my-projects.component';
-import {SubmissionListComponent} from './submission-list/submission-list.component';
+import {ProjectComponent} from './project/project.component';
 import {RegistrationComponent} from './registration/registration.component';
 import {UserIsLoggedInGuard} from './shared/guards/user-is-logged-in.guard';
 import {UserIsWranglerGuard} from './shared/guards/user-is-wrangler.guard';
 import {WranglerOrOwnerGuard} from './shared/guards/wrangler-or-owner.guard';
-import {WelcomeComponent} from './welcome/welcome.component';
+import {SubmissionListComponent} from './submission-list/submission-list.component';
+import {SubmissionComponent} from './submission/submission.component';
 
 // tslint:disable-next-line:max-line-length
 import {TemplateQuestionnaireFormComponent} from './template-questionnaire/template-questionnaire-form/template-questionnaire-form.component';
-import {ErrorComponent} from './error/error.component';
+import {WelcomeComponent} from './welcome/welcome.component';
 
 export const ROUTES: Routes = [
   {path: 'login', component: LoginComponent},

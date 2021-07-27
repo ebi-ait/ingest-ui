@@ -1,13 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {AutofillProjectService} from '../../services/autofill-project.service';
-import {ProjectCacheService} from '../../services/project-cache.service';
-import {Identifier} from '../../models/europe-pmc-search';
 import {Observable, of, Subject} from 'rxjs';
 import {delay, map, takeUntil} from 'rxjs/operators';
-import {AutofillProject} from '../../models/autofill-project';
-import {IngestService} from '../../../shared/services/ingest.service';
 import {environment} from "../../../../environments/environment";
+import {IngestService} from '../../../shared/services/ingest.service';
+import {AutofillProject} from '../../models/autofill-project';
+import {Identifier} from '../../models/europe-pmc-search';
+import {AutofillProjectService} from '../../services/autofill-project.service';
+import {ProjectCacheService} from '../../services/project-cache.service';
 
 const EMPTY_PROJECT = {
   content: {},

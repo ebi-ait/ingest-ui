@@ -1,8 +1,8 @@
 import {Component, ComponentFactoryResolver, Input, OnInit, Type, ViewChild} from '@angular/core';
+import {MetadataFieldComponent} from '../metadata-field/metadata-field.component';
+import {MetadataFormItemDirective} from '../metadata-form-item.directive';
 import {MetadataForm} from '../models/metadata-form';
 import {MetadataFieldGroup} from '../models/metadata-form-layout';
-import {MetadataFormItemDirective} from '../metadata-form-item.directive';
-import {MetadataFieldComponent} from '../metadata-field/metadata-field.component';
 
 @Component({
   selector: 'app-metadata-form-item',

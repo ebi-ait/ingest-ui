@@ -1,15 +1,15 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Project} from '../shared/models/project';
-import {AlertService} from '../shared/services/alert.service';
+import {Observable} from 'rxjs';
+import {Account} from '../core/account';
+import {MetadataFormConfig} from '../metadata-schema-form/models/metadata-form-config';
+import getLayout from '../project-create-edit/components/project-metadata-form/layout';
+import * as ingestSchema from '../project-create-edit/schemas/project-ingest-schema.json';
 // TODO refactor these imports
 // Ideally the project "view" components (this one) should be in the same module as the project edit components
 import * as metadataSchema from '../project-create-edit/schemas/project-metadata-schema.json';
-import * as ingestSchema from '../project-create-edit/schemas/project-ingest-schema.json';
-import getLayout from '../project-create-edit/components/project-metadata-form/layout';
-import {MetadataFormConfig} from '../metadata-schema-form/models/metadata-form-config';
-import {Observable} from 'rxjs';
+import {Project} from '../shared/models/project';
+import {AlertService} from '../shared/services/alert.service';
 import {IngestService} from '../shared/services/ingest.service';
-import {Account} from '../core/account';
 
 
 @Component({

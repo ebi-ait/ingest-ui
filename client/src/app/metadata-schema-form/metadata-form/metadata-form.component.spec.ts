@@ -1,13 +1,12 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-
-import SpyObj = jasmine.SpyObj;
-import {MetadataFormComponent} from './metadata-form.component';
-import {JsonSchema} from '../models/json-schema';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {MetadataFormService} from '../metadata-form.service';
+import {JsonSchema} from '../models/json-schema';
 import {MetadataForm} from '../models/metadata-form';
 import {MetadataFormConfig} from '../models/metadata-form-config';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {MetadataFormTab} from '../models/metadata-form-layout';
+import {MetadataFormComponent} from './metadata-form.component';
+import SpyObj = jasmine.SpyObj;
 
 function getSchema() {
   return {
