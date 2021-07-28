@@ -11,12 +11,10 @@ import {LoaderService} from '../../../shared/services/loader.service';
 import {SchemaService} from '../../../shared/services/schema.service';
 import getLayout from './layout';
 import {Observable, Subject} from 'rxjs';
-import {concatMap, map} from 'rxjs/operators';
-import {AutofillProjectService} from '../../services/autofill-project.service';
+import {concatMap} from 'rxjs/operators';
 import {ProjectCacheService} from '../../services/project-cache.service';
 import {Account} from '../../../core/account';
 import {MetadataFormLayout} from '../../../metadata-schema-form/models/metadata-form-layout';
-import {AccessionFieldGroupComponent} from '../accession-field-group/accession-field-group.component';
 
 @Component({
   selector: 'app-project-metadata-form',
@@ -52,7 +50,6 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
               private alertService: AlertService,
               private loaderService: LoaderService,
               private schemaService: SchemaService,
-              private autofillProjectService: AutofillProjectService,
               private projectCacheService: ProjectCacheService,
   ) {
   }
