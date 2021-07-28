@@ -7,7 +7,7 @@ import {from, Observable, of, Subject} from 'rxjs';
 import {delay, map, takeUntil} from 'rxjs/operators';
 import {AutofillProject} from '../../models/autofill-project';
 import {IngestService} from '../../../shared/services/ingest.service';
-import {environment} from "../../../../environments/environment";
+import {environment} from '../../../../environments/environment';
 
 const EMPTY_PROJECT = {
   content: {},
