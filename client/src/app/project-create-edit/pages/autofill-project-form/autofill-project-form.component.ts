@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {AlertService} from '../../../shared/services/alert.service';
 // TODO
 // TODO
-import {Observable} from 'rxjs';
+import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {IngestService} from '../../../shared/services/ingest.service';
 // TODO
@@ -31,7 +31,7 @@ export class AutofillProjectFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.publicationDoiCtrl = new FormControl('', Validators.required);
-    this.projectInCache$ = this.projectCacheService.getProject();
+    this.projectInCache$ = from(this.projectCacheService.getProject());
   }
 
   showError(control: FormControl): string {
