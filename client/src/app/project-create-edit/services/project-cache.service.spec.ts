@@ -48,4 +48,9 @@ describe('ProjectCacheService', () => {
     expect(await service.getProject()).toBeNull();
   });
 
+  it('should not fail if calling removeProject when no project exists', async () => {
+    expect(await service.getProject()).toBeNull();
+    expect(await service.removeProject()).toEqual('test@test.com-project');
+    expect(await service.getProject()).toBeNull();
+  });
 });
