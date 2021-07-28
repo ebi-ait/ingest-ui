@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AaiService} from '../../aai/aai.service';
-import {map} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {Project} from '../../shared/models/project';
 
@@ -9,16 +9,16 @@ export class ProjectCacheService {
 
   constructor(private aaiService: AaiService) {}
 
-  saveProject(project: Project) {
-    this.getProjectKey().subscribe(projectKey => localStorage.setItem(projectKey, JSON.stringify(project)));
+  saveProject(project: Project): Observable<string> {
+    return this.getProjectKey().pipe(tap(projectKey => localStorage.setItem(projectKey, JSON.stringify(project))));
   }
 
   private getProjectKey(): Observable<string> {
       return this.aaiService.getUser().pipe(map(user => (`${user?.profile?.email ?? ''}-project`)));
   }
 
-  removeProject() {
-    this.getProjectKey().subscribe(projectKey => localStorage.removeItem(projectKey));
+  removeProject(): Observable<string> {
+    return this.getProjectKey().pipe(tap(projectKey => localStorage.removeItem(projectKey)));
   }
 
   getProject(): Observable<Project> {
