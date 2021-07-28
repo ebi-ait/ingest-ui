@@ -13,7 +13,7 @@ export class ProjectCacheService {
     this.getProjectKey().subscribe(projectKey => localStorage.setItem(projectKey, JSON.stringify(project)));
   }
 
-  getProjectKey(): Observable<string> {
+  private getProjectKey(): Observable<string> {
       return this.aaiService.getUser().pipe(map(user => (`${user?.profile?.email ?? ''}-project`)));
   }
 
