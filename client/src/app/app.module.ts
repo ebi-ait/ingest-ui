@@ -1,73 +1,69 @@
-import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
-import {FormBuilder, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
-import {RouterModule} from '@angular/router';
+import {NgModule} from '@angular/core';
 
 import {FlexLayoutModule} from '@angular/flex-layout';
+import {FormBuilder, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MAT_DATE_LOCALE} from '@angular/material/core';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatMenuModule} from '@angular/material/menu';
+import {BrowserModule} from '@angular/platform-browser';
+import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {RouterModule} from '@angular/router';
+import {NgxChartsModule} from '@swimlane/ngx-charts';
 
 import {NgxDatatableModule} from '@swimlane/ngx-datatable';
-
-import {SharedModule} from './shared/shared.module';
-
-import {IngestService} from './shared/services/ingest.service';
-import {BrokerService} from './shared/services/broker.service';
-
-import {ROUTES} from './app.routes';
-
-import {AppComponent} from './app.component';
-import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {SubmissionListComponent} from './submission-list/submission-list.component';
-import {GlobalNavigationComponent} from './global-navigation/global-navigation.component';
-import {SubmissionComponent} from './submission/submission.component';
-import {TabComponent} from './shared/components/tab/tab.component';
-import {TabsComponent} from './shared/components/tabs/tabs.component';
-import {FilesComponent} from './submission/files/files.component';
-import {UploadInfoComponent} from './submission/files/upload-info/upload-info.component';
-import {SubmitComponent} from './submission/submit/submit.component';
-
-import {MetadataListComponent} from './submission/metadata-list/metadata-list.component';
-
-import {ProjectComponent} from './project/project.component';
-import {ProjectListComponent} from './shared/components/project-list/project-list.component';
-import {AllProjectsComponent} from './all-projects/all-projects.component';
-import {MyProjectsComponent} from './my-projects/my-projects.component';
-import {ProjectFormComponent} from './project-form/project-form.component';
-
-import {UploadComponent} from './shared/components/upload/upload.component';
-import {LoginComponent} from './login/login.component';
-import {ProjectSummaryComponent} from './project-summary/project-summary.component';
-import {AlertService} from './shared/services/alert.service';
-import {AlertComponent} from './shared/components/alert/alert.component';
-import {LoaderService} from './shared/services/loader.service';
-import {FlattenService} from './shared/services/flatten.service';
-import {SchemaService} from './shared/services/schema.service';
+import {NgxGraphModule} from '@swimlane/ngx-graph';
 
 import {AaiCallbackComponent} from './aai-callback/aai-callback.component';
-import {OidcInterceptor} from './aai/oidc-interceptor';
-import {GlobalHeaderComponent} from './global-header/global-header.component';
 import {AaiSecurity} from './aai/aai.module';
-import {RegistrationComponent} from './registration/registration.component';
-import {MetadataSchemaFormModule} from './metadata-schema-form/metadata-schema-form.module';
-import {MaterialModule} from './material.module';
-import {MAT_DATE_LOCALE} from '@angular/material/core';
-import {ProjectRegistrationModule} from './project-registration/project-registration.module';
-import {WelcomeComponent} from './welcome/welcome.component';
-import {TemplateQuestionnaireModule} from './template-questionnaire/template-questionnaire.module';
+import {OidcInterceptor} from './aai/oidc-interceptor';
+import {AllProjectsComponent} from './all-projects/all-projects.component';
+
+import {AppComponent} from './app.component';
+
+import {ROUTES} from './app.routes';
 import {ErrorComponent} from './error/error.component';
-import {HttpErrorInterceptor} from './http-interceptors/http-error-interceptor';
 import {GlobalFooterComponent} from './global-footer/global-footer.component';
+import {GlobalHeaderComponent} from './global-header/global-header.component';
+import {GlobalNavigationComponent} from './global-navigation/global-navigation.component';
+import {HttpErrorInterceptor} from './http-interceptors/http-error-interceptor';
+import {LoginComponent} from './login/login.component';
+import {MaterialModule} from './material.module';
 import {MetadataDetailsDialogComponent} from './metadata-details-dialog/metadata-details-dialog.component';
-import {MatDialogModule} from '@angular/material/dialog';
-import {ProcessDetailsComponent} from './process-details/process-details.component';
-import {NgxGraphModule} from '@swimlane/ngx-graph';
 import {MetadataPickerComponent} from './metadata-picker/metadata-picker.component';
-import {NgxChartsModule} from '@swimlane/ngx-charts';
+import {MetadataSchemaFormModule} from './metadata-schema-form/metadata-schema-form.module';
+import {MyProjectsComponent} from './my-projects/my-projects.component';
+import {ProcessDetailsComponent} from './process-details/process-details.component';
+import {ProjectCreateEdit} from './project-create-edit/project-create-edit.module';
+import {ProjectSummaryComponent} from './project-summary/project-summary.component';
+
+import {ProjectComponent} from './project/project.component';
+import {RegistrationComponent} from './registration/registration.component';
+import {AlertComponent} from './shared/components/alert/alert.component';
+import {ProjectListComponent} from './shared/components/project-list/project-list.component';
+import {TabComponent} from './shared/components/tab/tab.component';
+import {TabsComponent} from './shared/components/tabs/tabs.component';
+
+import {UploadComponent} from './shared/components/upload/upload.component';
+import {AlertService} from './shared/services/alert.service';
 import {AuthService} from './shared/services/auth.service';
-import {UuidComponent} from './shared/components/uuid/uuid.component';
-import {AutofillProjectService} from './project-registration/services/autofill-project.service';
-import {ProjectCacheService} from './project-registration/services/project-cache.service';
-import {MatMenuModule} from '@angular/material/menu';
+import {BrokerService} from './shared/services/broker.service';
+import {FlattenService} from './shared/services/flatten.service';
+
+import {IngestService} from './shared/services/ingest.service';
+import {LoaderService} from './shared/services/loader.service';
+import {SchemaService} from './shared/services/schema.service';
+
+import {SharedModule} from './shared/shared.module';
+import {SubmissionListComponent} from './submission-list/submission-list.component';
+import {FilesComponent} from './submission/files/files.component';
+import {UploadInfoComponent} from './submission/files/upload-info/upload-info.component';
+
+import {MetadataListComponent} from './submission/metadata-list/metadata-list.component';
+import {SubmissionComponent} from './submission/submission.component';
+import {SubmitComponent} from './submission/submit/submit.component';
+import {TemplateQuestionnaireModule} from './template-questionnaire/template-questionnaire.module';
+import {WelcomeComponent} from './welcome/welcome.component';
 
 const BROWSER_LOCALE = navigator.language;
 
@@ -91,7 +87,6 @@ const BROWSER_LOCALE = navigator.language;
     ProjectSummaryComponent,
     AlertComponent,
     AaiCallbackComponent,
-    ProjectFormComponent,
     MyProjectsComponent,
     GlobalHeaderComponent,
     RegistrationComponent,
@@ -101,7 +96,6 @@ const BROWSER_LOCALE = navigator.language;
     MetadataDetailsDialogComponent,
     ProcessDetailsComponent,
     MetadataPickerComponent,
-    UuidComponent
   ],
   imports: [
     AaiSecurity,
@@ -114,11 +108,15 @@ const BROWSER_LOCALE = navigator.language;
     MaterialModule,
     MatMenuModule,
     MetadataSchemaFormModule,
+    TemplateQuestionnaireModule,
+    MatDialogModule,
+    NgxGraphModule,
+    NgxChartsModule,
+    ProjectCreateEdit,
     NgxGraphModule,
     NgxChartsModule,
     NgxDatatableModule,
     NoopAnimationsModule,
-    ProjectRegistrationModule,
     ReactiveFormsModule,
     RouterModule.forRoot(ROUTES),
     SharedModule,
@@ -144,8 +142,6 @@ const BROWSER_LOCALE = navigator.language;
     LoaderService,
     FlattenService,
     SchemaService,
-    AutofillProjectService,
-    ProjectCacheService
   ],
   bootstrap: [AppComponent]
 })

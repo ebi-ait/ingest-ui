@@ -1,9 +1,9 @@
-import {Component, Output, EventEmitter, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {BrokerService} from '../../services/broker.service';
+import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {UploadResults} from '../../models/uploadResults';
-import {Router} from '@angular/router';
 import {AlertService} from '../../services/alert.service';
+import {BrokerService} from '../../services/broker.service';
 import {LoaderService} from '../../services/loader.service';
 
 @Component({

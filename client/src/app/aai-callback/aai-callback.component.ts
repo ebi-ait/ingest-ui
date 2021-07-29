@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {AaiService} from '../aai/aai.service';
-import {AlertService} from '../shared/services/alert.service';
 
 @Component({
   selector: 'app-aai-callback',

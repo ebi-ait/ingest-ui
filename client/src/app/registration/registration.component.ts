@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {RegistrationService, RegistrationErrorCode, RegistrationFailed} from '../core/registration.service';
 import {AaiService} from '../aai/aai.service';
+import {RegistrationErrorCode, RegistrationFailed, RegistrationService} from '../core/registration.service';
 
 const messages = {
   success: 'Your account was successfully created. Click OK to return to the home page.',

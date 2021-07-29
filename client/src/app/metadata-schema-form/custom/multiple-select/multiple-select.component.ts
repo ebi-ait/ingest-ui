@@ -1,11 +1,11 @@
+import {COMMA, DOWN_ARROW, ENTER, ESCAPE, TAB} from '@angular/cdk/keycodes';
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {FormControl, Validators} from '@angular/forms';
 import {MatAutocompleteTrigger} from '@angular/material/autocomplete';
 import {MatSelectionList, MatSelectionListChange} from '@angular/material/list';
-import {COMMA, DOWN_ARROW, ENTER, ESCAPE, TAB} from '@angular/cdk/keycodes';
-import {FormControl, Validators} from '@angular/forms';
 import {Observable} from 'rxjs';
-import {MetadataFormService} from '../../metadata-form.service';
 import {FormItemData} from '../../form-item/form-item.component';
+import {MetadataFormService} from '../../metadata-form.service';
 
 @Component({
   selector: 'app-multiple-select',

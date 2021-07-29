@@ -1,25 +1,25 @@
-import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import values from 'lodash/values';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import values from 'lodash/values';
-
-import {ListResult} from '../models/hateoas';
-import {Summary} from '../models/summary';
-import {PagedData} from '../models/page';
-import {SubmissionEnvelope} from '../models/submissionEnvelope';
 
 import {environment} from '../../../environments/environment';
+import {Account} from '../../core/account';
+import {INVALID_FILE_TYPES} from '../constants';
+import {ArchiveEntity} from '../models/archiveEntity';
+import {ArchiveSubmission} from '../models/archiveSubmission';
+import {Criteria} from '../models/criteria';
+
+import {ListResult} from '../models/hateoas';
 import {MetadataDocument} from '../models/metadata-document';
 import {MetadataSchema} from '../models/metadata-schema';
-import {Account} from '../../core/account';
-import {Project} from '../models/project';
-import {ArchiveSubmission} from '../models/archiveSubmission';
-import {ArchiveEntity} from '../models/archiveEntity';
-import {Criteria} from '../models/criteria';
-import {INVALID_FILE_TYPES} from '../constants';
-import {SubmissionSummary} from '../models/submissionSummary';
+import {PagedData} from '../models/page';
 import {QueryData} from '../models/paginatedEndpoint';
+import {Project} from '../models/project';
+import {SubmissionEnvelope} from '../models/submissionEnvelope';
+import {SubmissionSummary} from '../models/submissionSummary';
+import {Summary} from '../models/summary';
 
 
 @Injectable()

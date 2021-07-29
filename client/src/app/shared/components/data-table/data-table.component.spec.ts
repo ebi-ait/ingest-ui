@@ -1,11 +1,10 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {DataTableComponent} from './data-table.component';
-import {FlattenService} from '../../services/flatten.service';
-import {DataSource} from '@angular/cdk/collections';
-import SpyObj = jasmine.SpyObj;
 import {of} from 'rxjs';
 import {PaginatedDataSource} from '../../data-sources/paginated-data-source';
+import {FlattenService} from '../../services/flatten.service';
+
+import {DataTableComponent} from './data-table.component';
+import SpyObj = jasmine.SpyObj;
 
 describe('DataTableComponent', () => {
   let component: DataTableComponent;

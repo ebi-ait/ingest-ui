@@ -1,12 +1,12 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Project, ProjectColumn} from '../../models/project';
-import {$enum} from 'ts-enum-util';
 import {formatDate} from '@angular/common';
-import {AuthService} from '../../services/auth.service';
+import {Component, Input, OnInit} from '@angular/core';
 import {Observable, of} from 'rxjs';
-import {IngestService} from '../../services/ingest.service';
-import {Account} from '../../../core/account';
 import {concatMap, tap} from 'rxjs/operators';
+import {$enum} from 'ts-enum-util';
+import {Account} from '../../../core/account';
+import {Project, ProjectColumn} from '../../models/project';
+import {AuthService} from '../../services/auth.service';
+import {IngestService} from '../../services/ingest.service';
 
 
 @Component({

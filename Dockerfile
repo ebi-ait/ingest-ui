@@ -11,12 +11,13 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 # install and cache app dependencies
 COPY ./client/package.json /app/package.json
-COPY ./client/package-lock.json /app/package-lock.json
-RUN npm install
+COPY ./client/yarn.lock /app/yarn.lock
+COPY ./client/.snyk /app/.snyk
+RUN yarn install --frozen-lockfile
 
 # add app
 COPY ./client /app
-RUN npm install
+RUN yarn install --frozen-lockfile
 
 # build app
 RUN ng build -c=env

@@ -1,13 +1,15 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Observable} from 'rxjs';
+import {Account} from '../core/account';
+import {MetadataFormConfig} from '../metadata-schema-form/models/metadata-form-config';
+import getLayout from '../project-create-edit/components/project-metadata-form/layout';
+import * as ingestSchema from '../project-create-edit/schemas/project-ingest-schema.json';
+// TODO refactor these imports
+// Ideally the project "view" components (this one) should be in the same module as the project edit components
+import * as metadataSchema from '../project-create-edit/schemas/project-metadata-schema.json';
 import {Project} from '../shared/models/project';
 import {AlertService} from '../shared/services/alert.service';
-import * as metadataSchema from '../project-form/project-metadata-schema.json';
-import * as ingestSchema from '../project-form/project-ingest-schema.json';
-import {layout} from '../project-form/layout';
-import {MetadataFormConfig} from '../metadata-schema-form/models/metadata-form-config';
-import {Observable} from 'rxjs';
 import {IngestService} from '../shared/services/ingest.service';
-import {Account} from '../core/account';
 
 
 @Component({
@@ -36,15 +38,12 @@ export class ProjectSummaryComponent implements OnInit {
     this.userAccount$ = this.ingestService.getUserAccount();
     this.userAccount$
       .subscribe((account) => {
-        const userIsWrangler = account.isWrangler();
-        if (!userIsWrangler) {
-          layout.tabs = layout.tabs.filter(tab => tab.key !== 'project_admin');
-        }
+
         this.config = {
           hideFields: ['describedBy', 'schema_version', 'schema_type', 'provenance'],
           viewMode: true,
           removeEmptyFields: true,
-          layout: layout
+          layout: getLayout(false, account.isWrangler())
         };
         this.userAccount = account;
       });

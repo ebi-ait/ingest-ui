@@ -1,5 +1,5 @@
-import {MetadataFormItemDirective} from './metadata-form-item.directive';
 import {ViewContainerRef} from '@angular/core';
+import {MetadataFormItemDirective} from './metadata-form-item.directive';
 
 describe('MetadataFieldDirective', () => {
   let containerSpy: jasmine.SpyObj<ViewContainerRef>;

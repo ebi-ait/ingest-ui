@@ -1,8 +1,8 @@
 import {Observable} from 'rxjs';
-import {PaginatedEndpoint} from '../models/paginatedEndpoint';
 import {pluck} from 'rxjs/operators';
-import {SimpleDataSource} from './simple-data-source';
 import {Page, PagedData} from '../models/page';
+import {PaginatedEndpoint} from '../models/paginatedEndpoint';
+import {SimpleDataSource} from './simple-data-source';
 
 export class PaginatedDataSource<T> extends SimpleDataSource<PagedData<T>> {
   public page$: Observable<Page>;

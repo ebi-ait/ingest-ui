@@ -1,8 +1,8 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FlattenService} from '../../services/flatten.service';
-import {PageEvent} from './ngx/page-event';
 import {PaginatedDataSource} from '../../data-sources/paginated-data-source';
+import {FlattenService} from '../../services/flatten.service';
 import Utils from '../../utils';
+import {PageEvent} from './ngx/page-event';
 
 @Component({
   selector: 'app-data-table',

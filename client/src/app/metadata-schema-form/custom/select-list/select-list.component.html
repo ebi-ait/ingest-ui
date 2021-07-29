@@ -5,16 +5,21 @@
   </div>
   <div></div>
   <div *ngIf="!disabled">
-    <select class="vf-form__select" id="{{id}}" [disabled]="disabled" (change)="onSelectedValueChange($event.target.value)">
+    <select
+      [class]="error ? 'vf-form__select force_invalid': 'vf-form__select'"
+      id="{{id}}"
+      [disabled]="disabled"
+      (change)="onSelectedValueChange($event.target.value)"
+    >
       <option *ngIf="!removeBlankOption" [defaultSelected]="true"></option>
       <option *ngFor="let option of options" [defaultSelected]="(value ? value : placeholder) === option" [ngValue]="option">
         {{option}}
       </option>
     </select>
+    <p class="vf-form__helper vf-form__helper--error">{{error}}</p>
   </div>
   <span *ngIf="disabled" class="content read-only" id="{{id}}">{{value}}</span>
   <div *ngIf="!disabled" >
     <p *ngIf="helperText" class="vf-form__helper" [innerHtml]="helperText"></p>
-    <p class="vf-form__helper vf-form__helper--error">{{error}}</p>
   </div>
 </div>

@@ -1,13 +1,13 @@
-import {OntologyInputComponent} from './ontology-input.component';
-import {OntologyService} from '../../../shared/services/ontology.service';
-import {Metadata} from '../../models/metadata';
-import {JsonSchema} from '../../models/json-schema';
 import {AbstractControl} from '@angular/forms';
-import {MetadataFormHelper} from '../../models/metadata-form-helper';
-import {MetadataFormService} from '../../metadata-form.service';
 import {OlsHttpResponse} from '../../../shared/models/ols';
 import {Ontology} from '../../../shared/models/ontology';
+import {OntologyService} from '../../../shared/services/ontology.service';
+import {MetadataFormService} from '../../metadata-form.service';
+import {JsonSchema} from '../../models/json-schema';
+import {Metadata} from '../../models/metadata';
+import {MetadataFormHelper} from '../../models/metadata-form-helper';
 import {MetadataRegistry} from '../../models/metadata-registry';
+import {OntologyInputComponent} from './ontology-input.component';
 
 describe('OntologyInputComponent', () => {
   let olsSvc: jasmine.SpyObj<OntologyService>;

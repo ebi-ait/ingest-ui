@@ -1,15 +1,15 @@
 import {async, ComponentFixture, fakeAsync, flushMicrotasks, TestBed} from '@angular/core/testing';
-import {RegistrationComponent} from './registration.component';
-import {RegistrationService, RegistrationErrorCode, RegistrationFailed} from '../core/registration.service';
-import {AaiService} from '../aai/aai.service';
-import {User} from 'oidc-client';
-import {of} from 'rxjs';
 import {FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
-import SpyObj = jasmine.SpyObj;
-import createSpyObj = jasmine.createSpyObj;
-import createSpy = jasmine.createSpy;
+import {User} from 'oidc-client';
+import {of} from 'rxjs';
+import {AaiService} from '../aai/aai.service';
 import {Account} from '../core/account';
+import {RegistrationErrorCode, RegistrationFailed, RegistrationService} from '../core/registration.service';
+import {RegistrationComponent} from './registration.component';
+import createSpy = jasmine.createSpy;
+import createSpyObj = jasmine.createSpyObj;
+import SpyObj = jasmine.SpyObj;
 
 let registration: RegistrationComponent;
 let fixture: ComponentFixture<RegistrationComponent>;

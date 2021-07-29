@@ -1,0 +1,31 @@
+<h1 class="vf-text vf-text-heading--2">
+  New Project - start
+</h1>
+
+<app-vf-input
+  dataType="string"
+  [error]="showError(publicationDoiCtrl)"
+  [formControl]="publicationDoiCtrl"
+  [helperText]="'Get started by entering a DOI to help us retrieve your project information'"
+  [isRequired]="true"
+  [label]="'Publication DOI'"
+></app-vf-input>
+
+<button
+  (click)="submitForm()"
+  class="next-button vf-button vf-button--primary vf-button vf-u-margin__left--xxl">Next
+</button>
+
+
+<div class="vf-u-margin__top--xxl vf-u-padding__top--xxl">
+  <a class="vf-link" routerLink="/projects/register">
+    Don't have publication ID yet? Proceed to registering your project
+  </a>
+</div>
+
+<div *ngIf="projectInCache$ | async" class="vf-u-padding__top--xxl">
+  <a class="vf-link"
+  (click)="restoreProject()">
+    Restore your unsaved project
+  </a>
+</div>

@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
 import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {AaiSecurity} from '../../aai/aai.module';
-import {IngestService} from '../services/ingest.service';
 import {Account} from '../../core/account';
 import {AlertService} from '../services/alert.service';
-import {map} from 'rxjs/operators';
+import {IngestService} from '../services/ingest.service';
 
 @Injectable({
   providedIn: AaiSecurity,

@@ -1,8 +1,8 @@
-import {RegistrationService, RegistrationErrorCode, RegistrationFailed} from './registration.service';
-import {fakeAsync, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController, TestRequest} from '@angular/common/http/testing';
+import {fakeAsync, TestBed} from '@angular/core/testing';
 import {environment} from '../../environments/environment';
 import {Account} from './account';
+import {RegistrationErrorCode, RegistrationFailed, RegistrationService} from './registration.service';
 
 let accountService: RegistrationService;
 let remoteService: HttpTestingController;
