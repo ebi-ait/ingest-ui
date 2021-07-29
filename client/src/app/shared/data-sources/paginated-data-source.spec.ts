@@ -1,7 +1,8 @@
 import SpyObj = jasmine.SpyObj;
 import {of} from 'rxjs';
-import {PaginatedDataSource} from './paginated-data-source';
 import {IngestService} from '../services/ingest.service';
+import {PaginatedDataSource} from './paginated-data-source';
+
 describe('PaginatedDataSource', () => {
     let ingestSvc: SpyObj<IngestService>;
     let dataSource: PaginatedDataSource<any>;

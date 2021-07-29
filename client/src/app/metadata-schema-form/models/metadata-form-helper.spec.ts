@@ -1,12 +1,12 @@
-import {MetadataFormService} from '../metadata-form.service';
-import {JsonSchema} from './json-schema';
-import * as jsonSchema from '../test-json-files/test-json-schema.json';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Metadata} from './metadata';
+import {MetadataFormService} from '../metadata-form.service';
+import * as jsonSchema from '../test-json-files/test-json-schema.json';
+import {JsonSchema} from './json-schema';
 import {JsonSchemaProperty} from './json-schema-property';
+import {Metadata} from './metadata';
 import {MetadataFormHelper} from './metadata-form-helper';
-import {SchemaHelper} from './schema-helper';
 import {MetadataRegistry} from './metadata-registry';
+import {SchemaHelper} from './schema-helper';
 
 describe('MetadataFormHelper', () => {
 

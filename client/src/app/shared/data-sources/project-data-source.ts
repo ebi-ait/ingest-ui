@@ -1,8 +1,8 @@
 import {Observable} from 'rxjs';
 import {pluck} from 'rxjs/operators';
 import {PaginatedEndpoint} from '../models/paginatedEndpoint';
-import {MetadataDataSource} from './metadata-data-source';
 import {Project} from '../models/project';
+import {MetadataDataSource} from './metadata-data-source';
 
 export class ProjectDataSource extends MetadataDataSource<Project> {
     public wranglingState$: Observable<string>;

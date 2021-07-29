@@ -1,7 +1,7 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ErrorComponent } from './error.component';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {ActivatedRoute} from '@angular/router';
+
+import {ErrorComponent} from './error.component';
 
 describe('ErrorComponent', () => {
   let component: ErrorComponent;

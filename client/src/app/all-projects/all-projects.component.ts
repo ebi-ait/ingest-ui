@@ -1,13 +1,13 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {Account} from '../core/account';
+import ingestSchema from '../project-create-edit/schemas/project-ingest-schema.json';
+import {ProjectDataSource} from '../shared/data-sources/project-data-source';
+import {PagedData} from '../shared/models/page';
 import {Project, ProjectColumn} from '../shared/models/project';
 import {IngestService} from '../shared/services/ingest.service';
-import {map} from 'rxjs/operators';
-import {PagedData} from '../shared/models/page';
-import ingestSchema from '../project-create-edit/schemas/project-ingest-schema.json';
-import {Observable} from 'rxjs';
-import {Account} from '../core/account';
-import {ProjectDataSource} from '../shared/data-sources/project-data-source';
 
 @Component({
   selector: 'app-all-projects',

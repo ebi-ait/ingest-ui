@@ -1,8 +1,8 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { BaseInputComponent } from './base-input.component';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {JsonSchemaProperty} from '../../models/json-schema-property';
 import {Metadata} from '../../models/metadata';
+
+import {BaseInputComponent} from './base-input.component';
 
 describe('BaseInputComponent', () => {
   let component: BaseInputComponent;

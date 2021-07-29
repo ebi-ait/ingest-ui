@@ -1,10 +1,10 @@
 import {AccessionFieldGroupComponent} from '../accession-field-group/accession-field-group.component';
-import {PublicationFieldGroupComponent} from '../publication-field-group/publication-field-group.component';
-import {ContactFieldGroupComponent} from '../contact-field-group/contact-field-group.component';
-import {ProjectRegistrationSaveComponent} from '../project-registration-summary/project-registration-save.component';
-import {ProjectIdComponent} from '../project-id/project-id.component';
-import {FunderFieldGroupComponent} from '../funder-field-group/funder-field-group.component';
 import {AdminAreaComponent} from '../admin-area/admin-area.component';
+import {ContactFieldGroupComponent} from '../contact-field-group/contact-field-group.component';
+import {FunderFieldGroupComponent} from '../funder-field-group/funder-field-group.component';
+import {ProjectIdComponent} from '../project-id/project-id.component';
+import {ProjectRegistrationSaveComponent} from '../project-registration-summary/project-registration-save.component';
+import {PublicationFieldGroupComponent} from '../publication-field-group/publication-field-group.component';
 
 // Factory function to get the full layout stops any side effects from editing the layout
 const getFullLayout = () => ({

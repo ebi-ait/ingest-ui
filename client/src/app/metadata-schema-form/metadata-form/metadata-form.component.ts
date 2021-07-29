@@ -1,11 +1,11 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormGroup} from '@angular/forms';
+import {Observable, of} from 'rxjs';
 import {MetadataFormService} from '../metadata-form.service';
 import {JsonSchema} from '../models/json-schema';
-import {MetadataFormConfig} from '../models/metadata-form-config';
 import {MetadataForm} from '../models/metadata-form';
+import {MetadataFormConfig} from '../models/metadata-form-config';
 import {MetadataFormTab} from '../models/metadata-form-layout';
-import {Observable, of} from 'rxjs';
 
 @Component({
   selector: 'app-metadata-form',

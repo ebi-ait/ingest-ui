@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {AbstractControl, FormArray, FormControl} from '@angular/forms';
 import {Observable} from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
 import {Ontology} from '../../../shared/models/ontology';
 import {MetadataFormHelper} from '../../models/metadata-form-helper';
-import {map, startWith} from 'rxjs/operators';
 import {BaseInputComponent} from '../base-input/base-input.component';
 
 @Component({

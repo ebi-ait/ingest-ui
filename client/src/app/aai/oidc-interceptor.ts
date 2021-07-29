@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
 import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
-import {environment} from '../../environments/environment';
-import {AaiService} from './aai.service';
-import {AaiSecurity} from './aai.module';
+import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {concatMap} from 'rxjs/operators';
+import {environment} from '../../environments/environment';
+import {AaiSecurity} from './aai.module';
+import {AaiService} from './aai.service';
 
 @Injectable({
   providedIn: AaiSecurity,

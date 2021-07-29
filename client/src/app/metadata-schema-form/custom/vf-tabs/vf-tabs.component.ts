@@ -1,5 +1,14 @@
-import {AfterContentInit, Component, EventEmitter, Output, Input, SimpleChanges, OnChanges} from '@angular/core';
-import {ContentChildren, QueryList} from '@angular/core';
+import {
+  AfterContentInit,
+  Component,
+  ContentChildren,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  QueryList,
+  SimpleChanges
+} from '@angular/core';
 import {VfTabComponent} from '../vf-tab/vf-tab.component';
 
 @Component({

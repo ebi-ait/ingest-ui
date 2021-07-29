@@ -1,7 +1,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormControl} from '@angular/forms';
 
 import {ContactNameFieldComponent} from './contact-name-field.component';
-import {FormControl} from '@angular/forms';
 
 describe('ContactNameFieldComponent', () => {
   let component: ContactNameFieldComponent;

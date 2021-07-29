@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { GlobalFooterComponent } from './global-footer.component';
+import {GlobalFooterComponent} from './global-footer.component';
 
 describe('GlobalFooterComponent', () => {
   let component: GlobalFooterComponent;

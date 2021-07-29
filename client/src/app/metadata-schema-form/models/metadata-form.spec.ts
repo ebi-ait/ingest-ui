@@ -1,10 +1,10 @@
+import {FormArray, FormControl, FormGroup} from '@angular/forms';
+import {MetadataFormService} from '../metadata-form.service';
 import * as jsonSchema from '../test-json-files/test-json-schema.json';
 import * as json from '../test-json-files/test-json.json';
-import {FormArray, FormControl, FormGroup} from '@angular/forms';
 import {JsonSchema} from './json-schema';
 import {JsonSchemaProperty} from './json-schema-property';
 import {MetadataForm} from './metadata-form';
-import {MetadataFormService} from '../metadata-form.service';
 import {MetadataFormConfig} from './metadata-form-config';
 
 describe('MetadataForm', () => {

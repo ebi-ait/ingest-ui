@@ -1,8 +1,8 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormControl} from '@angular/forms';
+import {MetadataForm} from '../../metadata-schema-form/models/metadata-form';
 
 import {ExperimentDetailGroupComponent} from './experiment-detail-group.component';
-import {MetadataForm} from '../../metadata-schema-form/models/metadata-form';
-import {FormControl} from '@angular/forms';
 
 describe('ExperimentGroupComponent', () => {
   let component: ExperimentDetailGroupComponent;

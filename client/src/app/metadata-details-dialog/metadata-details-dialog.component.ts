@@ -1,15 +1,15 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {ActivatedRoute} from '@angular/router';
+import isEqual from 'lodash/isEqual';
+import {MetadataFormComponent} from '../metadata-schema-form/metadata-form/metadata-form.component';
 import {MetadataFormConfig} from '../metadata-schema-form/models/metadata-form-config';
 import {MetadataFormLayout, MetadataFormTab} from '../metadata-schema-form/models/metadata-form-layout';
-import {ActivatedRoute} from '@angular/router';
-import {IngestService} from '../shared/services/ingest.service';
-import {SchemaService} from '../shared/services/schema.service';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {LoaderService} from '../shared/services/loader.service';
 import {MetadataDocument} from '../shared/models/metadata-document';
-import {MetadataFormComponent} from '../metadata-schema-form/metadata-form/metadata-form.component';
 import {AlertService} from '../shared/services/alert.service';
-import isEqual from 'lodash/isEqual';
+import {IngestService} from '../shared/services/ingest.service';
+import {LoaderService} from '../shared/services/loader.service';
+import {SchemaService} from '../shared/services/schema.service';
 
 @Component({
   selector: 'app-metadata-details',

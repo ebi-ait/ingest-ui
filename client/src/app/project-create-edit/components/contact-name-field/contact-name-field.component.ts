@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Metadata} from '../../../metadata-schema-form/models/metadata';
 import {AbstractControl, FormControl, Validators} from '@angular/forms';
+import {Metadata} from '../../../metadata-schema-form/models/metadata';
 
 @Component({
   selector: 'app-contact-name-field',

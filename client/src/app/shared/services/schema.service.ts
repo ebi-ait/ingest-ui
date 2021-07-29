@@ -1,11 +1,11 @@
-import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {environment} from '../../../environments/environment';
-import {IngestService} from './ingest.service';
-import {MetadataSchema} from '../models/metadata-schema';
+import {Injectable} from '@angular/core';
 import {Observable, of} from 'rxjs';
-import {BrokerService} from './broker.service';
 import {map, tap} from 'rxjs/operators';
+import {environment} from '../../../environments/environment';
+import {MetadataSchema} from '../models/metadata-schema';
+import {BrokerService} from './broker.service';
+import {IngestService} from './ingest.service';
 
 @Injectable()
 export class SchemaService {
