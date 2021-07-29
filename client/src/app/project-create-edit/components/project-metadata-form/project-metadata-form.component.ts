@@ -13,7 +13,6 @@ import {LoaderService} from '../../../shared/services/loader.service';
 import {SchemaService} from '../../../shared/services/schema.service';
 import * as ingestSchema from '../../schemas/project-ingest-schema.json';
 import * as metadataSchema from '../../schemas/project-metadata-schema.json';
-import {AutofillProjectService} from '../../services/autofill-project.service';
 import {ProjectCacheService} from '../../services/project-cache.service';
 import getLayout from './layout';
 
@@ -51,7 +50,6 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
               private alertService: AlertService,
               private loaderService: LoaderService,
               private schemaService: SchemaService,
-              private autofillProjectService: AutofillProjectService,
               private projectCacheService: ProjectCacheService,
   ) {
   }

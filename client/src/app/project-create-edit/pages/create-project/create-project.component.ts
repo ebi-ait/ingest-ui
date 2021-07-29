@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Observable, of, Subject} from 'rxjs';
+import {from, Observable, of, Subject} from 'rxjs';
 import {delay, map, takeUntil} from 'rxjs/operators';
 import {environment} from "../../../../environments/environment";
 import {IngestService} from '../../../shared/services/ingest.service';
@@ -38,7 +38,7 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
     if (queryParams.has(Identifier.DOI)) {
       this.project$ = this.autofillProjectDetails(Identifier.DOI, queryParams.get(Identifier.DOI));
     } else if (queryParams.has('restore')) {
-      this.project$ = this.projectCacheService.getProject();
+      this.project$ = from(this.projectCacheService.getProject());
     } else {
       this.project$ = of(EMPTY_PROJECT);
     }
@@ -94,8 +94,9 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
       takeUntil(this.unsubscribe)
     ).subscribe(
       (formValue) => {
-        console.log('cached project to local storage');
-        this.projectCacheService.saveProject(formValue['value']);
+        this.projectCacheService.saveProject(formValue['value']).then(_ => {
+          console.log('cached project to local storage');
+        });
       }
     );
   }

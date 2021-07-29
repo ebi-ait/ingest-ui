@@ -26,7 +26,7 @@ export class AutofillProjectService {
     );
   }
 
-  createAutoFillProject(result: EuropePMCResult): AutofillProject {
+  private createAutoFillProject(result: EuropePMCResult): AutofillProject {
     return {
       title: result.title,
       description: this.removeHTMLTags(result.abstractText),
@@ -44,7 +44,7 @@ export class AutofillProjectService {
     };
   }
 
-  queryEuropePMC(queryId: string, queryString: string): Observable<EuropePMCHttpSearchResponse> {
+  private queryEuropePMC(queryId: string, queryString: string): Observable<EuropePMCHttpSearchResponse> {
     const params = {
       query: queryId + ':' + queryString,
       resultType: 'core',
@@ -53,7 +53,7 @@ export class AutofillProjectService {
     return this.http.get<EuropePMCHttpSearchResponse>(this.API_URL, {params});
   }
 
-  removeHTMLTags(input: string): string {
+  private removeHTMLTags(input: string): string {
     return input.replace(/(<([^>]+)>)/gi, '');
   }
 }

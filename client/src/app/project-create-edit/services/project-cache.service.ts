@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AaiService} from '../../aai/aai.service';
 import {Project} from '../../shared/models/project';
@@ -9,20 +8,24 @@ export class ProjectCacheService {
 
   constructor(private aaiService: AaiService) {}
 
-  saveProject(project: Project) {
-    this.getProjectKey().subscribe(projectKey => localStorage.setItem(projectKey, JSON.stringify(project)));
+  async saveProject(project: Project): Promise<string> {
+    const projectKey = await this.getProjectKey();
+    localStorage.setItem(projectKey, JSON.stringify(project));
+    return projectKey;
   }
 
-  getProjectKey(): Observable<string> {
-      return this.aaiService.getUser().pipe(map(user => (`${user?.profile?.email ?? ''}-project`)));
+  private async getProjectKey(): Promise<string> {
+      return this.aaiService.getUser().pipe(map(user => (`${user?.profile?.email ?? ''}-project`))).toPromise();
   }
 
-  removeProject() {
-    this.getProjectKey().subscribe(projectKey => localStorage.removeItem(projectKey));
+  async removeProject(): Promise<string> {
+    const projectKey = await this.getProjectKey();
+    localStorage.removeItem(projectKey);
+    return projectKey;
   }
 
-  getProject(): Observable<Project> {
-    return this.getProjectKey().pipe(map(projectKey => JSON.parse(localStorage.getItem(projectKey))));
+  getProject(): Promise<Project> {
+    return this.getProjectKey().then(projectKey => JSON.parse(localStorage.getItem(projectKey)));
   }
 }
 
