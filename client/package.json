@@ -76,5 +76,9 @@
     "typescript": "4.3.5",
     "url-parse": ">=1.5.3"
   },
-  "snyk": true
+  "snyk": true,
+  "engines": {
+    "npm": "please-use-yarn",
+    "yarn": ">= 1.22.10"
+  }
 }
