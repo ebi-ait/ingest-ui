@@ -1,10 +1,10 @@
-import {TemplateGeneratorService} from './template-generator.service';
 import {HttpClient, HttpResponse} from '@angular/common/http';
-import {BrokerService} from '../shared/services/broker.service';
-import {of} from 'rxjs';
-import {TemplateSpecification} from './template-questionnaire.data';
 import {fakeAsync, tick} from '@angular/core/testing';
+import {of} from 'rxjs';
 import {delay} from 'rxjs/operators';
+import {BrokerService} from '../shared/services/broker.service';
+import {TemplateGeneratorService} from './template-generator.service';
+import {TemplateSpecification} from './template-questionnaire.data';
 
 describe('TemplateGeneratorService', () => {
   let service: TemplateGeneratorService;

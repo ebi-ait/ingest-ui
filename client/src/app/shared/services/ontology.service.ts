@@ -1,11 +1,11 @@
-import {Injectable} from '@angular/core';
-import {environment} from '../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 import {combineLatest, Observable, of} from 'rxjs';
-import {OlsHttpResponse} from '../models/ols';
-import {JsonSchema} from '../../metadata-schema-form/models/json-schema';
-import {Ontology} from '../models/ontology';
 import {distinctUntilChanged, map, switchMap} from 'rxjs/operators';
+import {environment} from '../../../environments/environment';
+import {JsonSchema} from '../../metadata-schema-form/models/json-schema';
+import {OlsHttpResponse} from '../models/ols';
+import {Ontology} from '../models/ontology';
 
 
 @Injectable({

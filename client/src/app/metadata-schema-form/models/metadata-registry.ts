@@ -1,7 +1,7 @@
 import {JsonSchema} from './json-schema';
+import {JsonSchemaProperty} from './json-schema-property';
 import {Metadata} from './metadata';
 import {MetadataFormConfig} from './metadata-form-config';
-import {JsonSchemaProperty} from './json-schema-property';
 import {SchemaHelper} from './schema-helper';
 
 const INPUT_TYPE = {

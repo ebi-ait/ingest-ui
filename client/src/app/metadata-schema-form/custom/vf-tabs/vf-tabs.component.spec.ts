@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { VfTabsComponent } from './vf-tabs.component';
+import {VfTabsComponent} from './vf-tabs.component';
 
 describe('VfTabsComponent', () => {
   let component: VfTabsComponent;

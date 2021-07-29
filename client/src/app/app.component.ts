@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {LoaderService} from './shared/services/loader.service';
-import {AaiService} from './aai/aai.service';
-import {IngestService} from './shared/services/ingest.service';
-import {BehaviorSubject, Observable} from 'rxjs';
 import {Profile} from 'oidc-client';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {AaiService} from './aai/aai.service';
 import {Account} from './core/account';
+import {IngestService} from './shared/services/ingest.service';
+import {LoaderService} from './shared/services/loader.service';
 
 
 @Component({

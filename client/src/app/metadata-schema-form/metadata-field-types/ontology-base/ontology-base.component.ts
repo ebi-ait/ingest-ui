@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {Ontology} from '../../../shared/models/ontology';
 import {FormControl} from '@angular/forms';
-import {OntologyService} from '../../../shared/services/ontology.service';
 import {Observable} from 'rxjs';
-import {environment} from '../../../../environments/environment';
 import {debounceTime, distinctUntilChanged, filter, startWith, switchMap} from 'rxjs/operators';
-import {BaseInputComponent} from '../base-input/base-input.component';
+import {environment} from '../../../../environments/environment';
+import {Ontology} from '../../../shared/models/ontology';
+import {OntologyService} from '../../../shared/services/ontology.service';
 import {MetadataFormService} from '../../metadata-form.service';
+import {BaseInputComponent} from '../base-input/base-input.component';
 
 @Component({
   selector: 'app-ontology-base',

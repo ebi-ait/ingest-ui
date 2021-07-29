@@ -1,6 +1,6 @@
-import {Metadata} from './metadata';
 import * as jsonSchema from '../test-json-files/test-json-schema.json';
 import {JsonSchemaProperty} from './json-schema-property';
+import {Metadata} from './metadata';
 
 describe('Metadata', () => {
   beforeEach(() => {

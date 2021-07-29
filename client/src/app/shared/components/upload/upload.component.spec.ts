@@ -1,16 +1,16 @@
-import {ProjectFormComponent} from '../../../project-form/project-form.component';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {of, throwError} from 'rxjs';
-import {RouterTestingModule} from '@angular/router/testing';
-import {ROUTES} from '../../../app.routes';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {Router} from '@angular/router';
-import {AlertService} from '../../services/alert.service';
-import {LoaderService} from '../../services/loader.service';
-import SpyObj = jasmine.SpyObj;
-import {UploadComponent} from './upload.component';
-import {BrokerService} from '../../services/broker.service';
 import {ElementRef} from '@angular/core';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {Router} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {of, throwError} from 'rxjs';
+import {ROUTES} from '../../../app.routes';
+import {CreateProjectComponent} from '../../../project-create-edit/pages/create-project/create-project.component';
+import {AlertService} from '../../services/alert.service';
+import {BrokerService} from '../../services/broker.service';
+import {LoaderService} from '../../services/loader.service';
+import {UploadComponent} from './upload.component';
+import SpyObj = jasmine.SpyObj;
 
 
 describe('UploadComponent', () => {
@@ -51,7 +51,7 @@ describe('UploadComponent', () => {
         {provide: LoaderService, useValue: loaderSvc},
         {provide: Router, useValue: router}
       ],
-      declarations: [ProjectFormComponent]
+      declarations: [CreateProjectComponent]
     })
       .compileComponents();
   }));

@@ -1,12 +1,12 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MatPaginator, PageEvent} from '@angular/material/paginator';
+import {MatPaginator} from '@angular/material/paginator';
 import {AaiService} from '../aai/aai.service';
-import {IngestService} from '../shared/services/ingest.service';
-import {Project, ProjectColumn} from '../shared/models/project';
 import {Account} from '../core/account';
 import {PaginatedDataSource} from '../shared/data-sources/paginated-data-source';
-import {PagedData} from '../shared/models/page';
 import {SimpleDataSource} from '../shared/data-sources/simple-data-source';
+import {PagedData} from '../shared/models/page';
+import {Project, ProjectColumn} from '../shared/models/project';
+import {IngestService} from '../shared/services/ingest.service';
 
 @Component({
   selector: 'app-my-projects',

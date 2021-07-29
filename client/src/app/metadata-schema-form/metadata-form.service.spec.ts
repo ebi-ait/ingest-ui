@@ -1,6 +1,6 @@
 import {MetadataFormService} from './metadata-form.service';
-import * as jsonSchema from './test-json-files/test-json-schema.json';
 import {JsonSchema} from './models/json-schema';
+import * as jsonSchema from './test-json-files/test-json-schema.json';
 
 describe('MetadataFormService', () => {
 

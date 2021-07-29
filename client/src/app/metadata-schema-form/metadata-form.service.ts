@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {JsonSchema} from './models/json-schema';
-import {MetadataFormConfig} from './models/metadata-form-config';
 import {MetadataForm} from './models/metadata-form';
+import {MetadataFormConfig} from './models/metadata-form-config';
 import {MetadataFormHelper} from './models/metadata-form-helper';
 
 

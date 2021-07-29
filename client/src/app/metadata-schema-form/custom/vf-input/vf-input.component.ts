@@ -1,7 +1,7 @@
 import {Component, forwardRef, Input, OnInit} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {FormItemData} from '../../form-item/form-item.component';
 import {toTitleCase} from 'codelyzer/util/utils';
+import {FormItemData} from '../../form-item/form-item.component';
 
 export const VF_INPUT_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,

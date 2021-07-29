@@ -1,20 +1,20 @@
+import {DatePipe} from '@angular/common';
+import {HttpErrorResponse} from '@angular/common/http';
 import {Component, OnInit} from '@angular/core';
-import * as questionnaireSchema from './template-questionnaire-schema.json';
+import {Router} from '@angular/router';
+import {saveAs} from 'file-saver';
 import {MetadataFormConfig} from '../../metadata-schema-form/models/metadata-form-config';
 import {MetadataFormLayout} from '../../metadata-schema-form/models/metadata-form-layout';
-import {SpecimenGroupComponent} from '../specimen-group/specimen-group.component';
+import {AlertService} from '../../shared/services/alert.service';
+import {LoaderService} from '../../shared/services/loader.service';
 import {DonorGroupComponent} from '../donor-group/donor-group.component';
-import {TechnologyGroupComponent} from '../technology-group/technology-group.component';
 import {ExperimentDetailGroupComponent} from '../experiment-detail-group/experiment-detail-group.component';
+import {SpecimenGroupComponent} from '../specimen-group/specimen-group.component';
+import {TechnologyGroupComponent} from '../technology-group/technology-group.component';
+import {TemplateGeneratorService} from '../template-generator.service';
 
 import {QuestionnaireData, TemplateSpecification} from '../template-questionnaire.data';
-import {TemplateGeneratorService} from '../template-generator.service';
-import {saveAs} from 'file-saver';
-import {Router} from '@angular/router';
-import {LoaderService} from '../../shared/services/loader.service';
-import {AlertService} from '../../shared/services/alert.service';
-import {HttpErrorResponse} from '@angular/common/http';
-import {DatePipe} from '@angular/common';
+import * as questionnaireSchema from './template-questionnaire-schema.json';
 
 export const layout: MetadataFormLayout = {
   tabs: [

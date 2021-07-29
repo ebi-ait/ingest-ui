@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Metadata} from '../../models/metadata';
 import {AbstractControl, FormControl} from '@angular/forms';
 import {FormItemData} from '../../form-item/form-item.component';
+import {Metadata} from '../../models/metadata';
 
 @Component({
   selector: 'app-base-input',
