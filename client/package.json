@@ -7,7 +7,7 @@
     "local": "ng serve",
     "dev": "ng serve -c dev",
     "integration": "ng serve -c integration",
-    "staging": "ng serve -c staging",
+    "staging": "ng ser  ve -c staging",
     "prod": "ng serve -c production",
     "start": "ng serve",
     "build": "ng build -c=env",
@@ -79,6 +79,6 @@
   "snyk": true,
   "engines": {
     "npm": "please-use-yarn",
-    "yarn": ">= 1.22.10"
+    "yarn": ">= 1.22.5"
   }
 }

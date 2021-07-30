@@ -24,6 +24,6 @@
   "snyk": true,
   "engines": {
     "npm": "please-use-yarn",
-    "yarn": ">= 1.22.10"
+    "yarn": ">= 1.22.5"
   }
 }
