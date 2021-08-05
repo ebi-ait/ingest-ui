@@ -27,7 +27,7 @@ describe('AllProjectsComponent', () => {
 
   it('should call onClearSearch', fakeAsync(() => {
     spyOn(component, 'onClearSearch');
-    const button = fixture.debugElement.nativeElement.querySelector('button');
+    const button = fixture.nativeElement.querySelector('button');
     button.click();
     tick();
     expect(component.onClearSearch).toHaveBeenCalled();
