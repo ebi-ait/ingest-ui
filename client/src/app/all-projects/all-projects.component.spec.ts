@@ -39,4 +39,8 @@ describe('AllProjectsComponent', () => {
   });
 });
 
-class MockIngestService {}
+class MockIngestService {
+  getWranglers() {}
+
+  getFilteredProjects() {}
+}
