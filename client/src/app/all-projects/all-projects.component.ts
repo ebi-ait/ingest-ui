@@ -26,7 +26,7 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
     ProjectColumn.wranglingState
   ];
   isWrangler: Boolean = true;
-  searchText: string;
+  searchText = '';
 
   // MatPaginator Inputs
   pageSizeOptions: number[] = [5, 10, 20, 30];

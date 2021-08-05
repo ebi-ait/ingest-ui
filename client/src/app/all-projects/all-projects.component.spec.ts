@@ -25,10 +25,23 @@ describe('AllProjectsComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('empty searchText should hide clear button', () => {
+    expect(component.searchText).toBe('');
+    expect(fixture.nativeElement.querySelector('button')).toBeFalsy();
+  });
+
+  it('value in searchText should make clear button visible', () => {
+    component.searchText = 'sample search text';
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('button')).toBeTruthy();
+  });
+
   it('should call onClearSearch', fakeAsync(() => {
     spyOn(component, 'onClearSearch');
-    const button = fixture.nativeElement.querySelector('button');
-    button.click();
+    component.searchText = 'sample search text';
+    fixture.detectChanges();
+    const clearButton = fixture.nativeElement.querySelector('button');
+    clearButton.click();
     tick();
     expect(component.onClearSearch).toHaveBeenCalled();
   }));
