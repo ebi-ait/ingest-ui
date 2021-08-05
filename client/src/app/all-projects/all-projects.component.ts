@@ -88,6 +88,10 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
     this.dataSource.search(value);
   }
 
+  onClearSearch() {
+    this.searchText = '';
+  }
+
   onFilterByWranglingState($event) {
     this.dataSource.filterByWranglingState($event.value);
   }
