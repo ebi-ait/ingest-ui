@@ -10,7 +10,7 @@ describe('AllProjectsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ AllProjectsComponent],
-      providers: [ IngestService ]
+      providers: [ { provide: IngestService, useClass: MockIngestService } ]
     })
       .compileComponents();
   }));
@@ -38,3 +38,5 @@ describe('AllProjectsComponent', () => {
     expect(component.searchText).toBe('');
   });
 });
+
+class MockIngestService {}
