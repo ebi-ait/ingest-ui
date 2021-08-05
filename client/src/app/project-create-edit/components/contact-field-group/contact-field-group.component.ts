@@ -26,6 +26,7 @@ export class ContactFieldGroupComponent implements OnInit {
 
   contactFieldList = [
     'project.content.contributors.email',
+    'project.content.contributors.name',
     'project.content.contributors.institution',
     'project.content.contributors.country',
     'project.content.contributors.project_role',
