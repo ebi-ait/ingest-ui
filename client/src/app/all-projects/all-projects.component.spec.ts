@@ -49,6 +49,7 @@ describe('AllProjectsComponent', () => {
   it('#onClearSearch() should clear search text', () => {
     component.onClearSearch();
     expect(component.searchText).toBe('');
+    expect(fixture.nativeElement.querySelector('input').value).toBe('');
   });
 });
 
