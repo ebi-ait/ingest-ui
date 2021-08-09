@@ -25,7 +25,7 @@ describe('AllProjectsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('empty searchText should hide clear button', () => {
+  it('should hide clear button when searchText is empty', () => {
     expect(component.searchText).toBe('');
     expect(fixture.nativeElement.querySelector('button')).toBeFalsy();
   });
