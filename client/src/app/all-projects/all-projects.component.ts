@@ -26,6 +26,7 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
     ProjectColumn.wranglingState
   ];
   isWrangler: Boolean = true;
+  searchText = '';
 
   // MatPaginator Inputs
   pageSizeOptions: number[] = [5, 10, 20, 30];
@@ -85,6 +86,10 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
 
   onSearch(value) {
     this.dataSource.search(value);
+  }
+
+  onClearSearch() {
+    this.searchText = '';
   }
 
   onFilterByWranglingState($event) {
