@@ -141,7 +141,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     }
   }
 
-  public displaySubmissionErrors(submissionEnvelope: SubmissionEnvelope) {
+  displaySubmissionErrors(submissionEnvelope: SubmissionEnvelope) {
     this.submissionErrors = submissionEnvelope['errors'];
     if (this.submissionErrors.length >= 0) {
       this.alertService.clear();
