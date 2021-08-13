@@ -34,8 +34,7 @@ describe('SubmissionComponent', () => {
   describe('displaySubmissionErrors', () => {
     it('clears error banners when there is no submission error', () => {
       // given
-      let submissionEnvelope: SubmissionEnvelope;
-      submissionEnvelope = {
+      const submissionEnvelope = {
         errors: []
       } as SubmissionEnvelope;
 
