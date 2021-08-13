@@ -5,4 +5,5 @@ export interface SubmissionEnvelope {
   submissionState: string;
   stagingDetails: Object;
   open: boolean;
+  errors: any;
 }
