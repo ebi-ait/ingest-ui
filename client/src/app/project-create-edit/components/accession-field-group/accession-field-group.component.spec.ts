@@ -97,6 +97,17 @@ describe('AccessionFieldGroupComponent', () => {
           'guidelines': 'Enter any EGA study or dataset accessions that relate to the project. Should start with EGAD or EGAS, study accession preferred.',
           'user_friendly': 'EGA Study/Dataset Accession(s)'
         },
+        'dbgap_accessions': {
+          'description': 'A list of database of Genotypes and Phenotypes (dbGaP) study accessions.',
+          'type': 'array',
+          'items': {
+            'type': 'string',
+            'pattern': 'phs[0-9]{6}(\\.v[0-9])?(\\.p[0-9])?'
+          },
+          'example': 'phs001997.v1.p1; phs001836',
+          'guidelines': 'Enter any dbGaP study accessions that relate to this project. Should start with phs, can contain the specific version information.',
+          'user_friendly': 'dbGaP Study Accession(s)'
+        },
       },
       'title': 'Project',
       'type': 'object'
@@ -112,7 +123,7 @@ describe('AccessionFieldGroupComponent', () => {
       'project.insdc_project_accessions',
       'project.insdc_study_accessions',
       'project.ega_accessions',
-      'project.content.dbgap_accessions',
+      'project.dbgap_accessions',
     ];
     component.defaultAccessionField = 'project.array_express_accessions';
 
