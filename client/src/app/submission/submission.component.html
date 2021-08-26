@@ -53,21 +53,21 @@
         <li *ngIf="validationSummary.invalidBiomaterials > 0">
           Biomaterials:
           <a href="javascript: void(0)"
-             (click)="navigateToTab(SubmissionTab.BIOMATERIALS, { dataSource: biomaterialsDataSource, filterState: 'Invalid'})">
+             (click)="navigateToTab(submissionTab.BIOMATERIALS, { dataSource: biomaterialsDataSource, filterState: 'Invalid'})">
             {{validationSummary.invalidBiomaterials}} error(s)
           </a>
         </li>
         <li *ngIf="validationSummary.invalidProcesses > 0">
           Processes:
           <a href="javascript: void(0)"
-             (click)="navigateToTab(SubmissionTab.PROCESSES, { dataSource: processesDataSource, filterState: 'Invalid' })">
+             (click)="navigateToTab(submissionTab.PROCESSES, { dataSource: processesDataSource, filterState: 'Invalid' })">
             {{validationSummary.invalidProcesses}} error(s)
           </a>
         </li>
         <li *ngIf="validationSummary.invalidProtocols > 0">
           Protocols:
           <a href="javascript: void(0)"
-             (click)="navigateToTab(SubmissionTab.PROTOCOLS, { dataSource: protocolsDataSource, filterState: 'Invalid' })">
+             (click)="navigateToTab(submissionTab.PROTOCOLS, { dataSource: protocolsDataSource, filterState: 'Invalid' })">
             {{validationSummary.invalidProtocols}} error(s)
           </a>
         </li>
@@ -75,7 +75,7 @@
           Data files:
           <ng-container *ngIf="validationSummary.fileMetadataErrors">
             <a href="javascript: void(0)"
-               (click)="navigateToTab(SubmissionTab.FILES, { dataSource: filesDataSource, filterState: 'Invalid Metadata'})">
+               (click)="navigateToTab(submissionTab.FILES, { dataSource: filesDataSource, filterState: 'Invalid Metadata'})">
               {{validationSummary.fileMetadataErrors}}
               <ng-container [ngPlural]="validationSummary.fileMetadataErrors">
                 <ng-template ngPluralCase="one">metadata error</ng-template>
@@ -86,7 +86,7 @@
           <ng-container *ngIf="validationSummary.fileMetadataErrors && validationSummary.fileErrors">,</ng-container>
           <ng-container *ngIf="validationSummary.fileErrors">
             <a href="javascript: void(0)"
-               (click)="navigateToTab(SubmissionTab.FILES, { dataSource: filesDataSource, filterState: 'Invalid File'})">
+               (click)="navigateToTab(submissionTab.FILES, { dataSource: filesDataSource, filterState: 'Invalid File'})">
               {{validationSummary.fileErrors}}
               <ng-container [ngPlural]="validationSummary.fileErrors">
                 <ng-template ngPluralCase="one">file error</ng-template>
@@ -100,7 +100,7 @@
           </ng-container>
           <ng-container *ngIf="validationSummary.missingFiles">
             <a href="javascript: void(0)"
-               (click)="navigateToTab(SubmissionTab.FILES, { dataSource: filesDataSource, filterState: 'Not Uploaded'})">
+               (click)="navigateToTab(submissionTab.FILES, { dataSource: filesDataSource, filterState: 'Not Uploaded'})">
               {{validationSummary.missingFiles}}
               <ng-container [ngPlural]="validationSummary.missingFiles">
                 <ng-template ngPluralCase="one">file missing</ng-template>

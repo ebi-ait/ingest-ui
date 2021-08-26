@@ -1,5 +1,5 @@
 import {BehaviorSubject, Observable, ReplaySubject, Subject, throwError, timer} from 'rxjs';
-import {catchError, retry, switchMap, takeWhile, tap} from 'rxjs/operators';
+import {catchError, mergeMap, retry, switchMap, takeWhile, tap} from 'rxjs/operators';
 import {DataSource} from '../models/data-source';
 import {Endpoint, QueryData} from '../models/paginatedEndpoint';
 
@@ -61,7 +61,7 @@ export class SimpleDataSource<T> implements  DataSource<T> {
       timer(0, pollInterval).pipe(
         tap(() => this.polling.next(true)),
         takeWhile(() => this.isPolling),
-        switchMap(() => {
+        mergeMap(() => {
           return observable$;
         }),
         tap(() => this.polling.next(false)),
