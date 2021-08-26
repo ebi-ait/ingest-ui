@@ -33,6 +33,7 @@ const getFullLayout = () => ({
             'project.content.insdc_project_accessions',
             'project.content.insdc_study_accessions',
             'project.content.ega_accessions',
+            'project.content.dbgap_accessions',
             'project.accessionDate',
             'project.releaseDate'
           ],

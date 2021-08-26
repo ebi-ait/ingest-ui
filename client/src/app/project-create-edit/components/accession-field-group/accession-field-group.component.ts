@@ -24,7 +24,8 @@ export class AccessionFieldGroupComponent implements OnInit {
     'project.content.geo_series_accessions',
     'project.content.insdc_project_accessions',
     'project.content.insdc_study_accessions',
-    'project.content.ega_accessions'
+    'project.content.ega_accessions',
+    'project.content.dbgap_accessions',
   ];
 
   defaultAccessionField = 'project.content.array_express_accessions';
