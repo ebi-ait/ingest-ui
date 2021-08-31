@@ -51,14 +51,15 @@ export class UploadComponent {
         next: data => {
           this.uploadResults$ = <any>data;
           const submissionUuid = this.uploadResults$['details']['submission_uuid'];
-          this.loaderService.display(false);
           this.alertService.success('Upload Success', this.uploadResults$['message'], true, true);
           this.router.navigate(['/submissions/detail'], {queryParams: {uuid: submissionUuid, project: this.projectUuid}});
+          this.loaderService.display(false);
+          fileBrowser.value = '';
         },
         error: err => {
+          this.loaderService.display(false);
           this.error$ = <any>err;
           this.alertService.error(this.error$['message'], this.error$['details']);
-          this.loaderService.display(false);
         }
       });
     } else {
