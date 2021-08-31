@@ -214,7 +214,7 @@ describe('AccessionFieldGroupComponent', () => {
       expect(insdcProjCtrl.value).toEqual([]);
       expect(dbgapCtrl.value).toEqual([]);
     });
-    it('should set the DBGAP accession field', () => {
+    it('should set the dbGaP accession field', () => {
       component.onProjectAccessionIdChange('phs001836');
       expect(dbgapCtrl.value).toEqual(['phs001836']);
 
