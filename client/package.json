@@ -7,7 +7,7 @@
     "local": "ng serve",
     "dev": "ng serve -c dev",
     "integration": "ng serve -c integration",
-    "staging": "ng ser  ve -c staging",
+    "staging": "ng serve -c staging",
     "prod": "ng serve -c production",
     "start": "ng serve",
     "build": "ng build -c=env",
