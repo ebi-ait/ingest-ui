@@ -1,6 +1,8 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormArray} from '@angular/forms';
+import {JsonSchema} from '../../../metadata-schema-form/models/json-schema';
 import {MetadataForm} from '../../../metadata-schema-form/models/metadata-form';
+import * as metadataSchema from '../../schemas/project-metadata-schema.json';
 
 import {AccessionFieldGroupComponent} from './accession-field-group.component';
 
@@ -24,94 +26,7 @@ describe('AccessionFieldGroupComponent', () => {
   }));
 
   beforeEach(() => {
-    const schema = {
-      '$id': 'https://schema.dev.data.humancellatlas.org/type/project/15.0.0/project',
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'additionalProperties': false,
-      'description': 'A project entity contains information about the overall project.',
-      'name': 'project',
-      'properties': {
-        'array_express_accessions': {
-          'description': 'An ArrayExpress accession.',
-          'example': 'E-AAAA-00',
-          'guidelines': 'Enter accession if project has been archived in ArrayExpress. Accession must start with E-.',
-          'items': {
-            'pattern': '^E-[A-Z]{4}-\\d+$',
-            'type': 'string'
-          },
-          'type': 'array',
-          'user_friendly': 'ArrayExpress accession'
-        },
-        'biostudies_accessions': {
-          'description': 'A BioStudies study accession.',
-          'example': 'S-EXMP1; S-HCAS33',
-          'guidelines': 'Enter accession if study has been archived in BioStudies.',
-          'items': {
-            'pattern': '^S-[A-Z]{4}\\d+$',
-            'type': 'string'
-          },
-          'type': 'array',
-          'user_friendly': 'BioStudies accession'
-        },
-        'geo_series_accessions': {
-          'description': 'A Gene Expression Omnibus (GEO) series accession.',
-          'example': 'GSE00000',
-          'guidelines': 'Enter accession if project has been archived in GEO. Accession must start with GSE.',
-          'items': {
-            'pattern': '^GSE\\d+$',
-            'type': 'string'
-          },
-          'type': 'array',
-          'user_friendly': 'GEO series accession'
-        },
-        'insdc_project_accessions': {
-          'description': 'An International Nucleotide Sequence Database Collaboration (INSDC) project accession.',
-          'example': 'PRJNS000000',
-          'guidelines': 'Enter accession if project has been archived. Accession can be from the DDBJ, NCBI, or EMBL-EBI and must start with PRJD, PRJN, or PRJE, respectively.',
-          'items': {
-            'pattern': '^PRJ[END][A-Z]\\d+$',
-            'type': 'string'
-          },
-          'type': 'array',
-          'user_friendly': 'INSDC project accession'
-        },
-        'insdc_study_accessions': {
-          'description': 'An International Nucleotide Sequence Database Collaboration (INSDC) study accession.',
-          'example': 'SRP000000',
-          'guidelines': 'Enter accession if study has been archived. Accession can be from the DDBJ, NCBI, or EMBL-EBI and must start with DRP, SRP, or ERP, respectively.',
-          'items': {
-            'pattern': '^[DES]RP\\d+$',
-            'type': 'string'
-          },
-          'type': 'array',
-          'user_friendly': 'INSDC study accession'
-        },
-        'ega_accessions': {
-          'description': 'A list of European Genome phenome Archive dataset or study accessions.',
-          'type': 'array',
-          'items': {
-            'type': 'string',
-            'pattern': 'EGA[DS][0-9]{11}'
-          },
-          'example': 'EGAS00000000001; EGAD00000000002',
-          'guidelines': 'Enter any EGA study or dataset accessions that relate to the project. Should start with EGAD or EGAS, study accession preferred.',
-          'user_friendly': 'EGA Study/Dataset Accession(s)'
-        },
-        'dbgap_accessions': {
-          'description': 'A list of database of Genotypes and Phenotypes (dbGaP) study accessions.',
-          'type': 'array',
-          'items': {
-            'type': 'string',
-            'pattern': 'phs[0-9]{6}(\\.v[0-9])?(\\.p[0-9])?'
-          },
-          'example': 'phs001997.v1.p1; phs001836',
-          'guidelines': 'Enter any dbGaP study accessions that relate to this project. Should start with phs, can contain the specific version information.',
-          'user_friendly': 'dbGaP Study Accession(s)'
-        },
-      },
-      'title': 'Project',
-      'type': 'object'
-    };
+    const schema = metadataSchema as JsonSchema;
     const metadataForm = new MetadataForm('project', schema);
     fixture = TestBed.createComponent(AccessionFieldGroupComponent);
     component = fixture.componentInstance;
