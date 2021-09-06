@@ -3,6 +3,7 @@ import {FormArray} from '@angular/forms';
 // TODO move these into shared
 import {MetadataForm} from '../../../metadata-schema-form/models/metadata-form';
 import {MetadataFormHelper} from '../../../metadata-schema-form/models/metadata-form-helper';
+import {accessionFields, defaultAccessionField} from '../project-metadata-form/layout';
 
 @Component({
   selector: 'app-accession-field-group',
@@ -18,16 +19,9 @@ export class AccessionFieldGroupComponent implements OnInit {
 
   accessionId: string;
 
-  accessionFields = [
-    'project.content.array_express_accessions',
-    'project.content.biostudies_accessions',
-    'project.content.geo_series_accessions',
-    'project.content.insdc_project_accessions',
-    'project.content.insdc_study_accessions',
-    'project.content.ega_accessions'
-  ];
+  accessionFields = accessionFields;
 
-  defaultAccessionField = 'project.content.array_express_accessions';
+  defaultAccessionField = defaultAccessionField;
 
   constructor() {
   }
