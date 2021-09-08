@@ -61,7 +61,7 @@ const getFullLayout = () => ({
       items: [
         {
           keys: [
-            'project.content.publications.title'
+            'project.content.publications'
           ],
           component: PublicationFieldGroupComponent
         }
