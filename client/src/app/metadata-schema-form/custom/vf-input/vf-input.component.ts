@@ -67,7 +67,7 @@ export class VfInputComponent implements ControlValueAccessor, OnInit {
     'integer': 'number'
   };
 
-  onChange = (text: any) => {
+  onChange = (value: any) => {
   }
 
   onTouched = () => {
