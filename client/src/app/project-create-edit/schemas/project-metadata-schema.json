@@ -396,12 +396,13 @@
       "description": "Publications resulting from this project.",
       "items": {
         "$schema": "http://json-schema.org/draft-07/schema#",
-        "$id": "https://schema.dev.data.humancellatlas.org/module/project/6.0.0/publication",
+        "$id": "https://schema.dev.data.humancellatlas.org/module/project/7.0.0/publication",
         "description": "Information about a journal article, book, web page, or other external available documentation for a project.",
         "additionalProperties": false,
         "required": [
           "authors",
-          "title"
+          "title",
+          "official_hca_publication"
         ],
         "title": "Publication",
         "name": "publication",
@@ -451,6 +452,13 @@
             "type": "string",
             "user_friendly": "Publication URL",
             "example": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5667944/"
+          },
+          "official_hca_publication": {
+            "description": "Has the publication been accepted as an official HCA publication, according to the process described in https://www.humancellatlas.org/publications/ ?",
+            "type": "boolean",
+            "user_friendly": "Official HCA Publication",
+            "guidelines": "Should be one of: yes, or no.",
+            "example": "yes; no"
           }
         }
       },
