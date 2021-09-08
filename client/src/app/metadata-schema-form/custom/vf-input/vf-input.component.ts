@@ -67,7 +67,7 @@ export class VfInputComponent implements ControlValueAccessor, OnInit {
     'integer': 'number'
   };
 
-  onChange = (text: string) => {
+  onChange = (text: any) => {
   }
 
   onTouched = () => {
@@ -86,6 +86,11 @@ export class VfInputComponent implements ControlValueAccessor, OnInit {
 
   registerOnChange(fn: (text: string) => void): void {
     this.onChange = fn;
+    if (this.inputType === 'checkbox' && this.value === undefined) {
+      // Sets the default value of the checkbox to be false if is not defined
+      this.value = false;
+      this.onChange(false);
+    }
   }
 
   registerOnTouched(fn: () => void): void {
