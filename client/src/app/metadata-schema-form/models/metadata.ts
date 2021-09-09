@@ -61,7 +61,7 @@ export class Metadata {
   }
 
   isBoolean(): boolean {
-    return this.schema.type === 'boolean';
+    return this.schema && this.schema.type === 'boolean';
   }
 
   addChild(key: string) {
