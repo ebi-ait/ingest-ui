@@ -1,4 +1,4 @@
-<ng-container *ngIf= "(userAccount$ | async) && project && config && schema; else loading">
+<ng-container *ngIf= "(userAccount$ | async) && project && config && schemaUrl && jsonSchema; else loading">
   <app-metadata-form name="project"
                      [useVf]="true"
                      [schema]="projectIngestSchema"

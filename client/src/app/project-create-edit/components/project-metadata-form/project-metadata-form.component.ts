@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} fr
 import {MatTabGroup} from '@angular/material/tabs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Observable, Subject} from 'rxjs';
-import {concatMap} from 'rxjs/operators';
+import {concatMap, tap} from 'rxjs/operators';
 import {Account} from '../../../core/account';
 import {MetadataFormConfig} from '../../../metadata-schema-form/models/metadata-form-config';
 import {MetadataFormLayout} from '../../../metadata-schema-form/models/metadata-form-layout';
@@ -36,7 +36,8 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
 
   patch: object = {};
 
-  schema: string;
+  schemaUrl: string;
+  jsonSchema: object;
 
   userAccount$: Observable<Account>;
   userIsWrangler: boolean;
@@ -55,7 +56,6 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.projectIngestSchema['properties']['content'] = this.projectMetadataSchema;
     this.userAccount$ = this.ingestService.getUserAccount();
     this.userAccount$
       .subscribe((account) => {
@@ -111,7 +111,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
       [],
       {
         relativeTo: this.route,
-        queryParams: { tab },
+        queryParams: {tab},
         queryParamsHandling: 'merge'
       });
   }
@@ -171,16 +171,30 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
     if (this.project?.content) {
       if (this.project?.content.hasOwnProperty('describedBy')
         && this.project?.content.hasOwnProperty('schema_type')) {
-        this.schema = this.project.content['describedBy'];
+        this.schemaUrl = this.project.content['describedBy'];
+        this.schemaService.getDereferencedSchema(this.schemaUrl)
+          .subscribe(schema => {
+            this.jsonSchema = schema;
+            this.projectIngestSchema['properties']['content'] = this.jsonSchema;
+          });
         return;
       }
     }
 
-    this.schemaService.getUrlOfLatestSchema('project').subscribe(schemaUrl => {
-      this.project['content']['describedBy'] = schemaUrl;
-      this.project['content']['schema_type'] = 'project';
-      this.schema = schemaUrl;
-    });
+    this.schemaService.getUrlOfLatestSchema('project')
+      .pipe(
+        tap(schemaUrl => {
+          this.project['content']['describedBy'] = schemaUrl;
+          this.project['content']['schema_type'] = 'project';
+          this.schemaUrl = schemaUrl;
+        }),
+        concatMap(schemaUrl => {
+          return this.schemaService.getDereferencedSchema(this.schemaUrl);
+        }))
+      .subscribe(schema => {
+        this.jsonSchema = schema;
+        this.projectIngestSchema['properties']['content'] = this.jsonSchema;
+      });
   }
 
   private saveProject(formValue) {
