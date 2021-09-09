@@ -60,6 +60,10 @@ export class Metadata {
     return this.schema.type === 'array' && ['array', 'object'].indexOf(items['type']) < 0;
   }
 
+  isBoolean(): boolean {
+    return this.schema.type === 'boolean';
+  }
+
   addChild(key: string) {
     this.children.push(key);
   }

@@ -401,7 +401,8 @@
         "additionalProperties": false,
         "required": [
           "authors",
-          "title"
+          "title",
+          "official_hca_publication"
         ],
         "title": "Publication",
         "name": "publication",
