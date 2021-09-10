@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-
 import {InputComponent} from '../../../metadata-schema-form/metadata-field-types/input/input.component';
 
 @Component({
