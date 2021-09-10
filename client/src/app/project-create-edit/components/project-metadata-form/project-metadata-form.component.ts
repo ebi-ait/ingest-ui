@@ -12,7 +12,6 @@ import {IngestService} from '../../../shared/services/ingest.service';
 import {LoaderService} from '../../../shared/services/loader.service';
 import {SchemaService} from '../../../shared/services/schema.service';
 import * as ingestSchema from '../../schemas/project-ingest-schema.json';
-import * as metadataSchema from '../../schemas/project-metadata-schema.json';
 import {ProjectCacheService} from '../../services/project-cache.service';
 import getLayout from './layout';
 
@@ -27,7 +26,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
   @Input() create = false;
   @Output() formValueChange = new EventEmitter<Observable<object>>();
 
-  projectMetadataSchema: any = (metadataSchema as any).default;
+  projectMetadataSchema: object;
   projectIngestSchema: any = (ingestSchema as any).default;
   projectFormTabKey: string;
   projectFormLayout: MetadataFormLayout;
@@ -37,7 +36,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
   patch: object = {};
 
   schemaUrl: string;
-  jsonSchema: object;
+
 
   userAccount$: Observable<Account>;
   userIsWrangler: boolean;
@@ -174,8 +173,8 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
         this.schemaUrl = this.project.content['describedBy'];
         this.schemaService.getDereferencedSchema(this.schemaUrl)
           .subscribe(schema => {
-            this.jsonSchema = schema;
-            this.projectIngestSchema['properties']['content'] = this.jsonSchema;
+            this.projectMetadataSchema = schema;
+            this.projectIngestSchema['properties']['content'] = this.projectMetadataSchema;
           });
         return;
       }
@@ -192,8 +191,8 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
           return this.schemaService.getDereferencedSchema(this.schemaUrl);
         }))
       .subscribe(schema => {
-        this.jsonSchema = schema;
-        this.projectIngestSchema['properties']['content'] = this.jsonSchema;
+        this.projectMetadataSchema = schema;
+        this.projectIngestSchema['properties']['content'] = this.projectMetadataSchema;
       });
   }
 
