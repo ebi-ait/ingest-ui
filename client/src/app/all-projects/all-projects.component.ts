@@ -27,7 +27,6 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
     ProjectColumn.wranglingState
   ];
   isWrangler: Boolean = true;
-  organ: '';
   searchText = '';
   searchType = 'AllKeywords';
 
