@@ -39,7 +39,7 @@ export class BaseInputComponent implements OnInit {
 
     // TODO consolidate form item data
     this.label = userFriendly ? userFriendly : title ? title : this.metadata.key;
-    this.helperText = (description || '') + (guidelines || '');
+    this.helperText = `${description || ''} <br/> <br/> ${guidelines || ''}`;
     this.isRequired = this.metadata.isRequired;
     this.disabled = this.metadata.isDisabled || this.metadata.isDisabled;
     this.data = <FormItemData> {

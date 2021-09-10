@@ -36,7 +36,6 @@
           "user_friendly": "Do the data require controlled access?"
         },
         "notes": {
-          "description": "Data access notes",
           "type": "string",
           "user_friendly": "Data access notes",
           "guidelines": "Any data access notes?"
