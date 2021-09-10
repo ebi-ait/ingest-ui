@@ -37,7 +37,8 @@ export class MetadataFormHelper {
 
   toFormControl(field: Metadata, data?: any) {
     const state = {value: data, disabled: field && field.isDisabled};
-    const formControl = field && field.isRequired ? new FormControl(state, Validators.required)
+
+    const formControl = field && field.isRequired && !field.isBoolean() ? new FormControl(state, Validators.required)
       : new FormControl(state);
     return formControl;
   }
