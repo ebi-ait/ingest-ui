@@ -232,9 +232,9 @@
       "example": "1"
     },
     "cellCount": {
-      "description": "Specify cell count",
+      "description": "Please use the new estimated cell count field.",
       "type": "integer",
-      "user_friendly": "Cell count",
+      "user_friendly": "Cell count (TO BE DEPRECATED)",
       "example": "1"
     },
     "wranglingNotes": {
