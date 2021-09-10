@@ -5,13 +5,13 @@
   "name": "project",
   "properties": {
     "releaseDate": {
-      "guidelines": "Enter the date when you would like the data and metadata for your project to be released publicly and available for download. You can edit this later.",
+      "description": "Enter the date when you would like the data and metadata for your project to be released publicly and available for download. You can edit this later.",
       "type": "string",
       "format": "date-time",
       "user_friendly": "Date for release of the data for this project"
     },
     "accessionDate": {
-      "guidelines": "Enter the ideal date when you would have accessions available for your project. We generally require a minimum of 2 weeks to provide an accession. We will endeavour to provide your accessions by the date given",
+      "description": "Enter the ideal date when you would have accessions available for your project. We generally require a minimum of 2 weeks to provide an accession. We will endeavour to provide your accessions by the date given",
       "type": "string",
       "format": "date-time",
       "user_friendly": "Accession time frame"
@@ -25,7 +25,6 @@
       "properties": {
         "type": {
           "description": "Data access",
-          "guidelines": "",
           "type": "string",
           "enum": [
             "All fully open",
@@ -36,10 +35,9 @@
           "user_friendly": "Do the data require controlled access?"
         },
         "notes": {
-          "description": "Data access notes",
+          "description": "Any data access notes?",
           "type": "string",
-          "user_friendly": "Data access notes",
-          "guidelines": "Any data access notes?"
+          "user_friendly": "Data access notes"
         }
       },
       "required": [
@@ -47,8 +45,7 @@
       ]
     },
     "identifyingOrganisms": {
-      "description": "Organism the samples were generated from",
-      "guidelines": "You can select multiple entries",
+      "description": "Organism the samples were generated from. You can select multiple entries",
       "type": "array",
       "items": {
         "type": "string"
@@ -71,8 +68,7 @@
       ],
       "properties": {
         "ontologies": {
-          "description": "The general methods used for sequencing library construction in your project.",
-          "guidelines": "Enter each technique by searching and selecting as many as are applicable. If you cannot find it, please enter the name of the technique in the 'Other library preparation and/or imaging technique/s' box below.",
+          "description": "The general methods used for sequencing library construction in your project. Enter each technique by searching and selecting as many as are applicable. If you cannot find it, please enter the name of the technique in the 'Other library preparation and/or imaging technique/s' box below.",
           "type": "array",
           "items": {
             "$schema": "http://json-schema.org/draft-07/schema#",
@@ -123,13 +119,12 @@
           "user_friendly": "What library preparation and/or imaging technique/s did you use to generate the data?"
         },
         "others": {
-          "description": "Other technologies not in the ontologies for technology.",
+          "description": "Other technologies not in the ontologies for technology. If you cannot find any of the techniques used to generate your data in the search box above, please enter their names here.",
           "type": "array",
           "items": {
             "type": "string"
           },
-          "user_friendly": "Other library preparation and/or imaging technique/s",
-          "guidelines": "If you cannot find any of the techniques used to generate your data in the search box above, please enter their names here."
+          "user_friendly": "Other library preparation and/or imaging technique/s"
         }
       }
     },
@@ -144,8 +139,7 @@
       "type": "object",
       "properties": {
         "ontologies": {
-          "description": "The organs that were investigated in your project.",
-          "guidelines": "Enter each organ by searching and selecting as many as are applicable.",
+          "description": "The organs that were investigated in your project. Enter each organ by searching and selecting as many as are applicable.",
           "type": "array",
           "items": {
             "$schema": "http://json-schema.org/draft-07/schema#",
@@ -198,20 +192,20 @@
     },
     "primaryWrangler": {
       "title": "Primary wrangler",
-      "guidelines": "Primary wrangler for this project.",
+      "description": "Primary wrangler for this project.",
       "type": "string",
       "user_friendly": "Primary wrangler",
       "example": "John Doe"
     },
     "secondaryWrangler": {
       "title": "Secondary wrangler",
-      "guidelines": "Secondary wrangler for this project.",
+      "description": "Secondary wrangler for this project.",
       "type": "string",
       "user_friendly": "Secondary wrangler",
       "example": "Jane Doe"
     },
     "wranglingState": {
-      "guidelines": "Wrangling status for this project",
+      "description": "Wrangling status for this project",
       "type": "string",
       "enum": [
         "New",
@@ -239,14 +233,14 @@
       "example": "1"
     },
     "wranglingNotes": {
-      "guidelines": "Notes",
+      "description": "Notes",
       "type": "string",
       "user_friendly": "Notes"
     },
     "isInCatalogue": {
       "type": "boolean",
       "user_friendly": "Include this project in the Human Cell Atlas Project Catalogue by EMBL-EBI",
-      "guidelines": "The <a href='https://www.ebi.ac.uk/humancellatlas/project-catalogue/' target='_blank'>Human Cell Atlas Project Catalogue by EMBL-EBI</a> provides a comprehensive list of all the cellular resolution data available to the HCA community. Your project will appear with its name, authors, publication, and data accession links when available."
+      "description": "The <a href='https://www.ebi.ac.uk/humancellatlas/project-catalogue/' target='_blank'>Human Cell Atlas Project Catalogue by EMBL-EBI</a> provides a comprehensive list of all the cellular resolution data available to the HCA community. Your project will appear with its name, authors, publication, and data accession links when available."
     },
     "content": {}
   },
