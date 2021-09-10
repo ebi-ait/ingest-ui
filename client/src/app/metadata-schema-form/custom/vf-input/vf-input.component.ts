@@ -86,11 +86,15 @@ export class VfInputComponent implements ControlValueAccessor, OnInit {
 
   registerOnChange(fn: (text: string) => void): void {
     this.onChange = fn;
-    if (this.inputType === 'checkbox' && this.value === undefined && this.isRequired) {
-      // Sets the default value of the checkbox to be false if is not defined
-      this.value = false;
-      this.onChange(false);
+    this.setDefaultValue();
+  }
+
+  setDefaultValue() {
+    if (!(this.inputType === 'checkbox' && this.value === undefined && this.isRequired)) {
+      return;
     }
+    this.value = false;
+    this.onChange(false);
   }
 
   registerOnTouched(fn: () => void): void {
