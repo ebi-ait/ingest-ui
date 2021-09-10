@@ -5,37 +5,43 @@ import {Project} from '../models/project';
 import {MetadataDataSource} from './metadata-data-source';
 
 export class ProjectDataSource extends MetadataDataSource<Project> {
-    public wranglingState$: Observable<string>;
-    public wrangler$: Observable<string>;
-    public search$: Observable<string>;
-    constructor(protected endpoint: PaginatedEndpoint<Project>) {
-        super(endpoint, 'projects');
-        this.wranglingState$ = this.queryData.pipe(pluck('wranglingState'));
-        this.wrangler$ = this.queryData.pipe(pluck('wrangler'));
-        this.search$ = this.queryData.pipe(pluck('search'));
-    }
+  public wranglingState$: Observable<string>;
+  public wrangler$: Observable<string>;
+  public search$: Observable<string>;
+  public organ$: Observable<string>;
 
-    public filterByWranglingState(wranglingState: string): void {
-        const queryData = { ...this.getQueryData(), wranglingState, page: 0 };
-        if (!wranglingState) {
-            delete queryData['wranglingState'];
-        }
-        this.setQueryData(queryData);
-    }
+  constructor(protected endpoint: PaginatedEndpoint<Project>) {
+    super(endpoint, 'projects');
+    this.wranglingState$ = this.queryData.pipe(pluck('wranglingState'));
+    this.wrangler$ = this.queryData.pipe(pluck('wrangler'));
+    this.search$ = this.queryData.pipe(pluck('search'));
+    this.organ$ = this.queryData.pipe(pluck('organ'));
+  }
 
-    public filterByWrangler(wrangler: string): void {
-        const queryData = { ...this.getQueryData(), wrangler, page: 0 };
-        if (!wrangler) {
-            delete queryData['wrangler'];
-        }
-        this.setQueryData(queryData);
+  public filterByFieldAndValue(fieldName: string, fieldValue: string) {
+    const queryData = {...this.getQueryData(), page: 0};
+    queryData[fieldName] = fieldValue;
+    if (!fieldValue || fieldValue === '') {
+      delete queryData[fieldName];
     }
+    this.setQueryData(queryData);
+  }
 
-    public search(searchString: string): void {
-        const queryData = { ...this.getQueryData(), search: searchString, page: 0 };
-        if (searchString === '') {
-            delete queryData['search'];
-        }
-        this.setQueryData(queryData);
-    }
+  public filterByWranglingState(wranglingState: string): void {
+    this.filterByFieldAndValue('wranglingState', wranglingState);
+  }
+
+
+
+
+
+
+
+  public filterByWrangler(wrangler: string): void {
+    this.filterByFieldAndValue('wrangler', wrangler);
+  }
+
+  public search(searchString: string): void {
+    this.filterByFieldAndValue('search', searchString);
+  }
 }

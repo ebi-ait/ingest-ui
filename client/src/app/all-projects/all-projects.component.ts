@@ -8,6 +8,7 @@ import {ProjectDataSource} from '../shared/data-sources/project-data-source';
 import {PagedData} from '../shared/models/page';
 import {Project, ProjectColumn} from '../shared/models/project';
 import {IngestService} from '../shared/services/ingest.service';
+import {MatSelectChange} from '@angular/material/select';
 
 @Component({
   selector: 'app-all-projects',
@@ -26,13 +27,15 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
     ProjectColumn.wranglingState
   ];
   isWrangler: Boolean = true;
+  organ: '';
   searchText = '';
+  searchType = 'AllKeywords';
+
 
   // MatPaginator Inputs
   pageSizeOptions: number[] = [5, 10, 20, 30];
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-
   dataSource: ProjectDataSource;
   wranglingStates = ingestSchema['properties']['wranglingState']['enum'];
   wranglers$: Observable<Account[]>;
@@ -106,5 +109,9 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
 
   transformWranglingState(wranglingState: String) {
     return wranglingState.replace(/\s+/g, '_').toUpperCase();
+  }
+
+  onChangeSearchType($event: MatSelectChange) {
+    this.dataSource.filterByFieldAndValue('searchType', $event.value);
   }
 }

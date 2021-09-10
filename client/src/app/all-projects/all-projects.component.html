@@ -23,6 +23,19 @@
     </mat-select>
   </mat-form-field>
 
+  <mat-form-field>
+    <mat-select placeholder="Search Type"
+                [(value)]="searchType"
+                (selectionChange)="onChangeSearchType($event)">
+      <mat-option value="AllKeywords">All Keywords</mat-option>
+      <mat-option value="AnyKeyword">Any Keyword</mat-option>
+      <mat-option value="ExactMatch">Exact Match</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+
+
+
   <mat-form-field *ngIf="wranglers$ | async" >
     <mat-select placeholder="Filter by wrangler" (selectionChange)="onFilterByWrangler($event)">
       <mat-option>None</mat-option>
