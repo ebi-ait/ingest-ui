@@ -99,6 +99,10 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
       overrideRequiredFields: {
         'project.content.contributors.project_role.text': false
       },
+      overrideGuidelines: {
+        'project.content.publications.official_hca_publication': 'Has the publication been accepted as an official HCA publication,\ ' +
+          'according to the process described in https://www.humancellatlas.org/publications/ ?'
+      },
       submitButtonLabel: this.create ? 'Register Project' : 'Save',
       cancelButtonLabel: this.create ? 'Or Cancel project registration' : ' Cancel'
     };

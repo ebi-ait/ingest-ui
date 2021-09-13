@@ -8,6 +8,8 @@ export class Metadata {
   isReadOnly: boolean;
   isHidden: boolean;
 
+  guidelines: string;
+
   parent: string;
   children?: string[];
 

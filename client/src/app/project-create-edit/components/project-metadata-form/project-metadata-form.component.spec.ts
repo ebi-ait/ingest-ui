@@ -26,7 +26,7 @@ describe('ProjectMetadataFormComponent', () => {
     ingestSvc = jasmine.createSpyObj('IngestService', ['getUserAccount']);
     alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error']);
     loaderSvc = jasmine.createSpyObj('LoaderService', ['display']);
-    schemaSvc = jasmine.createSpyObj('SchemaService', ['getUrlOfLatestSchema']);
+    schemaSvc = jasmine.createSpyObj('SchemaService', ['getUrlOfLatestSchema', 'getDereferencedSchema']);
     projectCacheSvc = jasmine.createSpyObj('ProjectCacheService', ['removeProject']);
 
     ingestSvc.getUserAccount.and.returnValue(
@@ -34,6 +34,7 @@ describe('ProjectMetadataFormComponent', () => {
     );
 
     schemaSvc.getUrlOfLatestSchema.and.returnValue(of('a schema url'));
+    schemaSvc.getDereferencedSchema.and.returnValue(of({}));
 
     TestBed.configureTestingModule({
       declarations: [ ProjectMetadataFormComponent ],

@@ -27,6 +27,10 @@ export class MetadataRegistry {
     if (this.config && this.config.overrideRequiredFields) {
       this.overrideRequiredFields(this.config.overrideRequiredFields);
     }
+
+    if (this.config && this.config.overrideGuidelines) {
+      this.overrideGuidelines(this.config.overrideGuidelines);
+    }
   }
 
   get(key: string): Metadata | undefined {
@@ -121,6 +125,14 @@ export class MetadataRegistry {
       const isRequired = fieldMap[field];
       const metadata = this.metadataRegistry[field];
       metadata.isRequired = isRequired;
+    }
+  }
+
+  private overrideGuidelines(fieldMap: { [key: string]: string }) {
+    for (const field of Object.keys(fieldMap)) {
+      const guidelines = fieldMap[field];
+      const metadata = this.metadataRegistry[field];
+      metadata.guidelines = guidelines;
     }
   }
 }
