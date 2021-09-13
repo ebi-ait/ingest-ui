@@ -26,11 +26,10 @@ export class Metadata {
     isDisabled?: boolean
     isHidden?: boolean,
     isReadOnly?: boolean,
-
     parent?: string,
     children?: string[],
-
-    inputType?: string
+    inputType?: string,
+    guidelines?: string
   }) {
     this.schema = options.schema;
     this.key = options.key;
@@ -41,6 +40,7 @@ export class Metadata {
     this.children = [];
     this.childrenMetadata = [];
     this.inputType = options.inputType;
+    this.guidelines = options.guidelines;
   }
 
   isObjectList(): boolean {

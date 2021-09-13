@@ -2,8 +2,9 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormArray} from '@angular/forms';
 import {JsonSchema} from '../../../metadata-schema-form/models/json-schema';
 import {MetadataForm} from '../../../metadata-schema-form/models/metadata-form';
-
+import * as testSchema from './test-schema.json';
 import {AccessionFieldGroupComponent} from './accession-field-group.component';
+
 
 describe('AccessionFieldGroupComponent', () => {
   let component: AccessionFieldGroupComponent;
@@ -25,71 +26,7 @@ describe('AccessionFieldGroupComponent', () => {
   }));
 
   beforeEach(() => {
-    const schema = {
-      format: '',
-      '$id': 'https://schema.dev.data.humancellatlas.org/type/project/15.0.0/project',
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'additionalProperties': false,
-      'description': 'A project entity contains information about the overall project.',
-      'name': 'project',
-      'properties': {
-        'array_express_accessions': {
-          'items': {
-            'pattern': '^E-[A-Z]{4}-\\d+$',
-            'type': 'string'
-          },
-          'type': 'array',
-        },
-        'biostudies_accessions': {
-          'items': {
-            'pattern': '^S-[A-Z]{4}\\d+$',
-            'type': 'string'
-          },
-          'type': 'array'
-        },
-        'geo_series_accessions': {
-          'items': {
-            'pattern': '^GSE\\d+$',
-            'type': 'string'
-          },
-          'type': 'array'
-        },
-        'insdc_project_accessions': {
-          'items': {
-            'pattern': '^PRJ[END][A-Z]\\d+$',
-            'type': 'string'
-          },
-          'type': 'array'
-        },
-        'insdc_study_accessions': {
-          'items': {
-            'pattern': '^[DES]RP\\d+$',
-            'type': 'string'
-          },
-          'type': 'array'
-        },
-        'ega_accessions': {
-          'type': 'array',
-          'items': {
-            'type': 'string',
-            'pattern': 'EGA[DS][0-9]{11}'
-          }
-        },
-        'dbgap_accessions': {
-          'type': 'array',
-          'items': {
-            'type': 'string',
-            'pattern': 'phs[0-9]{6}(\\.v[0-9])?(\\.p[0-9])?'
-          }
-        }
-      },
-      'required': [
-        'describedBy',
-        'schema_type'
-      ],
-      'title': 'Project',
-      'type': 'object'
-    } as JsonSchema;
+    const schema = testSchema as JsonSchema;
     const metadataForm = new MetadataForm('project', schema);
     fixture = TestBed.createComponent(AccessionFieldGroupComponent);
     component = fixture.componentInstance;
