@@ -37,7 +37,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
 
   schemaUrl: string;
 
-  isFormDataComplete: Observable<boolean>;
+  isFormDataComplete$: Observable<boolean>;
 
   userAccount$: Observable<Account>;
   userIsWrangler: boolean;
