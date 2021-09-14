@@ -68,7 +68,7 @@ describe('AllProjectsComponent', () => {
     expect(component.onChangeSearchType).toHaveBeenCalled();
 
     setTimeout(() => {
-      // Messy solution: Works by removing this expectation to the task queue so that it is executed after everything
+      // Messy solution: Works by moving this expectation to the task queue so that it is executed after everything
       // else has finished
       expect(mockIngestService.getFilteredProjects)
         .toHaveBeenCalledWith({ page: 0, size: 20, sort: 'updateDate,desc', searchType: 'AllKeywords' });
