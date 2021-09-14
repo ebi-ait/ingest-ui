@@ -1,18 +1,23 @@
-import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {ComponentFixture, fakeAsync, TestBed, tick, waitForAsync} from '@angular/core/testing';
 
 import {AllProjectsComponent} from './all-projects.component';
 import {IngestService} from '../shared/services/ingest.service';
-import {By} from '@angular/platform-browser';
 import {of} from 'rxjs';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('AllProjectsComponent', () => {
   let component: AllProjectsComponent;
   let fixture: ComponentFixture<AllProjectsComponent>;
+  let mockIngestService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
+    mockIngestService = createSpyObj<IngestService>('IngestService', {
+      getWranglers: undefined,
+      getFilteredProjects: of()
+    });
     TestBed.configureTestingModule({
                                      declarations: [AllProjectsComponent],
-                                     providers: [{provide: IngestService, useClass: MockIngestService}]
+                                     providers: [{provide: IngestService, useValue: mockIngestService}]
                                    })
            .compileComponents();
   }));
@@ -21,6 +26,7 @@ describe('AllProjectsComponent', () => {
     fixture = TestBed.createComponent(AllProjectsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+
   });
 
   it('should create', () => {
@@ -53,18 +59,29 @@ describe('AllProjectsComponent', () => {
       .toHaveBeenCalled();
   }));
 
-  // TODO amnon: this still needs work
-  xit('should call getProjects when searchTypeChanges is called', fakeAsync((eventName: string, eventObj: any) => {
-    spyOn(component, 'onChangeSearchType');
-    spyOn(component, 'getProjects');
-    const select = fixture.debugElement.query(By.css('.search-type'));
-    select.nativeElement.value = 'AllKeywords';
-    select.triggerEventHandler('change', null);
+  xit('should call getProjects when searchTypeChanges is called, dcp-386 ', fakeAsync(() => {
+    spyOn(component, 'onChangeSearchType')
+      .and
+      .callThrough();
+
     fixture.detectChanges();
-    expect(component.onChangeSearchType).toHaveBeenCalled();
-    expect(component.getProjects).toHaveBeenCalled();
-    expect(component.getProjects)
-      .toHaveBeenCalledOnceWith({searchType: 'AllKeywords'});
+
+    // const select = fixture.debugElement.query(By.css('.search-type'));
+    // select.nativeElement.value = 'AllKeywords';
+    // select.triggerEventHandler('change', null);
+    // fixture.detectChanges();
+    //
+    expect(component.dataSource)
+      .toBeDefined();
+    component.onChangeSearchType({source: null, value: 'AllKeywords'});
+    tick();
+
+    expect(component.onChangeSearchType)
+      .toHaveBeenCalled();
+    expect(mockIngestService.getFilteredProjects)
+      .toHaveBeenCalled();
+    expect(mockIngestService.getFilteredProjects)
+      .toHaveBeenCalledWith({searchType: 'MustFail'});
   }));
 
   it('#onClearSearch() should clear search text', () => {

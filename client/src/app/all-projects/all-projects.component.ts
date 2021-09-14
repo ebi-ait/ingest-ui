@@ -43,7 +43,7 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.dataSource = new ProjectDataSource(this.getProjects.bind(this));
+    this.dataSource = new ProjectDataSource((params) => this.getProjects(params));
     this.dataSource.sortBy('updateDate', 'desc');
     this.dataSource.connect(true, 30000).subscribe({
       next: data => {
