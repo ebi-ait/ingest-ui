@@ -62,6 +62,8 @@ describe('AllProjectsComponent', () => {
     spyOn(component, 'onChangeSearchType')
       .and
       .callThrough();
+    spyOn(component, 'getProjects').and.callThrough();
+    component.ngOnInit();
 
     const select = fixture.debugElement.query(By.css('.search-type'));
     select.triggerEventHandler('selectionChange', { source: null, value: 'AllKeywords' });
@@ -70,6 +72,8 @@ describe('AllProjectsComponent', () => {
     setTimeout(() => {
       // Messy solution: Works by moving this expectation to the task queue so that it is executed after everything
       // else has finished
+      expect(component.getProjects)
+        .toHaveBeenCalled();
       expect(mockIngestService.getFilteredProjects)
         .toHaveBeenCalledWith({ page: 0, size: 20, sort: 'updateDate,desc', searchType: 'AllKeywords' });
       done();
