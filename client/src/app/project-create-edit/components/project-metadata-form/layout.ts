@@ -46,7 +46,6 @@ const getFullLayout = () => ({
           ],
           component: AccessionFieldGroupComponent
         },
-        'project.cellCount',
         'project.content.estimated_cell_count',
         'project.isInCatalogue',
         'project.content.supplementary_links',

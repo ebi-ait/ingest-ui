@@ -231,12 +231,6 @@
       "user_friendly": "Wrangling priority",
       "example": "1"
     },
-    "cellCount": {
-      "description": "Please use the new estimated cell count field.",
-      "type": "integer",
-      "user_friendly": "Cell count (TO BE DEPRECATED)",
-      "example": "1"
-    },
     "wranglingNotes": {
       "guidelines": "Notes",
       "type": "string",
