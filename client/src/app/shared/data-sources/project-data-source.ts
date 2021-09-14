@@ -18,30 +18,23 @@ export class ProjectDataSource extends MetadataDataSource<Project> {
     this.organ$ = this.queryData.pipe(pluck('organ'));
   }
 
-  public filterByFieldAndValue(fieldName: string, fieldValue: string) {
-    const queryData = {...this.getQueryData(), page: 0};
-    queryData[fieldName] = fieldValue;
-    if (!fieldValue || fieldValue === '') {
-      delete queryData[fieldName];
-    }
-    this.setQueryData(queryData);
-  }
+  private filterByFieldAndValue = (fieldName: string) =>
+    (fieldValue: string) => {
+      const queryData = {...this.getQueryData(), page: 0};
+      queryData[fieldName] = fieldValue;
+      if (!fieldValue || fieldValue === '') {
+        delete queryData[fieldName];
+      }
+      this.setQueryData(queryData);
+    };
 
-  public filterByWranglingState(wranglingState: string): void {
-    this.filterByFieldAndValue('wranglingState', wranglingState);
-  }
-
+  public filterByWranglingState = this.filterByFieldAndValue('wranglingState');
 
 
+  public filterByWrangler = this.filterByFieldAndValue('wrangler');
+  public changeSearchType = this.filterByFieldAndValue('searchType');
 
 
+  public search = this.filterByFieldAndValue('search');
 
-
-  public filterByWrangler(wrangler: string): void {
-    this.filterByFieldAndValue('wrangler', wrangler);
-  }
-
-  public search(searchString: string): void {
-    this.filterByFieldAndValue('search', searchString);
-  }
 }

@@ -45,7 +45,7 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.dataSource = new ProjectDataSource(this.getProjects.bind(this));
     this.dataSource.sortBy('updateDate', 'desc');
-    this.dataSource.connect(true).subscribe({
+    this.dataSource.connect(true, 30000).subscribe({
       next: data => {
         this.projects = data.data;
       },
@@ -102,6 +102,7 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
     this.dataSource.filterByWrangler($event.value);
   }
 
+
   onPageChange({ pageIndex, pageSize }) {
     this.dataSource.fetch(pageIndex, pageSize);
   }
@@ -111,6 +112,6 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
   }
 
   onChangeSearchType($event: MatSelectChange) {
-    this.dataSource.filterByFieldAndValue('searchType', $event.value);
+    this.dataSource.changeSearchType($event.value);
   }
 }
