@@ -67,7 +67,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
       this.setSchema();
     }
 
-    this.isFormDataComplete = this.userAccount$.pipe(
+    this.isFormDataComplete$ = this.userAccount$.pipe(
       map(userAccount => {
         return !!(
           userAccount &&
