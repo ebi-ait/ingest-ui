@@ -34,13 +34,9 @@ export class BaseInputComponent implements OnInit {
     const userFriendly = this.metadata.schema.user_friendly;
     const title = this.metadata.schema.title;
 
-    const guidelines = this.metadata.schema.guidelines;
-    const description = this.metadata.schema.description;
-
     // TODO consolidate form item data
     this.label = userFriendly ? userFriendly : title ? title : this.metadata.key;
-    const defaultHelperText = description && guidelines ? `${description}<br/><br/>${guidelines}` : description || guidelines || '';
-    this.helperText = this.metadata.guidelines || defaultHelperText;
+    this.helperText = this.getHelperText(this.metadata);
     this.isRequired = this.metadata.isRequired;
     this.disabled = this.metadata.isDisabled || this.metadata.isDisabled;
     this.data = <FormItemData>{
@@ -51,6 +47,13 @@ export class BaseInputComponent implements OnInit {
     };
 
     this.placeholder = this.metadata.schema.example;
+  }
+
+  private getHelperText(metadata: Metadata) {
+    const guidelines = metadata.schema.guidelines;
+    const description = metadata.schema.description;
+    const defaultHelperText = description && guidelines ? `${description}<br/><br/>${guidelines}` : description || guidelines || '';
+    return metadata.guidelines || defaultHelperText;
   }
 
   checkForErrors(control: AbstractControl): string {
