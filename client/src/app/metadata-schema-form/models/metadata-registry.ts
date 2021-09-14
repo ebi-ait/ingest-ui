@@ -132,7 +132,9 @@ export class MetadataRegistry {
     for (const field of Object.keys(fieldMap)) {
       const guidelines = fieldMap[field];
       const metadata = this.metadataRegistry[field];
-      metadata.guidelines = guidelines;
+      if (metadata) {
+        metadata.guidelines = guidelines;
+      }
     }
   }
 }
