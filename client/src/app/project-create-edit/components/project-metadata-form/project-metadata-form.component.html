@@ -1,4 +1,4 @@
-<ng-container *ngIf= "(userAccount$ | async) && project && config && schemaUrl && projectMetadataSchema; else loading">
+<ng-container *ngIf= "isFormDataComplete | async; else loading">
   <app-metadata-form name="project"
                      [useVf]="true"
                      [schema]="projectIngestSchema"
