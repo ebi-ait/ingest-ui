@@ -33,11 +33,14 @@ describe('ProjectMetadataFormComponent', () => {
       of(new Account({id: '123', providerReference: 'aai', roles: []}))
     );
 
-    schemaSvc.getUrlOfLatestSchema.and.returnValue(of('a schema url'));
-    schemaSvc.getDereferencedSchema.and.returnValue(of({}));
+    schemaSvc.getUrlOfLatestSchema.and.returnValue(of('schema-url-n'));
+    schemaSvc.getDereferencedSchema
+      .withArgs('schema-url-0').and.returnValue(of({'id': 'schema-url-0'}))
+      .withArgs('schema-url-n').and.returnValue(of({'id': 'schema-url-n'}));
+    schemaSvc.getDereferencedSchema.and.returnValue(of({'id': 'schema-url-n'}));
 
     TestBed.configureTestingModule({
-      declarations: [ ProjectMetadataFormComponent ],
+      declarations: [ProjectMetadataFormComponent],
       imports: [RouterTestingModule],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
@@ -114,4 +117,27 @@ describe('ProjectMetadataFormComponent', () => {
       });
     });
   });
+
+
+  it('load latest schema when creating a new project', () => {
+    component.project = {
+      content: {}
+    };
+    component.ngOnInit();
+    expect(component.projectMetadataSchema['id']).toEqual('schema-url-n');
+
+  });
+
+  it('load schema from describedBy when editing a project', () => {
+    component.project = {
+      content: {
+        'describedBy': 'schema-url-0',
+        'schema_type': 'project'
+      }
+    };
+    component.ngOnInit();
+    expect(component.projectMetadataSchema['id']).toEqual('schema-url-0');
+
+  });
+
 });

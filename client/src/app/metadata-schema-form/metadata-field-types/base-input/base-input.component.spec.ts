@@ -58,15 +58,13 @@ describe('BaseInputComponent', () => {
   });
 
   it('should initialise helper text from custom metadata object guideline', () => {
-    fixture = TestBed.createComponent(BaseInputComponent);
-    component = fixture.componentInstance;
     component.metadata = new Metadata({
       schema: schema as JsonSchemaProperty,
       key: 'contact',
       isRequired: false,
       guidelines: 'Custom helper text'
     });
-    fixture.detectChanges();
+    component.ngOnInit();
     expect(component.helperText).toEqual('Custom helper text');
   });
 });
