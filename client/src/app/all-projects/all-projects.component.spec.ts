@@ -1,5 +1,5 @@
 import {ComponentFixture, fakeAsync, TestBed, tick, waitForAsync} from '@angular/core/testing';
-import {By} from "@angular/platform-browser";
+import {By} from '@angular/platform-browser';
 
 import {AllProjectsComponent} from './all-projects.component';
 import {IngestService} from '../shared/services/ingest.service';
