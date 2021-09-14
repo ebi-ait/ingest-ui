@@ -1,4 +1,5 @@
 import {ComponentFixture, fakeAsync, TestBed, tick, waitForAsync} from '@angular/core/testing';
+import {By} from "@angular/platform-browser";
 
 import {AllProjectsComponent} from './all-projects.component';
 import {IngestService} from '../shared/services/ingest.service';
@@ -11,10 +12,8 @@ describe('AllProjectsComponent', () => {
   let mockIngestService;
 
   beforeEach(waitForAsync(() => {
-    mockIngestService = createSpyObj<IngestService>('IngestService', {
-      getWranglers: undefined,
-      getFilteredProjects: of()
-    });
+    mockIngestService = createSpyObj<IngestService>('IngestService', ['getWranglers', 'getFilteredProjects']);
+    mockIngestService.getFilteredProjects.and.returnValue(of());
     TestBed.configureTestingModule({
                                      declarations: [AllProjectsComponent],
                                      providers: [{provide: IngestService, useValue: mockIngestService}]
@@ -59,30 +58,23 @@ describe('AllProjectsComponent', () => {
       .toHaveBeenCalled();
   }));
 
-  xit('should call getProjects when searchTypeChanges is called, dcp-386 ', fakeAsync(() => {
+  it('should call getProjects when searchTypeChanges is called, dcp-386 ', (done) => {
     spyOn(component, 'onChangeSearchType')
       .and
       .callThrough();
 
-    fixture.detectChanges();
+    const select = fixture.debugElement.query(By.css('.search-type'));
+    select.triggerEventHandler('selectionChange', { source: null, value: 'AllKeywords' });
+    expect(component.onChangeSearchType).toHaveBeenCalled();
 
-    // const select = fixture.debugElement.query(By.css('.search-type'));
-    // select.nativeElement.value = 'AllKeywords';
-    // select.triggerEventHandler('change', null);
-    // fixture.detectChanges();
-    //
-    expect(component.dataSource)
-      .toBeDefined();
-    component.onChangeSearchType({source: null, value: 'AllKeywords'});
-    tick();
-
-    expect(component.onChangeSearchType)
-      .toHaveBeenCalled();
-    expect(mockIngestService.getFilteredProjects)
-      .toHaveBeenCalled();
-    expect(mockIngestService.getFilteredProjects)
-      .toHaveBeenCalledWith({searchType: 'MustFail'});
-  }));
+    setTimeout(() => {
+      // Messy solution: Works by removing this expectation to the task queue so that it is executed after everything
+      // else has finished
+      expect(mockIngestService.getFilteredProjects)
+        .toHaveBeenCalledWith({ page: 0, size: 20, sort: 'updateDate,desc', searchType: 'AllKeywords' });
+      done();
+    }, 0);
+  });
 
   it('#onClearSearch() should clear search text', () => {
     component.onClearSearch();
