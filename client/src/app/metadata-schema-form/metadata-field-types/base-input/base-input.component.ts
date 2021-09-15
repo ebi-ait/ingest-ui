@@ -16,7 +16,6 @@ export class BaseInputComponent implements OnInit {
   @Input()
   id: string;
 
-  // TODO consolidate form item data
   label: string;
   helperText: string;
   isRequired: boolean;
