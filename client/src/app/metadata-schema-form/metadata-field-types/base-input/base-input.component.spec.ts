@@ -3,6 +3,7 @@ import {JsonSchemaProperty} from '../../models/json-schema-property';
 import {Metadata} from '../../models/metadata';
 
 import {BaseInputComponent} from './base-input.component';
+import {JsonSchema} from '../../models/json-schema';
 
 describe('BaseInputComponent', () => {
   let component: BaseInputComponent;
@@ -55,6 +56,18 @@ describe('BaseInputComponent', () => {
 
   it('should initialise helper text from description and guidelines from schema by default', () => {
     expect(component.helperText).toEqual('Name of individual who has contributed to the project.<br/><br/>Enter in the format: first name,middle name or initial,last name.');
+  });
+
+  it('should initialise helper text from description if there are no guidelines', () => {
+    delete schema['guidelines'];
+    component.ngOnInit();
+    expect(component.helperText).toEqual('Name of individual who has contributed to the project.');
+  });
+
+  it('should initialise helper text from guidelines if there is no description', () => {
+    delete schema['description'];
+    component.ngOnInit();
+    expect(component.helperText).toEqual('Enter in the format: first name,middle name or initial,last name.');
   });
 
   it('should initialise helper text from custom metadata object guideline', () => {
