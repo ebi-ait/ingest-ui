@@ -12,6 +12,8 @@ import {AccessionFieldGroupComponent} from '../accession-field-group/accession-f
 import {ProjectIdComponent} from '../project-id/project-id.component';
 import {ProjectMetadataFormComponent} from './project-metadata-form.component';
 import SpyObj = jasmine.SpyObj;
+import {MetadataFormComponent} from '../../../metadata-schema-form/metadata-form/metadata-form.component';
+import {By} from '@angular/platform-browser';
 
 describe('ProjectMetadataFormComponent', () => {
   let component: ProjectMetadataFormComponent;
@@ -139,4 +141,20 @@ describe('ProjectMetadataFormComponent', () => {
 
   });
 
+  it('displays loading when some required data are missing', () => {
+    component.project = null;
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    const metadataForm = fixture.debugElement.query(By.css('app-metadata-form'));
+    expect(metadataForm).toBeFalsy();
+
+    const p = fixture.debugElement.query(By.css('p'));
+    expect(p.nativeElement.innerHTML.toLowerCase()).toContain('loading');
+  });
+
+  it('loads project metadata form when all required data is present', () => {
+    const metadataForm = fixture.debugElement.query(By.css('app-metadata-form'));
+    expect(metadataForm).toBeTruthy();
+  });
 });
