@@ -37,7 +37,6 @@ describe('ProjectMetadataFormComponent', () => {
     schemaSvc.getDereferencedSchema
       .withArgs('schema-url-0').and.returnValue(of({'id': 'schema-url-0'}))
       .withArgs('schema-url-n').and.returnValue(of({'id': 'schema-url-n'}));
-    schemaSvc.getDereferencedSchema.and.returnValue(of({'id': 'schema-url-n'}));
 
     TestBed.configureTestingModule({
       declarations: [ProjectMetadataFormComponent],
