@@ -36,7 +36,6 @@
           "user_friendly": "Do the data require controlled access?"
         },
         "notes": {
-          "description": "Data access notes",
           "type": "string",
           "user_friendly": "Data access notes",
           "guidelines": "Any data access notes?"
@@ -230,12 +229,6 @@
       "description": "Specify order of priority, 1 is the highest",
       "type": "integer",
       "user_friendly": "Wrangling priority",
-      "example": "1"
-    },
-    "cellCount": {
-      "description": "Specify cell count",
-      "type": "integer",
-      "user_friendly": "Cell count",
       "example": "1"
     },
     "wranglingNotes": {
