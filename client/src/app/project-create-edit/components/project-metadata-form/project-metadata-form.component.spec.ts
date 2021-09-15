@@ -12,6 +12,8 @@ import {AccessionFieldGroupComponent} from '../accession-field-group/accession-f
 import {ProjectIdComponent} from '../project-id/project-id.component';
 import {ProjectMetadataFormComponent} from './project-metadata-form.component';
 import SpyObj = jasmine.SpyObj;
+import {MetadataFormComponent} from '../../../metadata-schema-form/metadata-form/metadata-form.component';
+import {By} from '@angular/platform-browser';
 
 describe('ProjectMetadataFormComponent', () => {
   let component: ProjectMetadataFormComponent;
@@ -26,17 +28,20 @@ describe('ProjectMetadataFormComponent', () => {
     ingestSvc = jasmine.createSpyObj('IngestService', ['getUserAccount']);
     alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error']);
     loaderSvc = jasmine.createSpyObj('LoaderService', ['display']);
-    schemaSvc = jasmine.createSpyObj('SchemaService', ['getUrlOfLatestSchema']);
+    schemaSvc = jasmine.createSpyObj('SchemaService', ['getUrlOfLatestSchema', 'getDereferencedSchema']);
     projectCacheSvc = jasmine.createSpyObj('ProjectCacheService', ['removeProject']);
 
     ingestSvc.getUserAccount.and.returnValue(
       of(new Account({id: '123', providerReference: 'aai', roles: []}))
     );
 
-    schemaSvc.getUrlOfLatestSchema.and.returnValue(of('a schema url'));
+    schemaSvc.getUrlOfLatestSchema.and.returnValue(of('schema-url-n'));
+    schemaSvc.getDereferencedSchema
+      .withArgs('schema-url-0').and.returnValue(of({'id': 'schema-url-0'}))
+      .withArgs('schema-url-n').and.returnValue(of({'id': 'schema-url-n'}));
 
     TestBed.configureTestingModule({
-      declarations: [ ProjectMetadataFormComponent ],
+      declarations: [ProjectMetadataFormComponent],
       imports: [RouterTestingModule],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
@@ -112,5 +117,44 @@ describe('ProjectMetadataFormComponent', () => {
         expect(expectedKeys.includes(tab.key)).toBeTruthy();
       });
     });
+  });
+
+
+  it('load latest schema when creating a new project', () => {
+    component.project = {
+      content: {}
+    };
+    component.ngOnInit();
+    expect(component.projectMetadataSchema['id']).toEqual('schema-url-n');
+
+  });
+
+  it('load schema from describedBy when editing a project', () => {
+    component.project = {
+      content: {
+        'describedBy': 'schema-url-0',
+        'schema_type': 'project'
+      }
+    };
+    component.ngOnInit();
+    expect(component.projectMetadataSchema['id']).toEqual('schema-url-0');
+
+  });
+
+  it('displays loading when some required data are missing', () => {
+    component.project = null;
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    const metadataForm = fixture.debugElement.query(By.css('app-metadata-form'));
+    expect(metadataForm).toBeFalsy();
+
+    const p = fixture.debugElement.query(By.css('p'));
+    expect(p.nativeElement.innerHTML.toLowerCase()).toContain('loading');
+  });
+
+  it('loads project metadata form when all required data is present', () => {
+    const metadataForm = fixture.debugElement.query(By.css('app-metadata-form'));
+    expect(metadataForm).toBeTruthy();
   });
 });

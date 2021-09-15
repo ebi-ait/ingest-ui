@@ -2,9 +2,9 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormArray} from '@angular/forms';
 import {JsonSchema} from '../../../metadata-schema-form/models/json-schema';
 import {MetadataForm} from '../../../metadata-schema-form/models/metadata-form';
-import * as metadataSchema from '../../schemas/project-metadata-schema.json';
-
+import * as testSchema from './test-schema.json';
 import {AccessionFieldGroupComponent} from './accession-field-group.component';
+
 
 describe('AccessionFieldGroupComponent', () => {
   let component: AccessionFieldGroupComponent;
@@ -26,7 +26,7 @@ describe('AccessionFieldGroupComponent', () => {
   }));
 
   beforeEach(() => {
-    const schema = metadataSchema as JsonSchema;
+    const schema = testSchema as JsonSchema;
     const metadataForm = new MetadataForm('project', schema);
     fixture = TestBed.createComponent(AccessionFieldGroupComponent);
     component = fixture.componentInstance;
