@@ -92,12 +92,3 @@ describe('AllProjectsComponent', () => {
       .toBe('');
   });
 });
-
-class MockIngestService {
-  getWranglers() {
-  }
-
-  getFilteredProjects() {
-    return of([{}]);
-  }
-}

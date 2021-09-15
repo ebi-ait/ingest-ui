@@ -28,13 +28,9 @@ export class ProjectDataSource extends MetadataDataSource<Project> {
       this.setQueryData(queryData);
     };
 
-  public filterByWranglingState = this.filterByFieldAndValue('wranglingState');
-
-
   public filterByWrangler = this.filterByFieldAndValue('wrangler');
+  public filterByWranglingState = this.filterByFieldAndValue('wranglingState');
   public changeSearchType = this.filterByFieldAndValue('searchType');
-
-
   public search = this.filterByFieldAndValue('search');
 
 }
