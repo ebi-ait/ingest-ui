@@ -10,6 +10,8 @@ import {Project, ProjectColumn} from '../shared/models/project';
 import {IngestService} from '../shared/services/ingest.service';
 import {MatSelectChange} from '@angular/material/select';
 
+const THIRTY_SCEONDS = 30000;
+
 @Component({
   selector: 'app-all-projects',
   templateUrl: './all-projects.component.html',
@@ -45,7 +47,7 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.dataSource = new ProjectDataSource(this.getProjects.bind(this));
     this.dataSource.sortBy('updateDate', 'desc');
-    this.dataSource.connect(true, 30000).subscribe({
+    this.dataSource.connect(true, THIRTY_SCEONDS).subscribe({
       next: data => {
         this.projects = data.data;
       },
