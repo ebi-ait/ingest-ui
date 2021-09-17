@@ -25,10 +25,12 @@ export class MetadataFormService {
     if (!dataCopy) {
       return dataCopy;
     }
+    console.log(dataCopy);
     return this.cleanPublications(dataCopy);
   }
 
   cleanPublications(formData: any) {
+    // Needed for dcp-458. Removes publications that only have `official_hca_publication` in their content
     const isEmptyPublication = publication =>
       Object.keys(publication).length === 1 && Object.keys(publication)[0] === 'official_hca_publication';
 
