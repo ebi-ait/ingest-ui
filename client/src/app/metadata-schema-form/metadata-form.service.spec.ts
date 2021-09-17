@@ -125,7 +125,7 @@ describe('MetadataFormService', () => {
         'title': 'Test',
         'official_hca_publication': true
       }, {
-        'title': 'Hithhikers guide',
+        'title': 'Hitchhikers guide',
         'authors': ['Douglas Adams'],
       }]
     };
