@@ -79,4 +79,94 @@ describe('MetadataFormService', () => {
       expect(copy).toEqual(expected);
     });
   });
+
+  it('should clean publications if only has official_hca_publication set', () => {
+    const testArray = {
+      'publications': [{
+        'official_hca_publication': true
+      }, {
+        'official_hca_publication': false
+      }]
+    };
+
+    expect(service.cleanFormData(testArray)).toEqual({});
+
+    const testSingle = {
+      'publication': {
+        'official_hca_publication': false
+      }
+    };
+
+    expect(service.cleanFormData(testSingle)).toEqual({});
+
+    const testNestedArray = {
+      'content': {
+        'title': 'Test',
+        'biomaterial_core': {
+          ...testSingle
+        },
+        ...testArray
+      }
+    };
+
+    expect(service.cleanFormData(testNestedArray)).toEqual({
+      'content': {
+        'title': 'Test',
+        'biomaterial_core': {}
+      }
+    });
+  });
+
+  it('should not clean publications that have more than just official_hca_publication', () => {
+    const testArray = {
+      'publications': [{
+        'official_hca_publication': false
+      }, {
+        'title': 'Test',
+        'official_hca_publication': true
+      }, {
+        'title': 'Hithhikers guide',
+        'authors': ['Douglas Adams'],
+      }]
+    };
+
+    expect(service.cleanFormData(testArray)).toEqual({
+      'publications': [
+        testArray['publications'][1],
+        testArray['publications'][2]
+      ]
+    });
+
+    const testSingle = {
+      'publication': {
+        'official_hca_publication': false,
+        'Title': '42'
+      }
+    };
+
+    expect(service.cleanFormData(testSingle)).toEqual(testSingle);
+
+    const testNested = {
+      'content': {
+        'title': 'Zorgon',
+        'biomaterial_core': {
+          ...testSingle
+        },
+        ...testArray
+      }
+    };
+
+    expect(service.cleanFormData(testNested)).toEqual({
+      'content': {
+        'title': 'Zorgon',
+        'biomaterial_core': {
+          ...testSingle
+        },
+        'publications': [
+          testArray['publications'][1],
+          testArray['publications'][2]
+        ]
+      }
+    });
+  });
 });
