@@ -8,6 +8,9 @@ import {ProjectDataSource} from '../shared/data-sources/project-data-source';
 import {PagedData} from '../shared/models/page';
 import {Project, ProjectColumn} from '../shared/models/project';
 import {IngestService} from '../shared/services/ingest.service';
+import {MatSelectChange} from '@angular/material/select';
+
+const THIRTY_SECONDS = 30000;
 
 @Component({
   selector: 'app-all-projects',
@@ -27,12 +30,13 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
   ];
   isWrangler: Boolean = true;
   searchText = '';
+  searchType = 'AllKeywords';
+
 
   // MatPaginator Inputs
   pageSizeOptions: number[] = [5, 10, 20, 30];
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-
   dataSource: ProjectDataSource;
   wranglingStates = ingestSchema['properties']['wranglingState']['enum'];
   wranglers$: Observable<Account[]>;
@@ -43,7 +47,7 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.dataSource = new ProjectDataSource(this.getProjects.bind(this));
     this.dataSource.sortBy('updateDate', 'desc');
-    this.dataSource.connect(true).subscribe({
+    this.dataSource.connect(true, THIRTY_SECONDS).subscribe({
       next: data => {
         this.projects = data.data;
       },
@@ -100,11 +104,16 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
     this.dataSource.filterByWrangler($event.value);
   }
 
+
   onPageChange({ pageIndex, pageSize }) {
     this.dataSource.fetch(pageIndex, pageSize);
   }
 
   transformWranglingState(wranglingState: String) {
     return wranglingState.replace(/\s+/g, '_').toUpperCase();
+  }
+
+  onChangeSearchType($event: MatSelectChange) {
+    this.dataSource.changeSearchType($event.value);
   }
 }
