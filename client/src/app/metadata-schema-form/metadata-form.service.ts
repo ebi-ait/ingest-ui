@@ -25,7 +25,6 @@ export class MetadataFormService {
     if (!dataCopy) {
       return dataCopy;
     }
-    console.log(dataCopy);
     return this.cleanPublications(dataCopy);
   }
 
