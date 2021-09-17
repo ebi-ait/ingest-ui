@@ -8,6 +8,8 @@ export class Metadata {
   isReadOnly: boolean;
   isHidden: boolean;
 
+  guidelines: string;
+
   parent: string;
   children?: string[];
 
@@ -24,11 +26,10 @@ export class Metadata {
     isDisabled?: boolean
     isHidden?: boolean,
     isReadOnly?: boolean,
-
     parent?: string,
     children?: string[],
-
-    inputType?: string
+    inputType?: string,
+    guidelines?: string
   }) {
     this.schema = options.schema;
     this.key = options.key;
@@ -39,6 +40,7 @@ export class Metadata {
     this.children = [];
     this.childrenMetadata = [];
     this.inputType = options.inputType;
+    this.guidelines = options.guidelines;
   }
 
   isObjectList(): boolean {
@@ -58,6 +60,10 @@ export class Metadata {
   isScalarList(): boolean {
     const items = this.schema.items ? this.schema.items : {};
     return this.schema.type === 'array' && ['array', 'object'].indexOf(items['type']) < 0;
+  }
+
+  isBoolean(): boolean {
+    return this.schema && this.schema.type === 'boolean';
   }
 
   addChild(key: string) {

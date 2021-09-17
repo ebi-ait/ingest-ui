@@ -1,8 +1,8 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {MatTabGroup} from '@angular/material/tabs';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Observable, Subject} from 'rxjs';
-import {concatMap} from 'rxjs/operators';
+import {Observable, of, Subject} from 'rxjs';
+import {concatMap, map, tap} from 'rxjs/operators';
 import {Account} from '../../../core/account';
 import {MetadataFormConfig} from '../../../metadata-schema-form/models/metadata-form-config';
 import {MetadataFormLayout} from '../../../metadata-schema-form/models/metadata-form-layout';
@@ -12,7 +12,6 @@ import {IngestService} from '../../../shared/services/ingest.service';
 import {LoaderService} from '../../../shared/services/loader.service';
 import {SchemaService} from '../../../shared/services/schema.service';
 import * as ingestSchema from '../../schemas/project-ingest-schema.json';
-import * as metadataSchema from '../../schemas/project-metadata-schema.json';
 import {ProjectCacheService} from '../../services/project-cache.service';
 import getLayout from './layout';
 
@@ -27,7 +26,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
   @Input() create = false;
   @Output() formValueChange = new EventEmitter<Observable<object>>();
 
-  projectMetadataSchema: any = (metadataSchema as any).default;
+  projectMetadataSchema: object;
   projectIngestSchema: any = (ingestSchema as any).default;
   projectFormTabKey: string;
   projectFormLayout: MetadataFormLayout;
@@ -36,7 +35,9 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
 
   patch: object = {};
 
-  schema: string;
+  schemaUrl: string;
+
+  isFormDataComplete$: Observable<boolean>;
 
   userAccount$: Observable<Account>;
   userIsWrangler: boolean;
@@ -55,7 +56,6 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.projectIngestSchema['properties']['content'] = this.projectMetadataSchema;
     this.userAccount$ = this.ingestService.getUserAccount();
     this.userAccount$
       .subscribe((account) => {
@@ -66,6 +66,16 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
     if (this.project) {
       this.setSchema();
     }
+
+    this.isFormDataComplete$ = this.userAccount$.pipe(
+      map(userAccount => {
+        return !!(
+          userAccount &&
+          this.project &&
+          this.config &&
+          this.schemaUrl &&
+          this.projectMetadataSchema);
+      }));
   }
 
   ngOnDestroy() {
@@ -100,6 +110,10 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
       overrideRequiredFields: {
         'project.content.contributors.project_role.text': false
       },
+      overrideGuidelines: {
+        'project.content.publications.official_hca_publication': 'Has the publication been accepted as an official HCA publication,\ ' +
+          'according to the process described in https://www.humancellatlas.org/publications/ ?'
+      },
       submitButtonLabel: this.create ? 'Register Project' : 'Save',
       cancelButtonLabel: this.create ? 'Or Cancel project registration' : ' Cancel'
     };
@@ -111,7 +125,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
       [],
       {
         relativeTo: this.route,
-        queryParams: { tab },
+        queryParams: {tab},
         queryParamsHandling: 'merge'
       });
   }
@@ -167,19 +181,29 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
     return this.projectFormLayout.tabs.findIndex(tab => tab.key === this.projectFormTabKey);
   }
 
-  private setSchema(): void {
-    if (this.project?.content) {
-      if (this.project?.content.hasOwnProperty('describedBy')
-        && this.project?.content.hasOwnProperty('schema_type')) {
-        this.schema = this.project.content['describedBy'];
-        return;
-      }
+  private getSchemaUrl(): Observable<string> {
+    let schemaUrl$;
+    if (this.project?.content &&
+      this.project?.content.hasOwnProperty('describedBy') &&
+      this.project?.content.hasOwnProperty('schema_type')) {
+      schemaUrl$ = of(this.project.content['describedBy']);
+    } else {
+      schemaUrl$ = this.schemaService.getUrlOfLatestSchema('project');
     }
+    return schemaUrl$;
+  }
 
-    this.schemaService.getUrlOfLatestSchema('project').subscribe(schemaUrl => {
-      this.project['content']['describedBy'] = schemaUrl;
-      this.project['content']['schema_type'] = 'project';
-      this.schema = schemaUrl;
+  private setSchema(): void {
+    this.getSchemaUrl().pipe(
+      tap(schemaUrl => {
+        this.schemaUrl = schemaUrl;
+        this.project['content']['describedBy'] = schemaUrl;
+        this.project['content']['schema_type'] = 'project';
+      }),
+      concatMap(schemaUrl => this.schemaService.getDereferencedSchema(this.schemaUrl))
+    ).subscribe(schema => {
+      this.projectMetadataSchema = schema;
+      this.projectIngestSchema['properties']['content'] = this.projectMetadataSchema;
     });
   }
 
@@ -220,4 +244,5 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
   onFormValueChange($event) {
     this.formValueChange.emit($event);
   }
+
 }
