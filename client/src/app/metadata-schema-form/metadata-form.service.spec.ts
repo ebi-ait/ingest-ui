@@ -80,7 +80,7 @@ describe('MetadataFormService', () => {
     });
   });
 
-  it('should clean publications if only has official_hca_publication set', () => {
+  describe('cleanFormData when given publications that only have official_hca_publication', () => {
     const testArray = {
       'publications': [{
         'official_hca_publication': true
@@ -89,15 +89,11 @@ describe('MetadataFormService', () => {
       }]
     };
 
-    expect(service.cleanFormData(testArray)).toEqual({});
-
     const testSingle = {
       'publication': {
         'official_hca_publication': false
       }
     };
-
-    expect(service.cleanFormData(testSingle)).toEqual({});
 
     const testNestedArray = {
       'content': {
@@ -109,15 +105,27 @@ describe('MetadataFormService', () => {
       }
     };
 
-    expect(service.cleanFormData(testNestedArray)).toEqual({
-      'content': {
-        'title': 'Test',
-        'biomaterial_core': {}
-      }
+    it('should clean an array of publications', () => {
+      expect(service.cleanFormData(testArray)).toEqual({});
+    });
+
+
+    it('should clean a single publication', () => {
+      expect(service.cleanFormData(testSingle)).toEqual({});
+    });
+
+
+    it('should clean a nested array of publications', () => {
+      expect(service.cleanFormData(testNestedArray)).toEqual({
+        'content': {
+          'title': 'Test',
+          'biomaterial_core': {}
+        }
+      });
     });
   });
 
-  it('should not clean publications that have more than just official_hca_publication', () => {
+  describe('cleanFormData when given publications that have multiple fields', () => {
     const testArray = {
       'publications': [{
         'official_hca_publication': false
@@ -130,21 +138,12 @@ describe('MetadataFormService', () => {
       }]
     };
 
-    expect(service.cleanFormData(testArray)).toEqual({
-      'publications': [
-        testArray['publications'][1],
-        testArray['publications'][2]
-      ]
-    });
-
     const testSingle = {
       'publication': {
         'official_hca_publication': false,
         'Title': '42'
       }
     };
-
-    expect(service.cleanFormData(testSingle)).toEqual(testSingle);
 
     const testNested = {
       'content': {
@@ -156,17 +155,32 @@ describe('MetadataFormService', () => {
       }
     };
 
-    expect(service.cleanFormData(testNested)).toEqual({
-      'content': {
-        'title': 'Zorgon',
-        'biomaterial_core': {
-          ...testSingle
-        },
+    it('should not clean publications in an array', () => {
+      expect(service.cleanFormData(testArray)).toEqual({
         'publications': [
           testArray['publications'][1],
           testArray['publications'][2]
         ]
-      }
+      });
+    });
+
+    it('should not clean a single publication', () => {
+      expect(service.cleanFormData(testSingle)).toEqual(testSingle);
+    });
+
+    it('should not clean a nested publication', () => {
+      expect(service.cleanFormData(testNested)).toEqual({
+        'content': {
+          'title': 'Zorgon',
+          'biomaterial_core': {
+            ...testSingle
+          },
+          'publications': [
+            testArray['publications'][1],
+            testArray['publications'][2]
+          ]
+        }
+      });
     });
   });
 });
