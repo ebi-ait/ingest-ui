@@ -21,7 +21,38 @@ export class MetadataFormService {
     if (!formData) {
       return formData;
     }
-    return this.copyValues(formData);
+    const dataCopy = this.copyValues(formData);
+    if (!dataCopy) {
+      return dataCopy;
+    }
+    return this.cleanPublications(dataCopy);
+  }
+
+  cleanPublications(formData: any) {
+    // Needed for dcp-458. Removes publications that only have `official_hca_publication` in their content
+    const isEmptyPublication = publication =>
+      Object.keys(publication).length === 1 && Object.keys(publication)[0] === 'official_hca_publication';
+
+    const removeEmptyPublications = key => {
+      if (typeof formData[key] === 'object' && isEmptyPublication(formData[key])) {
+        delete formData[key];
+      }
+      if (Array.isArray(formData[key])) {
+        formData[key] = formData[key].filter(publication => !isEmptyPublication(publication));
+        if (formData[key].length === 0) {
+          delete formData[key];
+        }
+      }
+    };
+
+    Object.keys(formData).forEach(key => {
+      if (key === 'publication' || key === 'publications') {
+        removeEmptyPublications(key);
+      } else if (typeof formData[key] === 'object') {
+        this.cleanPublications(formData[key]);
+      }
+    });
+    return formData;
   }
 
   copyValues(obj: any): object {
