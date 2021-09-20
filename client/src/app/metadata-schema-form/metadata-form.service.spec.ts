@@ -79,4 +79,108 @@ describe('MetadataFormService', () => {
       expect(copy).toEqual(expected);
     });
   });
+
+  describe('cleanFormData when given publications that only have official_hca_publication', () => {
+    const testArray = {
+      'publications': [{
+        'official_hca_publication': true
+      }, {
+        'official_hca_publication': false
+      }]
+    };
+
+    const testSingle = {
+      'publication': {
+        'official_hca_publication': false
+      }
+    };
+
+    const testNestedArray = {
+      'content': {
+        'title': 'Test',
+        'biomaterial_core': {
+          ...testSingle
+        },
+        ...testArray
+      }
+    };
+
+    it('should clean an array of publications', () => {
+      expect(service.cleanFormData(testArray)).toEqual({});
+    });
+
+
+    it('should clean a single publication', () => {
+      expect(service.cleanFormData(testSingle)).toEqual({});
+    });
+
+
+    it('should clean a nested array of publications', () => {
+      expect(service.cleanFormData(testNestedArray)).toEqual({
+        'content': {
+          'title': 'Test',
+          'biomaterial_core': {}
+        }
+      });
+    });
+  });
+
+  describe('cleanFormData when given publications that have multiple fields', () => {
+    const testArray = {
+      'publications': [{
+        'official_hca_publication': false
+      }, {
+        'title': 'Test',
+        'official_hca_publication': true
+      }, {
+        'title': 'Hitchhikers guide',
+        'authors': ['Douglas Adams'],
+      }]
+    };
+
+    const testSingle = {
+      'publication': {
+        'official_hca_publication': false,
+        'Title': '42'
+      }
+    };
+
+    const testNested = {
+      'content': {
+        'title': 'Zorgon',
+        'biomaterial_core': {
+          ...testSingle
+        },
+        ...testArray
+      }
+    };
+
+    it('should not clean publications in an array', () => {
+      expect(service.cleanFormData(testArray)).toEqual({
+        'publications': [
+          testArray['publications'][1],
+          testArray['publications'][2]
+        ]
+      });
+    });
+
+    it('should not clean a single publication', () => {
+      expect(service.cleanFormData(testSingle)).toEqual(testSingle);
+    });
+
+    it('should not clean a nested publication', () => {
+      expect(service.cleanFormData(testNested)).toEqual({
+        'content': {
+          'title': 'Zorgon',
+          'biomaterial_core': {
+            ...testSingle
+          },
+          'publications': [
+            testArray['publications'][1],
+            testArray['publications'][2]
+          ]
+        }
+      });
+    });
+  });
 });
