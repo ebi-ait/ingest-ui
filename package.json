@@ -21,5 +21,9 @@
     "url": "https://github.com/HumanCellAtlas/ingest-ui/issues"
   },
   "homepage": "https://github.com/HumanCellAtlas/ingest-ui#readme",
-  "snyk": true
+  "snyk": true,
+  "engines": {
+    "npm": "please-use-yarn",
+    "yarn": ">= 1.22.0"
+  }
 }
