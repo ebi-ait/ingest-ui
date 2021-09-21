@@ -47,7 +47,9 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.dataSource = new ProjectDataSource(this.getProjects.bind(this));
     this.dataSource.sortBy('updateDate', 'desc');
-    this.dataSource.connect(true, THIRTY_SECONDS).subscribe({
+    this.dataSource.changeSearchType(this.searchType);
+    const pollingPeriod = THIRTY_SECONDS;
+    this.dataSource.connect(true, pollingPeriod).subscribe({
       next: data => {
         this.projects = data.data;
       },
