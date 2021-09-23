@@ -34,7 +34,7 @@ import {MetadataPickerComponent} from './metadata-picker/metadata-picker.compone
 import {MetadataSchemaFormModule} from './metadata-schema-form/metadata-schema-form.module';
 import {MyProjectsComponent} from './my-projects/my-projects.component';
 import {ProcessDetailsComponent} from './process-details/process-details.component';
-import {ProjectCreateEdit} from './projects/projects.module';
+import {ProjectsModule} from './projects/projects.module';
 import {ProjectSummaryComponent} from './project-summary/project-summary.component';
 
 import {ProjectComponent} from './project/project.component';
@@ -112,7 +112,7 @@ const BROWSER_LOCALE = navigator.language;
     MatDialogModule,
     NgxGraphModule,
     NgxChartsModule,
-    ProjectCreateEdit,
+    ProjectsModule,
     NgxGraphModule,
     NgxChartsModule,
     NgxDatatableModule,

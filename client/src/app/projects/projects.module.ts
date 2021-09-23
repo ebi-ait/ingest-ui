@@ -18,9 +18,10 @@ import {WranglingPriorityInputComponent} from './components/wrangling-priority-i
 import {AutofillProjectFormComponent} from './pages/autofill-project-form/autofill-project-form.component';
 import {CreateProjectComponent} from './pages/create-project/create-project.component';
 import {EditProjectComponent} from './pages/edit-project/edit-project.component';
-import {ProjectsModule} from './projects-routing.module';
+import {ProjectsRoutingModule} from './projects-routing.module';
 import {AutofillProjectService} from './services/autofill-project.service';
 import {ProjectCacheService} from './services/project-cache.service';
+import { ProjectFiltersComponent } from './components/project-filters/project-filters.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import {ProjectCacheService} from './services/project-cache.service';
     PublicationFieldGroupComponent,
     WranglerListInputComponent,
     WranglingPriorityInputComponent,
+    ProjectFiltersComponent,
   ],
   imports: [
     CommonModule,
@@ -44,13 +46,16 @@ import {ProjectCacheService} from './services/project-cache.service';
     MatIconModule,
     MatTabsModule,
     MetadataSchemaFormModule,
-    ProjectsModule,
+    ProjectsRoutingModule,
     ReactiveFormsModule,
     SharedModule,
+  ],
+  exports: [
+    ProjectFiltersComponent
   ],
   providers: [
     AutofillProjectService,
     ProjectCacheService,
   ]
 })
-export class ProjectCreateEdit { }
+export class ProjectsModule { }

@@ -28,7 +28,7 @@ export const ROUTES: Routes = [
   {
     path: 'projects',
     loadChildren: () =>
-      import('./projects/projects.module').then((m) => m.ProjectCreateEdit),
+      import('./projects/projects.module').then((m) => m.ProjectsModule),
     canActivate: [UserIsLoggedInGuard]
   },
 
