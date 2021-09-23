@@ -18,7 +18,7 @@ import {WranglingPriorityInputComponent} from './components/wrangling-priority-i
 import {AutofillProjectFormComponent} from './pages/autofill-project-form/autofill-project-form.component';
 import {CreateProjectComponent} from './pages/create-project/create-project.component';
 import {EditProjectComponent} from './pages/edit-project/edit-project.component';
-import {ProjectCreateEditRoutingModule} from './project-create-edit-routing.module';
+import {ProjectsModule} from './projects-routing.module';
 import {AutofillProjectService} from './services/autofill-project.service';
 import {ProjectCacheService} from './services/project-cache.service';
 
@@ -44,7 +44,7 @@ import {ProjectCacheService} from './services/project-cache.service';
     MatIconModule,
     MatTabsModule,
     MetadataSchemaFormModule,
-    ProjectCreateEditRoutingModule,
+    ProjectsModule,
     ReactiveFormsModule,
     SharedModule,
   ],

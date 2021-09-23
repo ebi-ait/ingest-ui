@@ -2,7 +2,7 @@ import {ComponentFixture, fakeAsync, TestBed, tick, waitForAsync} from '@angular
 import {By} from '@angular/platform-browser';
 
 import {AllProjectsComponent} from './all-projects.component';
-import {IngestService} from '../shared/services/ingest.service';
+import {IngestService} from '../../../shared/services/ingest.service';
 import {of} from 'rxjs';
 import createSpyObj = jasmine.createSpyObj;
 
