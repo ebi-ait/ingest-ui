@@ -1,7 +1,7 @@
 <form [formGroup]="filtersForm">
   <mat-form-field class="search-bar">
     <mat-icon matPrefix>search</mat-icon>
-    <input matInput placeholder="Search Projects" formControlName="keyword">
+    <input matInput placeholder="Search Projects" formControlName="search">
     <button mat-button matSuffix mat-icon-button aria-label="Clear">
       <mat-icon>close</mat-icon>
     </button>
@@ -34,7 +34,7 @@
   <mat-form-field>
     <mat-select placeholder="Filter by priority" formControlName="priority">
       <mat-option>None</mat-option>
-      <mat-option></mat-option>
+      <mat-option *ngFor="let priority of [1,2,3]" [value]="priority">{{priority}}</mat-option>
     </mat-select>
   </mat-form-field>
 
@@ -46,11 +46,11 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field>
-    <mat-select placeholder="Filter by cell count" formControlName="cellCount">
-      <mat-option>None</mat-option>
-      <mat-option></mat-option>
-    </mat-select>
+  <mat-form-field class="search-bar">
+    <input matInput placeholder="By Cell Count" formControlName="cellCount">
+    <button mat-button matSuffix mat-icon-button aria-label="Clear">
+      <mat-icon>close</mat-icon>
+    </button>
   </mat-form-field>
 
   <mat-form-field>

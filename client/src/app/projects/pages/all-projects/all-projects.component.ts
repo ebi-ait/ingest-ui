@@ -47,7 +47,6 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.dataSource = new ProjectDataSource(this.getProjects.bind(this));
     this.dataSource.sortBy('updateDate', 'desc');
-    this.dataSource.changeSearchType(this.searchType);
     const pollingPeriod = THIRTY_SECONDS;
     this.dataSource.connect(true, pollingPeriod).subscribe({
       next: data => {
@@ -90,22 +89,9 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
     ));
   }
 
-  onSearch(value) {
-    this.dataSource.search(value);
-  }
-
   onClearSearch() {
     this.searchText = '';
   }
-
-  onFilterByWranglingState($event) {
-    this.dataSource.filterByWranglingState($event.value);
-  }
-
-  onFilterByWrangler($event) {
-    this.dataSource.filterByWrangler($event.value);
-  }
-
 
   onPageChange({ pageIndex, pageSize }) {
     this.dataSource.fetch(pageIndex, pageSize);
@@ -115,7 +101,7 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
     return wranglingState.replace(/\s+/g, '_').toUpperCase();
   }
 
-  onChangeSearchType($event: MatSelectChange) {
-    this.dataSource.changeSearchType($event.value);
+  onFilter($event) {
+    this.dataSource.applyFilters($event);
   }
 }
