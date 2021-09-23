@@ -8,7 +8,6 @@
 
 <app-project-filters></app-project-filters>
 
-<!--TODO This component should be moved into projects module-->
 <app-project-list [projects]=projects [columns]="columns"></app-project-list>
 
 <ng-container *ngIf="dataSource.page$ | async as page">

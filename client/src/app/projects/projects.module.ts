@@ -1,8 +1,10 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatIconModule} from '@angular/material/icon';
 import {MatTabsModule} from '@angular/material/tabs';
+import {MaterialModule} from "../material.module";
 import {MetadataSchemaFormModule} from '../metadata-schema-form/metadata-schema-form.module';
 import {SharedModule} from '../shared/shared.module';
 import {AccessionFieldGroupComponent} from './components/accession-field-group/accession-field-group.component';
@@ -45,6 +47,8 @@ import { ProjectFiltersComponent } from './components/project-filters/project-fi
     FormsModule,
     MatIconModule,
     MatTabsModule,
+    MatFormFieldModule,
+    MaterialModule,
     MetadataSchemaFormModule,
     ProjectsRoutingModule,
     ReactiveFormsModule,
