@@ -61,7 +61,7 @@ export class SimpleDataSource<T> implements  DataSource<T> {
       timer(0, pollInterval).pipe(
         tap(() => this.polling.next(true)),
         takeWhile(() => this.isPolling),
-        mergeMap(() => {
+        switchMap(() => {
           return observable$;
         }),
         tap(() => this.polling.next(false)),
