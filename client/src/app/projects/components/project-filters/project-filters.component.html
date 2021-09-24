@@ -17,48 +17,51 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field>
-    <mat-select placeholder="Filter by status" formControlName="wranglingStatus">
-      <mat-option>None</mat-option>
-      <mat-option *ngFor="let state of wranglingStates" [value]="transformWranglingState(state)">{{state}}</mat-option>
-    </mat-select>
-  </mat-form-field>
+  <ng-container *ngIf="isExpanded">
+    <mat-form-field>
+      <mat-select placeholder="Filter by status" formControlName="wranglingStatus">
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let state of wranglingStates" [value]="transformWranglingState(state)">{{state}}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-  <mat-form-field>
-    <mat-select placeholder="Filter by wrangler" formControlName="wrangler">
-      <mat-option>None</mat-option>
-      <mat-option *ngFor="let wrangler of wranglers$ | async" [value]="wrangler.id">{{wrangler.name}}</mat-option>
-    </mat-select>
-  </mat-form-field>
+    <mat-form-field>
+      <mat-select placeholder="Filter by wrangler" formControlName="wrangler">
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let wrangler of wranglers$ | async" [value]="wrangler.id">{{wrangler.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-  <mat-form-field>
-    <mat-select placeholder="Filter by priority" formControlName="priority">
-      <mat-option>None</mat-option>
-      <mat-option *ngFor="let priority of [1,2,3]" [value]="priority">{{priority}}</mat-option>
-    </mat-select>
-  </mat-form-field>
+    <mat-form-field>
+      <mat-select placeholder="Filter by priority" formControlName="priority">
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let priority of [1,2,3]" [value]="priority">{{priority}}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-  <mat-form-field>
-    <mat-select placeholder="HCA Publication" formControlName="hcaPublication">
-      <mat-option>None</mat-option>
-      <mat-option [value]="true">Yes</mat-option>
-      <mat-option [value]="false">No</mat-option>
-    </mat-select>
-  </mat-form-field>
+    <mat-form-field>
+      <mat-select placeholder="HCA Publication" formControlName="hcaPublication">
+        <mat-option>None</mat-option>
+        <mat-option [value]="true">Yes</mat-option>
+        <mat-option [value]="false">No</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-  <mat-form-field>
-    <input matInput placeholder="By Cell Count" formControlName="cellCount">
-    <button mat-button matSuffix mat-icon-button aria-label="Clear">
-      <mat-icon>close</mat-icon>
-    </button>
-  </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="By Cell Count" formControlName="cellCount">
+      <button mat-button matSuffix mat-icon-button aria-label="Clear">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
 
-  <mat-form-field>
-    <mat-select placeholder="Filter by species" formControlName="species">
-      <mat-option>None</mat-option>
-      <mat-option value="human">Human</mat-option>
-      <mat-option value="mouse">Mouse</mat-option>
-    </mat-select>
-  </mat-form-field>
-
+    <mat-form-field>
+      <mat-select placeholder="Filter by species" formControlName="species">
+        <mat-option>None</mat-option>
+        <mat-option value="human">Human</mat-option>
+        <mat-option value="mouse">Mouse</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </ng-container>
 </form>
+
+<a class="vf-link" style="float: right; margin: 1rem 0;" href="javascript:void(0)" (click)="toggleFilters()">{{isExpanded ? 'Hide' : 'Show'}} filters</a>

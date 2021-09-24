@@ -25,6 +25,8 @@ export class ProjectFiltersComponent implements OnInit {
   wranglingStates = ingestSchema['properties']['wranglingState']['enum'];
   @Output() filters: EventEmitter<object> = new EventEmitter(this.filtersForm.value);
 
+  isExpanded = false;
+
   constructor(private fb: FormBuilder, private ingestService: IngestService) { }
 
   ngOnInit(): void {
@@ -36,5 +38,9 @@ export class ProjectFiltersComponent implements OnInit {
 
   transformWranglingState(wranglingState: String) {
     return wranglingState.replace(/\s+/g, '_').toUpperCase();
+  }
+
+  toggleFilters(): void {
+    this.isExpanded = !this.isExpanded;
   }
 }
