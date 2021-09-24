@@ -1,6 +1,8 @@
+import {TWO} from "@angular/cdk/keycodes";
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormBuilder} from '@angular/forms';
 import {Observable} from 'rxjs';
+import {throttleTime} from 'rxjs/operators'
 import {Account} from '../../../core/account';
 import {IngestService} from '../../../shared/services/ingest.service';
 import ingestSchema from '../../schemas/project-ingest-schema.json';
@@ -31,7 +33,8 @@ export class ProjectFiltersComponent implements OnInit {
 
   ngOnInit(): void {
     this.wranglers$ = this.ingestService.getWranglers();
-    this.filtersForm.valueChanges.subscribe(value => {
+    const TWO_SECONDS = 2000;
+    this.filtersForm.valueChanges.pipe(throttleTime(TWO_SECONDS)).subscribe(value => {
       this.filters.emit(value);
     });
   }
