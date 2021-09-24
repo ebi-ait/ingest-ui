@@ -27,6 +27,9 @@ export class ProjectDataSource extends MetadataDataSource<Project> {
     }
     const removedFilterKeys = keys(this.prevFilters).filter(key => !keys(withoutNil).includes(key));
     const withoutRemoved = omit({ ...this.getQueryData(), ...withoutNil }, removedFilterKeys);
+    if (withoutRemoved['search'] === '') {
+      delete withoutRemoved['search'];
+    }
     this.setQueryData(withoutRemoved);
     this.prevFilters = withoutNil;
   }
