@@ -43,4 +43,8 @@ export class ProjectFiltersComponent implements OnInit {
   toggleFilters(): void {
     this.isExpanded = !this.isExpanded;
   }
+
+  onClearSearch() {
+    this.filtersForm.patchValue({search: null});
+  }
 }
