@@ -1,5 +1,3 @@
-import {Observable} from 'rxjs';
-import {pluck} from 'rxjs/operators';
 import {PaginatedEndpoint} from '../models/paginatedEndpoint';
 import {Project} from '../models/project';
 import {MetadataDataSource} from './metadata-data-source';
