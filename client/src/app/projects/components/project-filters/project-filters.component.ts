@@ -17,10 +17,10 @@ export class ProjectFiltersComponent implements OnInit {
     searchType: ['AllKeywords'],
     wranglingStatus: [],
     wrangler: [],
-    priority: [1],
+    priority: [],
     hcaPublication: [],
-    cellCount: [0],
-    species: []
+    cellCount: [],
+    species: [],
   });
   wranglers$: Observable<Account[]>;
   wranglingStates = ingestSchema['properties']['wranglingState']['enum'];
