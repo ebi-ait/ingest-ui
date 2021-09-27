@@ -15,8 +15,8 @@ export class ProjectFiltersComponent implements OnInit {
   filtersForm = this.fb.group({
     search: [],
     searchType: ['AllKeywords'],
-    wranglingStatus: [],
-    wrangler: [],
+    wranglingState: [],
+    primaryWrangler: [],
     priority: [],
     hcaPublication: [],
     cellCount: [],
