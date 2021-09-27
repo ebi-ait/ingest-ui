@@ -81,7 +81,6 @@ export class SimpleDataSource<T> implements  DataSource<T> {
         if (shouldPoll) {
           return this.poll(endpoint$, pollInterval);
         }
-        // Copy the params to remove side-effects
         return endpoint$;
       }),
       tap(() => this.loading.next(false))
