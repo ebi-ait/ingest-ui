@@ -4,14 +4,17 @@ import {DataSource} from '../models/data-source';
 import {Endpoint, QueryData} from '../models/paginatedEndpoint';
 
 export class SimpleDataSource<T> implements  DataSource<T> {
+  // Set of data (usually used as query params) to be given to this.endpoint
   protected queryData: BehaviorSubject<QueryData>;
+  // Is a request happening now? Is true on initial request and whenever queryData changes
   private loading = new Subject<boolean>();
   public loading$ = this.loading.asObservable();
+  // Is a request caused by polling happening now? Similiar to loading but for subsequent requests
   private polling = new Subject<boolean>();
   public polling$ = this.polling.asObservable();
   private readonly result: ReplaySubject<T>;
   public result$: Observable<T>;
-  private isPolling: boolean;
+  private isPollingAllowed: boolean;
   private maxRetries = 2;
   private retryAttempts: number;
 
@@ -41,10 +44,10 @@ export class SimpleDataSource<T> implements  DataSource<T> {
   }
 
   private poll(observable$: Observable<any>, pollInterval): Observable<any> {
-    this.isPolling = true;
+    this.isPollingAllowed = true;
     return timer(0, pollInterval).pipe(
       tap(() => this.polling.next(true)),
-      takeWhile(() => this.isPolling),
+      takeWhile(() => this.isPollingAllowed),
       // User mergeMap since the inner observable (request) may take longer than the pollInterval to resolve
       // If using switchMap, the inner observable would be cancelled with a new value from the outer observable
       // i.e. when the pollInterval has been exceeded
@@ -90,6 +93,6 @@ export class SimpleDataSource<T> implements  DataSource<T> {
   }
 
   disconnect(): void {
-    this.isPolling = false;
+    this.isPollingAllowed = false;
   }
 }
