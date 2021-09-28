@@ -42,7 +42,7 @@ export class ProjectFiltersComponent implements OnInit {
   wranglingStates = ingestSchema['properties']['wranglingState']['enum'];
   @Output() filters: EventEmitter<object> = new EventEmitter(this.filtersForm.value);
 
-  isExpanded = true;
+  isExpanded = false;
 
   constructor(private fb: FormBuilder, private ingestService: IngestService, private ols: OntologyService) { }
 
