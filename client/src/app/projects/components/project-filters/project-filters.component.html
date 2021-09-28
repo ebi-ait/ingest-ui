@@ -33,33 +33,65 @@
     </mat-form-field>
 
     <mat-form-field>
-      <mat-select placeholder="Priority" formControlName="priority">
+      <mat-select placeholder="Priority" formControlName="wranglingPriority">
         <mat-option>None</mat-option>
         <mat-option *ngFor="let priority of [1,2,3]" [value]="priority">{{priority}}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <mat-form-field>
-      <mat-select placeholder="HCA Publication" formControlName="hcaPublication">
+      <mat-select placeholder="HCA Publication" formControlName="hasOfficialHcaPublication">
         <mat-option>None</mat-option>
         <mat-option [value]="true">Yes</mat-option>
         <mat-option [value]="false">No</mat-option>
       </mat-select>
     </mat-form-field>
 
+    <div class="cell-count">
+      <p class="heading">Cell Count</p>
+
+      <div class="cell-count__slider cell-count__slider--min">
+        <mat-slider
+          formControlName="minCellCount"
+          min="0"
+          [max]="filtersForm.get('maxCellCount').value"
+          thumbLabel
+          [displayWith]="formatLabel">
+        </mat-slider>
+        <small class="slider__label">Min.</small>
+      </div>
+      <div class="cell-count__slider cell-count__slider--max">
+        <mat-slider
+          formControlName="maxCellCount"
+          min="0"
+          [max]="maxCellCount"
+          thumbLabel
+          [displayWith]="formatLabel">
+        </mat-slider>
+        <small class="slider__label">Max.</small>
+      </div>
+    </div>
+
     <mat-form-field>
-      <input matInput placeholder="Cell Count" formControlName="cellCount">
-      <button mat-button matSuffix mat-icon-button aria-label="Clear">
-        <mat-icon>close</mat-icon>
-      </button>
+      <mat-select placeholder="Species" formControlName="identifyingOrganism">
+        <mat-option>None</mat-option>
+        <mat-option value="Human">Human</mat-option>
+        <mat-option value="Mouse">Mouse</mat-option>
+      </mat-select>
     </mat-form-field>
 
     <mat-form-field>
-      <mat-select placeholder="Species" formControlName="species">
-        <mat-option>None</mat-option>
-        <mat-option value="human">Human</mat-option>
-        <mat-option value="mouse">Mouse</mat-option>
-      </mat-select>
+      <mat-label>Organ</mat-label>
+      <input type="text"
+             placeholder="Organ"
+             matInput
+             formControlName="organOntology"
+             [matAutocomplete]="auto">
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let organ of organs$ | async" [value]="organ.ontology">
+          {{organ.ontology_label}} ({{organ.ontology}})
+        </mat-option>
+      </mat-autocomplete>
     </mat-form-field>
   </ng-container>
 </form>

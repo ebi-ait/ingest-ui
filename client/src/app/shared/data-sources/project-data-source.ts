@@ -11,16 +11,13 @@ export class ProjectDataSource extends MetadataDataSource<Project> {
   }
 
   public applyFilters(filters: object) {
-    const withoutNil = omitBy(filters, isNil);
+    const withoutNilAndEmptyString = omitBy(omitBy(filters, isNil), val => val === '') ;
     if (!this.prevFilters) {
-      this.prevFilters = withoutNil;
+      this.prevFilters = withoutNilAndEmptyString;
     }
-    const removedFilterKeys = keys(this.prevFilters).filter(key => !keys(withoutNil).includes(key));
-    const withoutRemoved = omit({ ...this.getQueryData(), ...withoutNil }, removedFilterKeys);
-    if (withoutRemoved['search'] === '') {
-      delete withoutRemoved['search'];
-    }
+    const removedFilterKeys = keys(this.prevFilters).filter(key => !keys(withoutNilAndEmptyString).includes(key));
+    const withoutRemoved = omit({ ...this.getQueryData(), ...withoutNilAndEmptyString }, removedFilterKeys);
     this.setQueryData(withoutRemoved);
-    this.prevFilters = withoutNil;
+    this.prevFilters = withoutNilAndEmptyString;
   }
 }

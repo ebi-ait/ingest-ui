@@ -9,3 +9,37 @@
   grid-column-start: 1;
   grid-column-end: 3;
 }
+
+.cell-count {
+  position: relative;
+}
+
+.cell-count .heading {
+  color: rgba(0, 0, 0, 0.54);
+  margin: 0;
+  transform: translateX(-3.28125em) scale(0.75) perspective(100px) translateZ(0.001px);
+}
+
+.cell-count .cell-count__slider {
+  width: 50%;
+  display: inline-block;
+  position: relative;
+}
+
+.cell-count .cell-count__slider .mat-slider {
+  width: 100%;
+}
+
+.cell-count .cell-count__slider .slider__label {
+  position: absolute;
+  bottom: -.3em;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.cell-count__slider.cell-count__slider--max .slider__label {
+  right: 0;
+}
+
+.cell-count__slider.cell-count__slider--min .slider__label {
+  left: 0;
+}
