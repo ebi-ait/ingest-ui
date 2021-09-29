@@ -82,14 +82,18 @@
 
     <mat-form-field>
       <mat-label>Organ</mat-label>
+      <!--Organ search input-->
       <input type="text"
              placeholder="Organ"
              matInput
-             formControlName="organOntology"
+             [(ngModel)]="organSearchValue"
+             (ngModelChange)="organSearchChange($event)"
+             [ngModelOptions]="{standalone: true}"
              [matAutocomplete]="auto">
-      <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let organ of organs$ | async" [value]="organ.ontology">
-          {{organ.ontology_label}} ({{organ.ontology}})
+      <!--Organ autocomplete dropdown-->
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOrganSelected($event)">
+        <mat-option *ngFor="let organ of organs" [value]="organ">
+          {{formatOrgan(organ)}}
         </mat-option>
       </mat-autocomplete>
     </mat-form-field>

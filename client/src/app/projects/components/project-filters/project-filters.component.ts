@@ -38,9 +38,15 @@ export class ProjectFiltersComponent implements OnInit {
     organOntology: []
   });
   wranglers$: Observable<Account[]>;
-  organs$: Observable<any>;
+  organs: any[];
   wranglingStates = ingestSchema['properties']['wranglingState']['enum'];
   @Output() filters: EventEmitter<object> = new EventEmitter(this.filtersForm.value);
+
+  // The organ search input is not part of the formGroup (see ngModelOptions value in component)
+  // since we don't want the search value in the form output, just the value of the selected organ ontology
+  // This allows for the search value to be displayed with the full organ name and send just the ontology behind the
+  // scenes
+  organSearchValue = '';
 
   isExpanded = false;
 
@@ -55,17 +61,6 @@ export class ProjectFiltersComponent implements OnInit {
 
   ngOnInit(): void {
     this.wranglers$ = this.ingestService.getWranglers();
-    this.organs$ = this.filtersForm.valueChanges
-      .pipe(
-        startWith(''),
-        distinctUntilChanged(),
-        map(val => val.organOntology),
-        map(val => val ? val.toLowerCase() : ''),
-        // @ts-ignore
-        switchMap(organ => this.ols.lookup(ingestSchema['properties']['organ']['properties']['ontologies']['items'], organ))
-      );
-
-    this.organs$.subscribe(console.log)
     this.filtersForm.valueChanges.pipe(
       debounceTime(200),
       map(values => {
@@ -90,11 +85,30 @@ export class ProjectFiltersComponent implements OnInit {
     this.filtersForm.patchValue({search: null});
   }
 
+  formatOrgan(organ: any) {
+    return `${organ.ontology_label} (${organ.ontology})`;
+  }
+
   onOrganSelected($event: MatAutocompleteSelectedEvent) {
-    console.log($event)
+    // Fill the organ search input with value that is shown in the dropdown
+    const organ = $event.option.value;
     this.filtersForm.patchValue({
-      organOntology: $event.option.value.ontology
+      organOntology: organ.ontology
     });
+    this.organSearchValue = this.formatOrgan(organ);
+  }
+
+  organSearchChange(value: string) {
+    if (!value || typeof value !== 'string') {
+      // value could be an object since this will also be called by the autocomplete dropdown when an option is selected
+      // Ignore if not a string
+      return;
+    }
+    // @ts-ignore
+    this.ols.lookup(ingestSchema['properties']['organ']['properties']['ontologies']['items'], value.toLowerCase())
+      .subscribe(organs => {
+        this.organs = organs;
+      });
   }
 
   formatLabel = (value: number) => {
