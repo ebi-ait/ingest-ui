@@ -11,13 +11,6 @@ import ingestSchema from '../../schemas/project-ingest-schema.json';
 // The maximum 32 bit integer value
 const MAX_INT_VALUE = (2 ** 31) - 1;
 
-const expValue = (value: number) => {
-  if (value === 0) {
-    return 0;
-  }
-  return Math.round(Math.exp(value));
-};
-
 @Component({
   selector: 'app-project-filters',
   templateUrl: './project-filters.component.html',
