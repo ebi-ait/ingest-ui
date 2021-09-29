@@ -99,7 +99,13 @@ export class ProjectFiltersComponent implements OnInit {
   }
 
   organSearchChange(value: string) {
-    if (!value || typeof value !== 'string') {
+    if (!value) {
+      this.filtersForm.patchValue({
+        organOntology: null
+      });
+    }
+
+    if (typeof value !== 'string') {
       // value could be an object since this will also be called by the autocomplete dropdown when an option is selected
       // Ignore if not a string
       return;
