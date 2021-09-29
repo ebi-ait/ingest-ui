@@ -11,7 +11,7 @@ const routes: Routes = [
   { path: 'register/autofill', component: AutofillProjectFormComponent },
   { path: 'register', component: CreateProjectComponent },
   { path: ':uuid/edit', component: EditProjectComponent, canActivate: [ WranglerOrOwnerGuard ] },
-  { path: 'projects/all', component: AllProjectsComponent, canActivate: [UserIsWranglerGuard] },
+  { path: 'all', component: AllProjectsComponent, canActivate: [UserIsWranglerGuard] },
 ];
 
 @NgModule({
