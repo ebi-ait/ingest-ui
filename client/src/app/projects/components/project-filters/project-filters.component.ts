@@ -1,8 +1,8 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormBuilder} from '@angular/forms';
-import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
+import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {Observable} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map, startWith, switchMap} from 'rxjs/operators';
+import {debounceTime, map} from 'rxjs/operators';
 import {Account} from '../../../core/account';
 import {IngestService} from '../../../shared/services/ingest.service';
 import {OntologyService} from '../../../shared/services/ontology.service';
