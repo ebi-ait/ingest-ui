@@ -14,10 +14,11 @@
   position: relative;
 }
 
-.cell-count .heading {
+.cell-count .heading p {
   color: rgba(0, 0, 0, 0.54);
   margin: 0;
-  transform: translateX(-3.28125em) scale(0.75) perspective(100px) translateZ(0.001px);
+  transform: translate(-.6em, .1em) scale(0.75) perspective(100px) translateZ(0.001px);
+  display: inline-block;
 }
 
 .cell-count .cell-count__slider {
