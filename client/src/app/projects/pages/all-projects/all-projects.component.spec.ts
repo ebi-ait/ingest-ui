@@ -1,9 +1,15 @@
-import {ComponentFixture, fakeAsync, TestBed, tick, waitForAsync} from '@angular/core/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatFormFieldModule} from '@angular/material/form-field';
 import {By} from '@angular/platform-browser';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {of} from 'rxjs';
+import {MaterialModule} from '../../../material.module';
+import {IngestService} from '../../../shared/services/ingest.service';
+import {ProjectFiltersComponent} from '../../components/project-filters/project-filters.component';
 
 import {AllProjectsComponent} from './all-projects.component';
-import {IngestService} from '../../../shared/services/ingest.service';
-import {of} from 'rxjs';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('AllProjectsComponent', () => {
@@ -15,10 +21,10 @@ describe('AllProjectsComponent', () => {
     mockIngestService = createSpyObj<IngestService>('IngestService', ['getWranglers', 'getFilteredProjects']);
     mockIngestService.getFilteredProjects.and.returnValue(of());
     TestBed.configureTestingModule({
-                                     declarations: [AllProjectsComponent],
-                                     providers: [{provide: IngestService, useValue: mockIngestService}]
-                                   })
-           .compileComponents();
+      imports: [ReactiveFormsModule, HttpClientTestingModule, MatFormFieldModule, FormsModule, MaterialModule, NoopAnimationsModule],
+      declarations: [AllProjectsComponent, ProjectFiltersComponent],
+      providers: [{provide: IngestService, useValue: mockIngestService}]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -33,58 +39,30 @@ describe('AllProjectsComponent', () => {
       .toBeTruthy();
   });
 
-  it('should hide clear button when searchText is empty', () => {
-    expect(component.searchText)
-      .toBe('');
-    expect(fixture.nativeElement.querySelector('button'))
-      .toBeFalsy();
-  });
-
-  it('value in searchText should make clear button visible', () => {
-    component.searchText = 'sample search text';
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('button'))
-      .toBeTruthy();
-  });
-
-  it('should call onClearSearch', fakeAsync(() => {
-    spyOn(component, 'onClearSearch');
-    component.searchText = 'sample search text';
-    fixture.detectChanges();
-    const clearButton = fixture.nativeElement.querySelector('button');
-    clearButton.click();
-    tick();
-    expect(component.onClearSearch)
-      .toHaveBeenCalled();
-  }));
-
-  it('should call getProjects when searchTypeChanges is called, dcp-386 ', (done) => {
-    spyOn(component, 'onChangeSearchType')
+  it('should call getProjects when onFilter is called, dcp-386 ', (done) => {
+    spyOn(component, 'onFilter')
       .and
       .callThrough();
     spyOn(component, 'getProjects').and.callThrough();
     component.ngOnInit();
 
-    const select = fixture.debugElement.query(By.css('.search-type'));
-    select.triggerEventHandler('selectionChange', { source: null, value: 'AllKeywords' });
-    expect(component.onChangeSearchType).toHaveBeenCalled();
+    const filters = {
+      searchType: 'AllKeywords',
+      organOntology: 'AN_ONTOLOGY'
+    };
+    const filtersComponent: ProjectFiltersComponent = fixture.debugElement.query(By.directive(ProjectFiltersComponent)).componentInstance;
+    filtersComponent.filters.emit(filters);
+    fixture.detectChanges();
 
     setTimeout(() => {
       // Messy solution: Works by moving this expectation to the task queue so that it is executed after everything
       // else has finished
+      expect(component.onFilter).toHaveBeenCalled();
       expect(component.getProjects)
         .toHaveBeenCalled();
       expect(mockIngestService.getFilteredProjects)
-        .toHaveBeenCalledWith({ page: 0, size: 20, sort: 'updateDate,desc', searchType: 'AllKeywords' });
+        .toHaveBeenCalledWith({ page: 0, size: 20, sort: 'updateDate,desc', ...filters });
       done();
     }, 0);
-  });
-
-  it('#onClearSearch() should clear search text', () => {
-    component.onClearSearch();
-    expect(component.searchText)
-      .toBe('');
-    expect(fixture.nativeElement.querySelector('input').value)
-      .toBe('');
   });
 });

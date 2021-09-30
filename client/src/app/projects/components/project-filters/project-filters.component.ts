@@ -89,7 +89,8 @@ export class ProjectFiltersComponent implements OnInit {
   }
 
   toggleFilterByCellCount(enabled = false) {
-    ['maxCellCount', 'minCellCount'].forEach(control => this.filtersForm.controls[control][enabled ? 'enable' : 'disable']());
+    ['maxCellCount', 'minCellCount'].forEach(control =>
+      this.filtersForm.controls[control][enabled ? 'enable' : 'disable']());
   }
 
   fetchOrgans(organSearchValue: string): Observable<any> {
