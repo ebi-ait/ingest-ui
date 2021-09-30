@@ -6,6 +6,7 @@ import {ProjectDataSource} from '../../../shared/data-sources/project-data-sourc
 import {PagedData} from '../../../shared/models/page';
 import {Project, ProjectColumn} from '../../../shared/models/project';
 import {IngestService} from '../../../shared/services/ingest.service';
+import {ProjectFilters} from '../../models/project-filters';
 
 const THIRTY_SECONDS = 30000;
 
@@ -80,7 +81,7 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
     this.dataSource.fetch(pageIndex, pageSize);
   }
 
-  onFilter($event) {
-    this.dataSource.applyFilters($event);
+  onFilter(filters: ProjectFilters) {
+    this.dataSource.applyFilters(filters);
   }
 }
