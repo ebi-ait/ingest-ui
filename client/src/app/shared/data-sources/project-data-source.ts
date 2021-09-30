@@ -1,3 +1,4 @@
+import {ProjectFilters} from '../../projects/models/project-filters';
 import {PaginatedEndpoint} from '../models/paginatedEndpoint';
 import {Project} from '../models/project';
 import {MetadataDataSource} from './metadata-data-source';
@@ -10,7 +11,7 @@ export class ProjectDataSource extends MetadataDataSource<Project> {
     super(endpoint, 'projects');
   }
 
-  public applyFilters(filters: object) {
+  public applyFilters(filters: ProjectFilters) {
     const withoutNilAndEmptyString = omitBy(omitBy(filters, isNil), val => val === '') ;
     if (!this.prevFilters) {
       this.prevFilters = withoutNilAndEmptyString;

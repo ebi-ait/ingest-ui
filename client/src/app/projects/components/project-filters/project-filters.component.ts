@@ -6,6 +6,7 @@ import {debounceTime, map} from 'rxjs/operators';
 import {Account} from '../../../core/account';
 import {IngestService} from '../../../shared/services/ingest.service';
 import {OntologyService} from '../../../shared/services/ontology.service';
+import {ProjectFilters} from '../../models/project-filters';
 import ingestSchema from '../../schemas/project-ingest-schema.json';
 
 // The maximum 32 bit integer value
@@ -33,7 +34,7 @@ export class ProjectFiltersComponent implements OnInit {
   wranglers$: Observable<Account[]>;
   organs: any[];
   wranglingStates = ingestSchema['properties']['wranglingState']['enum'];
-  @Output() filters: EventEmitter<object> = new EventEmitter(this.filtersForm.value);
+  @Output() filters: EventEmitter<ProjectFilters> = new EventEmitter(this.filtersForm.value);
 
   // The organ search input is not part of the formGroup (see ngModelOptions value in component)
   // since we don't want the search value in the form output, just the value of the selected organ ontology
