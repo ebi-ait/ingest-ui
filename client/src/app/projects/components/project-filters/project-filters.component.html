@@ -2,7 +2,7 @@
   <mat-form-field class="search-bar">
     <mat-icon matPrefix>search</mat-icon>
     <input matInput placeholder="Search Projects" formControlName="search">
-    <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="onClearSearch()">
+    <button *ngIf="filtersForm.controls.search.value" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="onClearSearch()">
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>

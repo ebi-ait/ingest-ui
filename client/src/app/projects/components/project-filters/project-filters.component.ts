@@ -1,7 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormBuilder} from '@angular/forms';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
-import {isNil} from 'lodash';
+import {isNil, isEqual} from 'lodash';
 import {Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import {Account} from '../../../core/account';
@@ -21,7 +21,7 @@ const MAX_INT_VALUE = (2 ** 31) - 1;
 export class ProjectFiltersComponent implements OnInit {
   maxCellCount = Math.log(MAX_INT_VALUE);
   filtersForm = this.fb.group({
-    search: [],
+    search: [''],
     searchType: ['AllKeywords'],
     wranglingState: [],
     primaryWrangler: [],
@@ -71,7 +71,6 @@ export class ProjectFiltersComponent implements OnInit {
     );
 
     this.filtersForm.valueChanges.pipe(
-      distinctUntilChanged(),
       debounceTime(200),
       map(values => {
         ['maxCellCount', 'minCellCount'].forEach(value => {
@@ -82,7 +81,8 @@ export class ProjectFiltersComponent implements OnInit {
         // Remove values that are not part of ProjectFilters
         delete values.controlsForm;
         return values;
-      })
+      }),
+      distinctUntilChanged(isEqual)
     ).subscribe(value => {
       this.filters.emit(value);
     });
@@ -110,7 +110,7 @@ export class ProjectFiltersComponent implements OnInit {
   }
 
   onClearSearch() {
-    this.filtersForm.patchValue({search: null});
+    this.filtersForm.patchValue({search: ''});
   }
 
   formatOrgan(organ: any) {
