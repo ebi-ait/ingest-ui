@@ -13,6 +13,19 @@ import ingestSchema from '../../schemas/project-ingest-schema.json';
 // The maximum 32 bit integer value
 const MAX_INT_VALUE = (2 ** 31) - 1;
 
+enum SearchTypes {
+  AllKeywords = 'All Keywords',
+  AnyKeyword = 'Any Keyword',
+  ExactMatch = 'Exact Match'
+}
+
+enum DataAccessTypes {
+  OPEN = 'All fully open',
+  MANAGED = 'All managed access',
+  MIXTURE = 'A mixture of open and managed',
+  COMPLICATED = 'It\'s complicated'
+}
+
 @Component({
   selector: 'app-project-filters',
   templateUrl: './project-filters.component.html',
@@ -22,7 +35,7 @@ export class ProjectFiltersComponent implements OnInit {
   maxCellCount = Math.log(MAX_INT_VALUE);
   filtersForm = this.fb.group({
     search: [''],
-    searchType: ['AllKeywords'],
+    searchType: [SearchTypes.AllKeywords],
     wranglingState: [],
     primaryWrangler: [],
     wranglingPriority: [],
@@ -43,7 +56,9 @@ export class ProjectFiltersComponent implements OnInit {
   wranglers$: Observable<Account[]>;
   organs$: Observable<any[]>;
   wranglingStates = ingestSchema['properties']['wranglingState']['enum'];
-  dataAccessTypes = ingestSchema['properties']['dataAccess']['properties']['type']['enum'];
+  dataAccessTypes = Object.entries(DataAccessTypes);
+  searchTypes = Object.entries(SearchTypes);
+
   @Output() filters: EventEmitter<ProjectFilters> = new EventEmitter(this.filtersForm.value);
 
   isExpanded = false;
