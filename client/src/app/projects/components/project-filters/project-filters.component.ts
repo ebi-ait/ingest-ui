@@ -31,6 +31,7 @@ export class ProjectFiltersComponent implements OnInit {
     maxCellCount: [{value: this.maxCellCount, disabled: true}],
     identifyingOrganism: [],
     organOntology: [],
+    dataAccess: [''],
 
     // UI controls that are not part of the output of this component
     controlsForm: this.fb.group({
@@ -42,6 +43,7 @@ export class ProjectFiltersComponent implements OnInit {
   wranglers$: Observable<Account[]>;
   organs$: Observable<any[]>;
   wranglingStates = ingestSchema['properties']['wranglingState']['enum'];
+  dataAccessTypes = ingestSchema['properties']['dataAccess']['properties']['type']['enum'];
   @Output() filters: EventEmitter<ProjectFilters> = new EventEmitter(this.filtersForm.value);
 
   isExpanded = false;

@@ -104,6 +104,13 @@
         </mat-option>
       </mat-autocomplete>
     </mat-form-field>
+
+    <mat-form-field>
+      <mat-select placeholder="Access Type" formControlName="dataAccess">
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let type of dataAccessTypes" [value]="type">{{type}}</mat-option>
+      </mat-select>
+    </mat-form-field>
   </ng-container>
 </form>
 
