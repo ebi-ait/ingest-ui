@@ -19,6 +19,15 @@
     ],
     "module": "es2020",
     "baseUrl": "./",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "compilerOptions": {
+      "baseUrl": "./"
+    },
+    "paths": {
+      "@environments/*": ["./src/environments/*"],
+      "@app/*": ["./src/app/*"],
+      "@shared/*": ["./src/app/shared*"],
+      "@project/*": ["./src/app/project/*"],
+    }
   }
 }
