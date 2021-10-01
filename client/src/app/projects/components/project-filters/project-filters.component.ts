@@ -118,7 +118,7 @@ export class ProjectFiltersComponent implements OnInit {
     );
   }
 
-  transformWranglingState(wranglingState: String) {
+  cleanWranglingState(wranglingState: String) {
     return wranglingState.replace(/\s+/g, '_').toUpperCase();
   }
 
