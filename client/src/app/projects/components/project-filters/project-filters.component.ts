@@ -59,7 +59,7 @@ export class ProjectFiltersComponent implements OnInit {
   dataAccessTypes = Object.entries(DataAccessTypes);
   searchTypes = Object.entries(SearchTypes);
 
-  @Output() filters: EventEmitter<ProjectFilters> = new EventEmitter(this.filtersForm.value);
+  @Output() filtersChange: EventEmitter<ProjectFilters> = new EventEmitter(this.filtersForm.value);
 
   isExpanded = false;
 
@@ -94,7 +94,7 @@ export class ProjectFiltersComponent implements OnInit {
       }),
       distinctUntilChanged(isEqual)
     ).subscribe(value => {
-      this.filters.emit(value);
+      this.filtersChange.emit(value);
     });
   }
 

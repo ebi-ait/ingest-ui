@@ -80,12 +80,12 @@ describe('ProjectFiltersComponent', () => {
     const FIELDS = ['search', 'searchType', 'wranglingState', 'primaryWrangler', 'wranglingPriority',
       'hasOfficialHcaPublication', 'minCellCount', 'maxCellCount', 'indentifyingOrganism', 'organOntology',
       'dataAccess'];
-    spyOn(component.filters, 'emit');
+    spyOn(component.filtersChange, 'emit');
 
     FIELDS.forEach(field => {
       component.filtersForm.patchValue({[field]: 'test'});
       tick(500);
-      expect(component.filters.emit).toHaveBeenCalled();
+      expect(component.filtersChange.emit).toHaveBeenCalled();
     });
   }));
 
@@ -94,11 +94,11 @@ describe('ProjectFiltersComponent', () => {
     component.filtersForm.patchValue({ hasOfficialHcaPublication: true });
     tick(500);
 
-    spyOn(component.filters, 'emit');
+    spyOn(component.filtersChange, 'emit');
 
     component.filtersForm.get('controlsForm').patchValue({ organSearchValue: 'test'});
     tick(500);
-    expect(component.filters.emit).not.toHaveBeenCalled();
+    expect(component.filtersChange.emit).not.toHaveBeenCalled();
   }));
 
   it('should add maxCellCount and minCellCount when filterByCellCount is enabled', fakeAsync(() => {

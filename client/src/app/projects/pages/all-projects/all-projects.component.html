@@ -6,7 +6,7 @@
 </div>
 <p class="vf-text-body vf-text-body--3 vf-u-text-color--grey">These are all the projects created for the Human Cell Atlas.</p>
 
-<app-project-filters (filters)="onFilter($event)"></app-project-filters>
+<app-project-filters (filtersChange)="onFilter($event)"></app-project-filters>
 
 <app-project-list [projects]=projects [columns]="columns"></app-project-list>
 

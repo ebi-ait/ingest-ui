@@ -51,7 +51,7 @@ describe('AllProjectsComponent', () => {
       organOntology: 'AN_ONTOLOGY'
     };
     const filtersComponent: ProjectFiltersComponent = fixture.debugElement.query(By.directive(ProjectFiltersComponent)).componentInstance;
-    filtersComponent.filters.emit(filters);
+    filtersComponent.filtersChange.emit(filters);
     fixture.detectChanges();
 
     setTimeout(() => {
