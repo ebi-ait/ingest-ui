@@ -1,14 +1,14 @@
 import {Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {ActivatedRoute, Router} from '@angular/router';
+import {PaginatedDataSource} from '@shared/data-sources/paginated-data-source';
+import {MetadataDocument} from '@shared/models/metadata-document';
+import {PagedData} from '@shared/models/page';
+import {AlertService} from '@shared/services/alert.service';
 import {map, tap} from 'rxjs/operators';
-import {PaginatedDataSource} from '../shared/data-sources/paginated-data-source';
-import {MetadataDocument} from '../shared/models/metadata-document';
-import {PagedData} from '../shared/models/page';
-import {SubmissionEnvelope} from '../shared/models/submissionEnvelope';
-import {AlertService} from '../shared/services/alert.service';
-import {IngestService} from '../shared/services/ingest.service';
-import {LoaderService} from '../shared/services/loader.service';
+import {SubmissionEnvelope} from '@shared/models/submissionEnvelope';
+import {IngestService} from '@shared/services/ingest.service';
+import {LoaderService} from '@shared/services/loader.service';
 
 @Component({
   selector: 'app-submission-list',
