@@ -5,7 +5,7 @@ import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {of, throwError} from 'rxjs';
 import {ROUTES} from '../../../app.routes';
-import {CreateProjectComponent} from '../../../project-create-edit/pages/create-project/create-project.component';
+import {CreateProjectComponent} from '../../../projects/pages/create-project/create-project.component';
 import {AlertService} from '../../services/alert.service';
 import {BrokerService} from '../../services/broker.service';
 import {LoaderService} from '../../services/loader.service';

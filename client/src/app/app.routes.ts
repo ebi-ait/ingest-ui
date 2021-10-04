@@ -1,6 +1,6 @@
 import {Routes} from '@angular/router';
 import {AaiCallbackComponent} from './aai-callback/aai-callback.component';
-import {AllProjectsComponent} from './all-projects/all-projects.component';
+import {AllProjectsComponent} from './projects/pages/all-projects/all-projects.component';
 import {ErrorComponent} from './error/error.component';
 import {LoginComponent} from './login/login.component';
 import {MyProjectsComponent} from './my-projects/my-projects.component';
@@ -28,11 +28,10 @@ export const ROUTES: Routes = [
   {
     path: 'projects',
     loadChildren: () =>
-      import('./project-create-edit/project-create-edit.module').then((m) => m.ProjectCreateEdit),
+      import('./projects/projects.module').then((m) => m.ProjectsModule),
     canActivate: [UserIsLoggedInGuard]
   },
 
-  {path: 'projects/all', component: AllProjectsComponent, canActivate: [UserIsLoggedInGuard, UserIsWranglerGuard]},
   {path: 'submissions/list', component: SubmissionListComponent,  canActivate: [UserIsLoggedInGuard, UserIsWranglerGuard]},
 
   {path: 'projects/detail/:id', component: ProjectComponent, canActivate: [UserIsLoggedInGuard, WranglerOrOwnerGuard]},

@@ -1,17 +1,20 @@
 import {BehaviorSubject, Observable, ReplaySubject, Subject, throwError, timer} from 'rxjs';
-import {catchError, mergeMap, retry, switchMap, takeWhile, tap} from 'rxjs/operators';
+import {catchError, mergeMap, retry, switchMap, takeWhile, tap, last} from 'rxjs/operators';
 import {DataSource} from '../models/data-source';
 import {Endpoint, QueryData} from '../models/paginatedEndpoint';
 
 export class SimpleDataSource<T> implements  DataSource<T> {
+  // Set of data (usually used as query params) to be given to this.endpoint
   protected queryData: BehaviorSubject<QueryData>;
+  // Is a request happening now? Is true on initial request and whenever queryData changes
   private loading = new Subject<boolean>();
   public loading$ = this.loading.asObservable();
+  // Is a request caused by polling happening now? Similiar to loading but for subsequent requests
   private polling = new Subject<boolean>();
   public polling$ = this.polling.asObservable();
   private readonly result: ReplaySubject<T>;
   public result$: Observable<T>;
-  private isPolling: boolean;
+  private isPollingAllowed: boolean;
   private maxRetries = 2;
   private retryAttempts: number;
 
@@ -40,6 +43,32 @@ export class SimpleDataSource<T> implements  DataSource<T> {
     return this.queryData.getValue();
   }
 
+  private poll(observable$: Observable<any>, pollInterval): Observable<any> {
+    this.isPollingAllowed = true;
+    return timer(0, pollInterval).pipe(
+      tap(() => this.polling.next(true)),
+      takeWhile(() => this.isPollingAllowed),
+      // User mergeMap since the inner observable (request) may take longer than the pollInterval to resolve
+      // If using switchMap, the inner observable would be cancelled with a new value from the outer observable
+      // i.e. when the pollInterval has been exceeded
+      mergeMap(() => {
+        // Only take most recent value of inner observable since we only want to poll on the most recent set of
+        // parameters (from this.queryData) for this.endpoint
+        return observable$.pipe(last());
+      }),
+      tap(() => this.polling.next(false)),
+      catchError(err => {
+        this.retryAttempts++;
+        if (this.retryAttempts > this.maxRetries) {
+          console.warn('Maximum retries exceeded, disconnecting from data source.');
+          this.disconnect();
+        }
+        return throwError(err);
+      }),
+      retry(this.maxRetries)
+    );
+  }
+
   /**
    * Begin connection to data source. This will start streaming data to this.result$
    * @param shouldPoll
@@ -47,42 +76,23 @@ export class SimpleDataSource<T> implements  DataSource<T> {
    * @return observable of data (same as this.result$)
    */
   connect(shouldPoll = false, pollInterval = 5000): Observable<T>  {
-    const observable$ = this.queryData.pipe(
+    this.queryData.pipe(
       tap(() => this.loading.next(true)),
       switchMap(params => {
         // Copy the params to remove side-effects
-        return this.endpoint(Object.assign({}, params));
+        const endpoint$ = this.endpoint(Object.assign({}, params));
+        if (shouldPoll) {
+          return this.poll(endpoint$, pollInterval);
+        }
+        return endpoint$;
       }),
       tap(() => this.loading.next(false))
-    );
-
-    if (shouldPoll) {
-      this.isPolling = true;
-      timer(0, pollInterval).pipe(
-        tap(() => this.polling.next(true)),
-        takeWhile(() => this.isPolling),
-        mergeMap(() => {
-          return observable$;
-        }),
-        tap(() => this.polling.next(false)),
-        catchError(err => {
-          this.retryAttempts++;
-          if (this.retryAttempts > this.maxRetries) {
-            console.warn('Maximum retries exceeded, disconnecting from data source.');
-            this.disconnect();
-          }
-          return throwError(err);
-        }),
-        retry(this.maxRetries)
-      ).subscribe(this.result);
-    } else {
-      observable$.subscribe(this.result);
-    }
+    ).subscribe(this.result);
 
     return this.result$;
   }
 
   disconnect(): void {
-    this.isPolling = false;
+    this.isPollingAllowed = false;
   }
 }

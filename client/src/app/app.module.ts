@@ -17,7 +17,7 @@ import {NgxGraphModule} from '@swimlane/ngx-graph';
 import {AaiCallbackComponent} from './aai-callback/aai-callback.component';
 import {AaiSecurity} from './aai/aai.module';
 import {OidcInterceptor} from './aai/oidc-interceptor';
-import {AllProjectsComponent} from './all-projects/all-projects.component';
+import {AllProjectsComponent} from './projects/pages/all-projects/all-projects.component';
 
 import {AppComponent} from './app.component';
 
@@ -34,7 +34,7 @@ import {MetadataPickerComponent} from './metadata-picker/metadata-picker.compone
 import {MetadataSchemaFormModule} from './metadata-schema-form/metadata-schema-form.module';
 import {MyProjectsComponent} from './my-projects/my-projects.component';
 import {ProcessDetailsComponent} from './process-details/process-details.component';
-import {ProjectCreateEdit} from './project-create-edit/project-create-edit.module';
+import {ProjectsModule} from './projects/projects.module';
 import {ProjectSummaryComponent} from './project-summary/project-summary.component';
 
 import {ProjectComponent} from './project/project.component';
@@ -112,7 +112,7 @@ const BROWSER_LOCALE = navigator.language;
     MatDialogModule,
     NgxGraphModule,
     NgxChartsModule,
-    ProjectCreateEdit,
+    ProjectsModule,
     NgxGraphModule,
     NgxChartsModule,
     NgxDatatableModule,
