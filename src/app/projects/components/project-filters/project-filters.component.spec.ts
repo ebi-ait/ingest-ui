@@ -3,10 +3,10 @@ import {ComponentFixture, fakeAsync, TestBed, tick, waitForAsync} from '@angular
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {MaterialModule} from '@app/material.module';
+import {IngestService} from '@shared/services/ingest.service';
+import {OntologyService} from '@shared/services/ontology.service';
 import {of} from 'rxjs';
-import {MaterialModule} from '../../../material.module';
-import {IngestService} from '../../../shared/services/ingest.service';
-import {OntologyService} from '../../../shared/services/ontology.service';
 import {ProjectFiltersComponent} from './project-filters.component';
 import createSpyObj = jasmine.createSpyObj;
 

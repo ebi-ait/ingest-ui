@@ -1,9 +1,9 @@
 import {NO_ERRORS_SCHEMA} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {ActivatedRoute, Router} from '@angular/router';
+import {AlertService} from '@shared/services/alert.service';
 import {of} from 'rxjs';
 import {AaiService} from '../aai/aai.service';
-import {AlertService} from '../shared/services/alert.service';
 import {LoginComponent} from './login.component';
 
 

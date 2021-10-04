@@ -1,4 +1,4 @@
-import {ProjectFilters} from '../../projects/models/project-filters';
+import {ProjectFilters} from '@projects/models/project-filters';
 import {PaginatedEndpoint} from '../models/paginatedEndpoint';
 import {Project} from '../models/project';
 import {MetadataDataSource} from './metadata-data-source';

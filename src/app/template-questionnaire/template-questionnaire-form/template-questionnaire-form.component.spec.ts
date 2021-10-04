@@ -1,8 +1,8 @@
 import {DatePipe} from '@angular/common';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
-import {AlertService} from '../../shared/services/alert.service';
-import {LoaderService} from '../../shared/services/loader.service';
+import {AlertService} from '@shared/services/alert.service';
+import {LoaderService} from '@shared/services/loader.service';
 import {TemplateGeneratorService} from '../template-generator.service';
 
 import {TemplateQuestionnaireFormComponent} from './template-questionnaire-form.component';

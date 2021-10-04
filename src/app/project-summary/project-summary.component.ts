@@ -1,13 +1,13 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {MetadataFormConfig} from '@metadata-schema-form/models/metadata-form-config';
+import {Project} from '@shared/models/project';
+import {AlertService} from '@shared/services/alert.service';
+import {IngestService} from '@shared/services/ingest.service';
+import {SchemaService} from '@shared/services/schema.service';
 import {Observable} from 'rxjs';
 import {Account} from '../core/account';
-import {MetadataFormConfig} from '../metadata-schema-form/models/metadata-form-config';
 import getLayout from '../projects/components/project-metadata-form/layout';
 import * as ingestSchema from '../projects/schemas/project-ingest-schema.json';
-import {Project} from '../shared/models/project';
-import {AlertService} from '../shared/services/alert.service';
-import {IngestService} from '../shared/services/ingest.service';
-import {SchemaService} from '../shared/services/schema.service';
 
 
 @Component({

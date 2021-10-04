@@ -1,11 +1,11 @@
-import {SubmissionComponent} from './submission.component';
-import {IngestService} from '../shared/services/ingest.service';
-import SpyObj = jasmine.SpyObj;
-import {AlertService} from '../shared/services/alert.service';
-import {BrokerService} from '../shared/services/broker.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {LoaderService} from '../shared/services/loader.service';
-import {SubmissionEnvelope} from '../shared/models/submissionEnvelope';
+import {SubmissionEnvelope} from '@shared/models/submissionEnvelope';
+import {AlertService} from '@shared/services/alert.service';
+import {BrokerService} from '@shared/services/broker.service';
+import {IngestService} from '@shared/services/ingest.service';
+import {LoaderService} from '@shared/services/loader.service';
+import {SubmissionComponent} from './submission.component';
+import SpyObj = jasmine.SpyObj;
 
 
 describe('SubmissionComponent', () => {

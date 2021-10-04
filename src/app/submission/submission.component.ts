@@ -1,21 +1,21 @@
 import {HttpErrorResponse} from '@angular/common/http';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {MetadataDataSource} from '@shared/data-sources/metadata-data-source';
+import {PaginatedDataSource} from '@shared/data-sources/paginated-data-source';
+import {SimpleDataSource} from '@shared/data-sources/simple-data-source';
+import {ArchiveEntity} from '@shared/models/archiveEntity';
+import {ListResult} from '@shared/models/hateoas';
+import {MetadataDocument} from '@shared/models/metadata-document';
+import {Project} from '@shared/models/project';
+import {SubmissionEnvelope} from '@shared/models/submissionEnvelope';
+import {SubmissionSummary} from '@shared/models/submissionSummary';
+import {AlertService} from '@shared/services/alert.service';
+import {BrokerService} from '@shared/services/broker.service';
+import {IngestService} from '@shared/services/ingest.service';
+import {LoaderService} from '@shared/services/loader.service';
 import {Observable, of} from 'rxjs';
 import {catchError, map, mergeMap} from 'rxjs/operators';
-import {MetadataDataSource} from '../shared/data-sources/metadata-data-source';
-import {PaginatedDataSource} from '../shared/data-sources/paginated-data-source';
-import {SimpleDataSource} from '../shared/data-sources/simple-data-source';
-import {ArchiveEntity} from '../shared/models/archiveEntity';
-import {ListResult} from '../shared/models/hateoas';
-import {MetadataDocument} from '../shared/models/metadata-document';
-import {Project} from '../shared/models/project';
-import {SubmissionEnvelope} from '../shared/models/submissionEnvelope';
-import {SubmissionSummary} from '../shared/models/submissionSummary';
-import {AlertService} from '../shared/services/alert.service';
-import {BrokerService} from '../shared/services/broker.service';
-import {IngestService} from '../shared/services/ingest.service';
-import {LoaderService} from '../shared/services/loader.service';
 
 enum SubmissionState {
   Draft = 'Draft',

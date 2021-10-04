@@ -1,19 +1,18 @@
 import {NO_ERRORS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {By} from '@angular/platform-browser';
 import {RouterTestingModule} from '@angular/router/testing';
+import {Account} from '@app/core/account';
+import {AlertService} from '@shared/services/alert.service';
+import {IngestService} from '@shared/services/ingest.service';
+import {LoaderService} from '@shared/services/loader.service';
+import {SchemaService} from '@shared/services/schema.service';
 import {of} from 'rxjs';
-import {Account} from '../../../core/account';
-import {AlertService} from '../../../shared/services/alert.service';
-import {IngestService} from '../../../shared/services/ingest.service';
-import {LoaderService} from '../../../shared/services/loader.service';
-import {SchemaService} from '../../../shared/services/schema.service';
 import {ProjectCacheService} from '../../services/project-cache.service';
 import {AccessionFieldGroupComponent} from '../accession-field-group/accession-field-group.component';
 import {ProjectIdComponent} from '../project-id/project-id.component';
 import {ProjectMetadataFormComponent} from './project-metadata-form.component';
 import SpyObj = jasmine.SpyObj;
-import {MetadataFormComponent} from '../../../metadata-schema-form/metadata-form/metadata-form.component';
-import {By} from '@angular/platform-browser';
 
 describe('ProjectMetadataFormComponent', () => {
   let component: ProjectMetadataFormComponent;

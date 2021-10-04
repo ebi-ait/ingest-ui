@@ -1,9 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {ListResult} from '@shared/models/hateoas';
+import {MetadataDocument} from '@shared/models/metadata-document';
+import {IngestService} from '@shared/services/ingest.service';
 import {forkJoin, Observable, Subject} from 'rxjs';
 import {tap} from 'rxjs/operators';
-import {ListResult} from '../shared/models/hateoas';
-import {MetadataDocument} from '../shared/models/metadata-document';
-import {IngestService} from '../shared/services/ingest.service';
 import {Link} from './link';
 import {NgxNode} from './ngxNode';
 

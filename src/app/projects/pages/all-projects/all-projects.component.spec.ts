@@ -4,9 +4,9 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {By} from '@angular/platform-browser';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {MaterialModule} from '@app/material.module';
+import {IngestService} from '@shared/services/ingest.service';
 import {of} from 'rxjs';
-import {MaterialModule} from '../../../material.module';
-import {IngestService} from '../../../shared/services/ingest.service';
 import {ProjectFiltersComponent} from '../../components/project-filters/project-filters.component';
 
 import {AllProjectsComponent} from './all-projects.component';

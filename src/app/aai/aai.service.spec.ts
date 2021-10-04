@@ -2,11 +2,11 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
+import {AlertService} from '@shared/services/alert.service';
+import {IngestService} from '@shared/services/ingest.service';
 import {User, UserManager} from 'oidc-client';
 import {of, throwError} from 'rxjs';
 import {Account} from '../core/account';
-import {AlertService} from '../shared/services/alert.service';
-import {IngestService} from '../shared/services/ingest.service';
 import {AaiService} from './aai.service';
 import SpyObj = jasmine.SpyObj;
 

@@ -1,11 +1,11 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
+import {Criteria} from '@shared/models/criteria';
+import {MetadataDocument} from '@shared/models/metadata-document';
+import {IngestService} from '@shared/services/ingest.service';
 import {Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, map, startWith, switchMap, tap} from 'rxjs/operators';
-import {Criteria} from '../shared/models/criteria';
-import {MetadataDocument} from '../shared/models/metadata-document';
-import {IngestService} from '../shared/services/ingest.service';
 
 @Component({
   selector: 'app-metadata-picker',

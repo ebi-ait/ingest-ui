@@ -1,11 +1,11 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {MetadataDetailsDialogComponent} from '../../metadata-details-dialog/metadata-details-dialog.component';
-import {INVALID_FILE_TYPES} from '../../shared/constants';
-import {FlattenService} from '../../shared/services/flatten.service';
-import {IngestService} from '../../shared/services/ingest.service';
-import {LoaderService} from '../../shared/services/loader.service';
-import {SchemaService} from '../../shared/services/schema.service';
+import {MetadataDetailsDialogComponent} from '@app/metadata-details-dialog/metadata-details-dialog.component';
+import {INVALID_FILE_TYPES} from '@shared/constants';
+import {FlattenService} from '@shared/services/flatten.service';
+import {IngestService} from '@shared/services/ingest.service';
+import {LoaderService} from '@shared/services/loader.service';
+import {SchemaService} from '@shared/services/schema.service';
 
 @Component({
   selector: 'app-metadata-list',

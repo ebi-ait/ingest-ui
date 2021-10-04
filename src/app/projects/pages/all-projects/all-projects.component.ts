@@ -1,11 +1,11 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
+import {ProjectDataSource} from '@shared/data-sources/project-data-source';
+import {PagedData} from '@shared/models/page';
+import {Project, ProjectColumn} from '@shared/models/project';
+import {IngestService} from '@shared/services/ingest.service';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {ProjectDataSource} from '../../../shared/data-sources/project-data-source';
-import {PagedData} from '../../../shared/models/page';
-import {Project, ProjectColumn} from '../../../shared/models/project';
-import {IngestService} from '../../../shared/services/ingest.service';
 import {ProjectFilters} from '../../models/project-filters';
 
 const THIRTY_SECONDS = 30000;

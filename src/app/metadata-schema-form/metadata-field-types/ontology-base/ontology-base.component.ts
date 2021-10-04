@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl} from '@angular/forms';
+import {environment} from '@environments/environment';
+import {Ontology} from '@shared/models/ontology';
+import {OntologyService} from '@shared/services/ontology.service';
 import {Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, startWith, switchMap} from 'rxjs/operators';
-import {environment} from '../../../../environments/environment';
-import {Ontology} from '../../../shared/models/ontology';
-import {OntologyService} from '../../../shared/services/ontology.service';
 import {MetadataFormService} from '../../metadata-form.service';
 import {BaseInputComponent} from '../base-input/base-input.component';
 

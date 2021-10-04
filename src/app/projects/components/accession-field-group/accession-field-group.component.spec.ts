@@ -1,7 +1,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormArray} from '@angular/forms';
-import {JsonSchema} from '../../../metadata-schema-form/models/json-schema';
-import {MetadataForm} from '../../../metadata-schema-form/models/metadata-form';
+import {JsonSchema} from '@metadata-schema-form/models/json-schema';
+import {MetadataForm} from '@metadata-schema-form/models/metadata-form';
 import * as testSchema from './test-schema.json';
 import {AccessionFieldGroupComponent} from './accession-field-group.component';
 

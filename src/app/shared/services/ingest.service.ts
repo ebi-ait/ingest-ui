@@ -4,8 +4,8 @@ import values from 'lodash/values';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
-import {environment} from '../../../environments/environment';
-import {Account} from '../../core/account';
+import {environment} from '@environments/environment';
+import {Account} from '@app/core/account';
 import {INVALID_FILE_TYPES} from '../constants';
 import {ArchiveEntity} from '../models/archiveEntity';
 import {ArchiveSubmission} from '../models/archiveSubmission';

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
+import {AaiService} from '@app/aai/aai.service';
+import {Project} from '@shared/models/project';
 import {map} from 'rxjs/operators';
-import {AaiService} from '../../aai/aai.service';
-import {Project} from '../../shared/models/project';
 
 @Injectable()
 export class ProjectCacheService {

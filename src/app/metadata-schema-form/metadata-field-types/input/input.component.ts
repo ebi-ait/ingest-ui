@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {AbstractControl, FormArray, FormGroup} from '@angular/forms';
 import pluralize from 'pluralize';
-import {Metadata} from '../../models/metadata';
-import {MetadataFormHelper} from '../../models/metadata-form-helper';
+import {Metadata} from '@metadata-schema-form/models/metadata';
+import {MetadataFormHelper} from '@metadata-schema-form/models/metadata-form-helper';
 import {BaseInputComponent} from '../base-input/base-input.component';
 
 @Component({

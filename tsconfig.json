@@ -21,10 +21,11 @@
     "baseUrl": "./",
     "allowSyntheticDefaultImports": true,
     "paths": {
-      "@environments*": ["src/environments/*"],
-      "@app*": ["src/app/*"],
+      "@environments/*": ["src/environments/*"],
+      "@app/*": ["src/app/*"],
       "@shared/*": ["src/app/shared/*"],
-      "@project": ["src/app/project/*"],
+      "@projects/*": ["src/app/projects/*"],
+      "@metadata-schema-form/*": ["src/app/metadata-schema-form/*"]
     }
   }
 }

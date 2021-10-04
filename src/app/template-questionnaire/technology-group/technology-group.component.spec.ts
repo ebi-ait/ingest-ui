@@ -1,6 +1,6 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormControl} from '@angular/forms';
-import {MetadataForm} from '../../metadata-schema-form/models/metadata-form';
+import {MetadataForm} from '@metadata-schema-form/models/metadata-form';
 
 import {TechnologyGroupComponent} from './technology-group.component';
 

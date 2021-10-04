@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {AlertService} from '@shared/services/alert.service';
+import {IngestService} from '@shared/services/ingest.service';
 import {Observable} from 'rxjs';
-import {AlertService} from '../../../shared/services/alert.service';
-import {IngestService} from '../../../shared/services/ingest.service';
 
 @Component({
   selector: 'app-edit-project',

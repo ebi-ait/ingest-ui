@@ -1,6 +1,6 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {MetadataForm} from '../../../metadata-schema-form/models/metadata-form';
-import {IngestService} from '../../../shared/services/ingest.service';
+import {MetadataForm} from '@metadata-schema-form/models/metadata-form';
+import {IngestService} from '@shared/services/ingest.service';
 
 import {ProjectIdComponent} from './project-id.component';
 

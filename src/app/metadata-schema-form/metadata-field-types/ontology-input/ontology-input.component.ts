@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
-import {Ontology} from '../../../shared/models/ontology';
-import {OntologyService} from '../../../shared/services/ontology.service';
+import {Ontology} from '@shared/models/ontology';
+import {OntologyService} from '@shared/services/ontology.service';
 import {MetadataFormService} from '../../metadata-form.service';
 import {OntologyBaseComponent} from '../ontology-base/ontology-base.component';
 

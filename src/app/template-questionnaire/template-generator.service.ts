@@ -1,8 +1,8 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {BrokerService} from '@shared/services/broker.service';
 import {Observable, throwError, timer} from 'rxjs';
 import {filter, first, map, mergeMap, mergeMapTo, timeoutWith} from 'rxjs/operators';
-import {BrokerService} from '../shared/services/broker.service';
 import {TemplateSpecification, TypeSpec} from './template-questionnaire.data';
 
 export interface TemplateGenerationRequestParam {

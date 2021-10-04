@@ -6,9 +6,9 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 // TODO
-import {Project} from '../../../shared/models/project';
-import {AlertService} from '../../../shared/services/alert.service';
-import {IngestService} from '../../../shared/services/ingest.service';
+import {Project} from '@shared/models/project';
+import {AlertService} from '@shared/services/alert.service';
+import {IngestService} from '@shared/services/ingest.service';
 import {Identifier} from '../../models/europe-pmc-search';
 import {ProjectCacheService} from '../../services/project-cache.service';
 

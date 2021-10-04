@@ -1,7 +1,7 @@
 import {TestBed} from '@angular/core/testing';
+import {AaiService} from '@app/aai/aai.service';
+import {Project} from '@shared/models/project';
 import {of} from 'rxjs';
-import {AaiService} from '../../aai/aai.service';
-import {Project} from '../../shared/models/project';
 import {ProjectCacheService} from './project-cache.service';
 import SpyObj = jasmine.SpyObj;
 

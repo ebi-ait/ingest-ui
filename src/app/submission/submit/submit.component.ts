@@ -1,9 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
-import {Project} from '../../shared/models/project';
-import {AlertService} from '../../shared/services/alert.service';
-import {IngestService} from '../../shared/services/ingest.service';
-import {LoaderService} from '../../shared/services/loader.service';
+import {Project} from '@shared/models/project';
+import {AlertService} from '@shared/services/alert.service';
+import {IngestService} from '@shared/services/ingest.service';
+import {LoaderService} from '@shared/services/loader.service';
 
 @Component({
   selector: 'app-submit',

@@ -1,6 +1,6 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {IngestService} from '@shared/services/ingest.service';
 import {of} from 'rxjs';
-import {IngestService} from '../shared/services/ingest.service';
 
 import {ProcessDetailsComponent} from './process-details.component';
 import SpyObj = jasmine.SpyObj;

@@ -1,17 +1,17 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {MetadataDataSource} from '@shared/data-sources/metadata-data-source';
+import {ListResult} from '@shared/models/hateoas';
+import {MetadataDocument} from '@shared/models/metadata-document';
+import {PagedData} from '@shared/models/page';
+import {Project} from '@shared/models/project';
+import {SubmissionEnvelope} from '@shared/models/submissionEnvelope';
+
+import {AlertService} from '@shared/services/alert.service';
+import {IngestService} from '@shared/services/ingest.service';
+import {LoaderService} from '@shared/services/loader.service';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {MetadataDataSource} from '../shared/data-sources/metadata-data-source';
-import {ListResult} from '../shared/models/hateoas';
-import {MetadataDocument} from '../shared/models/metadata-document';
-import {PagedData} from '../shared/models/page';
-import {Project} from '../shared/models/project';
-import {SubmissionEnvelope} from '../shared/models/submissionEnvelope';
-
-import {AlertService} from '../shared/services/alert.service';
-import {IngestService} from '../shared/services/ingest.service';
-import {LoaderService} from '../shared/services/loader.service';
 
 @Component({
   selector: 'app-project',

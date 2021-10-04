@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {MetadataForm} from '../../metadata-schema-form/models/metadata-form';
+import {MetadataForm} from '@metadata-schema-form/models/metadata-form';
 
 @Component({
   selector: 'app-specimen-group',

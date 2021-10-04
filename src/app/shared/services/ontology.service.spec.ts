@@ -1,8 +1,8 @@
 import {HttpClient} from '@angular/common/http';
 import {of} from 'rxjs';
-import {JsonSchema} from '../../metadata-schema-form/models/json-schema';
-import {JsonSchemaProperty} from '../../metadata-schema-form/models/json-schema-property';
-import {Metadata} from '../../metadata-schema-form/models/metadata';
+import {JsonSchema} from '@metadata-schema-form/models/json-schema';
+import {JsonSchemaProperty} from '@metadata-schema-form/models/json-schema-property';
+import {Metadata} from '@metadata-schema-form/models/metadata';
 import {OlsHttpResponse} from '../models/ols';
 import {OntologyService} from './ontology.service';
 

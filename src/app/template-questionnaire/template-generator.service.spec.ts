@@ -1,8 +1,8 @@
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {fakeAsync, tick} from '@angular/core/testing';
+import {BrokerService} from '@shared/services/broker.service';
 import {of} from 'rxjs';
 import {delay} from 'rxjs/operators';
-import {BrokerService} from '../shared/services/broker.service';
 import {TemplateGeneratorService} from './template-generator.service';
 import {TemplateSpecification} from './template-questionnaire.data';
 
