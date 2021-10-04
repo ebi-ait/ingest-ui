@@ -35,7 +35,7 @@ export class ProjectFiltersComponent implements OnInit {
   maxCellCount = Math.log(MAX_INT_VALUE);
   filtersForm = this.fb.group({
     search: [''],
-    searchType: [SearchTypes.AllKeywords],
+    searchType: [Object.keys(SearchTypes)[0]],
     wranglingState: [],
     primaryWrangler: [],
     wranglingPriority: [],
