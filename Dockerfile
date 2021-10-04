@@ -27,7 +27,7 @@ FROM quay.io/ebi-ait/ingest-base-images:nginx_1.19.3-alpine
 COPY --from=build-step /app/dist /usr/share/nginx/html
 COPY ./docker-assets/nginx.conf /etc/nginx/conf.d/default.conf
 
-COPY ./prepare_artifact.sh /usr/share/nginx/prepare_artifact.sh
+COPY ./docker-assets/prepare_artifact.sh /usr/share/nginx/prepare_artifact.sh
 RUN chmod +x /usr/share/nginx/prepare_artifact.sh
 
 # Run on 4200 just so we don't have to change helm config files
