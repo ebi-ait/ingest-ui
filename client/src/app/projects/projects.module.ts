@@ -1,8 +1,11 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
+import {MatSliderModule} from '@angular/material/slider';
 import {MatTabsModule} from '@angular/material/tabs';
+import {MaterialModule} from '../material.module';
 import {MetadataSchemaFormModule} from '../metadata-schema-form/metadata-schema-form.module';
 import {SharedModule} from '../shared/shared.module';
 import {AccessionFieldGroupComponent} from './components/accession-field-group/accession-field-group.component';
@@ -18,9 +21,10 @@ import {WranglingPriorityInputComponent} from './components/wrangling-priority-i
 import {AutofillProjectFormComponent} from './pages/autofill-project-form/autofill-project-form.component';
 import {CreateProjectComponent} from './pages/create-project/create-project.component';
 import {EditProjectComponent} from './pages/edit-project/edit-project.component';
-import {ProjectCreateEditRoutingModule} from './project-create-edit-routing.module';
+import {ProjectsRoutingModule} from './projects-routing.module';
 import {AutofillProjectService} from './services/autofill-project.service';
 import {ProjectCacheService} from './services/project-cache.service';
+import { ProjectFiltersComponent } from './components/project-filters/project-filters.component';
 
 @NgModule({
   declarations: [
@@ -37,20 +41,27 @@ import {ProjectCacheService} from './services/project-cache.service';
     PublicationFieldGroupComponent,
     WranglerListInputComponent,
     WranglingPriorityInputComponent,
+    ProjectFiltersComponent,
   ],
   imports: [
     CommonModule,
     FormsModule,
     MatIconModule,
     MatTabsModule,
+    MatFormFieldModule,
+    MaterialModule,
     MetadataSchemaFormModule,
-    ProjectCreateEditRoutingModule,
+    ProjectsRoutingModule,
     ReactiveFormsModule,
     SharedModule,
+    MatSliderModule,
+  ],
+  exports: [
+    ProjectFiltersComponent
   ],
   providers: [
     AutofillProjectService,
     ProjectCacheService,
   ]
 })
-export class ProjectCreateEdit { }
+export class ProjectsModule { }

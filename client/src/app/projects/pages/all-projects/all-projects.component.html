@@ -1,0 +1,22 @@
+<div class="vf-grid">
+  <h1 class="vf-text vf-text-heading--2">All Projects</h1>
+  <div>
+    <a class="vf-button vf-button--primary vf-button--sm vf-u-float__right" routerLink="/projects/register/autofill" >New Project</a>
+  </div>
+</div>
+<p class="vf-text-body vf-text-body--3 vf-u-text-color--grey">These are all the projects created for the Human Cell Atlas.</p>
+
+<app-project-filters (filtersChange)="onFilter($event)"></app-project-filters>
+
+<app-project-list [projects]=projects [columns]="columns"></app-project-list>
+
+<ng-container *ngIf="dataSource.page$ | async as page">
+  <ng-container *ngIf="page['totalElements'] > 0">
+    <mat-paginator [length]="page['totalElements']"
+                   [pageSize]="page['size']"
+                   [pageIndex]="page['number']"
+                   [pageSizeOptions]="pageSizeOptions"
+                   (page)="onPageChange($event)">
+    </mat-paginator>
+  </ng-container>
+</ng-container>
