@@ -10,14 +10,13 @@ WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 
 # install and cache app dependencies
-COPY ./client/package.json /app/package.json
-COPY ./client/yarn.lock /app/yarn.lock
-COPY ./client/.snyk /app/.snyk
+COPY ./package.json /app/package.json
+COPY ./yarn.lock /app/yarn.lock
+COPY ./.snyk /app/.snyk
 RUN yarn install --frozen-lockfile
 
 # add app
-COPY ./client /app
-RUN yarn install --frozen-lockfile
+COPY ./src /app/src
 
 # build app
 RUN ng build -c=env
@@ -32,5 +31,5 @@ COPY ./prepare_artifact.sh /usr/share/nginx/prepare_artifact.sh
 RUN chmod +x /usr/share/nginx/prepare_artifact.sh
 
 # Run on 4200 just so we don't have to change helm config files
-EXPOSE 4200 
+EXPOSE 4200
 CMD ["sh", "-c", "/usr/share/nginx/prepare_artifact.sh && nginx -g 'daemon off;'"]
