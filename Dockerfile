@@ -15,7 +15,10 @@ COPY ./yarn.lock /app/yarn.lock
 COPY ./.snyk /app/.snyk
 RUN yarn install --frozen-lockfile
 
-# add app
+# add app and build dependencies
+COPY ./angular.json /app/angular.json
+COPY ./browserslist /app/browserslist
+COPY ./tsconfig.json /app/tsconfig.json
 COPY ./src /app/src
 
 # build app
