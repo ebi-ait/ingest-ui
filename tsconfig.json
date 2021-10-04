@@ -20,14 +20,11 @@
     "module": "es2020",
     "baseUrl": "./",
     "allowSyntheticDefaultImports": true,
-    "compilerOptions": {
-      "baseUrl": "./"
-    },
     "paths": {
-      "@environments/*": ["./src/environments/*"],
-      "@app/*": ["./src/app/*"],
-      "@shared/*": ["./src/app/shared*"],
-      "@project/*": ["./src/app/project/*"],
+      "@environments*": ["src/environments/*"],
+      "@app*": ["src/app/*"],
+      "@shared/*": ["src/app/shared/*"],
+      "@project": ["src/app/project/*"],
     }
   }
 }

@@ -1,11 +1,10 @@
 import {Component, OnInit} from '@angular/core';
+import {IngestService} from '@shared/services/ingest.service';
+import {LoaderService} from '@shared/services/loader.service';
 import {Profile} from 'oidc-client';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {AaiService} from './aai/aai.service';
 import {Account} from './core/account';
-import {IngestService} from './shared/services/ingest.service';
-import {LoaderService} from './shared/services/loader.service';
-
 
 @Component({
   selector: 'app-root',
