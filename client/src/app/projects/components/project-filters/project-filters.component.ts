@@ -65,13 +65,6 @@ export class ProjectFiltersComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private ingestService: IngestService, private ols: OntologyService) { }
 
-  getRawCellCount(value: number) {
-    if (value === 0) {
-      return 0;
-    }
-    return Math.round(Math.exp(value));
-  }
-
   ngOnInit(): void {
     this.wranglers$ = this.ingestService.getWranglers();
 
@@ -105,6 +98,26 @@ export class ProjectFiltersComponent implements OnInit {
     });
   }
 
+  getRawCellCount(value: number) {
+    if (value === 0) {
+      return 0;
+    }
+    return Math.round(Math.exp(value));
+  }
+
+  formatCellCountLabel = (value: number) => {
+    const rawValue = this.getRawCellCount(value);
+    const ONE_MILLION = 10 ** 6;
+    if (rawValue >= ONE_MILLION) {
+      return Math.round(rawValue / ONE_MILLION) + 'M';
+    }
+    if (rawValue >= 1000) {
+      return Math.round(rawValue / 1000) + 'k';
+    }
+
+    return rawValue;
+  }
+
   toggleFilterByCellCount(enabled = false) {
     ['maxCellCount', 'minCellCount'].forEach(control =>
       this.filtersForm.controls[control][enabled ? 'enable' : 'disable']());
@@ -116,18 +129,6 @@ export class ProjectFiltersComponent implements OnInit {
       ingestSchema['properties']['organ']['properties']['ontologies']['items'],
       organSearchValue.toLowerCase()
     );
-  }
-
-  cleanWranglingState(wranglingState: String) {
-    return wranglingState.replace(/\s+/g, '_').toUpperCase();
-  }
-
-  toggleFilters(): void {
-    this.isExpanded = !this.isExpanded;
-  }
-
-  onClearSearch() {
-    this.filtersForm.patchValue({search: ''});
   }
 
   formatOrgan(organ: any) {
@@ -143,16 +144,15 @@ export class ProjectFiltersComponent implements OnInit {
     this.filtersForm.get('controlsForm').patchValue({organSearchValue: this.formatOrgan(organ)});
   }
 
-  formatCellCountLabel = (value: number) => {
-    const rawValue = this.getRawCellCount(value);
-    const ONE_MILLION = 10 ** 6;
-    if (rawValue >= ONE_MILLION) {
-      return Math.round(rawValue / ONE_MILLION) + 'M';
-    }
-    if (rawValue >= 1000) {
-      return Math.round(rawValue / 1000) + 'k';
-    }
+  cleanWranglingState(wranglingState: String) {
+    return wranglingState.replace(/\s+/g, '_').toUpperCase();
+  }
 
-    return rawValue;
+  toggleFilters(): void {
+    this.isExpanded = !this.isExpanded;
+  }
+
+  onClearSearch() {
+    this.filtersForm.patchValue({search: ''});
   }
 }
