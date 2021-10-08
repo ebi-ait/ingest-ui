@@ -41,8 +41,6 @@ import {ProjectComponent} from './project/project.component';
 import {RegistrationComponent} from './registration/registration.component';
 import {AlertComponent} from './shared/components/alert/alert.component';
 import {ProjectListComponent} from './shared/components/project-list/project-list.component';
-import {TabComponent} from './shared/components/tab/tab.component';
-import {TabsComponent} from './shared/components/tabs/tabs.component';
 
 import {UploadComponent} from './shared/components/upload/upload.component';
 import {AlertService} from './shared/services/alert.service';
@@ -74,8 +72,6 @@ const BROWSER_LOCALE = navigator.language;
     GlobalNavigationComponent,
     ProjectComponent,
     SubmissionComponent,
-    TabComponent,
-    TabsComponent,
     FilesComponent,
     UploadInfoComponent,
     SubmitComponent,

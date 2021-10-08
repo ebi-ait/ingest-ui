@@ -37,7 +37,7 @@
     [count]="page.totalElements"
     [offset]="dataSource.requestedOffset$ | async"
     [limit]="page.size"
-    [loadingIndicator]="(dataSource.loading$ | async) && !(dataSource.polling$ | async)"
+    [loadingIndicator]="(dataSource.loading$ | async) && (dataSource.polling$ | async) === false"
     [externalPaging]="page"
 
     (page)='setPage($event)'
@@ -69,13 +69,13 @@
     <!--Row Detail Template -->
     <ngx-datatable-row-detail [rowHeight]="'auto'" #myDetailRow>
       <ng-template let-rowIndex="rowIndex" let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
-        <h3 *ngIf="row['validationState'] == 'Invalid' || row['validationState'] == 'Valid'">Validation Report</h3>
-        <div style="padding-left:35px;" *ngIf="row['validationState'] == 'Invalid'">
+        <h3 *ngIf="row['validationState'] === 'Invalid' || row['validationState'] === 'Valid'">Validation Report</h3>
+        <div style="padding-left:35px;" *ngIf="row['validationState'] === 'Invalid'">
           <ng-container *ngFor="let error of getValidationErrors(row)">
             <span class="vf-u-text-color--red" title="{{error}}">{{error}}</span><br>
           </ng-container>
         </div>
-        <div style="padding-left:35px;" *ngIf="row['validationState'] == 'Valid'">
+        <div style="padding-left:35px;" *ngIf="row['validationState'] === 'Valid'">
           <span class="vf-u-text-color--green">{{getDefaultValidMessage()}}</span>
         </div>
 
@@ -133,7 +133,7 @@
 
 
     <!--uuid-->
-    <ngx-datatable-column prop="uuid.uuid" name="uuid" *ngIf="metadataType != 'bundleManifests'">
+    <ngx-datatable-column prop="uuid.uuid" name="uuid" *ngIf="metadataType !== 'bundleManifests'">
       <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row"
                    let-column="column">
         <span title="{{value}}">{{value}}</span>
@@ -143,7 +143,7 @@
     <ng-container *ngFor="let column of getAllColumns(rows)">
 
       <!--Core.type column-->
-      <ngx-datatable-column *ngIf="column == 'content.core.type';else textColumn" prop="{{column}}" name="core.type">
+      <ngx-datatable-column *ngIf="column === 'content.core.type';else textColumn" prop="{{column}}" name="core.type">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
           <a href="{{row['content.describedBy']}}"> {{ getMetadataType(rowIndex) }}</a>
         </ng-template>

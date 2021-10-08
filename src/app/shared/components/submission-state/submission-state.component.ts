@@ -5,16 +5,12 @@ import {Component, Input, OnInit} from '@angular/core';
   templateUrl: './submission-state.component.html',
   styleUrls: ['./submission-state.scss']
 })
-export class SubmissionStateComponent implements OnInit {
+export class SubmissionStateComponent {
   @Input()
   state: string;
 
   constructor() {
   }
-
-  ngOnInit() {
-  }
-
   /**
    * Return the CSS class name corresponding to the current submission state value, for styling the submission state
    * chip.

@@ -8,13 +8,18 @@ import {Account} from '../core/account';
   templateUrl: './global-header.component.html',
   styleUrls: ['./global-header.component.css']
 })
-export class GlobalHeaderComponent implements OnInit {
+export class GlobalHeaderComponent implements OnInit{
   @Input() isLoggedIn$: Observable<any>;
   @Input() userProfile$: Observable<Profile | undefined>;
   @Input() userAccount$: Observable<Account | undefined>;
   @Output() logout = new EventEmitter<any>();
 
-  ngOnInit(): void {
+  isLoggedIn: any;
+
+  ngOnInit() {
+    this.isLoggedIn$.subscribe(isLoggedIn => {
+      this.isLoggedIn = isLoggedIn
+    })
   }
 
   onLogout($event: any) {

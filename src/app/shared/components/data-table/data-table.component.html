@@ -14,7 +14,7 @@
                  [count]="page.totalElements"
                  [offset]="dataSource.requestedOffset$ | async"
                  [limit]="page.size"
-                 [loadingIndicator]="(dataSource.loading$ | async) && !(dataSource.polling$ | async)"
+                 [loadingIndicator]="(dataSource.loading$ | async) && (dataSource.polling$ | async) === false"
                  [externalPaging]="page"
                  (page)='setPage($event)'>
 
@@ -33,4 +33,4 @@
 
   </ngx-datatable>
 </ng-container>
-<p style="text-align: center" *ngIf="rows && rows.length == 0">There's no data</p>
+<p style="text-align: center" *ngIf="rows && rows.length === 0">There's no data</p>
