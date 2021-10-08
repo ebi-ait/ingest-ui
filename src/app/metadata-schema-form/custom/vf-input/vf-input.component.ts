@@ -1,6 +1,6 @@
 import {Component, forwardRef, Input, OnInit} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {toTitleCase} from 'codelyzer/util/utils';
+import {startCase, toLower} from 'lodash';
 import {FormItemData} from '../../form-item/form-item.component';
 
 export const VF_INPUT_VALUE_ACCESSOR: any = {
@@ -114,7 +114,7 @@ export class VfInputComponent implements ControlValueAccessor, OnInit {
     if (!this.value) { return '(not specified)'; }
     let content = this.value as string;
     if (this.inputType === 'checkbox' && content in VfInputComponent.CHECKBOX_VIEW) {
-      content = toTitleCase(VfInputComponent.CHECKBOX_VIEW[content]);
+      content = startCase(toLower(VfInputComponent.CHECKBOX_VIEW[content]));
     }
     return content;
   }
