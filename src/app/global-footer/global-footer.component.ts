@@ -6,12 +6,9 @@ import {Observable} from 'rxjs';
   templateUrl: './global-footer.component.html',
   styleUrls: ['./global-footer.component.scss']
 })
-export class GlobalFooterComponent implements OnInit {
+export class GlobalFooterComponent {
   @Input() isLoggedIn$: Observable<any>;
   @Output() logout = new EventEmitter<any>();
-
-  ngOnInit(): void {
-  }
 
   onLogout($event: any) {
     this.logout.emit($event);

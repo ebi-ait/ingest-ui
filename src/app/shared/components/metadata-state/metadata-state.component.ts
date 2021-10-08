@@ -5,14 +5,11 @@ import {Component, Input, OnInit} from '@angular/core';
   templateUrl: './metadata-state.component.html',
   styleUrls: ['./metadata-state.component.css']
 })
-export class MetadataStateComponent implements OnInit {
+export class MetadataStateComponent {
   @Input()
   state: string;
 
   constructor() {
-  }
-
-  ngOnInit() {
   }
 
 }

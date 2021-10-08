@@ -5,11 +5,7 @@ import {Component, OnInit} from '@angular/core';
   templateUrl: './project-registration-save.component.html',
   styleUrls: ['./project-registration-save.component.css']
 })
-export class ProjectRegistrationSaveComponent implements OnInit {
+export class ProjectRegistrationSaveComponent {
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
-
 }
