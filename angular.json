@@ -184,7 +184,12 @@
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
-          "options": {}
+          "options": {
+            "lintFilePatterns": [
+              "e2e/**/*.ts",
+              "e2e/**/*.html"
+            ]
+          }
         }
       }
     }
