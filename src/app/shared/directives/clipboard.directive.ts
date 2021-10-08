@@ -1,5 +1,5 @@
 // Import the core angular services.
-import {Directive, EventEmitter} from "@angular/core";
+import {Directive, EventEmitter, HostListener, Input, Output} from "@angular/core";
 
 // Import the application components and services.
 import {ClipboardService} from "../services/clipboard.service";
@@ -8,33 +8,18 @@ import {ClipboardService} from "../services/clipboard.service";
 // and the underlying ClipboardService. Upon the (click) event, the [clipboard] value
 // will be copied to the ClipboardService and a (clipboardCopy) event will be emitted.
 @Directive({
-  selector: "[clipboard]",
-  inputs: [ "value: clipboard" ],
-  outputs: [
-    "copyEvent: clipboardCopy",
-    "errorEvent: clipboardError"
-  ],
-  host: {
-    "(click)": "copyToClipboard()"
-  }
+  selector: "[appClipboard]",
 })
 export class ClipboardDirective {
-
-  public copyEvent: EventEmitter<string>;
-  public errorEvent: EventEmitter<Error>;
-  public value: string;
-
   private clipboardService: ClipboardService;
 
+  @Input() appClipboard: string;
+  @Output() clipboardCopy = new EventEmitter();
+  @Output() clipboardError = new EventEmitter();
 
-  // I initialize the clipboard directive.
+
   constructor( clipboardService: ClipboardService ) {
-
     this.clipboardService = clipboardService;
-    this.copyEvent = new EventEmitter();
-    this.errorEvent = new EventEmitter();
-    this.value = "";
-
   }
 
 
@@ -43,21 +28,21 @@ export class ClipboardDirective {
   // ---
 
   // I copy the value-input to the Clipboard. Emits success or error event.
-  public copyToClipboard() : void {
+  @HostListener('click') copyToClipboard() : void {
 
     this.clipboardService
-      .copy( this.value )
+      .copy( this.appClipboard )
       .then(
         ( value: string ) : void => {
 
-          this.copyEvent.emit( value );
+          this.clipboardCopy.emit( value );
 
         }
       )
       .catch(
         ( error: Error ) : void => {
 
-          this.errorEvent.emit( error );
+          this.clipboardError.emit( error );
 
         }
       )

@@ -13,8 +13,8 @@
         </a>
       </li>
       <li class="vf-navigation__item">
-        <a *ngIf="isLoggedIn$ | async" class="vf-navigation__link" (click)="onLogout($event)">Log out</a>
-        <a *ngIf="!(isLoggedIn$ | async)" class="vf-navigation__link" routerLink="/login">Log in</a>
+        <a *ngIf="isLoggedIn" class="vf-navigation__link" (click)="onLogout($event)">Log out</a>
+        <a *ngIf="!isLoggedIn" class="vf-navigation__link" routerLink="/login">Log in</a>
       </li>
     </ul>
   </nav>

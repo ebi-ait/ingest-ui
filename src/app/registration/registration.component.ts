@@ -22,16 +22,13 @@ interface RegistrationStatus {
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.css']
 })
-export class RegistrationComponent implements OnInit {
+export class RegistrationComponent {
 
   termsAccepted = false;
   status: RegistrationStatus;
 
   constructor(private aaiService: AaiService,
               private registrationService: RegistrationService) {
-  }
-
-  ngOnInit() {
   }
 
   proceed() {

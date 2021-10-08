@@ -5,13 +5,10 @@ import {Component, Input, OnInit} from '@angular/core';
   templateUrl: './vf-asterisk.component.html',
   styleUrls: ['./vf-asterisk.component.css']
 })
-export class VfAsteriskComponent implements OnInit {
+export class VfAsteriskComponent {
   @Input()
   isRequired: boolean;
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }
