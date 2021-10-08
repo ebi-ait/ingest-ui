@@ -1,6 +1,6 @@
 <pre class="pre-scrollable" ><code #uploadArea>{{submissionEnvelope['stagingDetails']?.stagingAreaLocation?.value}}</code></pre>
-<button [clipboard]="submissionEnvelope['stagingDetails']?.stagingAreaLocation?.value"
-        (clipboardSuccess)="logSuccess( $event )"
+<button [appClipboard]="submissionEnvelope['stagingDetails']?.stagingAreaLocation?.value"
+        (clipboardCopy)="logSuccess( $event )"
         (clipboardError)="logError( $event )">
   Copy
 </button>
