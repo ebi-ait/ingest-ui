@@ -41,6 +41,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
 
   userAccount$: Observable<Account>;
   userIsWrangler: boolean;
+  allowValidationOverride = false;
 
   @ViewChild('mf') formTabGroup: MatTabGroup;
   private unsubscribe = new Subject<void>();
@@ -130,15 +131,15 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
       });
   }
 
-  onSave(formData: object) {
-    const formValue = formData['value'];
-    const valid = formData['valid'];
-
+  onSave({ valid, validationSkipped, value }) {
     if (!this.incrementProjectTab()) {
-      if (valid) {
-        this.saveProject(formValue);
+      if (valid || validationSkipped) {
+        this.saveProject(value);
       } else {
         {
+          if (this.userIsWrangler) {
+            this.allowValidationOverride = true;
+          }
           this.alertService.clear();
           const message = 'Some fields in the form are invalid. Please go back through the form to check the errors and resolve them.';
           this.alertService.error('Invalid Form', message);

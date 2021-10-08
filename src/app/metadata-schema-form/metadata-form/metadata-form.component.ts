@@ -23,11 +23,13 @@ export class MetadataFormComponent implements OnInit {
 
   @Input() selectedTabKey: string;
 
+  @Input() allowValidationOverride = false;
+
   @Input() useVf = false;
 
   @Input() data: object;
 
-  @Output() save = new EventEmitter<object>();
+  @Output() save = new EventEmitter<{ value: object, valid: boolean, validationSkipped: boolean }>();
 
   @Output() cancel = new EventEmitter<boolean>();
 
@@ -100,9 +102,9 @@ export class MetadataFormComponent implements OnInit {
     this.formGroup.valueChanges.subscribe( () => this.formValueChange.emit(of(this.getFormData())));
   }
 
-  onSubmit(e) {
+  onSubmit(e, skipValidation = false) {
     e.preventDefault();
-    const formData = this.getFormData();
+    const formData = this.getFormData(skipValidation);
     console.log('clean form data', formData);
 
     if (this.lookupTabIndex(this.selectedTabKey) === this.config.layout.tabs.length - 1) {
@@ -112,13 +114,14 @@ export class MetadataFormComponent implements OnInit {
     this.save.emit(formData);
   }
 
-  getFormData() {
+  getFormData(skipValidation = false) {
     const formValue = this.metadataForm.formGroup.getRawValue();
     const formData = this.metadataFormService.cleanFormData(formValue);
 
     return {
       value: formData,
-      valid: this.formGroup.valid
+      valid: this.formGroup.valid,
+      validationSkipped: skipValidation
     };
   }
 

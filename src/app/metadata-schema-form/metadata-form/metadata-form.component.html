@@ -1,4 +1,4 @@
-<form *ngIf="done" class="vf-form" [formGroup]="metadataForm.formGroup" (submit)="onSubmit($event)">
+<form *ngIf="done" class="vf-form" [formGroup]="metadataForm.formGroup">
   <ng-container *ngIf="visibleTabs.length > 1">
     <app-vf-tabs *ngIf="!!useVf" (selectedIndexChange)="onSelectedIndexChange($event)" [selectedIndex]="lookupTabIndex(selectedTabKey)">
       <ng-container *ngFor="let tab of visibleTabs">
@@ -58,13 +58,23 @@
             Reset
           </a>
 
-          <button *ngIf="selectedTabKey !== visibleTabs[visibleTabs.length - 1].key"
-            class="next-button vf-button vf-button--primary vf-button vf-u-margin__left--xxl">Next
+          <button
+            *ngIf="selectedTabKey !== visibleTabs[visibleTabs.length - 1].key"
+            (click)="onSubmit($event)"
+            class="next-button vf-button--primary vf-button vf-u-margin__left--xxl">Next
           </button>
-          <button *ngIf="selectedTabKey === visibleTabs[visibleTabs.length - 1].key"
-                  class="next-button vf-button vf-button--primary vf-button">
-            {{config.submitButtonLabel ? config.submitButtonLabel : 'Finish'}}
-          </button>
+          <ng-container *ngIf="selectedTabKey === visibleTabs[visibleTabs.length - 1].key">
+            <button class="next-button vf-button--primary vf-button" (click)="onSubmit($event)">
+              {{config.submitButtonLabel ? config.submitButtonLabel : 'Finish'}}
+            </button>
+            <button
+              *ngIf="allowValidationOverride"
+              class="next-button vf-button--tertiary vf-button"
+              (click)="onSubmit($event, true)"
+            >
+              {{config.submitButtonLabel ? config.submitButtonLabel : 'Finish'}} with Errors
+            </button>
+          </ng-container>
         </div>
         <a *ngIf="config.showCancelButton" class="vf-link vf-u-margin__top--xxl" (click)="confirmCancel($event)">
           {{config.cancelButtonLabel ? config.cancelButtonLabel : 'Cancel'}}
