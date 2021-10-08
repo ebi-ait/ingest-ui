@@ -8,9 +8,6 @@ import {Account} from '../core/account';
   styleUrls: ['./global-navigation.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class GlobalNavigationComponent implements OnInit {
+export class GlobalNavigationComponent {
   @Input() userAccount$: Observable<Account | undefined>;
-
-  ngOnInit() {
-  }
 }
