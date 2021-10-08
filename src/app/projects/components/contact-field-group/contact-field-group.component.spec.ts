@@ -1,4 +1,4 @@
-/* tslint:disable:max-line-length */
+/* eslint-disable max-len */
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Profile, User} from 'oidc-client';
 import {BehaviorSubject} from 'rxjs';
