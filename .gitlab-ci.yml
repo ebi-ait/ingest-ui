@@ -2,7 +2,7 @@ include:
   remote: 'https://raw.githubusercontent.com/ebi-ait/gitlab-ci-templates/master/build-release-deploy.yml'
 
 Lint:
-  stage: lint
+    image: quay.io/ebi-ait/ingest-base-images:trion_ng-cli-karma_11.2.6
   script:
     - yarn install
     - ng lint
