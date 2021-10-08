@@ -4,6 +4,7 @@ include:
 Lint:
   stage: lint
   script:
+    - yarn install
     - ng lint
 
 Unit Test:
