@@ -114,8 +114,8 @@ export class VfInputComponent implements ControlValueAccessor, OnInit {
     if (!this.value) { return '(not specified)'; }
     let content = this.value as string;
     if (this.inputType === 'checkbox' && content in VfInputComponent.CHECKBOX_VIEW) {
-      const toLowerCase = (str) => startCase(toLower(str));
-      content = toLowerCase(VfInputComponent.CHECKBOX_VIEW[content]);
+      const toTitleCase = (str) => startCase(toLower(str));
+      content = toTitleCase(VfInputComponent.CHECKBOX_VIEW[content]);
     }
     return content;
   }
