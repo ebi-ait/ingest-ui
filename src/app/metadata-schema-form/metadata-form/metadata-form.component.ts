@@ -46,6 +46,8 @@ export class MetadataFormComponent implements OnInit {
 
   metadataForm: MetadataForm;
 
+  overrideValidation = false
+
   visibleTabs: MetadataFormTab[];
 
   form: object = {};
@@ -103,9 +105,9 @@ export class MetadataFormComponent implements OnInit {
     this.formGroup.valueChanges.subscribe( () => this.formValueChange.emit(of(this.getFormData())));
   }
 
-  onSubmit(e, skipValidation = false) {
+  onSubmit(e) {
     e.preventDefault();
-    const formData = this.getFormData(skipValidation);
+    const formData = this.getFormData();
     console.log('clean form data', formData);
 
     if (this.lookupTabIndex(this.selectedTabKey) === this.config.layout.tabs.length - 1) {
@@ -115,14 +117,14 @@ export class MetadataFormComponent implements OnInit {
     this.save.emit(formData);
   }
 
-  getFormData(skipValidation = false) {
+  getFormData() {
     const formValue = this.metadataForm.formGroup.getRawValue();
     const formData = this.metadataFormService.cleanFormData(formValue);
 
     return {
       value: formData,
       valid: this.formGroup.valid,
-      validationSkipped: skipValidation
+      validationSkipped: this.overrideValidation
     };
   }
 
