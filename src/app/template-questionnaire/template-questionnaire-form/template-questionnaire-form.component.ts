@@ -44,7 +44,7 @@ export const layout: MetadataFormLayout = {
   templateUrl: './template-questionnaire-form.component.html',
   styleUrls: ['./template-questionnaire-form.component.css']
 })
-export class TemplateQuestionnaireFormComponent implements OnInit {
+export class TemplateQuestionnaireFormComponent {
   templateQuestionnaireSchema: any = (questionnaireSchema as any).default;
   questionnaireData: object = {
         donorsRelated: '',
@@ -76,9 +76,6 @@ export class TemplateQuestionnaireFormComponent implements OnInit {
               private router: Router,
               private datePipe: DatePipe) {
 
-  }
-
-  ngOnInit(): void {
   }
 
   onSave($event: object) {

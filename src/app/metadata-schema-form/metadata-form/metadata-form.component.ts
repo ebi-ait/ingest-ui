@@ -33,6 +33,7 @@ export class MetadataFormComponent implements OnInit {
 
   @Output() cancel = new EventEmitter<boolean>();
 
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() reset = new EventEmitter<boolean>();
 
   @Output() back = new EventEmitter<boolean>();

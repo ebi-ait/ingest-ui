@@ -12,7 +12,7 @@ import {WranglerOrOwnerGuard} from './shared/guards/wrangler-or-owner.guard';
 import {SubmissionListComponent} from './submission-list/submission-list.component';
 import {SubmissionComponent} from './submission/submission.component';
 
-// tslint:disable-next-line:max-line-length
+// eslint-disable-next-line max-len
 import {TemplateQuestionnaireFormComponent} from './template-questionnaire/template-questionnaire-form/template-questionnaire-form.component';
 import {WelcomeComponent} from './welcome/welcome.component';
 
