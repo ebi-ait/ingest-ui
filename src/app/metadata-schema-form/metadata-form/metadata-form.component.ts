@@ -23,11 +23,13 @@ export class MetadataFormComponent implements OnInit {
 
   @Input() selectedTabKey: string;
 
+  @Input() allowValidationOverride = false;
+
   @Input() useVf = false;
 
   @Input() data: object;
 
-  @Output() save = new EventEmitter<object>();
+  @Output() save = new EventEmitter<{ value: object, valid: boolean, validationSkipped: boolean }>();
 
   @Output() cancel = new EventEmitter<boolean>();
 
@@ -43,6 +45,8 @@ export class MetadataFormComponent implements OnInit {
   formGroup: FormGroup;
 
   metadataForm: MetadataForm;
+
+  overrideValidation = false
 
   visibleTabs: MetadataFormTab[];
 
@@ -119,7 +123,8 @@ export class MetadataFormComponent implements OnInit {
 
     return {
       value: formData,
-      valid: this.formGroup.valid
+      valid: this.formGroup.valid,
+      validationSkipped: this.overrideValidation
     };
   }
 
