@@ -130,13 +130,10 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
       });
   }
 
-  onSave(formData: object) {
-    const formValue = formData['value'];
-    const valid = formData['valid'];
-
+  onSave({ valid, validationSkipped, value }) {
     if (!this.incrementProjectTab()) {
-      if (valid) {
-        this.saveProject(formValue);
+      if (valid || validationSkipped) {
+        this.saveProject(value);
       } else {
         {
           this.alertService.clear();

@@ -5,6 +5,7 @@
                      [data]="project"
                      [config]="config"
                      [selectedTabKey]="projectFormTabKey"
+                     [allowValidationOverride]="userIsWrangler"
                      (cancel)="onCancel($event)"
                      (back)="decrementProjectTab()"
                      (tabChange)="onTabChange($event)"
