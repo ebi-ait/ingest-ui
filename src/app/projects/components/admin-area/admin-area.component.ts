@@ -29,6 +29,9 @@ export class AdminAreaComponent implements OnInit {
   wranglingNotesControl: FormControl;
   wranglingNotesMetadata: Metadata;
 
+  releaseControl: FormControl;
+  releaseMetadata: Metadata;
+
   constructor() {
   }
 
@@ -53,6 +56,10 @@ export class AdminAreaComponent implements OnInit {
     const wranglingNotesSchemaKey = 'project.wranglingNotes';
     this.wranglingNotesMetadata = this.metadataForm.get(wranglingNotesSchemaKey);
     this.wranglingNotesControl = this.metadataForm.getControl(wranglingNotesSchemaKey) as FormControl;
+
+    const releaseSchemaKey = 'project.release';
+    this.releaseMetadata = this.metadataForm.get(releaseSchemaKey);
+    this.releaseControl = this.metadataForm.getControl(releaseSchemaKey) as FormControl;
 
   }
 
