@@ -25,12 +25,14 @@ export class AdminAreaComponent implements OnInit {
 
   wranglingPriorityControl: FormControl;
   wranglingPriorityMetadata: Metadata;
+  wranglingPriorityOptions: string[]
 
   wranglingNotesControl: FormControl;
   wranglingNotesMetadata: Metadata;
 
   releaseControl: FormControl;
   releaseMetadata: Metadata;
+  releaseOptions: string[]
 
   constructor() {
   }
@@ -52,6 +54,7 @@ export class AdminAreaComponent implements OnInit {
     const wranglingPrioritySchemaKey = 'project.wranglingPriority';
     this.wranglingPriorityMetadata = this.metadataForm.get(wranglingPrioritySchemaKey);
     this.wranglingPriorityControl = this.metadataForm.getControl(wranglingPrioritySchemaKey) as FormControl;
+    this.wranglingPriorityOptions = ['1', '2', '3']
 
     const wranglingNotesSchemaKey = 'project.wranglingNotes';
     this.wranglingNotesMetadata = this.metadataForm.get(wranglingNotesSchemaKey);
@@ -60,7 +63,8 @@ export class AdminAreaComponent implements OnInit {
     const releaseSchemaKey = 'project.release';
     this.releaseMetadata = this.metadataForm.get(releaseSchemaKey);
     this.releaseControl = this.metadataForm.getControl(releaseSchemaKey) as FormControl;
-
+    // todo: clean this bit up
+    this.releaseOptions = [...Array(50).keys()].map(i => ++i).map(String)
   }
 
 }

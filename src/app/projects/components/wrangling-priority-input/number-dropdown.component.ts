@@ -3,18 +3,18 @@ import {FormControl} from '@angular/forms';
 import {BaseInputComponent} from '../../../metadata-schema-form/metadata-field-types/base-input/base-input.component';
 import {Metadata} from '../../../metadata-schema-form/models/metadata';
 
-
+const NOT_APPLICABLE = 'N/A'
 @Component({
-  selector: 'app-wrangling-priority-input',
-  templateUrl: './wrangling-priority-input.component.html',
-  styleUrls: ['./wrangling-priority-input.component.css']
+  selector: 'app-number-dropdown',
+  templateUrl: './number-dropdown.component.html',
+  styleUrls: ['./number-dropdown.component.css']
 })
-export class WranglingPriorityInputComponent extends BaseInputComponent implements OnInit {
+export class NumberDropdownComponent extends BaseInputComponent implements OnInit {
   @Input() metadata: Metadata;
   @Input() control: FormControl;
   @Input() id: string;
+  @Input() options: string[];
 
-  options: string[];
   searchControl: FormControl;
 
 
@@ -27,19 +27,14 @@ export class WranglingPriorityInputComponent extends BaseInputComponent implemen
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.options = [
-      'N/A',
-      '1',
-      '2',
-      '3'
-    ];
+    this.options = [NOT_APPLICABLE].concat(this.options)
   }
 
   updateControl(value: any) {
     let priority;
 
-    if (!value || value === 'N/A') {
-      priority = 0;
+    if (!value || value === NOT_APPLICABLE) {
+      priority = null;
     } else {
       priority = Number(value);
     }
@@ -48,8 +43,8 @@ export class WranglingPriorityInputComponent extends BaseInputComponent implemen
   }
 
   valueOf(value: any) {
-    if (!value || value === 0) {
-      return 'N/A';
+    if (!value) {
+      return NOT_APPLICABLE;
     }
 
     return value.toString();
