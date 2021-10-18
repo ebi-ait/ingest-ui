@@ -113,6 +113,13 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
+
+    <mat-form-field>
+      <mat-select placeholder="Release" formControlName="release">
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let release of getReleaseRange()" [value]="release">{{release}}</mat-option>
+      </mat-select>
+    </mat-form-field>
   </ng-container>
 </form>
 

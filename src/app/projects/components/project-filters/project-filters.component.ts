@@ -39,6 +39,7 @@ export class ProjectFiltersComponent implements OnInit {
     wranglingState: [],
     primaryWrangler: [],
     wranglingPriority: [],
+    release: [],
     hasOfficialHcaPublication: [],
     minCellCount: [{value: 0, disabled: true}],
     maxCellCount: [{value: this.maxCellCount, disabled: true}],
@@ -154,5 +155,9 @@ export class ProjectFiltersComponent implements OnInit {
 
   onClearSearch() {
     this.filtersForm.patchValue({search: ''});
+  }
+
+  getReleaseRange() {
+    return [...Array(50).keys()].map(i => ++i)
   }
 }
