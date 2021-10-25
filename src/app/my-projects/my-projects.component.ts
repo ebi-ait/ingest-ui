@@ -49,6 +49,7 @@ export class MyProjectsComponent implements OnInit, OnDestroy {
             ProjectColumn.primaryContributor,
             ProjectColumn.lastUpdated,
             ProjectColumn.primaryWrangler,
+            ProjectColumn.wranglingState,
             ProjectColumn.release
           ];
         } else {
