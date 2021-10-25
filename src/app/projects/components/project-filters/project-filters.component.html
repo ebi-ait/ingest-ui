@@ -35,7 +35,7 @@
     <mat-form-field>
       <mat-select placeholder="Priority" formControlName="wranglingPriority">
         <mat-option>None</mat-option>
-        <mat-option *ngFor="let priority of [1,2,3]" [value]="priority">{{priority}}</mat-option>
+        <mat-option *ngFor="let priority of getWranglingPriorities()" [value]="priority">{{priority}}</mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -117,7 +117,7 @@
     <mat-form-field>
       <mat-select placeholder="Release" formControlName="release">
         <mat-option>None</mat-option>
-        <mat-option *ngFor="let release of getReleaseRange()" [value]="release">{{release}}</mat-option>
+        <mat-option *ngFor="let release of getReleaseNumbers()" [value]="release">{{release}}</mat-option>
       </mat-select>
     </mat-form-field>
   </ng-container>

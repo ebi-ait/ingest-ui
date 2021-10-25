@@ -3,6 +3,8 @@ import {FormControl} from '@angular/forms';
 // TODO move these into shared
 import {Metadata} from '@metadata-schema-form/models/metadata';
 import {MetadataForm} from '@metadata-schema-form/models/metadata-form';
+import Utils from "@projects/utils";
+import {MAX_RELEASE, WRANGLING_PRIORITIES} from "@projects/constants";
 
 @Component({
   selector: 'app-admin-area',
@@ -54,7 +56,7 @@ export class AdminAreaComponent implements OnInit {
     const wranglingPrioritySchemaKey = 'project.wranglingPriority';
     this.wranglingPriorityMetadata = this.metadataForm.get(wranglingPrioritySchemaKey);
     this.wranglingPriorityControl = this.metadataForm.getControl(wranglingPrioritySchemaKey) as FormControl;
-    this.wranglingPriorityOptions = ['1', '2', '3']
+    this.wranglingPriorityOptions = WRANGLING_PRIORITIES.map(String)
 
     const wranglingNotesSchemaKey = 'project.wranglingNotes';
     this.wranglingNotesMetadata = this.metadataForm.get(wranglingNotesSchemaKey);
@@ -63,8 +65,6 @@ export class AdminAreaComponent implements OnInit {
     const releaseSchemaKey = 'project.release';
     this.releaseMetadata = this.metadataForm.get(releaseSchemaKey);
     this.releaseControl = this.metadataForm.getControl(releaseSchemaKey) as FormControl;
-    // todo: clean this bit up
-    this.releaseOptions = [...Array(50).keys()].map(i => ++i).map(String)
+    this.releaseOptions = Utils.generateNumbers1toN(MAX_RELEASE).map(String)
   }
-
 }

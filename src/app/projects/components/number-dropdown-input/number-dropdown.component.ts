@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {BaseInputComponent} from '../../../metadata-schema-form/metadata-field-types/base-input/base-input.component';
-import {Metadata} from '../../../metadata-schema-form/models/metadata';
+import {BaseInputComponent} from '@metadata-schema-form/metadata-field-types/base-input/base-input.component';
+import {Metadata} from '@metadata-schema-form/models/metadata';
 
 const NOT_APPLICABLE = 'N/A'
 @Component({

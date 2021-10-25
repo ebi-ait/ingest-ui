@@ -9,6 +9,8 @@ import {Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import {ProjectFilters} from '../../models/project-filters';
 import ingestSchema from '../../schemas/project-ingest-schema.json';
+import {MAX_RELEASE, WRANGLING_PRIORITIES} from "@projects/constants";
+import Utils from "@projects/utils";
 
 // The maximum 32 bit integer value
 const MAX_INT_VALUE = (2 ** 31) - 1;
@@ -157,7 +159,11 @@ export class ProjectFiltersComponent implements OnInit {
     this.filtersForm.patchValue({search: ''});
   }
 
-  getReleaseRange() {
-    return [...Array(50).keys()].map(i => ++i)
+  getReleaseNumbers() {
+    return Utils.generateNumbers1toN(MAX_RELEASE)
+  }
+
+  getWranglingPriorities() {
+    return WRANGLING_PRIORITIES
   }
 }

@@ -8,7 +8,6 @@ export interface Project extends MetadataDocument {
   secondaryWrangler?: string;
   wranglingState?: string;
   wranglingNotes?: string;
-  //todo: number or string?
   release?: string
   dataAccess?: object;
   technology?: object;
