@@ -202,8 +202,12 @@
           to proceed.
         </p>
         <p>
-          Graph Validation State: {{graphValidationState}}
+          Graph Validation State: <span [style.color]="getGraphValidationStateColor(graphValidationState)">{{graphValidationState}} </span>
         </p>
+        <ng-container *ngIf="graphValidationErrors.length > 0">
+          <h5 class="vf-u-margin__top--xxl vf-text vf-text-heading--5">Errors</h5>
+          <p [style.color]="getGraphValidationStateColor(graphValidationState)">{{graphValidationErrors}}</p>
+        </ng-container>
       </ng-container>
 
       <ng-template #graphValid>
