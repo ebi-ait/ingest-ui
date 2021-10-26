@@ -4,7 +4,7 @@ import {FormControl} from '@angular/forms';
 import {Metadata} from '@metadata-schema-form/models/metadata';
 import {MetadataForm} from '@metadata-schema-form/models/metadata-form';
 import Utils from "@projects/utils";
-import {MAX_RELEASE, WRANGLING_PRIORITIES} from "@projects/constants";
+import {MAX_DCP_RELEASE_NUMBER, WRANGLING_PRIORITIES} from "@projects/constants";
 
 @Component({
   selector: 'app-admin-area',
@@ -62,9 +62,9 @@ export class AdminAreaComponent implements OnInit {
     this.wranglingNotesMetadata = this.metadataForm.get(wranglingNotesSchemaKey);
     this.wranglingNotesControl = this.metadataForm.getControl(wranglingNotesSchemaKey) as FormControl;
 
-    const releaseSchemaKey = 'project.release';
+    const releaseSchemaKey = 'project.dcpReleaseNumber';
     this.releaseMetadata = this.metadataForm.get(releaseSchemaKey);
     this.releaseControl = this.metadataForm.getControl(releaseSchemaKey) as FormControl;
-    this.releaseOptions = Utils.generateNumbers1toN(MAX_RELEASE).map(String)
-  }
+    this.releaseOptions = Utils.generateNumbers1toN(MAX_DCP_RELEASE_NUMBER).map(String)
+  }Ingest
 }

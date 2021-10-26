@@ -115,9 +115,9 @@
     </mat-form-field>
 
     <mat-form-field>
-      <mat-select placeholder="Release" formControlName="release">
+      <mat-select placeholder="Release" formControlName="dcpReleaseNumber">
         <mat-option>None</mat-option>
-        <mat-option *ngFor="let release of getReleaseNumbers()" [value]="release">{{release}}</mat-option>
+        <mat-option *ngFor="let release of getDCPReleaseNumbers()" [value]="release">{{release}}</mat-option>
       </mat-select>
     </mat-form-field>
   </ng-container>

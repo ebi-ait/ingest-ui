@@ -9,7 +9,7 @@ import {Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import {ProjectFilters} from '../../models/project-filters';
 import ingestSchema from '../../schemas/project-ingest-schema.json';
-import {MAX_RELEASE, WRANGLING_PRIORITIES} from "@projects/constants";
+import {MAX_DCP_RELEASE_NUMBER, WRANGLING_PRIORITIES} from "@projects/constants";
 import Utils from "@projects/utils";
 
 // The maximum 32 bit integer value
@@ -41,7 +41,7 @@ export class ProjectFiltersComponent implements OnInit {
     wranglingState: [],
     primaryWrangler: [],
     wranglingPriority: [],
-    release: [],
+    dcpReleaseNumber: [],
     hasOfficialHcaPublication: [],
     minCellCount: [{value: 0, disabled: true}],
     maxCellCount: [{value: this.maxCellCount, disabled: true}],
@@ -159,8 +159,8 @@ export class ProjectFiltersComponent implements OnInit {
     this.filtersForm.patchValue({search: ''});
   }
 
-  getReleaseNumbers() {
-    return Utils.generateNumbers1toN(MAX_RELEASE)
+  getDCPReleaseNumbers() {
+    return Utils.generateNumbers1toN(MAX_DCP_RELEASE_NUMBER)
   }
 
   getWranglingPriorities() {

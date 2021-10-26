@@ -55,7 +55,7 @@ export class ProjectListComponent implements OnInit {
       [ProjectColumn.wranglingState]: 'Wrangling Status',
       [ProjectColumn.primaryContributor]: 'Primary Contributor',
       [ProjectColumn.primaryWrangler]: 'Primary Wrangler',
-      [ProjectColumn.release]: 'Release'
+      [ProjectColumn.dcpReleaseNumber]: 'Release'
     });
   }
 
@@ -69,7 +69,7 @@ export class ProjectListComponent implements OnInit {
       [ProjectColumn.primaryWrangler]: this.getWranglerName(project),
       // ToDo: Include Wrangler and User Account objects in ingest-core Project object.
       [ProjectColumn.wranglingState]: project?.wranglingState,
-      [ProjectColumn.release]: project?.release
+      [ProjectColumn.dcpReleaseNumber]: project?.dcpReleaseNumber
     });
   }
 

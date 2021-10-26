@@ -236,7 +236,7 @@
       "type": "string",
       "user_friendly": "Notes"
     },
-    "release": {
+    "dcpReleaseNumber": {
       "guidelines": "Release number",
       "type": "integer",
       "user_friendly": "Release number",
