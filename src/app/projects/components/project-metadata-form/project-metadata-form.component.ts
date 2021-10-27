@@ -37,10 +37,10 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
 
   schemaUrl: string;
 
-  isFormDataComplete$: Observable<boolean>;
-
   userAccount$: Observable<Account>;
   userIsWrangler: boolean;
+
+  userAccount: Account;
 
   @ViewChild('mf') formTabGroup: MatTabGroup;
   private unsubscribe = new Subject<void>();
@@ -59,6 +59,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
     this.userAccount$ = this.ingestService.getUserAccount();
     this.userAccount$
       .subscribe((account) => {
+        this.userAccount = account;
         this.userIsWrangler = account.isWrangler();
         this.setUpProjectForm();
       });
@@ -67,15 +68,6 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
       this.setSchema();
     }
 
-    this.isFormDataComplete$ = this.userAccount$.pipe(
-      map(userAccount => {
-        return !!(
-          userAccount &&
-          this.project &&
-          this.config &&
-          this.schemaUrl &&
-          this.projectMetadataSchema);
-      }));
   }
 
   ngOnDestroy() {
@@ -242,4 +234,12 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
     this.formValueChange.emit($event);
   }
 
+  isFormDataComplete() {
+    return !!(
+      this.userAccount &&
+      this.project &&
+      this.config &&
+      this.schemaUrl &&
+      this.projectMetadataSchema);
+  }
 }

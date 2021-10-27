@@ -61,6 +61,8 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   submissionEnvelope$: Observable<any>;
   submissionEnvelope;
   submissionState: string;
+  graphValidationState: string;
+  graphValidationErrorMessage: string;
   isValid: boolean;
   isLinkingDone: boolean;
   isSubmitted: boolean;
@@ -172,6 +174,8 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.submissionEnvelopeId = SubmissionComponent.getSubmissionId(submissionEnvelope);
     this.isValid = this.checkIfValid(submissionEnvelope);
     this.submissionState = submissionEnvelope['submissionState'];
+    this.graphValidationState = submissionEnvelope['graphValidationState'];
+    this.graphValidationErrorMessage = submissionEnvelope['graphValidationErrorMessage'];
     this.isSubmitted = this.isStateSubmitted(SubmissionState[submissionEnvelope.submissionState]);
     this.submitLink = this.getLink(submissionEnvelope, 'submit');
     this.exportLink = this.getLink(submissionEnvelope, 'export');
@@ -247,7 +251,9 @@ export class SubmissionComponent implements OnInit, OnDestroy {
 
   checkIfValid(submission) {
     const status = submission['submissionState'];
-    return (status === 'Valid' || this.isStateSubmitted(SubmissionState[status]));
+    const graphValidationState = submission['graphValidationState'];
+    const VALID = 'Valid';
+    return ((status === VALID && graphValidationState === VALID) || this.isStateSubmitted(SubmissionState[status]));
   }
 
   setProject(project) {
@@ -388,7 +394,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     }
   }
 
-  displaySubmitTab(): boolean {
+  displayValidateAndSubmitTabs(): boolean {
     return [
       SubmissionState.Submitted,
       SubmissionState.Processing,
@@ -408,5 +414,16 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       SubmissionState.Cleanup,
       SubmissionState.Complete
     ].indexOf(SubmissionState[this.submissionState]) >= 0;
+  }
+
+  getGraphValidationStateColor(graphValidationState: string): string {
+    switch (graphValidationState) {
+      case 'Invalid':
+        return '#d9534f';
+      case 'Pending':
+        return 'orange';
+      default:
+        return 'inherit'
+    }
   }
 }
