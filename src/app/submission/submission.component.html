@@ -189,7 +189,31 @@
       </ng-template>
     </mat-tab>
 
-    <mat-tab label="Submit" [disabled]="!isValid" *ngIf="displaySubmitTab()">
+    <mat-tab
+      label="Validate"
+      [disabled]="submissionState !== 'Valid'"
+      *ngIf="displayValidateAndSubmitTabs()"
+    >
+      <h3 class="vf-u-margin__top--xxl vf-text vf-text-heading--4">Graph Validation</h3>
+
+      <ng-container *ngIf="graphValidationState !== 'Valid'; else graphValid">
+        <p>To finalize the submission please validate using the
+          <a href="https://github.com/ebi-ait/ingest-graph-validator" target="_blank">Ingest Graph Validator</a>
+          to proceed.
+        </p>
+        <p>
+          Graph Validation State: {{graphValidationState}}
+        </p>
+      </ng-container>
+
+      <ng-template #graphValid>
+        <p>
+          You've validated the submission with the graph validator, awesome! You can proceed to the Submit tab.
+        </p>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab label="Submit" [disabled]="!isValid" *ngIf="displayValidateAndSubmitTabs()">
       <ng-template matTabContent>
         <app-submit
           [project$]="project$"
