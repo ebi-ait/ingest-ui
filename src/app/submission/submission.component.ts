@@ -432,13 +432,13 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   triggerGraphValidation(): void {
     const url = `${this.submissionEnvelope['_links']['self']['href']}/validateGraph`
     this.ingestService.post(url, {}).subscribe(
-      () => {
+      (submissionEnvelope) => {
         // Pre-emptively set the validation state
-        this.submissionEnvelope['graphValidationState'] = 'Validating';
+        this.graphValidationState = 'Validating';
       },
       err => {
         // Pre-emptively set the validation state
-        this.submissionEnvelope['graphValidationState'] = 'Pending';
+        this.graphValidationState = 'Pending';
         this.alertService.error('An error occurred while triggering validation', err)
       }
     )
