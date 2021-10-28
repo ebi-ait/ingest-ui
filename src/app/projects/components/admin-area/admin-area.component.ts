@@ -3,6 +3,8 @@ import {FormControl} from '@angular/forms';
 // TODO move these into shared
 import {Metadata} from '@metadata-schema-form/models/metadata';
 import {MetadataForm} from '@metadata-schema-form/models/metadata-form';
+import Utils from "@projects/utils";
+import {MAX_DCP_RELEASE_NUMBER, WRANGLING_PRIORITIES} from "@projects/constants";
 
 @Component({
   selector: 'app-admin-area',
@@ -25,9 +27,14 @@ export class AdminAreaComponent implements OnInit {
 
   wranglingPriorityControl: FormControl;
   wranglingPriorityMetadata: Metadata;
+  wranglingPriorityOptions: string[]
 
   wranglingNotesControl: FormControl;
   wranglingNotesMetadata: Metadata;
+
+  releaseControl: FormControl;
+  releaseMetadata: Metadata;
+  releaseOptions: string[]
 
   constructor() {
   }
@@ -49,11 +56,15 @@ export class AdminAreaComponent implements OnInit {
     const wranglingPrioritySchemaKey = 'project.wranglingPriority';
     this.wranglingPriorityMetadata = this.metadataForm.get(wranglingPrioritySchemaKey);
     this.wranglingPriorityControl = this.metadataForm.getControl(wranglingPrioritySchemaKey) as FormControl;
+    this.wranglingPriorityOptions = WRANGLING_PRIORITIES.map(String)
 
     const wranglingNotesSchemaKey = 'project.wranglingNotes';
     this.wranglingNotesMetadata = this.metadataForm.get(wranglingNotesSchemaKey);
     this.wranglingNotesControl = this.metadataForm.getControl(wranglingNotesSchemaKey) as FormControl;
 
-  }
-
+    const releaseSchemaKey = 'project.dcpReleaseNumber';
+    this.releaseMetadata = this.metadataForm.get(releaseSchemaKey);
+    this.releaseControl = this.metadataForm.getControl(releaseSchemaKey) as FormControl;
+    this.releaseOptions = Utils.generateNumbers1toN(MAX_DCP_RELEASE_NUMBER).map(String)
+  }Ingest
 }
