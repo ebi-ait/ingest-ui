@@ -16,14 +16,21 @@
                          [id]="secondaryWranglerMetadata.key">
 </app-wrangler-list-input>
 
-<app-wrangling-priority-input [metadata]="wranglingPriorityMetadata"
+<app-number-dropdown [metadata]="wranglingPriorityMetadata"
                     [control]="wranglingPriorityControl"
-                    [id]="wranglingPriorityMetadata.key">
-</app-wrangling-priority-input>
+                    [id]="wranglingPriorityMetadata.key"
+                    [options]="wranglingPriorityOptions">
+</app-number-dropdown>
 
 <app-metadata-field [metadata]="wranglingNotesMetadata"
                     [control]="wranglingNotesControl"
                     [id]="wranglingNotesMetadata.key">
 </app-metadata-field>
+
+<app-number-dropdown [metadata]="releaseMetadata"
+                    [control]="releaseControl"
+                    [id]="releaseMetadata.key"
+                    [options]="releaseOptions">
+</app-number-dropdown>
 
 </div>

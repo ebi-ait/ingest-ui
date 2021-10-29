@@ -8,6 +8,7 @@ export interface Project extends MetadataDocument {
   secondaryWrangler?: string;
   wranglingState?: string;
   wranglingNotes?: string;
+  dcpReleaseNumber?: string
   dataAccess?: object;
   technology?: object;
   identifyingOrganisms?: object;
@@ -21,5 +22,6 @@ export const enum ProjectColumn {
   lastUpdated,
   primaryContributor,
   primaryWrangler,
-  wranglingState
+  wranglingState,
+  dcpReleaseNumber
 }
