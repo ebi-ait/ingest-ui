@@ -422,8 +422,25 @@ export class SubmissionComponent implements OnInit, OnDestroy {
         return '#d9534f';
       case 'Pending':
         return 'orange';
+      case 'Validating':
+        return 'orange';
       default:
         return 'inherit'
     }
+  }
+
+  triggerGraphValidation(): void {
+    const url = `${this.submissionEnvelope['_links']['self']['href']}/validateGraph`
+    this.ingestService.post(url, {}).subscribe(
+      (submissionEnvelope) => {
+        // Pre-emptively set the validation state
+        this.graphValidationState = 'Validating';
+      },
+      err => {
+        // Pre-emptively set the validation state
+        this.graphValidationState = 'Pending';
+        this.alertService.error('An error occurred while triggering validation', err)
+      }
+    )
   }
 }

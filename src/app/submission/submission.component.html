@@ -197,14 +197,20 @@
       <h3 class="vf-u-margin__top--xxl vf-text vf-text-heading--4">Graph Validation</h3>
 
       <ng-container *ngIf="graphValidationState !== 'Valid'; else graphValid">
-        <p>To finalize the submission please validate using the
-          <a href="https://github.com/ebi-ait/ingest-graph-validator" target="_blank">Ingest Graph Validator</a>
-          to proceed.
-        </p>
+        <p>In order to finalize your submission, you must validate the graph, or the linking between metadata entities.</p>
+        <button
+          *ngIf="graphValidationState !== 'Validating'"
+          class="vf-button vf-button--primary  vf-button--sm"
+          (click)="triggerGraphValidation()"
+        >
+          Validate Submission
+        </button>
         <p>
           Graph Validation State: <span [style.color]="getGraphValidationStateColor(graphValidationState)">{{graphValidationState}} </span>
         </p>
-        <ng-container *ngIf="graphValidationErrorMessage && graphValidationErrorMessage.length > 0">
+        <ng-container
+          *ngIf="graphValidationState === 'Invalid' && graphValidationErrorMessage && graphValidationErrorMessage.length > 0"
+        >
           <h5 class="vf-u-margin__top--xxl vf-text vf-text-heading--5">Errors</h5>
           <p [style.color]="getGraphValidationStateColor(graphValidationState)">{{graphValidationErrorMessage}}</p>
         </ng-container>
