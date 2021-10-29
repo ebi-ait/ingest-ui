@@ -17,7 +17,7 @@ import {ProjectMetadataFormComponent} from './components/project-metadata-form/p
 import {ProjectRegistrationSaveComponent} from './components/project-registration-summary/project-registration-save.component';
 import {PublicationFieldGroupComponent} from './components/publication-field-group/publication-field-group.component';
 import {WranglerListInputComponent} from './components/wrangler-list-input/wrangler-list-input.component';
-import {WranglingPriorityInputComponent} from './components/wrangling-priority-input/wrangling-priority-input.component';
+import {NumberDropdownComponent} from './components/number-dropdown-input/number-dropdown.component';
 import {AutofillProjectFormComponent} from './pages/autofill-project-form/autofill-project-form.component';
 import {CreateProjectComponent} from './pages/create-project/create-project.component';
 import {EditProjectComponent} from './pages/edit-project/edit-project.component';
@@ -40,7 +40,7 @@ import { ProjectFiltersComponent } from './components/project-filters/project-fi
     ProjectRegistrationSaveComponent,
     PublicationFieldGroupComponent,
     WranglerListInputComponent,
-    WranglingPriorityInputComponent,
+    NumberDropdownComponent,
     ProjectFiltersComponent,
   ],
   imports: [

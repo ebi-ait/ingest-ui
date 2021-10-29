@@ -236,6 +236,12 @@
       "type": "string",
       "user_friendly": "Notes"
     },
+    "dcpReleaseNumber": {
+      "guidelines": "Release number",
+      "type": "integer",
+      "user_friendly": "Release number",
+      "example": "11"
+    },
     "isInCatalogue": {
       "type": "boolean",
       "user_friendly": "Include this project in the Human Cell Atlas Project Catalogue by EMBL-EBI",
