@@ -1,5 +1,6 @@
 include:
   remote: 'https://raw.githubusercontent.com/ebi-ait/gitlab-ci-templates/master/build-release-deploy.yml'
+  - template: Code-Quality.gitlab-ci.yml
 
 Test:
   image: quay.io/ebi-ait/ingest-base-images:trion_ng-cli-karma_11.2.6
