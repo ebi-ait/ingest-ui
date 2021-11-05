@@ -1,5 +1,5 @@
 include:
-  remote: 'https://raw.githubusercontent.com/ebi-ait/gitlab-ci-templates/master/build-release-deploy.yml'
+  - remote: 'https://raw.githubusercontent.com/ebi-ait/gitlab-ci-templates/master/build-release-deploy.yml'
   - template: Code-Quality.gitlab-ci.yml
 
 Test:
