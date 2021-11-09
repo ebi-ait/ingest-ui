@@ -420,6 +420,8 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     switch (graphValidationState) {
       case 'Invalid':
         return '#d9534f';
+      case 'Requested':
+        return 'orange';
       case 'Pending':
         return 'orange';
       case 'Validating':
@@ -434,7 +436,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.ingestService.post(url, {}).subscribe(
       (submissionEnvelope) => {
         // Pre-emptively set the validation state
-        this.graphValidationState = 'Validating';
+        this.graphValidationState = 'Requested';
       },
       err => {
         // Pre-emptively set the validation state
