@@ -421,7 +421,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       case 'Invalid':
         return '#d9534f';
       case 'Requested':
-        return 'orange';
       case 'Pending':
       case 'Validating':
         return 'orange';
