@@ -423,7 +423,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       case 'Requested':
         return 'orange';
       case 'Pending':
-        return 'orange';
       case 'Validating':
         return 'orange';
       default:
