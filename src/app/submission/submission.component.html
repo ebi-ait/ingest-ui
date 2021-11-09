@@ -199,7 +199,7 @@
       <ng-container *ngIf="graphValidationState !== 'Valid'; else graphValid">
         <p>In order to finalize your submission, you must validate the graph, or the linking between metadata entities.</p>
         <button
-          *ngIf="graphValidationState !== 'Validating'"
+          *ngIf="graphValidationState !== 'Validating' && graphValidationState !== 'Requested'"
           class="vf-button vf-button--primary  vf-button--sm"
           (click)="triggerGraphValidation()"
         >
