@@ -1,7 +1,7 @@
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, throwError} from 'rxjs';
-import {catchError, map, tap} from 'rxjs/operators';
+import {catchError, map, tap, timeout} from 'rxjs/operators';
 import {environment} from '@environments/environment';
 import {
   TemplateGenerationRequestParam,
@@ -15,6 +15,7 @@ import {UploadResults} from '../models/uploadResults';
 export class BrokerService {
 
   API_URL: string = environment.BROKER_API_URL;
+  DOWNLOAD_SPREADSHEET_TIMEOUT = 10*60*1000; // 10mins
 
   constructor(private http: HttpClient) {
   }
@@ -31,8 +32,9 @@ export class BrokerService {
   downloadSpreadsheet(submissionUuid): Observable<any> {
     return this.http
       .get(`${this.API_URL}/submissions/${submissionUuid}/spreadsheet`,
-        {observe: 'response', responseType: 'blob'}
-      ).pipe(map((res) => {
+        {observe: 'response', responseType: 'blob'})
+      .pipe(timeout(this.DOWNLOAD_SPREADSHEET_TIMEOUT),
+        map((res) => {
         const contentDisposition = res.headers.get('content-disposition');
         const filename = contentDisposition.split(';')[1].split('filename')[1].split('=')[1].trim();
         return {
