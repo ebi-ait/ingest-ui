@@ -14,8 +14,9 @@ import {AlertService} from '@shared/services/alert.service';
 import {BrokerService} from '@shared/services/broker.service';
 import {IngestService} from '@shared/services/ingest.service';
 import {LoaderService} from '@shared/services/loader.service';
-import {Observable, of} from 'rxjs';
+import {Observable, TimeoutError, of} from 'rxjs';
 import {catchError, map, mergeMap} from 'rxjs/operators';
+import {CookieService} from 'ngx-cookie-service';
 
 enum SubmissionState {
   Draft = 'Draft',
@@ -94,13 +95,18 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   private MAX_ERRORS = 1;
   submissionTab = SubmissionTab;
 
+  downloadDisabled = false;
+  DOWNLOAD_TIMEOUT_COOKIE = "_downloadTimedout"
+  DOWNLOAD_BACKOFF_MINS = 20;
+
   constructor(
     private alertService: AlertService,
     private ingestService: IngestService,
     private brokerService: BrokerService,
     private route: ActivatedRoute,
     private router: Router,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private cookieService: CookieService
   ) {
   }
 
@@ -120,6 +126,9 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     });
 
     this.initArchiveEntityDataSource(this.submissionEnvelopeUuid);
+    if (this.cookieService.check(this.DOWNLOAD_TIMEOUT_COOKIE)) {
+      this.downloadDisabled = true;
+    }
   }
 
   connectSubmissionEnvelope() {
@@ -289,8 +298,9 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   }
 
   downloadFile() {
+    this.downloadDisabled = true;
     const uuid = this.submissionEnvelope['uuid']['uuid'];
-    this.loaderService.display(true);
+    this.loaderService.display(true, 'This may take a moment. Please wait...');
     this.brokerService.downloadSpreadsheet(uuid).subscribe(response => {
       const filename = response['filename'];
       const newBlob = new Blob([response['data']]);
@@ -312,6 +322,15 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       }, 100);
 
       this.loaderService.display(false);
+      this.downloadDisabled = false;
+    },
+    err => {
+      if (err instanceof TimeoutError) {
+        this.loaderService.display(false);
+        this.alertService.error('', 'Spreadsheet download timed out. Please retry later.', true, true);
+        this.cookieService.set(this.DOWNLOAD_TIMEOUT_COOKIE, "1", {expires: this.DOWNLOAD_BACKOFF_MINS / (24*60)})
+        setTimeout(() => this.downloadDisabled = false, this.DOWNLOAD_BACKOFF_MINS * 60 * 1000);
+      }
     });
   }
 
