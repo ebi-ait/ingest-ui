@@ -46,7 +46,8 @@
     "snyk": "^1.667.0",
     "ts-enum-util": "^4.0.2",
     "tslib": "^2.0.0",
-    "zone.js": "~0.11.4"
+    "zone.js": "~0.11.4",
+    "ngx-cookie-service": "13.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^12.1.3",

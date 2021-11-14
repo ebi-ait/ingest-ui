@@ -137,7 +137,7 @@ const BROWSER_LOCALE = navigator.language;
     AuthService,
     LoaderService,
     FlattenService,
-    SchemaService,
+    SchemaService
   ],
   bootstrap: [AppComponent]
 })
