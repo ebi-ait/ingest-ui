@@ -11,7 +11,7 @@
          [queryParams]="{uuid:projectUuid}">
         <mat-icon matTooltip="Go back to project's page">keyboard_backspace</mat-icon>
       </a>
-      <button mat-icon-button *ngIf="isLinkingDone" (click)="downloadFile()">
+      <button mat-icon-button *ngIf="isLinkingDone" [disabled]="downloadDisabled" (click)="downloadFile();">
         <mat-icon matTooltip="Download spreadsheet">get_app</mat-icon>
       </button>
       <button mat-icon-button *ngIf="submissionEnvelope && submissionEnvelope.open"
