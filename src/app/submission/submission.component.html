@@ -209,10 +209,18 @@
           Graph Validation State: <span [style.color]="getGraphValidationStateColor(graphValidationState)">{{graphValidationState}} </span>
         </p>
         <ng-container
-          *ngIf="graphValidationState === 'Invalid' && graphValidationErrorMessage && graphValidationErrorMessage.length > 0"
+          *ngIf="graphValidationState === 'Invalid' && graphValidationErrors && graphValidationErrors.length > 0"
         >
           <h5 class="vf-u-margin__top--xxl vf-text vf-text-heading--5">Errors</h5>
-          <p [style.color]="getGraphValidationStateColor(graphValidationState)">{{graphValidationErrorMessage}}</p>
+          <ng-container *ngFor="let error of graphValidationErrors">
+            <p>{{error.message}}</p>
+            <p>Affects: </p>
+            <ul>
+              <li *ngFor="let entity of error['affectedEntities']">
+                {{entity['uuid']}} ({{entity['types'][0]}})
+              </li>
+            </ul>
+          </ng-container>
         </ng-container>
       </ng-container>
 
