@@ -31,10 +31,8 @@ import {HttpErrorInterceptor} from './http-interceptors/http-error-interceptor';
 import {LoginComponent} from './login/login.component';
 import {MaterialModule} from './material.module';
 import {MetadataDetailsDialogComponent} from './metadata-details-dialog/metadata-details-dialog.component';
-import {MetadataPickerComponent} from './metadata-picker/metadata-picker.component';
 import {MetadataSchemaFormModule} from './metadata-schema-form/metadata-schema-form.module';
 import {MyProjectsComponent} from './my-projects/my-projects.component';
-import {ProcessDetailsComponent} from './process-details/process-details.component';
 import {ProjectsModule} from './projects/projects.module';
 import {ProjectSummaryComponent} from './project-summary/project-summary.component';
 
@@ -80,8 +78,6 @@ const BROWSER_LOCALE = navigator.language;
     ErrorComponent,
     GlobalFooterComponent,
     MetadataDetailsDialogComponent,
-    ProcessDetailsComponent,
-    MetadataPickerComponent,
   ],
   imports: [
     AaiSecurity,
