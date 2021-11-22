@@ -360,17 +360,17 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     });
   }
 
-  onErrorClick({ source, errorType }): void {
+  onErrorClick({ source, validationState }): void {
     const index = SubmissionTab[source.toUpperCase()].valueOf();
     this.selectedIndex = index;
 
     const dataSource = this[`${source}DataSource`];
 
-    if(errorType === 'Invalid Graph') {
+    if(validationState === 'Invalid Graph') {
       // No way to filter by invalid graph for now until dcp-546
       dataSource.filterByState('')
     } else {
-      dataSource.filterByState(errorType)
+      dataSource.filterByState(validationState)
     }
   }
 

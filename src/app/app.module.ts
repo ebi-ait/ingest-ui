@@ -63,6 +63,7 @@ import {SubmitComponent} from './submission/submit/submit.component';
 import {TemplateQuestionnaireModule} from './template-questionnaire/template-questionnaire.module';
 import {WelcomeComponent} from './welcome/welcome.component';
 import { ValidationSummaryComponent } from './submission/validation-summary/validation-summary.component';
+import { EntityValidationSummaryComponent } from './submission/entity-validation-summary/entity-validation-summary.component';
 
 const BROWSER_LOCALE = navigator.language;
 
@@ -94,6 +95,7 @@ const BROWSER_LOCALE = navigator.language;
     ProcessDetailsComponent,
     MetadataPickerComponent,
     ValidationSummaryComponent,
+    EntityValidationSummaryComponent,
   ],
   imports: [
     AaiSecurity,

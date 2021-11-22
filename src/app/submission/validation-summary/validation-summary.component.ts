@@ -9,12 +9,12 @@ import {SubmissionSummary} from "@shared/models/submissionSummary";
 })
 export class ValidationSummaryComponent {
   @Input() summary: SubmissionSummary;
-  @Output() errorClick = new EventEmitter<{  source: string, errorType: string }>()
+  @Output() errorClick = new EventEmitter<{  source: string, validationState: string }>()
   validationStates = METADATA_VALIDATION_STATES;
   fileValidationStates = INVALID_FILE_TYPES;
 
-  onErrorClick(source: string, errorType: string) {
-    this.errorClick.emit({ source, errorType });
+  onErrorClick($event) {
+    this.errorClick.emit($event);
   }
 
 }
