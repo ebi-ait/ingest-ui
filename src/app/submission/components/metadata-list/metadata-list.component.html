@@ -130,7 +130,8 @@
     <ngx-datatable-column name="graph state" [width]="'130'">
       <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
         <span *ngIf="getGraphValidationErrors(row).length">Invalid</span>
-        <span *ngIf="!getGraphValidationErrors(row).length">Valid</span>
+        <!-- We can't know if it's valid or pending until dcp-436 is done-->
+        <span *ngIf="!getGraphValidationErrors(row).length">-</span>
       </ng-template>
     </ngx-datatable-column>
 
