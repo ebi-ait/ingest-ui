@@ -9,6 +9,7 @@ import {MatMenuModule} from '@angular/material/menu';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
+import {SubmissionModule} from "@app/submission/submission.module";
 import {NgxChartsModule} from '@swimlane/ngx-charts';
 
 import {NgxDatatableModule} from '@swimlane/ngx-datatable';
@@ -54,16 +55,8 @@ import {SchemaService} from './shared/services/schema.service';
 
 import {SharedModule} from './shared/shared.module';
 import {SubmissionListComponent} from './submission-list/submission-list.component';
-import {FilesComponent} from './submission/files/files.component';
-import {UploadInfoComponent} from './submission/files/upload-info/upload-info.component';
-
-import {MetadataListComponent} from './submission/metadata-list/metadata-list.component';
-import {SubmissionComponent} from './submission/submission.component';
-import {SubmitComponent} from './submission/submit/submit.component';
 import {TemplateQuestionnaireModule} from './template-questionnaire/template-questionnaire.module';
 import {WelcomeComponent} from './welcome/welcome.component';
-import { ValidationSummaryComponent } from './submission/validation-summary/validation-summary.component';
-import { EntityValidationSummaryComponent } from './submission/entity-validation-summary/entity-validation-summary.component';
 
 const BROWSER_LOCALE = navigator.language;
 
@@ -73,11 +66,6 @@ const BROWSER_LOCALE = navigator.language;
     SubmissionListComponent,
     GlobalNavigationComponent,
     ProjectComponent,
-    SubmissionComponent,
-    FilesComponent,
-    UploadInfoComponent,
-    SubmitComponent,
-    MetadataListComponent,
     ProjectListComponent,
     AllProjectsComponent,
     UploadComponent,
@@ -94,8 +82,6 @@ const BROWSER_LOCALE = navigator.language;
     MetadataDetailsDialogComponent,
     ProcessDetailsComponent,
     MetadataPickerComponent,
-    ValidationSummaryComponent,
-    EntityValidationSummaryComponent,
   ],
   imports: [
     AaiSecurity,
@@ -120,6 +106,7 @@ const BROWSER_LOCALE = navigator.language;
     ReactiveFormsModule,
     RouterModule.forRoot(ROUTES),
     SharedModule,
+    SubmissionModule,
     TemplateQuestionnaireModule
   ],
   providers: [
