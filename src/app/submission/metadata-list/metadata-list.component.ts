@@ -147,6 +147,19 @@ export class MetadataListComponent implements OnInit, OnDestroy {
     return errors;
   }
 
+  getGraphValidationErrors(row) {
+    const columns = Object.keys(row)
+      .filter(column => {
+        return (column.match('^graphValidationErrors.+'));
+      });
+    const errors = [];
+    const count = columns.length;
+    for (let i = 0; i < count; i++) {
+      errors.push(`* ${row[columns[i]]}`);
+    }
+    return errors;
+  }
+
   expandAllRows() {
     this.table.rowDetail.expandAllRows();
     this.expandAll = true;

@@ -62,7 +62,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   submissionEnvelope;
   submissionState: string;
   graphValidationState: string;
-  graphValidationErrors: object[];
   isValid: boolean;
   isLinkingDone: boolean;
   isSubmitted: boolean;
@@ -175,7 +174,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.isValid = this.checkIfValid(submissionEnvelope);
     this.submissionState = submissionEnvelope['submissionState'];
     this.graphValidationState = submissionEnvelope['graphValidationState'];
-    this.graphValidationErrors = submissionEnvelope['graphValidationErrors'];
     this.isSubmitted = this.isStateSubmitted(SubmissionState[submissionEnvelope.submissionState]);
     this.submitLink = this.getLink(submissionEnvelope, 'submit');
     this.exportLink = this.getLink(submissionEnvelope, 'export');

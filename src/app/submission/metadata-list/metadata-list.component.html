@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="../../process-details/process-details.component.css"><h3
+<h3
   *ngIf="rows && rows.length > 0 && title" class="vf-text vf-text-heading--3">{{title}}</h3>
 <ng-container *ngIf="showFilterState()">
   <div>
@@ -69,15 +69,27 @@
     <!--Row Detail Template -->
     <ngx-datatable-row-detail [rowHeight]="'auto'" #myDetailRow>
       <ng-template let-rowIndex="rowIndex" let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
-        <h3 *ngIf="row['validationState'] === 'Invalid' || row['validationState'] === 'Valid'">Validation Report</h3>
-        <div style="padding-left:35px;" *ngIf="row['validationState'] === 'Invalid'">
-          <ng-container *ngFor="let error of getValidationErrors(row)">
-            <span class="vf-u-text-color--red" title="{{error}}">{{error}}</span><br>
+        <ng-container *ngIf="row['validationState'] === 'Invalid' || row['validationState'] === 'Valid'">
+          <h3>Metadata Validation Report</h3>
+          <!--Metadata validation-->
+          <div style="padding-left:35px;" *ngIf="row['validationState'] === 'Invalid'">
+            <ng-container *ngFor="let error of getValidationErrors(row)">
+              <span class="vf-u-text-color--red" title="{{error}}">{{error}}</span><br>
+            </ng-container>
+          </div>
+          <div style="padding-left:35px;" *ngIf="row['validationState'] === 'Valid'">
+            <span class="vf-u-text-color--green">{{getDefaultValidMessage()}}</span>
+          </div>
+          <!--Graph validation-->
+          <!--Only show graph validation if has errors. Since we cannot know if graph validation is pending, only when
+          the entity has graph validation errors. We could improve this logic in dcp-456 -->
+          <ng-container *ngIf="getGraphValidationErrors(row).length;">
+            <h3>Graph Validation Report</h3>
+            <div style="padding-left:35px;">
+              <span *ngFor="let error of getGraphValidationErrors(row)"class="vf-u-text-color--red">{{error}}</span><br>
+            </div>
           </ng-container>
-        </div>
-        <div style="padding-left:35px;" *ngIf="row['validationState'] === 'Valid'">
-          <span class="vf-u-text-color--green">{{getDefaultValidMessage()}}</span>
-        </div>
+        </ng-container>
 
         <ng-container *ngIf="row['type'] === 'Process'">
           <h3>Process Details</h3>
