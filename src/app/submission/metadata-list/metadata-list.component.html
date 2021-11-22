@@ -125,6 +125,15 @@
       </ng-template>
     </ngx-datatable-column>
 
+    <!--Graph Validation State Column-->
+    <!--We can remove this in dcp-456-->
+    <ngx-datatable-column name="graph state" [width]="'130'">
+      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+        <span *ngIf="getGraphValidationErrors(row).length">Invalid</span>
+        <span *ngIf="!getGraphValidationErrors(row).length">Valid</span>
+      </ng-template>
+    </ngx-datatable-column>
+
     <!--Linked-->
     <ngx-datatable-column *ngIf="config && config.displayLinking" prop="linked" name="linked" [width]="'130'">
       <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-linked="value" let-row="row">
