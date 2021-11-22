@@ -1,6 +1,7 @@
 import {HttpErrorResponse} from '@angular/common/http';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {SUBMISSION_STATES, SUBMITTED_STATES} from "@shared/constants";
 import {MetadataDataSource} from '@shared/data-sources/metadata-data-source';
 import {PaginatedDataSource} from '@shared/data-sources/paginated-data-source';
 import {SimpleDataSource} from '@shared/data-sources/simple-data-source';
@@ -16,31 +17,6 @@ import {IngestService} from '@shared/services/ingest.service';
 import {LoaderService} from '@shared/services/loader.service';
 import {Observable, of} from 'rxjs';
 import {catchError, map, mergeMap} from 'rxjs/operators';
-
-enum SubmissionState {
-  Draft = 'Draft',
-  Invalid = 'Invalid',
-  Valid = 'Valid',
-  Submitted = 'Submitted',
-  Processing = 'Processing',
-  Archiving = 'Archiving',
-  Archived = 'Archived',
-  Exporting = 'Exporting',
-  Exported = 'Exported',
-  Cleanup = 'Cleanup',
-  Complete = 'Complete'
-}
-
-const SUBMITTED_STATES = [
-  SubmissionState.Submitted,
-  SubmissionState.Processing,
-  SubmissionState.Archiving,
-  SubmissionState.Archived,
-  SubmissionState.Exporting,
-  SubmissionState.Exported,
-  SubmissionState.Cleanup,
-  SubmissionState.Complete
-];
 
 enum SubmissionTab {
   BIOMATERIALS = 0,
@@ -60,7 +36,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   submissionEnvelopeUuid: string;
   submissionEnvelope$: Observable<any>;
   submissionEnvelope;
-  submissionState: string;
+  SUBMISSION_STATES: string;
   graphValidationState: string;
   isValid: boolean;
   isLinkingDone: boolean;
@@ -172,9 +148,9 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.submissionEnvelope = submissionEnvelope;
     this.submissionEnvelopeId = SubmissionComponent.getSubmissionId(submissionEnvelope);
     this.isValid = this.checkIfValid(submissionEnvelope);
-    this.submissionState = submissionEnvelope['submissionState'];
+    this.SUBMISSION_STATES = submissionEnvelope['SUBMISSION_STATES'];
     this.graphValidationState = submissionEnvelope['graphValidationState'];
-    this.isSubmitted = this.isStateSubmitted(SubmissionState[submissionEnvelope.submissionState]);
+    this.isSubmitted = this.isStateSubmitted(SUBMISSION_STATES[submissionEnvelope.submissionState]);
     this.submitLink = this.getLink(submissionEnvelope, 'submit');
     this.exportLink = this.getLink(submissionEnvelope, 'export');
     this.cleanupLink = this.getLink(submissionEnvelope, 'cleanup');
@@ -248,10 +224,10 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   }
 
   checkIfValid(submission) {
-    const status = submission['submissionState'];
+    const status = submission['SUBMISSION_STATES'];
     const graphValidationState = submission['graphValidationState'];
     const VALID = 'Valid';
-    return ((status === VALID && graphValidationState === VALID) || this.isStateSubmitted(SubmissionState[status]));
+    return ((status === VALID && graphValidationState === VALID) || this.isStateSubmitted(SUBMISSION_STATES[status]));
   }
 
   setProject(project) {
@@ -277,7 +253,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     return this.project && this.project['uuid'] ? this.project['uuid']['uuid'] : '';
   }
 
-  isStateSubmitted(state: SubmissionState) {
+  isStateSubmitted(state: SUBMISSION_STATES) {
     return (SUBMITTED_STATES.indexOf(state) >= 0);
   }
 
@@ -384,34 +360,40 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     });
   }
 
-  navigateToTab(tabName: SubmissionTab, sourceFilter?: { dataSource?: MetadataDataSource<any>, filterState?: string }): void {
-    const index = tabName.valueOf();
+  onErrorClick({ source, errorType }): void {
+    const index = SubmissionTab[source.toUpperCase()].valueOf();
     this.selectedIndex = index;
-    if (sourceFilter && sourceFilter.dataSource && sourceFilter.filterState) {
-      sourceFilter.dataSource.filterByState(sourceFilter.filterState);
+
+    const dataSource = this[`${source}DataSource`];
+
+    if(errorType === 'Invalid Graph') {
+      // No way to filter by invalid graph for now until dcp-546
+      dataSource.filterByState('')
+    } else {
+      dataSource.filterByState(errorType)
     }
   }
 
   displayValidateAndSubmitTabs(): boolean {
     return [
-      SubmissionState.Submitted,
-      SubmissionState.Processing,
-      SubmissionState.Archiving,
-      SubmissionState.Exporting,
-      SubmissionState.Cleanup,
-      SubmissionState.Complete
-    ].indexOf(SubmissionState[this.submissionState]) < 0;
+      SUBMISSION_STATES.Submitted,
+      SUBMISSION_STATES.Processing,
+      SUBMISSION_STATES.Archiving,
+      SUBMISSION_STATES.Exporting,
+      SUBMISSION_STATES.Cleanup,
+      SUBMISSION_STATES.Complete
+    ].indexOf(SUBMISSION_STATES[this.SUBMISSION_STATES]) < 0;
   }
 
   displayAccessionTab(): boolean {
     return [
-      SubmissionState.Archiving,
-      SubmissionState.Archived,
-      SubmissionState.Exported,
-      SubmissionState.Cleanup,
-      SubmissionState.Cleanup,
-      SubmissionState.Complete
-    ].indexOf(SubmissionState[this.submissionState]) >= 0;
+      SUBMISSION_STATES.Archiving,
+      SUBMISSION_STATES.Archived,
+      SUBMISSION_STATES.Exported,
+      SUBMISSION_STATES.Cleanup,
+      SUBMISSION_STATES.Cleanup,
+      SUBMISSION_STATES.Complete
+    ].indexOf(SUBMISSION_STATES[this.SUBMISSION_STATES]) >= 0;
   }
 
   getGraphValidationStateColor(graphValidationState: string): string {

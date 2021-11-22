@@ -6,7 +6,7 @@ import {map} from 'rxjs/operators';
 
 import {environment} from '@environments/environment';
 import {Account} from '@app/core/account';
-import {INVALID_FILE_TYPES} from '../constants';
+import {INVALID_FILE_TYPES, INVALID_FILE_TYPES_AND_CODES} from '../constants';
 import {ArchiveEntity} from '../models/archiveEntity';
 import {ArchiveSubmission} from '../models/archiveSubmission';
 import {Criteria} from '../models/criteria';
@@ -243,7 +243,7 @@ export class IngestService {
     if (params.filterState && params.fileValidationTypeFilter) {
       throw new Error('Cannot have both filterState and fileValidationTypeFilter.');
     }
-    const humanFriendlyTypes = INVALID_FILE_TYPES.map(a => a.humanFriendly);
+    const humanFriendlyTypes = INVALID_FILE_TYPES_AND_CODES.map(a => a.humanFriendly);
     if (params.filterState && !humanFriendlyTypes.includes(params.filterState)) {
       url = `${this.API_URL}/${entityType}/search/findBySubmissionEnvelopeAndValidationState`;
       params['envelopeUri'] = encodeURIComponent(submission_url);
@@ -256,7 +256,7 @@ export class IngestService {
       }
 
       url = `${this.API_URL}/files/search/findBySubmissionEnvelopeIdAndErrorType`;
-      const fileValidationTypeFilter = INVALID_FILE_TYPES.find(type => type.humanFriendly === params.filterState).code;
+      const fileValidationTypeFilter = INVALID_FILE_TYPES_AND_CODES.find(type => type.humanFriendly === params.filterState).code;
       delete params.filterState; // Don't want to include this in the request
       params.errorType = fileValidationTypeFilter;
       params.id = submissionId;

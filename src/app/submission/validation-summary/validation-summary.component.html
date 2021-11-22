@@ -1,0 +1,88 @@
+<div *ngIf="summary && summary.totalInvalid > 0">
+  <p>Your validation returned <span class="error-text">{{summary.totalInvalid}} error(s)</span>. Review
+    and fix them below.</p>
+
+  <ul id="validation-error-types">
+    <li *ngIf="summary.invalidBiomaterials + summary.graphInvalidBiomaterials > 0">
+      Biomaterials:
+      <a href="javascript: void(0)"
+         (click)="onErrorClick('biomaterials', validationStates.Invalid)">
+        {{summary.invalidBiomaterials}} metadata error(s)
+      </a>,
+      <a href="javascript: void(0)"
+         (click)="onErrorClick('biomaterials',  validationStates.GraphInvalid)">
+        {{summary.graphInvalidBiomaterials}} graph error(s)
+      </a>
+    </li>
+    <li *ngIf="summary.invalidProcesses + summary.graphInvalidProcesses > 0">
+      Processes:
+      <a href="javascript: void(0)"
+         (click)="onErrorClick('processes', validationStates.Invalid)">
+        {{summary.invalidProcesses}} metadata error(s)
+      </a>,
+      <a href="javascript: void(0)"
+         (click)="onErrorClick('processes', validationStates.GraphInvalid)">
+        {{summary.graphInvalidProcesses}} graph error(s)
+      </a>
+    </li>
+    <li *ngIf="summary.invalidProtocols + summary.graphInvalidProtocols> 0">
+      Protocols:
+      <a href="javascript: void(0)"
+         (click)="onErrorClick('protocols', validationStates.Invalid)">
+        {{summary.invalidProtocols}} metadata error(s)
+      </a>,
+      <a href="javascript: void(0)"
+         (click)="onErrorClick('protocols', validationStates.GraphInvalid)">
+        {{summary.graphInvalidProtocols}} graph error(s)
+      </a>
+    </li>
+    <li *ngIf="summary.invalidFiles > 0">
+      Data files:
+      <ng-container *ngIf="summary.fileMetadataErrors">
+        <a href="javascript: void(0)"
+           (click)="onErrorClick('files', fileValidationStates.Metadata)">
+          {{summary.fileMetadataErrors}}
+          <ng-container [ngPlural]="summary.fileMetadataErrors">
+            <ng-template ngPluralCase="one">metadata error</ng-template>
+            <ng-template ngPluralCase="other">metadata errors</ng-template>
+          </ng-container>
+        </a>
+      </ng-container>
+      <ng-container *ngIf="summary.fileMetadataErrors && summary.fileErrors">,</ng-container>
+      <ng-container *ngIf="summary.fileErrors">
+        <a href="javascript: void(0)"
+           (click)="onErrorClick('files', fileValidationStates.File)">
+          {{summary.fileErrors}}
+          <ng-container [ngPlural]="summary.fileErrors">
+            <ng-template ngPluralCase="one">file error</ng-template>
+            <ng-template ngPluralCase="other">file errors</ng-template>
+          </ng-container>
+        </a>
+      </ng-container>
+      <ng-container
+        *ngIf="(summary.fileMetadataErrors || summary.fileErrors) && summary.missingFiles">
+        ,
+      </ng-container>
+      <ng-container *ngIf="summary.missingFiles">
+        <a href="javascript: void(0)"
+           (click)="onErrorClick('files', fileValidationStates.NotUploaded)">
+          {{summary.missingFiles}}
+          <ng-container [ngPlural]="summary.missingFiles">
+            <ng-template ngPluralCase="one">file missing</ng-template>
+            <ng-template ngPluralCase="other">files missing</ng-template>
+          </ng-container>
+        </a>
+      </ng-container>
+      <ng-container
+        *ngIf="(summary.fileMetadataErrors || summary.fileErrors || summary.missingFiles) && summary.graphInvalidFiles">
+        ,
+      </ng-container>
+      <ng-container *ngIf="summary.graphInvalidFiles">
+        <a href="javascript: void(0)"
+           (click)="onErrorClick('files', validationStates.GraphInvalid)">
+          {{summary.graphInvalidFiles}} graph error(s)
+        </a>
+      </ng-container>
+    </li>
+  </ul>
+</div>

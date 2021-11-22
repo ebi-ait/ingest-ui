@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {MetadataDetailsDialogComponent} from '@app/metadata-details-dialog/metadata-details-dialog.component';
-import {INVALID_FILE_TYPES} from '@shared/constants';
+import {INVALID_FILE_TYPES, METADATA_VALIDATION_STATES} from '@shared/constants';
 import {FlattenService} from '@shared/services/flatten.service';
 import {IngestService} from '@shared/services/ingest.service';
 import {LoaderService} from '@shared/services/loader.service';
@@ -51,7 +51,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
               private schemaService: SchemaService,
               private loaderService: LoaderService,
               public dialog: MatDialog) {
-    this.validationStates = ['Draft', 'Validating', 'Valid', 'Invalid'];
+    this.validationStates = Object.values(METADATA_VALIDATION_STATES);
   }
 
   ngOnDestroy() {
@@ -65,7 +65,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
     });
 
     if (this.dataSource.resourceType === 'files') {
-      this.validationStates = this.validationStates.concat(INVALID_FILE_TYPES.map(a => a.humanFriendly));
+      this.validationStates = this.validationStates.concat(Object.values(INVALID_FILE_TYPES));
     }
 
     this.setPage({offset: 0});
