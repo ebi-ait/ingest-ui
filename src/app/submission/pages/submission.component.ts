@@ -36,7 +36,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   submissionEnvelopeUuid: string;
   submissionEnvelope$: Observable<any>;
   submissionEnvelope;
-  SUBMISSION_STATES: string;
+  submissionState: string;
   graphValidationState: string;
   isValid: boolean;
   isLinkingDone: boolean;
@@ -148,7 +148,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.submissionEnvelope = submissionEnvelope;
     this.submissionEnvelopeId = SubmissionComponent.getSubmissionId(submissionEnvelope);
     this.isValid = this.checkIfValid(submissionEnvelope);
-    this.SUBMISSION_STATES = submissionEnvelope['SUBMISSION_STATES'];
+    this.submissionState = submissionEnvelope['submissionState'];
     this.graphValidationState = submissionEnvelope['graphValidationState'];
     this.isSubmitted = this.isStateSubmitted(SUBMISSION_STATES[submissionEnvelope.submissionState]);
     this.submitLink = this.getLink(submissionEnvelope, 'submit');
@@ -224,7 +224,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   }
 
   checkIfValid(submission) {
-    const status = submission['SUBMISSION_STATES'];
+    const status = submission['submissionState'];
     const graphValidationState = submission['graphValidationState'];
     const VALID = 'Valid';
     return ((status === VALID && graphValidationState === VALID) || this.isStateSubmitted(SUBMISSION_STATES[status]));
@@ -253,7 +253,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     return this.project && this.project['uuid'] ? this.project['uuid']['uuid'] : '';
   }
 
-  isStateSubmitted(state: SUBMISSION_STATES) {
+  isStateSubmitted(state) {
     return (SUBMITTED_STATES.indexOf(state) >= 0);
   }
 
@@ -382,7 +382,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       SUBMISSION_STATES.Exporting,
       SUBMISSION_STATES.Cleanup,
       SUBMISSION_STATES.Complete
-    ].indexOf(SUBMISSION_STATES[this.SUBMISSION_STATES]) < 0;
+    ].indexOf(SUBMISSION_STATES[this.submissionState]) < 0;
   }
 
   displayAccessionTab(): boolean {
@@ -393,7 +393,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       SUBMISSION_STATES.Cleanup,
       SUBMISSION_STATES.Cleanup,
       SUBMISSION_STATES.Complete
-    ].indexOf(SUBMISSION_STATES[this.SUBMISSION_STATES]) >= 0;
+    ].indexOf(SUBMISSION_STATES[this.submissionState]) >= 0;
   }
 
   getGraphValidationStateColor(graphValidationState: string): string {
