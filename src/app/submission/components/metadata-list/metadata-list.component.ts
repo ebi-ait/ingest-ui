@@ -175,7 +175,14 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   filterByState(event) {
-    this.dataSource.filterByState(event.value);
+    if(event.value === METADATA_VALIDATION_STATES.GraphInvalid) {
+      // This can be removed in dcp-546
+      // Currently there is no graph invalid state in core
+      this.dataSource.filterByState('');
+    }
+    else {
+      this.dataSource.filterByState(event.value);
+    }
   }
 
   showFilterState() {
