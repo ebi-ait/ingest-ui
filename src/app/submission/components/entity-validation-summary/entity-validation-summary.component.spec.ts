@@ -16,6 +16,7 @@ describe('EntityValidationSummaryComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(EntityValidationSummaryComponent);
     component = fixture.componentInstance;
+    component.summaries = [];
     fixture.detectChanges();
   });
 
