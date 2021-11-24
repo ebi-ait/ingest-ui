@@ -7,6 +7,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatTabsModule} from "@angular/material/tabs";
 import {MaterialModule} from "@app/material.module";
+import {UploadInfoComponent} from "./components/upload-info/upload-info.component";
 import {MetadataPickerComponent} from "./components/metadata-picker/metadata-picker.component";
 import {NgxGraphModule} from "@swimlane/ngx-graph";
 import {SubmissionRoutingModule} from "./submission-routing.module";
@@ -24,6 +25,7 @@ import {SharedModule} from "@shared/shared.module";
   declarations: [
     ProcessDetailsComponent,
     SubmissionComponent,
+    UploadInfoComponent,
     ValidationSummaryComponent,
     SubmitComponent,
     MetadataListComponent,
