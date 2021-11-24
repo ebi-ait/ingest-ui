@@ -86,7 +86,9 @@
           <ng-container *ngIf="getGraphValidationErrors(row).length;">
             <h3>Graph Validation Report</h3>
             <div style="padding-left:35px;">
-              <span *ngFor="let error of getGraphValidationErrors(row)"class="vf-u-text-color--red">{{error}}</span><br>
+              <ng-container *ngFor="let error of  getGraphValidationErrors(row)">
+                <span class="vf-u-text-color--red">{{error}}</span><br>
+              </ng-container>
             </div>
           </ng-container>
         </ng-container>
