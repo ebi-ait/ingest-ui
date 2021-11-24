@@ -1,0 +1,18 @@
+<ng-container *ngIf="totalInvalid > 0">
+  {{title}}:
+
+  <ng-container *ngFor="let summary of summaries; let i = index">
+    <ng-container *ngIf="summary.count > 0">
+      <a href="javascript: void(0)" (click)="onErrorClick(source, summary.validationState)">
+        {{summary.count}}
+        <ng-container [ngPlural]="summary.count">
+          <ng-template ngPluralCase="one">{{summary.textOne}}</ng-template>
+          <ng-template ngPluralCase="other">{{summary.textMany}}</ng-template>
+        </ng-container>
+      </a>
+
+      <ng-container *ngIf="i < summaries.length && summaries[i + 1]?.count">, </ng-container>
+    </ng-container>
+  </ng-container>
+
+</ng-container>

@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {MetadataDetailsDialogComponent} from '@app/metadata-details-dialog/metadata-details-dialog.component';
-import {INVALID_FILE_TYPES} from '@shared/constants';
+import {INVALID_FILE_TYPES, METADATA_VALIDATION_STATES} from '@shared/constants';
 import {FlattenService} from '@shared/services/flatten.service';
 import {IngestService} from '@shared/services/ingest.service';
 import {LoaderService} from '@shared/services/loader.service';
@@ -51,7 +51,10 @@ export class MetadataListComponent implements OnInit, OnDestroy {
               private schemaService: SchemaService,
               private loaderService: LoaderService,
               public dialog: MatDialog) {
-    this.validationStates = ['Draft', 'Validating', 'Valid', 'Invalid'];
+    this.validationStates = Object.values(METADATA_VALIDATION_STATES)
+      // This can be removed in dcp-546
+      // Currently there is no graph invalid state in core
+      .filter(state => state !== METADATA_VALIDATION_STATES.GraphInvalid);
   }
 
   ngOnDestroy() {
@@ -65,7 +68,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
     });
 
     if (this.dataSource.resourceType === 'files') {
-      this.validationStates = this.validationStates.concat(INVALID_FILE_TYPES.map(a => a.humanFriendly));
+      this.validationStates = this.validationStates.concat(Object.values(INVALID_FILE_TYPES));
     }
 
     this.setPage({offset: 0});
@@ -147,6 +150,19 @@ export class MetadataListComponent implements OnInit, OnDestroy {
     return errors;
   }
 
+  getGraphValidationErrors(row) {
+    const columns = Object.keys(row)
+      .filter(column => {
+        return (column.match('^graphValidationErrors.+'));
+      });
+    const errors = [];
+    const count = columns.length;
+    for (let i = 0; i < count; i++) {
+      errors.push(`* ${row[columns[i]]}`);
+    }
+    return errors;
+  }
+
   expandAllRows() {
     this.table.rowDetail.expandAllRows();
     this.expandAll = true;
@@ -162,7 +178,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   filterByState(event) {
-    this.dataSource.filterByState(event.value);
+      this.dataSource.filterByState(event.value);
   }
 
   showFilterState() {

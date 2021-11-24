@@ -1,0 +1,99 @@
+<div *ngIf="summary && summary.totalInvalid > 0">
+  <p>Your validation returned <span class="error-text">{{summary.totalInvalid}} error(s)</span>. Review
+    and fix them below.</p>
+
+  <ul id="validation-error-types">
+    <li>
+      <app-entity-validation-summary
+        [source]="'biomaterials'"
+        (errorClick)="onErrorClick($event)"
+        [summaries]="[
+          {
+            count: summary.invalidBiomaterials,
+            textOne: 'metadata error',
+            textMany: 'metadata errors',
+            validationState: validationStates.Invalid
+          },
+          {
+            count: summary.graphInvalidBiomaterials,
+            textOne: 'graph error',
+            textMany: 'graph errors',
+            validationState: validationStates.GraphInvalid
+          },
+        ]"
+      ></app-entity-validation-summary>
+    </li>
+    <li>
+      <app-entity-validation-summary
+        [source]="'processes'"
+        (errorClick)="onErrorClick($event)"
+        [summaries]="[
+          {
+            count: summary.invalidProcesses,
+            textOne: 'metadata error',
+            textMany: 'metadata errors',
+            validationState: validationStates.Invalid
+          },
+          {
+            count: summary.graphInvalidProcesses,
+            textOne: 'graph error',
+            textMany: 'graph errors',
+            validationState: validationStates.GraphInvalid
+          },
+        ]"
+      ></app-entity-validation-summary>
+    </li>
+    <li>
+      <app-entity-validation-summary
+        [source]="'protocols'"
+        (errorClick)="onErrorClick($event)"
+        [summaries]="[
+          {
+            count: summary.invalidProtocols,
+            textOne: 'metadata error',
+            textMany: 'metadata errors',
+            validationState: validationStates.Invalid
+          },
+          {
+            count: summary.graphInvalidProtocols,
+            textOne: 'graph error',
+            textMany: 'graph errors',
+            validationState: validationStates.GraphInvalid
+          },
+        ]"
+      ></app-entity-validation-summary>
+    </li>
+    <li>
+      <app-entity-validation-summary
+        [source]="'files'"
+        (errorClick)="onErrorClick($event)"
+        [summaries]="[
+          {
+            count: summary.fileMetadataErrors,
+            textOne: 'metadata error',
+            textMany: 'metadata errors',
+            validationState: fileValidationStates.Metadata
+          },
+          {
+            count: summary.fileErrors,
+            textOne: 'file error',
+            textMany: 'file errors',
+            validationState: fileValidationStates.File
+          },
+          {
+            count: summary.missingFiles,
+            textOne: 'file missing',
+            textMany: 'files missing',
+            validationState: fileValidationStates.NotUploaded
+          },
+          {
+            count: summary.graphInvalidFiles,
+            textOne: 'graph error',
+            textMany: 'graph errors',
+            validationState: validationStates.GraphInvalid
+          },
+        ]"
+      ></app-entity-validation-summary>
+    </li>
+  </ul>
+</div>

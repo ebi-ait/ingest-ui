@@ -9,6 +9,7 @@ import {MatMenuModule} from '@angular/material/menu';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
+import {SubmissionModule} from "@app/submission/submission.module";
 import {NgxChartsModule} from '@swimlane/ngx-charts';
 
 import {NgxDatatableModule} from '@swimlane/ngx-datatable';
@@ -30,10 +31,8 @@ import {HttpErrorInterceptor} from './http-interceptors/http-error-interceptor';
 import {LoginComponent} from './login/login.component';
 import {MaterialModule} from './material.module';
 import {MetadataDetailsDialogComponent} from './metadata-details-dialog/metadata-details-dialog.component';
-import {MetadataPickerComponent} from './metadata-picker/metadata-picker.component';
 import {MetadataSchemaFormModule} from './metadata-schema-form/metadata-schema-form.module';
 import {MyProjectsComponent} from './my-projects/my-projects.component';
-import {ProcessDetailsComponent} from './process-details/process-details.component';
 import {ProjectsModule} from './projects/projects.module';
 import {ProjectSummaryComponent} from './project-summary/project-summary.component';
 
@@ -54,12 +53,6 @@ import {SchemaService} from './shared/services/schema.service';
 
 import {SharedModule} from './shared/shared.module';
 import {SubmissionListComponent} from './submission-list/submission-list.component';
-import {FilesComponent} from './submission/files/files.component';
-import {UploadInfoComponent} from './submission/files/upload-info/upload-info.component';
-
-import {MetadataListComponent} from './submission/metadata-list/metadata-list.component';
-import {SubmissionComponent} from './submission/submission.component';
-import {SubmitComponent} from './submission/submit/submit.component';
 import {TemplateQuestionnaireModule} from './template-questionnaire/template-questionnaire.module';
 import {WelcomeComponent} from './welcome/welcome.component';
 
@@ -71,11 +64,6 @@ const BROWSER_LOCALE = navigator.language;
     SubmissionListComponent,
     GlobalNavigationComponent,
     ProjectComponent,
-    SubmissionComponent,
-    FilesComponent,
-    UploadInfoComponent,
-    SubmitComponent,
-    MetadataListComponent,
     ProjectListComponent,
     AllProjectsComponent,
     UploadComponent,
@@ -90,8 +78,6 @@ const BROWSER_LOCALE = navigator.language;
     ErrorComponent,
     GlobalFooterComponent,
     MetadataDetailsDialogComponent,
-    ProcessDetailsComponent,
-    MetadataPickerComponent,
   ],
   imports: [
     AaiSecurity,
@@ -116,6 +102,7 @@ const BROWSER_LOCALE = navigator.language;
     ReactiveFormsModule,
     RouterModule.forRoot(ROUTES),
     SharedModule,
+    SubmissionModule,
     TemplateQuestionnaireModule
   ],
   providers: [

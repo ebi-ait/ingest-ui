@@ -10,7 +10,6 @@ import {UserIsLoggedInGuard} from './shared/guards/user-is-logged-in.guard';
 import {UserIsWranglerGuard} from './shared/guards/user-is-wrangler.guard';
 import {WranglerOrOwnerGuard} from './shared/guards/wrangler-or-owner.guard';
 import {SubmissionListComponent} from './submission-list/submission-list.component';
-import {SubmissionComponent} from './submission/submission.component';
 
 // eslint-disable-next-line max-len
 import {TemplateQuestionnaireFormComponent} from './template-questionnaire/template-questionnaire-form/template-questionnaire-form.component';
@@ -31,12 +30,17 @@ export const ROUTES: Routes = [
       import('./projects/projects.module').then((m) => m.ProjectsModule),
     canActivate: [UserIsLoggedInGuard]
   },
+  {
+    path: 'submissions',
+    loadChildren: () =>
+      import('./submission/submission.module').then((m) => m.SubmissionModule),
+    canActivate: [UserIsLoggedInGuard]
+  },
 
   {path: 'submissions/list', component: SubmissionListComponent,  canActivate: [UserIsLoggedInGuard, UserIsWranglerGuard]},
 
   {path: 'projects/detail/:id', component: ProjectComponent, canActivate: [UserIsLoggedInGuard, WranglerOrOwnerGuard]},
   {path: 'projects/detail', component: ProjectComponent, canActivate: [UserIsLoggedInGuard, WranglerOrOwnerGuard]},
-  {path: 'submissions/detail', component: SubmissionComponent,  canActivate: [UserIsLoggedInGuard, WranglerOrOwnerGuard]},
 
   {path: 'template', component: TemplateQuestionnaireFormComponent},
 
