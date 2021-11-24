@@ -51,7 +51,10 @@ export class MetadataListComponent implements OnInit, OnDestroy {
               private schemaService: SchemaService,
               private loaderService: LoaderService,
               public dialog: MatDialog) {
-    this.validationStates = Object.values(METADATA_VALIDATION_STATES);
+    this.validationStates = Object.values(METADATA_VALIDATION_STATES)
+      // This can be removed in dcp-546
+      // Currently there is no graph invalid state in core
+      .filter(state => state !== METADATA_VALIDATION_STATES.GraphInvalid);
   }
 
   ngOnDestroy() {
@@ -175,14 +178,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   filterByState(event) {
-    if(event.value === METADATA_VALIDATION_STATES.GraphInvalid) {
-      // This can be removed in dcp-546
-      // Currently there is no graph invalid state in core
-      this.dataSource.filterByState('');
-    }
-    else {
       this.dataSource.filterByState(event.value);
-    }
   }
 
   showFilterState() {
