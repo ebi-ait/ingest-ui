@@ -20,6 +20,7 @@ import {SubmitComponent} from "./components/submit/submit.component";
 import {ValidationSummaryComponent} from "./components/validation-summary/validation-summary.component";
 import {SubmissionComponent} from "./pages/submission.component";
 import {SharedModule} from "@shared/shared.module";
+import {AppModule} from "@app/app.module";
 
 @NgModule({
   declarations: [
@@ -33,21 +34,22 @@ import {SharedModule} from "@shared/shared.module";
     EntityValidationSummaryComponent,
     MetadataPickerComponent
   ],
-  imports: [
-    CommonModule,
-    FlexLayoutModule,
-    FormsModule,
-    SharedModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatTabsModule,
-    MatMenuModule,
-    MaterialModule,
-    ReactiveFormsModule,
-    NgxDatatableModule,
-    NgxGraphModule,
-    SubmissionRoutingModule,
-    SharedModule,
-  ]
+    imports: [
+        CommonModule,
+        FlexLayoutModule,
+        FormsModule,
+        SharedModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatTabsModule,
+        MatMenuModule,
+        MaterialModule,
+        ReactiveFormsModule,
+        NgxDatatableModule,
+        NgxGraphModule,
+        SubmissionRoutingModule,
+        SharedModule,
+        AppModule,
+    ]
 })
 export class SubmissionModule { }
