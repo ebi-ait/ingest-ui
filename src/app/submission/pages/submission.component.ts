@@ -33,7 +33,7 @@ enum SubmissionTab {
 export class SubmissionComponent implements OnInit, OnDestroy {
 
   submissionEnvelopeId: string;
-  submissionEnvelopeUuid: string;
+  submissionUuid: string;
   submissionEnvelope$: Observable<any>;
   submissionEnvelope;
   submissionState: string;
@@ -87,14 +87,14 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.isLoading = true;
     this.route.queryParamMap.subscribe(queryParams => {
-      this.submissionEnvelopeUuid = queryParams.get('uuid');
+      this.submissionUuid = queryParams.get('uuid');
       this.submissionEnvelopeId = queryParams.get('id');
       this.projectUuid = queryParams.get('project');
 
       this.connectSubmissionEnvelope();
     });
 
-    this.initArchiveEntityDataSource(this.submissionEnvelopeUuid);
+    this.initArchiveEntityDataSource(this.submissionUuid);
   }
 
   connectSubmissionEnvelope() {
@@ -158,13 +158,13 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   }
 
   private submissionEnvelopeEndpoint() {
-    if (!this.submissionEnvelopeId && !this.submissionEnvelopeUuid) {
+    if (!this.submissionEnvelopeId && !this.submissionUuid) {
       throw new Error('No ID or UUID for submissionEnvelope.');
     }
 
     const submissionEnvelope$ = this.submissionEnvelopeId ?
       this.ingestService.getSubmission(this.submissionEnvelopeId) :
-      this.ingestService.getSubmissionByUuid(this.submissionEnvelopeUuid);
+      this.ingestService.getSubmissionByUuid(this.submissionUuid);
 
     return submissionEnvelope$.pipe(
       mergeMap(
