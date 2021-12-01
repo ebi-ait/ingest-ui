@@ -52,8 +52,7 @@ describe('UploadComponent', () => {
         {provide: Router, useValue: router}
       ],
       declarations: [CreateProjectComponent]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   function makeSpreadsheetBlob() {
