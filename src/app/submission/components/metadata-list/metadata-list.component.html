@@ -81,6 +81,8 @@
             <span class="vf-u-text-color--green">{{getDefaultValidMessage()}}</span>
           </div>
           <!--Graph validation-->
+          <!--Only show graph validation if has errors. Since we cannot know if graph validation is pending, only when
+          the entity has graph validation errors. We could improve this logic in dcp-456 -->
           <ng-container *ngIf="getGraphValidationErrors(row).length;">
             <h3>Graph Validation Report</h3>
             <div style="padding-left:35px;">
@@ -122,6 +124,16 @@
     <ngx-datatable-column *ngIf="config && config.displayState" prop="validationState" name="state" [width]="'130'">
       <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
         <app-metadata-state [state]="value"></app-metadata-state>
+      </ng-template>
+    </ngx-datatable-column>
+
+    <!--Graph Validation State Column-->
+    <!--We can remove this in dcp-456-->
+    <ngx-datatable-column name="graph state" [width]="'130'">
+      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+        <span *ngIf="getGraphValidationErrors(row).length">Invalid</span>
+        <!-- We can't know if it's valid or pending until dcp-436 is done-->
+        <span *ngIf="!getGraphValidationErrors(row).length">-</span>
       </ng-template>
     </ngx-datatable-column>
 

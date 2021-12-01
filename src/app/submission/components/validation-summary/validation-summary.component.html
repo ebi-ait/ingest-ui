@@ -10,10 +10,16 @@
         [summaries]="[
           {
             count: summary.invalidBiomaterials,
-            textOne: 'error',
-            textMany: 'errors',
+            textOne: 'metadata error',
+            textMany: 'metadata errors',
             validationState: validationStates.Invalid
-          }
+          },
+          {
+            count: summary.graphInvalidBiomaterials,
+            textOne: 'graph error',
+            textMany: 'graph errors',
+            validationState: validationStates.GraphInvalid
+          },
         ]"
       ></app-entity-validation-summary>
     </li>
@@ -24,10 +30,16 @@
         [summaries]="[
           {
             count: summary.invalidProcesses,
-            textOne: 'error',
-            textMany: 'errors',
+            textOne: 'metadata error',
+            textMany: 'metadata errors',
             validationState: validationStates.Invalid
-          }
+          },
+          {
+            count: summary.graphInvalidProcesses,
+            textOne: 'graph error',
+            textMany: 'graph errors',
+            validationState: validationStates.GraphInvalid
+          },
         ]"
       ></app-entity-validation-summary>
     </li>
@@ -38,10 +50,16 @@
         [summaries]="[
           {
             count: summary.invalidProtocols,
-            textOne: 'error',
-            textMany: 'errors',
+            textOne: 'metadata error',
+            textMany: 'metadata errors',
             validationState: validationStates.Invalid
-          }
+          },
+          {
+            count: summary.graphInvalidProtocols,
+            textOne: 'graph error',
+            textMany: 'graph errors',
+            validationState: validationStates.GraphInvalid
+          },
         ]"
       ></app-entity-validation-summary>
     </li>
@@ -52,8 +70,8 @@
         [summaries]="[
           {
             count: summary.fileMetadataErrors,
-            textOne: 'error',
-            textMany: 'errors',
+            textOne: 'metadata error',
+            textMany: 'metadata errors',
             validationState: fileValidationStates.Metadata
           },
           {
@@ -67,7 +85,13 @@
             textOne: 'file missing',
             textMany: 'files missing',
             validationState: fileValidationStates.NotUploaded
-          }
+          },
+          {
+            count: summary.graphInvalidFiles,
+            textOne: 'graph error',
+            textMany: 'graph errors',
+            validationState: validationStates.GraphInvalid
+          },
         ]"
       ></app-entity-validation-summary>
     </li>
