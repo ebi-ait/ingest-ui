@@ -41,7 +41,6 @@ import {RegistrationComponent} from './registration/registration.component';
 import {AlertComponent} from './shared/components/alert/alert.component';
 import {ProjectListComponent} from './shared/components/project-list/project-list.component';
 
-import {UploadComponent} from './shared/components/upload/upload.component';
 import {AlertService} from './shared/services/alert.service';
 import {AuthService} from './shared/services/auth.service';
 import {BrokerService} from './shared/services/broker.service';
@@ -66,7 +65,6 @@ const BROWSER_LOCALE = navigator.language;
     ProjectComponent,
     ProjectListComponent,
     AllProjectsComponent,
-    UploadComponent,
     LoginComponent,
     ProjectSummaryComponent,
     AlertComponent,

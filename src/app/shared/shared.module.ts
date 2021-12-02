@@ -22,6 +22,7 @@ import {UuidComponent} from "./components/uuid/uuid.component";
 
 import {ClipboardDirective} from './directives/clipboard.directive';
 import {ClipboardService} from './services/clipboard.service';
+import {UploadComponent} from "@shared/components/upload/upload.component";
 
 
 @NgModule({
@@ -49,7 +50,8 @@ import {ClipboardService} from './services/clipboard.service';
     MetadataStateComponent,
     DataTableComponent,
     EllipsisComponent,
-    UuidComponent
+    UuidComponent,
+    UploadComponent
   ],
   exports: [
     ClipboardDirective,
@@ -57,7 +59,8 @@ import {ClipboardService} from './services/clipboard.service';
     MetadataStateComponent,
     DataTableComponent,
     EllipsisComponent,
-    UuidComponent
+    UuidComponent,
+    UploadComponent
   ],
   providers: [
     ClipboardService
