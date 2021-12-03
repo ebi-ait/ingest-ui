@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {SUBMISSION_STATES} from "@shared/constants";
 
 @Component({
   selector: 'app-submission-state',
@@ -19,38 +20,33 @@ export class SubmissionStateComponent {
    * @returns {string}
    */
   getStateChipClassName(submissionState: string): string {
-
-    if (submissionState === 'Pending' || submissionState === 'Draft') {
-      return 'warning';
+    switch(submissionState) {
+      case SUBMISSION_STATES.Pending:
+      case SUBMISSION_STATES.Draft:
+        return 'warning';
+      case SUBMISSION_STATES.Valid:
+      case SUBMISSION_STATES.GraphValid:
+        return 'success';
+      case SUBMISSION_STATES.Validating:
+      case SUBMISSION_STATES.GraphValidating:
+      case SUBMISSION_STATES.GraphValidationRequested:
+        return 'info';
+      case SUBMISSION_STATES.Invalid:
+      case SUBMISSION_STATES.GraphInvalid:
+        return 'danger';
+      case SUBMISSION_STATES.Submitted:
+        return 'secondary';
+      case SUBMISSION_STATES.Processing:
+      case SUBMISSION_STATES.Cleanup:
+      case SUBMISSION_STATES.Archiving:
+      case SUBMISSION_STATES.Exporting:
+        return 'warning-invert';
+      case SUBMISSION_STATES.Complete:
+      case SUBMISSION_STATES.Exported:
+      case SUBMISSION_STATES.Archived:
+        return 'success-invert';
+      default:
+        return 'secondary';
     }
-
-    if (submissionState === 'Valid') {
-      return 'success';
-    }
-
-    if (submissionState === 'Validating') {
-      return 'info';
-    }
-
-    if (submissionState === 'Invalid') {
-      return 'danger';
-    }
-
-    if (submissionState === 'Submitted') {
-      return 'secondary';
-    }
-
-    if (submissionState === 'Processing'
-      || submissionState === 'Cleanup'
-      || submissionState === 'Archiving'
-      || submissionState === 'Exporting') {
-      return 'warning-invert';
-    }
-
-    if (submissionState === 'Complete' || submissionState === 'Exported' || submissionState === 'Archived') {
-      return 'success-invert';
-    }
-
-    return 'secondary';
   }
 }
