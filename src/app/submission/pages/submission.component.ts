@@ -37,7 +37,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   submissionEnvelope$: Observable<any>;
   submissionEnvelope;
   submissionState: string;
-  graphValidationState: string;
   isValid: boolean;
   isLinkingDone: boolean;
   isSubmitted: boolean;
@@ -149,7 +148,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.submissionEnvelopeId = SubmissionComponent.getSubmissionId(submissionEnvelope);
     this.isValid = this.checkIfValid(submissionEnvelope);
     this.submissionState = submissionEnvelope['submissionState'];
-    this.graphValidationState = submissionEnvelope['graphValidationState'];
     this.isSubmitted = this.isStateSubmitted(SUBMISSION_STATES[submissionEnvelope.submissionState]);
     this.submitLink = this.getLink(submissionEnvelope, 'submit');
     this.exportLink = this.getLink(submissionEnvelope, 'export');
@@ -225,9 +223,8 @@ export class SubmissionComponent implements OnInit, OnDestroy {
 
   checkIfValid(submission) {
     const status = submission['submissionState'];
-    const graphValidationState = submission['graphValidationState'];
     const VALID = 'Valid';
-    return ((status === VALID && graphValidationState === VALID) || this.isStateSubmitted(SUBMISSION_STATES[status]));
+    return (status === VALID || this.isStateSubmitted(SUBMISSION_STATES[status]));
   }
 
   setProject(project) {
@@ -396,30 +393,17 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     ].indexOf(SUBMISSION_STATES[this.submissionState]) >= 0;
   }
 
-  getGraphValidationStateColor(graphValidationState: string): string {
-    switch (graphValidationState) {
-      case 'Invalid':
-        return '#d9534f';
-      case 'Requested':
-      case 'Pending':
-      case 'Validating':
-        return 'orange';
-      default:
-        return 'inherit'
-    }
-  }
-
   triggerGraphValidation(): void {
-    const url = `${this.submissionEnvelope['_links']['self']['href']}/validateGraph`
-    this.ingestService.post(url, {}).subscribe(
+    const url = `${this.submissionEnvelope['_links']['self']['href']}/graphValidationRequestedEvent`
+    this.ingestService.put(url, {}).subscribe(
       (submissionEnvelope) => {
         // Pre-emptively set the validation state
-        this.graphValidationState = 'Requested';
+        this.submissionState = SUBMISSION_STATES.GraphValidationRequested;
       },
       err => {
         // Pre-emptively set the validation state
-        this.graphValidationState = 'Pending';
-        this.alertService.error('An error occurred while triggering validation', err)
+        this.submissionState = SUBMISSION_STATES.Valid;
+        this.alertService.error('An error occurred while triggering validation', err.message)
       }
     )
   }
