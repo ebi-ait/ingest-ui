@@ -1,7 +1,13 @@
 export enum SUBMISSION_STATES {
+  Pending = 'Pending',
   Draft = 'Draft',
+  Validating = 'Validating',
   Invalid = 'Invalid',
   Valid = 'Valid',
+  GraphValidationRequested = 'Graph validation requested',
+  GraphValidating = 'Graph validating',
+  GraphValid = 'Graph valid',
+  GraphInvalid = 'Graph invalid',
   Submitted = 'Submitted',
   Processing = 'Processing',
   Archiving = 'Archiving',
