@@ -65,6 +65,8 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   filesDataSource: MetadataDataSource<MetadataDocument>;
   archiveEntityDataSource: PaginatedDataSource<ArchiveEntity>;
 
+  SUBMISSION_STATES = SUBMISSION_STATES;
+
   private MAX_ERRORS = 1;
   submissionTab = SubmissionTab;
 
