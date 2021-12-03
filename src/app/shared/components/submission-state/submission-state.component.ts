@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {SUBMISSION_STATES} from "@shared/constants";
+import { startCase, toLower } from 'lodash';
 
 @Component({
   selector: 'app-submission-state',
@@ -11,6 +12,10 @@ export class SubmissionStateComponent {
   state: string;
 
   constructor() {
+  }
+
+  formatState(submissionState: string) {
+    return startCase(toLower(submissionState));
   }
   /**
    * Return the CSS class name corresponding to the current submission state value, for styling the submission state
