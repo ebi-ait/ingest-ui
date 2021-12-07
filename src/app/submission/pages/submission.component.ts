@@ -395,6 +395,16 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     ].indexOf(SUBMISSION_STATES[this.submissionState]) >= 0;
   }
 
+  graphValidationTabDisabled(): boolean {
+    return ![
+      SUBMISSION_STATES.Valid,
+      SUBMISSION_STATES.GraphValid,
+      SUBMISSION_STATES.GraphInvalid,
+      SUBMISSION_STATES.GraphValidating,
+      SUBMISSION_STATES.GraphValidationRequested
+    ].some(state => this.submissionState === state)
+  }
+
   triggerGraphValidation(): void {
     const url = `${this.submissionEnvelope['_links']['self']['href']}/graphValidationRequestedEvent`
     this.ingestService.put(url, {}).subscribe(

@@ -126,6 +126,7 @@
     <mat-tab
       label="Validate"
       *ngIf="displayValidateAndSubmitTabs()"
+      [disabled]="!graphValidationTabDisabled()"
     >
       <h3 class="vf-u-margin__top--xxl vf-text vf-text-heading--4">Graph Validation</h3>
 
