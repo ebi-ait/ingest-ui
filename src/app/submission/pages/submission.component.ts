@@ -403,8 +403,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
         this.submissionState = SUBMISSION_STATES.GraphValidationRequested;
       },
       err => {
-        // Pre-emptively set the validation state
-        this.submissionState = SUBMISSION_STATES.Valid;
         this.alertService.error('An error occurred while triggering validation', err.message)
       }
     )
