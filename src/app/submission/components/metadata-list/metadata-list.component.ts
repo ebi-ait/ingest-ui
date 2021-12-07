@@ -45,16 +45,14 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   rows: any[];
   expandAll: boolean;
   validationStates: string[];
+  METADATA_VALIDATION_STATES = METADATA_VALIDATION_STATES;
 
   constructor(private ingestService: IngestService,
               private flattenService: FlattenService,
               private schemaService: SchemaService,
               private loaderService: LoaderService,
               public dialog: MatDialog) {
-    this.validationStates = Object.values(METADATA_VALIDATION_STATES)
-      // This can be removed in dcp-546
-      // Currently there is no graph invalid state in core
-      .filter(state => state !== METADATA_VALIDATION_STATES.GraphInvalid);
+    this.validationStates = Object.values(METADATA_VALIDATION_STATES);
   }
 
   ngOnDestroy() {
