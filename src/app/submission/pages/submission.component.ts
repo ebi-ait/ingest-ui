@@ -225,7 +225,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
 
   checkIfValid(submission) {
     const status = submission['submissionState'];
-    const VALID = 'Valid';
+    const VALID = 'Graph valid';
     return (status === VALID || this.isStateSubmitted(SUBMISSION_STATES[status]));
   }
 

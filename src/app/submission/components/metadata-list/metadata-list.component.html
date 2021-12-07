@@ -69,7 +69,7 @@
     <!--Row Detail Template -->
     <ngx-datatable-row-detail [rowHeight]="'auto'" #myDetailRow>
       <ng-template let-rowIndex="rowIndex" let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
-        <ng-container *ngIf="row['validationState'] === 'Invalid' || row['validationState'] === 'Valid'">
+        <ng-container *ngIf="row['validationState'] === 'Metadata invalid' || row['validationState'] === 'Metadata valid'">
           <h3>Metadata Validation Report</h3>
           <!--Metadata validation-->
           <div style="padding-left:35px;" *ngIf="row['validationState'] === 'Invalid'">
@@ -77,7 +77,7 @@
               <span class="vf-u-text-color--red" title="{{error}}">{{error}}</span><br>
             </ng-container>
           </div>
-          <div style="padding-left:35px;" *ngIf="row['validationState'] === 'Valid'">
+          <div style="padding-left:35px;" *ngIf="row['validationState'] === 'Metadata valid'">
             <span class="vf-u-text-color--green">{{getDefaultValidMessage()}}</span>
           </div>
           <!--Graph validation-->

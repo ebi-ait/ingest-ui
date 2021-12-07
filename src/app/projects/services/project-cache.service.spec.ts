@@ -35,7 +35,7 @@ describe('ProjectCacheService', () => {
       uuid: {uuid: 'test123'},
       events: [],
       dcpVersion: '123',
-      validationState: 'VALID',
+      validationState: 'METADATA VALID',
       validationErrors: [],
       isUpdate: false
     };

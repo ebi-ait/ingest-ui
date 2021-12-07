@@ -200,7 +200,7 @@ export class ProjectComponent implements OnInit {
   canSubmit(project: Project) {
     return this.userIsWrangler &&
       !project.hasOpenSubmission &&
-      project.validationState.toUpperCase() !== 'INVALID' &&
+      project.validationState.toUpperCase() !== 'METADATA INVALID' &&
       !(project.validationErrors && project.validationErrors.length > 0);
   }
 
