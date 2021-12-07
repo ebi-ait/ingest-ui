@@ -69,7 +69,7 @@
     <!--Row Detail Template -->
     <ngx-datatable-row-detail [rowHeight]="'auto'" #myDetailRow>
       <ng-template let-rowIndex="rowIndex" let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
-        <ng-container *ngIf="row['validationState'] === 'Metadata invalid' || row['validationState'] === 'Metadata valid'">
+        <ng-container *ngIf="row['validationState'] === METADATA_VALIDATION_STATES.Valid || row['validationState'] === METADATA_VALIDATION_STATES.Invalid">
           <h3>Metadata Validation Report</h3>
           <!--Metadata validation-->
           <div style="padding-left:35px;" *ngIf="row['validationState'] === 'Invalid'">

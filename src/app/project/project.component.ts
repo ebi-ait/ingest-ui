@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {SUBMISSION_STATES} from "@shared/constants";
 import {MetadataDataSource} from '@shared/data-sources/metadata-data-source';
 import {ListResult} from '@shared/models/hateoas';
 import {MetadataDocument} from '@shared/models/metadata-document';
@@ -200,7 +201,7 @@ export class ProjectComponent implements OnInit {
   canSubmit(project: Project) {
     return this.userIsWrangler &&
       !project.hasOpenSubmission &&
-      project.validationState.toUpperCase() !== 'METADATA INVALID' &&
+      project.validationState.toUpperCase().replace(' ', "_") !== SUBMISSION_STATES.GraphValid &&
       !(project.validationErrors && project.validationErrors.length > 0);
   }
 
