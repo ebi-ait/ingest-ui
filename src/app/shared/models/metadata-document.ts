@@ -13,8 +13,6 @@ export interface MetadataDocument {
   validationErrors: any[];
   // Present on metadata entities except submission
   graphValidationErrors?: string[];
-  // present on submission
-  graphValidationState?: string[];
   isUpdate: boolean;
   _links: object;
 }

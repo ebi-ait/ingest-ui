@@ -125,23 +125,20 @@
 
     <mat-tab
       label="Validate"
-      [disabled]="submissionState !== 'Valid'"
       *ngIf="displayValidateAndSubmitTabs()"
+      [disabled]="!graphValidationTabDisabled()"
     >
       <h3 class="vf-u-margin__top--xxl vf-text vf-text-heading--4">Graph Validation</h3>
 
-      <ng-container *ngIf="graphValidationState !== 'Valid'; else graphValid">
+      <ng-container *ngIf="submissionState !== SUBMISSION_STATES.GraphValid; else graphValid">
         <p>In order to finalize your submission, you must validate the graph, or the linking between metadata entities.</p>
         <button
-          *ngIf="graphValidationState !== 'Validating' && graphValidationState !== 'Requested'"
+          *ngIf="submissionState !== SUBMISSION_STATES.GraphValidating && submissionState !== SUBMISSION_STATES.GraphValidationRequested"
           class="vf-button vf-button--primary  vf-button--sm"
           (click)="triggerGraphValidation()"
         >
           Validate Submission
         </button>
-        <p>
-          Graph Validation State: <span [style.color]="getGraphValidationStateColor(graphValidationState)">{{graphValidationState}} </span>
-        </p>
       </ng-container>
 
       <ng-template #graphValid>
