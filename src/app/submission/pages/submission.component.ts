@@ -353,7 +353,12 @@ export class SubmissionComponent implements OnInit, OnDestroy {
         return;
       }
       this[`${type}DataSource`] = new MetadataDataSource<any>(
-        (params) => this.ingestService.fetchSubmissionData(this.submissionEnvelopeId, type, params),
+        (params) => this.ingestService.fetchSubmissionData({
+          submissionId: this.submissionEnvelopeId,
+          entityType: type,
+          filterState: params.filterState,
+          sort: params.sort
+        }),
         type
       );
     });
