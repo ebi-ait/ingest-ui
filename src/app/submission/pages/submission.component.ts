@@ -100,7 +100,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
 
   connectSubmissionEnvelope() {
     this.submissionDataSource = new SimpleDataSource<SubmissionEnvelope>(this.submissionEnvelopeEndpoint.bind(this));
-    this.submissionDataSource.connect(true, 15000).subscribe(submissionEnvelope => {
+    this.submissionDataSource.connect(true, 5000).subscribe(submissionEnvelope => {
       this.initSubmissionAttributes(submissionEnvelope);
       this.displaySubmissionErrors(submissionEnvelope);
       this.checkFromManifestIfLinkingIsDone(submissionEnvelope);
