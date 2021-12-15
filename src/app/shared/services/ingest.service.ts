@@ -6,7 +6,7 @@ import {map} from 'rxjs/operators';
 
 import {environment} from '@environments/environment';
 import {Account} from '@app/core/account';
-import {INVALID_FILE_TYPES, INVALID_FILE_TYPES_AND_CODES} from '../constants';
+import {INVALID_FILE_TYPES, INVALID_FILE_TYPES_AND_CODES, METADATA_VALIDATION_STATES} from '../constants';
 import {ArchiveEntity} from '../models/archiveEntity';
 import {ArchiveSubmission} from '../models/archiveSubmission';
 import {Criteria} from '../models/criteria';
@@ -229,6 +229,8 @@ export class IngestService {
     let url = `${this.API_URL}/submissionEnvelopes/${submissionId}/${entityType}`;
     const submission_url = `${this.API_URL}/submissionEnvelopes/${submissionId}`;
 
+    // THIS IS A MESS. CLEAN IT UP!!!!!
+
     // IMPORTANT! The order of these if statements matters
     // The url is overridden in each but params will be preserved.
     // E.g. params.sort can be added and used in the url for filtering as well
@@ -240,17 +242,20 @@ export class IngestService {
       params['sort'] = `${sort['column']},${sort['direction']}`;
     }
 
-    if (params.filterState && params.fileValidationTypeFilter) {
-      throw new Error('Cannot have both filterState and fileValidationTypeFilter.');
-    }
     const humanFriendlyTypes = INVALID_FILE_TYPES_AND_CODES.map(a => a.humanFriendly);
-    if (params.filterState && !humanFriendlyTypes.includes(params.filterState)) {
+
+    if (params.filterState === METADATA_VALIDATION_STATES.GraphInvalid) {
+      url = `${this.API_URL}/${entityType}/search/findBySubmissionIdWithGraphValidationErrors`;
+      params['envelopeId'] = submissionId;
+    }
+
+    else if (params.filterState && !humanFriendlyTypes.includes(params.filterState)) {
       url = `${this.API_URL}/${entityType}/search/findBySubmissionEnvelopeAndValidationState`;
       params['envelopeUri'] = encodeURIComponent(submission_url);
       params['state'] = params.filterState.toUpperCase();
     }
 
-    if (params.filterState && humanFriendlyTypes.includes(params.filterState)) {
+    else if (params.filterState && humanFriendlyTypes.includes(params.filterState)) {
       if (entityType !== 'files') {
         throw new Error('Only files can be filtered by validation type.');
       }
