@@ -1,12 +1,13 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {FetchSubmissionDataOptions} from "@shared/models/fetch-submission-data-options";
 import values from 'lodash/values';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 import {environment} from '@environments/environment';
 import {Account} from '@app/core/account';
-import {INVALID_FILE_TYPES, INVALID_FILE_TYPES_AND_CODES} from '../constants';
+import {INVALID_FILE_TYPES, INVALID_FILE_TYPES_AND_CODES, METADATA_VALIDATION_STATES} from '../constants';
 import {ArchiveEntity} from '../models/archiveEntity';
 import {ArchiveSubmission} from '../models/archiveSubmission';
 import {Criteria} from '../models/criteria';
@@ -225,49 +226,48 @@ export class IngestService {
       .pipe(map(data => data._embedded && data._embedded.projects ? data._embedded.projects[0] : null));
   }
 
-  public fetchSubmissionData(submissionId, entityType, params): Observable<PagedData<MetadataDocument>> {
-    let url = `${this.API_URL}/submissionEnvelopes/${submissionId}/${entityType}`;
-    const submission_url = `${this.API_URL}/submissionEnvelopes/${submissionId}`;
+  public fetchSubmissionData(options: FetchSubmissionDataOptions): Observable<PagedData<MetadataDocument>> {
+    let url = `${this.API_URL}/submissionEnvelopes/${options.submissionId}/${options.entityType}`;
+    const submission_url = `${this.API_URL}/submissionEnvelopes/${options.submissionId}`;
+    const params = {};
 
-    // IMPORTANT! The order of these if statements matters
-    // The url is overridden in each but params will be preserved.
-    // E.g. params.sort can be added and used in the url for filtering as well
-    // This might not be the best way to do this but with the varying endpoints, it's okay
-    const sort = params['sort'];
-    if (sort) {
-      url = `${this.API_URL}/${entityType}/search/findBySubmissionEnvelope`;
+    // Depending on the options given, a different endpoint is used
+    // This function abstracts away the logic of using different endpoints to filter by different means
+    if (options.sort) {
+      url = `${this.API_URL}/${options.submissionId}/search/findBySubmissionEnvelope`;
       params['envelopeUri'] = encodeURIComponent(submission_url);
-      params['sort'] = `${sort['column']},${sort['direction']}`;
+      params['sort'] = `${options.sort.column},${options.sort.direction}`;
     }
 
-    if (params.filterState && params.fileValidationTypeFilter) {
-      throw new Error('Cannot have both filterState and fileValidationTypeFilter.');
+    const humanFriendlyTypes: string[] = INVALID_FILE_TYPES_AND_CODES.map(a => a.humanFriendly);
+
+    if (options.filterState === METADATA_VALIDATION_STATES.GraphInvalid) {
+      url = `${this.API_URL}/${options.entityType}/search/findBySubmissionIdWithGraphValidationErrors`;
+      params['envelopeId'] = options.submissionId;
+      delete params['envelopeUri']; // Don't need this if has been set
     }
-    const humanFriendlyTypes = INVALID_FILE_TYPES_AND_CODES.map(a => a.humanFriendly);
-    if (params.filterState && !humanFriendlyTypes.includes(params.filterState)) {
-      url = `${this.API_URL}/${entityType}/search/findBySubmissionEnvelopeAndValidationState`;
+    else if (options.filterState && !humanFriendlyTypes.includes(options.filterState)) {
+      url = `${this.API_URL}/${options.entityType}/search/findBySubmissionEnvelopeAndValidationState`;
       params['envelopeUri'] = encodeURIComponent(submission_url);
-      params['state'] = params.filterState.toUpperCase();
+      params['state'] = options.filterState.toUpperCase();
     }
-
-    if (params.filterState && humanFriendlyTypes.includes(params.filterState)) {
-      if (entityType !== 'files') {
+    else if (options.filterState) {
+      if (options.entityType !== 'files') {
         throw new Error('Only files can be filtered by validation type.');
       }
 
       url = `${this.API_URL}/files/search/findBySubmissionEnvelopeIdAndErrorType`;
-      const fileValidationTypeFilter = INVALID_FILE_TYPES_AND_CODES.find(type => type.humanFriendly === params.filterState).code;
-      delete params.filterState; // Don't want to include this in the request
-      params.errorType = fileValidationTypeFilter;
-      params.id = submissionId;
+      const fileValidationTypeFilter = INVALID_FILE_TYPES_AND_CODES.find(type => type.humanFriendly === options.filterState).code;
+      params['errorType'] = fileValidationTypeFilter;
+      params['id'] = options.submissionId;
     }
 
-    return this.http.get<ListResult<MetadataDocument>>(url, {params: params})
+    return this.http.get<ListResult<MetadataDocument>>(url, {params})
       .pipe(map(data => {
         const pagedData: PagedData<MetadataDocument> = {data: [], page: undefined};
-        if (data._embedded && data._embedded[entityType]) {
-          pagedData.data = values(data._embedded[entityType]);
-          pagedData.data = IngestService.reduceColumnsForBundleManifests(entityType, pagedData.data);
+        if (data._embedded && data._embedded[options.entityType]) {
+          pagedData.data = values(data._embedded[options.entityType]);
+          pagedData.data = IngestService.reduceColumnsForBundleManifests(options.entityType, pagedData.data);
         } else {
           pagedData.data = [];
         }

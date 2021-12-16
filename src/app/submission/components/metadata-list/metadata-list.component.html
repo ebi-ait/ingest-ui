@@ -72,12 +72,12 @@
         <ng-container *ngIf="row['validationState'] === METADATA_VALIDATION_STATES.Valid || row['validationState'] === METADATA_VALIDATION_STATES.Invalid">
           <h3>Metadata Validation Report</h3>
           <!--Metadata validation-->
-          <div style="padding-left:35px;" *ngIf="row['validationState'] === 'Invalid'">
+          <div style="padding-left:35px;" *ngIf="row['validationState'] === METADATA_VALIDATION_STATES.Invalid">
             <ng-container *ngFor="let error of getValidationErrors(row)">
               <span class="vf-u-text-color--red" title="{{error}}">{{error}}</span><br>
             </ng-container>
           </div>
-          <div style="padding-left:35px;" *ngIf="row['validationState'] === 'Metadata valid'">
+          <div style="padding-left:35px;" *ngIf="row['validationState'] === METADATA_VALIDATION_STATES.Valid">
             <span class="vf-u-text-color--green">{{getDefaultValidMessage()}}</span>
           </div>
           <!--Graph validation-->
@@ -128,9 +128,9 @@
     </ngx-datatable-column>
 
     <!--Graph Validation State Column-->
-    <ngx-datatable-column name="graph state" [width]="'130'">
+    <ngx-datatable-column name="causes invalid graph" [width]="'130'">
       <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-        <span *ngIf="getGraphValidationErrors(row).length">Invalid</span>
+        <span *ngIf="getGraphValidationErrors(row).length">Yes</span>
         <span *ngIf="!getGraphValidationErrors(row).length">-</span>
       </ng-template>
     </ngx-datatable-column>

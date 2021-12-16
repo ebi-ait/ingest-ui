@@ -33,7 +33,8 @@ export enum METADATA_VALIDATION_STATES {
   Draft = 'Draft',
   Validating = 'Validating',
   Valid = 'Valid',
-  Invalid = 'Invalid'
+  Invalid = 'Invalid',
+  GraphInvalid = 'Causes Invalid Graph'
 }
 
 export enum INVALID_FILE_TYPES {
