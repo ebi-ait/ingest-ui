@@ -134,7 +134,8 @@
         <p>In order to finalize your submission, you must validate the graph, or the linking between metadata entities.</p>
         <button
           *ngIf="submissionState !== SUBMISSION_STATES.GraphValidating && submissionState !== SUBMISSION_STATES.GraphValidationRequested"
-          class="vf-button vf-button--primary  vf-button--sm"
+          class="vf-button {{ graphValidationButtonDisabled ? 'vf-button--tertiary' : 'vf-button--primary' }} vf-button--sm"
+          [disabled]="graphValidationButtonDisabled"
           (click)="triggerGraphValidation()"
         >
           Validate Submission
