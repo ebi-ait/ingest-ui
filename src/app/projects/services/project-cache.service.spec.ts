@@ -1,5 +1,6 @@
 import {TestBed} from '@angular/core/testing';
 import {AaiService} from '@app/aai/aai.service';
+import {SUBMISSION_STATES} from "@shared/constants";
 import {Project} from '@shared/models/project';
 import {of} from 'rxjs';
 import {ProjectCacheService} from './project-cache.service';
@@ -35,7 +36,7 @@ describe('ProjectCacheService', () => {
       uuid: {uuid: 'test123'},
       events: [],
       dcpVersion: '123',
-      validationState: 'VALID',
+      validationState: SUBMISSION_STATES.Valid,
       validationErrors: [],
       isUpdate: false
     };

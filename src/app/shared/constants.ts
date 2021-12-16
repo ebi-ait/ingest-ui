@@ -1,7 +1,13 @@
 export enum SUBMISSION_STATES {
+  Pending = 'Pending',
   Draft = 'Draft',
-  Invalid = 'Invalid',
-  Valid = 'Valid',
+  Validating = 'Metadata validating',
+  Invalid = 'Metadata invalid',
+  Valid = 'Metadata valid',
+  GraphValidationRequested = 'Graph validation requested',
+  GraphValidating = 'Graph validating',
+  GraphValid = 'Graph valid',
+  GraphInvalid = 'Graph invalid',
   Submitted = 'Submitted',
   Processing = 'Processing',
   Archiving = 'Archiving',
@@ -28,7 +34,7 @@ export enum METADATA_VALIDATION_STATES {
   Validating = 'Validating',
   Valid = 'Valid',
   Invalid = 'Invalid',
-  GraphInvalid = 'Invalid Graph'
+  GraphInvalid = 'Causes Invalid Graph'
 }
 
 export enum INVALID_FILE_TYPES {

@@ -25,6 +25,8 @@ enum SubmissionTab {
   FILES = 3
 }
 
+const SUBMISSION_POLL_INTERVAL = 5000;
+
 @Component({
   selector: 'app-submission',
   templateUrl: './submission.component.html',
@@ -37,7 +39,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   submissionEnvelope$: Observable<any>;
   submissionEnvelope;
   submissionState: string;
-  graphValidationState: string;
   isValid: boolean;
   isLinkingDone: boolean;
   isSubmitted: boolean;
@@ -55,6 +56,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   selectedIndex: any = 0;
   validationSummary: SubmissionSummary;
   isLoading: boolean;
+  graphValidationButtonDisabled = false;
 
   submissionDataSource: SimpleDataSource<SubmissionEnvelope>;
   projectDataSource: SimpleDataSource<Project>;
@@ -65,6 +67,8 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   bundleManifestsDataSource: MetadataDataSource<MetadataDocument>;
   filesDataSource: MetadataDataSource<MetadataDocument>;
   archiveEntityDataSource: PaginatedDataSource<ArchiveEntity>;
+
+  SUBMISSION_STATES = SUBMISSION_STATES;
 
   private MAX_ERRORS = 1;
   submissionTab = SubmissionTab;
@@ -99,7 +103,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
 
   connectSubmissionEnvelope() {
     this.submissionDataSource = new SimpleDataSource<SubmissionEnvelope>(this.submissionEnvelopeEndpoint.bind(this));
-    this.submissionDataSource.connect(true, 15000).subscribe(submissionEnvelope => {
+    this.submissionDataSource.connect(true, SUBMISSION_POLL_INTERVAL).subscribe(submissionEnvelope => {
       this.initSubmissionAttributes(submissionEnvelope);
       this.displaySubmissionErrors(submissionEnvelope);
       this.checkFromManifestIfLinkingIsDone(submissionEnvelope);
@@ -149,7 +153,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.submissionEnvelopeId = SubmissionComponent.getSubmissionId(submissionEnvelope);
     this.isValid = this.checkIfValid(submissionEnvelope);
     this.submissionState = submissionEnvelope['submissionState'];
-    this.graphValidationState = submissionEnvelope['graphValidationState'];
     this.isSubmitted = this.isStateSubmitted(SUBMISSION_STATES[submissionEnvelope.submissionState]);
     this.submitLink = this.getLink(submissionEnvelope, 'submit');
     this.exportLink = this.getLink(submissionEnvelope, 'export');
@@ -225,9 +228,8 @@ export class SubmissionComponent implements OnInit, OnDestroy {
 
   checkIfValid(submission) {
     const status = submission['submissionState'];
-    const graphValidationState = submission['graphValidationState'];
-    const VALID = 'Valid';
-    return ((status === VALID && graphValidationState === VALID) || this.isStateSubmitted(SUBMISSION_STATES[status]));
+    const VALID = 'Graph valid';
+    return (status === VALID || this.isStateSubmitted(SUBMISSION_STATES[status]));
   }
 
   setProject(project) {
@@ -354,7 +356,12 @@ export class SubmissionComponent implements OnInit, OnDestroy {
         return;
       }
       this[`${type}DataSource`] = new MetadataDataSource<any>(
-        (params) => this.ingestService.fetchSubmissionData(this.submissionEnvelopeId, type, params),
+        (params) => this.ingestService.fetchSubmissionData({
+          submissionId: this.submissionEnvelopeId,
+          entityType: type,
+          filterState: params.filterState,
+          sort: params.sort
+        }),
         type
       );
     });
@@ -396,30 +403,26 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     ].indexOf(SUBMISSION_STATES[this.submissionState]) >= 0;
   }
 
-  getGraphValidationStateColor(graphValidationState: string): string {
-    switch (graphValidationState) {
-      case 'Invalid':
-        return '#d9534f';
-      case 'Requested':
-      case 'Pending':
-      case 'Validating':
-        return 'orange';
-      default:
-        return 'inherit'
-    }
+  graphValidationTabDisabled(): boolean {
+    return ![
+      SUBMISSION_STATES.Valid,
+      SUBMISSION_STATES.GraphValid,
+      SUBMISSION_STATES.GraphInvalid,
+      SUBMISSION_STATES.GraphValidating,
+      SUBMISSION_STATES.GraphValidationRequested
+    ].some(state => this.submissionState === state)
   }
 
   triggerGraphValidation(): void {
-    const url = `${this.submissionEnvelope['_links']['self']['href']}/validateGraph`
-    this.ingestService.post(url, {}).subscribe(
+    const url = `${this.submissionEnvelope['_links']['self']['href']}/graphValidationRequestedEvent`
+    this.ingestService.put(url, {}).subscribe(
       (submissionEnvelope) => {
-        // Pre-emptively set the validation state
-        this.graphValidationState = 'Requested';
+        this.graphValidationButtonDisabled = true;
+        setTimeout(() => this.graphValidationButtonDisabled = false, SUBMISSION_POLL_INTERVAL * 4/3)
       },
       err => {
-        // Pre-emptively set the validation state
-        this.graphValidationState = 'Pending';
-        this.alertService.error('An error occurred while triggering validation', err)
+        this.alertService.error('An error occurred while triggering validation', err.message);
+        this.graphValidationButtonDisabled = false;
       }
     )
   }
