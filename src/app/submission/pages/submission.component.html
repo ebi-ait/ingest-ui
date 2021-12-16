@@ -45,73 +45,7 @@
   </div>
 
   <div>
-    <div *ngIf="validationSummary && validationSummary.totalInvalid > 0">
-      <p>Your validation returned <span class="error-text">{{validationSummary.totalInvalid}} error(s)</span>. Review
-        and fix them below.</p>
-
-      <ul id="validation-error-types">
-        <li *ngIf="validationSummary.invalidBiomaterials > 0">
-          Biomaterials:
-          <a href="javascript: void(0)"
-             (click)="navigateToTab(submissionTab.BIOMATERIALS, { dataSource: biomaterialsDataSource, filterState: 'Invalid'})">
-            {{validationSummary.invalidBiomaterials}} error(s)
-          </a>
-        </li>
-        <li *ngIf="validationSummary.invalidProcesses > 0">
-          Processes:
-          <a href="javascript: void(0)"
-             (click)="navigateToTab(submissionTab.PROCESSES, { dataSource: processesDataSource, filterState: 'Invalid' })">
-            {{validationSummary.invalidProcesses}} error(s)
-          </a>
-        </li>
-        <li *ngIf="validationSummary.invalidProtocols > 0">
-          Protocols:
-          <a href="javascript: void(0)"
-             (click)="navigateToTab(submissionTab.PROTOCOLS, { dataSource: protocolsDataSource, filterState: 'Invalid' })">
-            {{validationSummary.invalidProtocols}} error(s)
-          </a>
-        </li>
-        <li *ngIf="validationSummary.invalidFiles > 0">
-          Data files:
-          <ng-container *ngIf="validationSummary.fileMetadataErrors">
-            <a href="javascript: void(0)"
-               (click)="navigateToTab(submissionTab.FILES, { dataSource: filesDataSource, filterState: 'Invalid Metadata'})">
-              {{validationSummary.fileMetadataErrors}}
-              <ng-container [ngPlural]="validationSummary.fileMetadataErrors">
-                <ng-template ngPluralCase="one">metadata error</ng-template>
-                <ng-template ngPluralCase="other">metadata errors</ng-template>
-              </ng-container>
-            </a>
-          </ng-container>
-          <ng-container *ngIf="validationSummary.fileMetadataErrors && validationSummary.fileErrors">,</ng-container>
-          <ng-container *ngIf="validationSummary.fileErrors">
-            <a href="javascript: void(0)"
-               (click)="navigateToTab(submissionTab.FILES, { dataSource: filesDataSource, filterState: 'Invalid File'})">
-              {{validationSummary.fileErrors}}
-              <ng-container [ngPlural]="validationSummary.fileErrors">
-                <ng-template ngPluralCase="one">file error</ng-template>
-                <ng-template ngPluralCase="other">file errors</ng-template>
-              </ng-container>
-            </a>
-          </ng-container>
-          <ng-container
-            *ngIf="(validationSummary.fileMetadataErrors || validationSummary.fileErrors) && validationSummary.missingFiles">
-            ,
-          </ng-container>
-          <ng-container *ngIf="validationSummary.missingFiles">
-            <a href="javascript: void(0)"
-               (click)="navigateToTab(submissionTab.FILES, { dataSource: filesDataSource, filterState: 'Not Uploaded'})">
-              {{validationSummary.missingFiles}}
-              <ng-container [ngPlural]="validationSummary.missingFiles">
-                <ng-template ngPluralCase="one">file missing</ng-template>
-                <ng-template ngPluralCase="other">files missing</ng-template>
-              </ng-container>
-            </a>
-          </ng-container>
-        </li>
-      </ul>
-    </div>
-
+    <app-validation-summary [summary]="validationSummary" (errorClick)="onErrorClick($event)"></app-validation-summary>
     <div *ngIf=" project?.validationErrors && project?.validationErrors.length > 0">
       <span class="vf-text-body vf-text-body--3 vf-u-text-color--red">Project is Invalid. Please go back and edit the project.</span><br/>
       <ng-container *ngFor="let error of project?.validationErrors">
@@ -191,29 +125,21 @@
 
     <mat-tab
       label="Validate"
-      [disabled]="submissionState !== 'Valid'"
       *ngIf="displayValidateAndSubmitTabs()"
+      [disabled]="graphValidationTabDisabled()"
     >
       <h3 class="vf-u-margin__top--xxl vf-text vf-text-heading--4">Graph Validation</h3>
 
-      <ng-container *ngIf="graphValidationState !== 'Valid'; else graphValid">
+      <ng-container *ngIf="submissionState !== SUBMISSION_STATES.GraphValid; else graphValid">
         <p>In order to finalize your submission, you must validate the graph, or the linking between metadata entities.</p>
         <button
-          *ngIf="graphValidationState !== 'Validating' && graphValidationState !== 'Requested'"
-          class="vf-button vf-button--primary  vf-button--sm"
+          *ngIf="submissionState !== SUBMISSION_STATES.GraphValidating && submissionState !== SUBMISSION_STATES.GraphValidationRequested"
+          class="vf-button {{ graphValidationButtonDisabled ? 'vf-button--tertiary' : 'vf-button--primary' }} vf-button--sm"
+          [disabled]="graphValidationButtonDisabled"
           (click)="triggerGraphValidation()"
         >
           Validate Submission
         </button>
-        <p>
-          Graph Validation State: <span [style.color]="getGraphValidationStateColor(graphValidationState)">{{graphValidationState}} </span>
-        </p>
-        <ng-container
-          *ngIf="graphValidationState === 'Invalid' && graphValidationErrorMessage && graphValidationErrorMessage.length > 0"
-        >
-          <h5 class="vf-u-margin__top--xxl vf-text vf-text-heading--5">Errors</h5>
-          <p [style.color]="getGraphValidationStateColor(graphValidationState)">{{graphValidationErrorMessage}}</p>
-        </ng-container>
       </ng-container>
 
       <ng-template #graphValid>

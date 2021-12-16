@@ -11,6 +11,8 @@ export interface MetadataDocument {
   accession?: any;
   validationState: string;
   validationErrors: any[];
+  // Present on metadata entities except submission
+  graphValidationErrors?: string[];
   isUpdate: boolean;
   _links: object;
 }

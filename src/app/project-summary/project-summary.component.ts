@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {MetadataFormConfig} from '@metadata-schema-form/models/metadata-form-config';
+import {SUBMISSION_STATES} from "@shared/constants";
 import {Project} from '@shared/models/project';
 import {AlertService} from '@shared/services/alert.service';
 import {IngestService} from '@shared/services/ingest.service';
@@ -63,7 +64,7 @@ export class ProjectSummaryComponent implements OnInit {
     if (!this.project) {
       return null;
     }
-    if (this.project.validationState !== 'Invalid') {
+    if (this.project.validationState !== SUBMISSION_STATES.Invalid) {
       return null;
     }
     const errorArray = [];
