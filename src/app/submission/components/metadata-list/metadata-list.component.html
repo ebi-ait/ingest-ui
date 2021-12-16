@@ -72,12 +72,12 @@
         <ng-container *ngIf="row['validationState'] === METADATA_VALIDATION_STATES.Valid || row['validationState'] === METADATA_VALIDATION_STATES.Invalid">
           <h3>Metadata Validation Report</h3>
           <!--Metadata validation-->
-          <div style="padding-left:35px;" *ngIf="row['validationState'] === 'Invalid'">
+          <div style="padding-left:35px;" *ngIf="row['validationState'] === METADATA_VALIDATION_STATES.Invalid">
             <ng-container *ngFor="let error of getValidationErrors(row)">
               <span class="vf-u-text-color--red" title="{{error}}">{{error}}</span><br>
             </ng-container>
           </div>
-          <div style="padding-left:35px;" *ngIf="row['validationState'] === 'Metadata valid'">
+          <div style="padding-left:35px;" *ngIf="row['validationState'] === METADATA_VALIDATION_STATES.Valid">
             <span class="vf-u-text-color--green">{{getDefaultValidMessage()}}</span>
           </div>
           <!--Graph validation-->
