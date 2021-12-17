@@ -8,7 +8,7 @@ describe('Broker Service', () => {
   let service: BrokerService;
   let httpTestingController: HttpTestingController;
   let httpClient: HttpClient;
-  const api_url = 'http://localhost:8080';
+  const api_url = 'http://localhost:5000';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -35,38 +35,39 @@ describe('Broker Service', () => {
 
     it(`should get response`, (done) => {
 
-      const body = new Blob([],
+      const blob = new Blob([],
         {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-      const response: HttpResponse<Blob> = new HttpResponse({body: body, status: 200});
-      const mock_return = {
-        'data': response.body,
-        'filename': 'filename.xls'
-      };
-
-      const xls = new Blob([],
-        {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-      service.downloadSpreadsheet(submissionUuid)
+        service.downloadSpreadsheet(submissionUuid)
             .subscribe(res => {
-              expect(res.data).toEqual(body);
+              expect(res.data).toEqual(blob);
               done();
             });
+        const req = httpTestingController.expectOne(`${api_url}/submissions/${submissionUuid}/spreadsheet`);
 
-      const req = httpTestingController.expectOne(`${api_url}/submissions/${submissionUuid}/spreadsheet`);
+        req.flush(blob, {
+          headers: { 'Content-Disposition': 'attachment; filename=myfile.xls' },
+          status: 200,
+          statusText: 'OK'
+        });
+
       expect(req.request.method).toEqual('GET');
       expect(req.request.body).toBeNull();
-      req.flush(mock_return);
-      httpTestingController.verify();
+      
     });
 
     it(`should timeout`, (done) => {
       service.downloadSpreadsheet(submissionUuid)
-            .subscribe((res: any) => {
-              expect(res.failure.error.type).toBe('Timeout');
-              done();
-            });
+      .subscribe(res => {},
+        err => {
+          expect(err.statusText).toEqual('Request Timeout');
+          done();
+        });
+
       let req = httpTestingController.expectOne(`${api_url}/submissions/${submissionUuid}/spreadsheet`);
-      req.error(new ErrorEvent('Timeout'));
-      httpTestingController.verify();
+      req.flush(null, {
+        status: 408,
+        statusText: 'Request Timeout'
+      });
     });
 
   });
