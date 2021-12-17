@@ -1,4 +1,4 @@
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, convertToParamMap, Router} from '@angular/router';
 import {SubmissionEnvelope} from '@shared/models/submissionEnvelope';
 import {AlertService} from '@shared/services/alert.service';
 import {BrokerService} from '@shared/services/broker.service';
@@ -8,7 +8,7 @@ import {SubmissionComponent} from './submission.component';
 import SpyObj = jasmine.SpyObj;
 import {CookieService} from "ngx-cookie-service";
 import {HttpResponse} from "@angular/common/http";
-import {Observable, of, throwError, TimeoutError} from "rxjs";
+import {of, throwError, TimeoutError} from "rxjs";
 
 
 describe('SubmissionComponent', () => {
@@ -18,19 +18,24 @@ describe('SubmissionComponent', () => {
   let brokerSvc: SpyObj<BrokerService>;
   let cookieSvc: SpyObj<CookieService>;
   let activatedRoute: ActivatedRoute;
-  let router: Router;
+  let router: SpyObj<Router>;
   let loaderSvc: SpyObj<LoaderService>;
 
   beforeEach(() => {
-    ingestSvc = jasmine.createSpyObj('IngestService', ['getUserAccount']);
+    ingestSvc = jasmine.createSpyObj('IngestService', ['getUserAccount', 'getArchiveSubmission']);
     alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error']);
     cookieSvc = jasmine.createSpyObj('CookieService', ['set', 'check']);
     loaderSvc = jasmine.createSpyObj('LoaderService', ['display']);
     brokerSvc = jasmine.createSpyObj('BrokerService', ['downloadSpreadsheet']);
-    activatedRoute = {} as ActivatedRoute;
-    router = {} as Router;
+    router = jasmine.createSpyObj('Router', ['navigate']);
 
+    activatedRoute = {
+      queryParamMap: of(convertToParamMap({id: 1}))
+    } as ActivatedRoute;
+
+    ingestSvc.getArchiveSubmission.and.returnValue(of(null));
     submissionComponent = new SubmissionComponent(alertSvc, ingestSvc, brokerSvc, activatedRoute, router, loaderSvc, cookieSvc);
+    submissionComponent.connectSubmissionEnvelope = jasmine.createSpy();
   });
 
   it('should be created', () => {
@@ -39,7 +44,14 @@ describe('SubmissionComponent', () => {
 
   it('should disable download button when cookie is set', () => {
     cookieSvc.check.and.returnValue(true);
-    expect(submissionComponent).toBeTruthy();
+    submissionComponent.ngOnInit();
+    expect(submissionComponent.downloadDisabled).toBeTrue();
+  });
+
+  it('should enable download button when cookie is not set', () => {
+    cookieSvc.check.and.returnValue(false);
+    submissionComponent.ngOnInit();
+    expect(submissionComponent.downloadDisabled).toBeFalse();
   });
 
   describe('displaySubmissionErrors', () => {
