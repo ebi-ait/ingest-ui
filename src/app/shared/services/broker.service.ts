@@ -21,8 +21,7 @@ export class BrokerService {
   }
 
   uploadSpreadsheet(formData, isUpdate = false): Observable<UploadResults> {
-    const uploadApiSuffix = isUpdate ? '_update' : '';
-    return this.http.post<UploadResults>(`${this.API_URL}/api_upload${uploadApiSuffix}`, formData)
+    return this.http.post<UploadResults>(`${this.API_URL}/api_upload`, formData)
       .pipe(
         tap(data => console.log('server data:', data)),
         catchError(this.handleError('uploadSpreadsheet'))

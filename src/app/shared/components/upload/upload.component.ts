@@ -39,15 +39,21 @@ export class UploadComponent {
       const formData = new FormData();
       formData.append('file', fileBrowser.files[0]);
 
+      const params = {};
       if (this.projectUuid) {
         formData.append('projectUuid', this.projectUuid);
+        params['projectUuid'] = this.projectUuid;
       }
 
       if (this.submissionUuid) {
         formData.append('submissionUuid', this.submissionUuid);
+        params['submissionUuid'] = this.submissionUuid;
       }
 
-      this.brokerService.uploadSpreadsheet(formData, this.isUpdate).subscribe({
+      params['isUpdate'] = this.isUpdate;
+      formData.append('params', JSON.stringify(params));
+
+      this.brokerService.uploadSpreadsheet(formData).subscribe({
         next: data => {
           this.uploadResults$ = <any>data;
           const submissionUuid = this.uploadResults$['details']['submission_uuid'];
