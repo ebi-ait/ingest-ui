@@ -55,7 +55,22 @@ describe('Broker Service', () => {
 
     });
 
-    it(`should timeout`, fakeAsync(() => {
+    it(`should timeout`, (done) => {
+      service.downloadSpreadsheet(submissionUuid)
+        .subscribe(res => {},
+          err => {
+            expect(err.statusText).toEqual('Request Timeout');
+            done();
+          });
+
+      let req = httpTestingController.expectOne(`${api_url}/submissions/${submissionUuid}/spreadsheet`);
+      req.flush(null, {
+        status: 408,
+        statusText: 'Request Timeout'
+      });
+    });
+
+    it(`should timeout error if no value is emitted before DOWNLOAD_SPREADSHEET_TIMEOUT`, fakeAsync(() => {
       service.downloadSpreadsheet(submissionUuid)
         .subscribe(res => {
           },
