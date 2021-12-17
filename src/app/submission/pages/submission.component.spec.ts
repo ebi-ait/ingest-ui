@@ -16,7 +16,7 @@ describe('SubmissionComponent', () => {
   let ingestSvc: SpyObj<IngestService>;
   let alertSvc: SpyObj<AlertService>;
   let brokerSvc: SpyObj<BrokerService>;
-  let cookieSvc: CookieService;
+  let cookieSvc: SpyObj<CookieService>;
   let activatedRoute: ActivatedRoute;
   let router: Router;
   let loaderSvc: SpyObj<LoaderService>;
@@ -34,6 +34,11 @@ describe('SubmissionComponent', () => {
   });
 
   it('should be created', () => {
+    expect(submissionComponent).toBeTruthy();
+  });
+
+  it('should disable download button when cookie is set', () => {
+    cookieSvc.check.and.returnValue(true);
     expect(submissionComponent).toBeTruthy();
   });
 
@@ -78,7 +83,6 @@ describe('SubmissionComponent', () => {
       // then
       expect(submissionComponent.downloadDisabled).toBeFalse();
       expect(loaderSvc.display).toHaveBeenCalledTimes(2);
-      // expect(loaderSvc.display).toHaveBeenCalledWith();
     });
 
     it('display error when downloadSpreadsheet timed out', () => {
@@ -99,6 +103,7 @@ describe('SubmissionComponent', () => {
       // then
       expect(alertSvc.error).toHaveBeenCalled();
       expect(loaderSvc.display).toHaveBeenCalledTimes(2);
+      expect(cookieSvc.set).toHaveBeenCalledTimes(1);
     });
 
   });
