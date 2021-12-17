@@ -435,10 +435,11 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   }
 
   triggerGraphValidation(): void {
+    this.graphValidationButtonDisabled = true;
+
     const url = `${this.submissionEnvelope['_links']['self']['href']}/graphValidationRequestedEvent`
     this.ingestService.put(url, {}).subscribe(
       (submissionEnvelope) => {
-        this.graphValidationButtonDisabled = true;
         setTimeout(() => this.graphValidationButtonDisabled = false, SUBMISSION_POLL_INTERVAL * 4/3)
       },
       err => {
