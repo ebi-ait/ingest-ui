@@ -26,6 +26,8 @@ export class UploadComponent {
 
   @Output() fileUpload = new EventEmitter();
 
+  updateProject: boolean = false;
+
   constructor(private brokerService: BrokerService,
               private router: Router,
               private alertService: AlertService,
@@ -51,6 +53,7 @@ export class UploadComponent {
       }
 
       params['isUpdate'] = this.isUpdate;
+      params['updateProject'] = this.updateProject;
       formData.append('params', JSON.stringify(params));
 
       this.brokerService.uploadSpreadsheet(formData).subscribe({
@@ -72,5 +75,10 @@ export class UploadComponent {
       this.alertService.clear();
       this.alertService.error('No file chosen!', 'Please choose a spreadsheet to upload.', false, true);
     }
+  }
+
+  onValueChanged($event: string) {
+    console.log('radio value changed')
+
   }
 }
