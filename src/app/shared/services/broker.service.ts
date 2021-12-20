@@ -20,7 +20,7 @@ export class BrokerService {
   constructor(private http: HttpClient) {
   }
 
-  uploadSpreadsheet(formData, isUpdate = false): Observable<UploadResults> {
+  uploadSpreadsheet(formData): Observable<UploadResults> {
     return this.http.post<UploadResults>(`${this.API_URL}/api_upload`, formData)
       .pipe(
         tap(data => console.log('server data:', data)),
