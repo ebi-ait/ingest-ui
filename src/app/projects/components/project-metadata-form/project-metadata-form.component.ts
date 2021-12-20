@@ -129,6 +129,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
       } else if (validationSkipped) {
         if (this.create) {
           value.isInCatalogue = false;
+          alert('This invalid project will be saved, but has been removed from the project catalogue.');
         }
         this.saveProject(value);
       } else {
