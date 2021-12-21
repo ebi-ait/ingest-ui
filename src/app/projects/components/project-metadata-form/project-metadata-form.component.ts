@@ -133,11 +133,9 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
         }
         this.saveProject(value);
       } else {
-        {
-          this.alertService.clear();
-          const message = 'Some fields in the form are invalid. Please go back through the form to check the errors and resolve them.';
-          this.alertService.error('Invalid Form', message);
-        }
+        this.alertService.clear();
+        const message = 'Some fields in the form are invalid. Please go back through the form to check the errors and resolve them.';
+        this.alertService.error('Invalid Form', message);
       }
     }
   }
