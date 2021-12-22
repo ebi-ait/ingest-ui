@@ -76,9 +76,4 @@ export class UploadComponent {
       this.alertService.error('No file chosen!', 'Please choose a spreadsheet to upload.', false, true);
     }
   }
-
-  onValueChanged($event: string) {
-    console.log('radio value changed')
-
-  }
 }
