@@ -200,7 +200,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  private saveProject(formValue) {
+  saveProject(formValue) {
     this.loaderService.display(true);
     this.alertService.clear();
     this.createOrUpdateProject(formValue).subscribe(project => {
