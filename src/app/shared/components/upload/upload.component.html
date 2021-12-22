@@ -7,7 +7,7 @@
         <input type="file" #fileInput placeholder="Upload file..."/>
       </p>
 
-      <ng-container *ngIf="projectUuid">
+      <ng-container *ngIf="projectUuid && !isUpdate">
         <mat-radio-group [(ngModel)]="updateProject">
           <mat-radio-button [value]="false" [checked]="!updateProject">
             <span>Do not update the project metadata. This will ignore project worksheet in the spreadsheet.</span>
