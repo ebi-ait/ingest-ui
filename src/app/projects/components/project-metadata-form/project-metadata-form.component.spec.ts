@@ -151,7 +151,9 @@ describe('ProjectMetadataFormComponent', () => {
 
     it('shows the admin tab and save tab in create mode', () => {
       component.create = true;
+
       component.setUpProjectForm();
+
       expect(component.config.layout.tabs.length).toEqual(6);
       const expectedKeys = ['project', 'contributors', 'publications', 'funders', 'project_admin', 'save'];
       component.config.layout.tabs.forEach(tab => {
