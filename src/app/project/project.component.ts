@@ -199,10 +199,7 @@ export class ProjectComponent implements OnInit {
   }
 
   canSubmit(project: Project) {
-    return this.userIsWrangler &&
-      !project.hasOpenSubmission &&
-      project.validationState.toUpperCase().replace(' ', "_") !== SUBMISSION_STATES.GraphValid &&
-      !(project.validationErrors && project.validationErrors.length > 0);
+    return this.userIsWrangler && !project.hasOpenSubmission;
   }
 
   private initProject() {

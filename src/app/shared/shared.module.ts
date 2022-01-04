@@ -23,27 +23,19 @@ import {UuidComponent} from "./components/uuid/uuid.component";
 import {ClipboardDirective} from './directives/clipboard.directive';
 import {ClipboardService} from './services/clipboard.service';
 import {UploadComponent} from "@shared/components/upload/upload.component";
+import {MaterialModule} from "@app/material.module";
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    MatChipsModule,
-    ReactiveFormsModule,
-    MatTabsModule,
-    FormsModule,
-    RouterModule,
-    MatIconModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatDatepickerModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatAutocompleteModule,
-    MatListModule,
-    MatToolbarModule,
-    NgxDatatableModule
-  ],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatTabsModule,
+        FormsModule,
+        RouterModule,
+        NgxDatatableModule,
+        MaterialModule
+    ],
   declarations: [
     ClipboardDirective,
     SubmissionStateComponent,
