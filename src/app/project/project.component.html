@@ -39,8 +39,10 @@
         </div>
         <br/>
         <app-upload *ngIf="upload" [projectUuid]="projectUuid"></app-upload>
-        <p style="text-align: center" *ngIf="!submissionEnvelopes || !submissionEnvelopes?.length">There are no
-          submissions.</p>
+
+        <p style="text-align: center" *ngIf="!upload && (!submissionEnvelopes || !submissionEnvelopes?.length)">
+          There are no submissions.
+        </p>
         <div class="dashboard" *ngIf="!upload && submissionEnvelopes && submissionEnvelopes.length > 0">
           <h2>Previous Submissions</h2>
           <table>
