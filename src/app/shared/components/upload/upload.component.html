@@ -10,10 +10,10 @@
       <ng-container *ngIf="projectUuid && !isUpdate">
         <mat-radio-group [(ngModel)]="updateProject">
           <mat-radio-button [value]="false" [checked]="!updateProject">
-            <span>Do not update the project metadata. This will ignore project worksheet in the spreadsheet.</span>
+            <span><b>Do not update the project metadata.</b> This will ignore project worksheet in the spreadsheet.</span>
           </mat-radio-button>
           <mat-radio-button [value]="true" [checked]="updateProject">
-            <span>Update the project metadata. This will overwrite the existing project metadata.</span>
+            <span><b>Update the project metadata.</b> This will overwrite the existing project metadata.</span>
           </mat-radio-button>
         </mat-radio-group>
       </ng-container>
