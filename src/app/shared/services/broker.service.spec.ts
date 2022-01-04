@@ -3,12 +3,13 @@ import {HttpClientTestingModule, HttpTestingController} from '@angular/common/ht
 import {fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
 import {BrokerService} from './broker.service';
 import {TimeoutError} from 'rxjs';
+import {environment} from "@environments/environment";
 
 describe('Broker Service', () => {
   let service: BrokerService;
   let httpTestingController: HttpTestingController;
   let httpClient: HttpClient;
-  const api_url = 'http://localhost:5000';
+  const api_url = environment.BROKER_API_URL;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
