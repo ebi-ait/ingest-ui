@@ -10,7 +10,7 @@ import {IngestService} from '@shared/services/ingest.service';
 import {LoaderService} from '@shared/services/loader.service';
 import {SchemaService} from '@shared/services/schema.service';
 import {Observable, of, Subject} from 'rxjs';
-import {concatMap, map, tap} from 'rxjs/operators';
+import {concatMap, tap} from 'rxjs/operators';
 import * as ingestSchema from '../../schemas/project-ingest-schema.json';
 import {ProjectCacheService} from '../../services/project-cache.service';
 import getLayout from './layout';
@@ -124,14 +124,18 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
 
   onSave({ valid, validationSkipped, value }) {
     if (!this.incrementProjectTab()) {
-      if (valid || validationSkipped) {
+      if (valid) {
+        this.saveProject(value);
+      } else if (validationSkipped) {
+        if (this.create) {
+          value.isInCatalogue = false;
+          alert('This invalid project will be saved, but has been removed from the project catalogue.');
+        }
         this.saveProject(value);
       } else {
-        {
-          this.alertService.clear();
-          const message = 'Some fields in the form are invalid. Please go back through the form to check the errors and resolve them.';
-          this.alertService.error('Invalid Form', message);
-        }
+        this.alertService.clear();
+        const message = 'Some fields in the form are invalid. Please go back through the form to check the errors and resolve them.';
+        this.alertService.error('Invalid Form', message);
       }
     }
   }
@@ -196,7 +200,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  private saveProject(formValue) {
+  saveProject(formValue) {
     this.loaderService.display(true);
     this.alertService.clear();
     this.createOrUpdateProject(formValue).subscribe(project => {
