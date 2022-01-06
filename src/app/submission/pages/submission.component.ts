@@ -277,18 +277,21 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.downloadDisabled = true;
     const uuid = this.submissionEnvelope['uuid']['uuid'];
     this.loaderService.display(true, 'This may take a moment. Please wait...');
+    // now set a cookie to disable further download attempt within X min of this request or
+    // until a response is returned when the cookie gets deleted.
+    this.cookieService.set(this.DOWNLOAD_TIMEOUT_COOKIE, "1", {expires: this.DOWNLOAD_BACKOFF_MINS / (24*60)})
     this.brokerService.downloadSpreadsheet(uuid).subscribe(response => {
       const filename = response['filename'];
       const newBlob = new Blob([response['data']]);
         this.saveFile(newBlob, filename);
         this.loaderService.display(false);
       this.downloadDisabled = false;
+      this.cookieService.delete(this.DOWNLOAD_TIMEOUT_COOKIE);
     },
     err => {
       if (err instanceof TimeoutError) {
         this.loaderService.display(false);
         this.alertService.error('', 'Spreadsheet download timed out. Please retry later.', true, true);
-        this.cookieService.set(this.DOWNLOAD_TIMEOUT_COOKIE, "1", {expires: this.DOWNLOAD_BACKOFF_MINS / (24*60)})
         setTimeout(() => this.downloadDisabled = false, this.DOWNLOAD_BACKOFF_MINS * 60 * 1000);
       }
     });
