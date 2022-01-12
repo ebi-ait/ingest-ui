@@ -5,10 +5,10 @@ import {BrokerService} from '@shared/services/broker.service';
 import {IngestService} from '@shared/services/ingest.service';
 import {LoaderService} from '@shared/services/loader.service';
 import {SubmissionComponent} from './submission.component';
+import {CookieService} from 'ngx-cookie-service';
+import {HttpResponse} from '@angular/common/http';
+import {of, throwError, TimeoutError} from 'rxjs';
 import SpyObj = jasmine.SpyObj;
-import {CookieService} from "ngx-cookie-service";
-import {HttpResponse} from "@angular/common/http";
-import {of, throwError, TimeoutError} from "rxjs";
 
 
 describe('SubmissionComponent', () => {
@@ -24,7 +24,7 @@ describe('SubmissionComponent', () => {
   beforeEach(() => {
     ingestSvc = jasmine.createSpyObj('IngestService', ['getUserAccount', 'getArchiveSubmission']);
     alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error']);
-    cookieSvc = jasmine.createSpyObj('CookieService', ['set', 'check']);
+    cookieSvc = jasmine.createSpyObj('CookieService', ['set', 'check', 'delete']);
     loaderSvc = jasmine.createSpyObj('LoaderService', ['display']);
     brokerSvc = jasmine.createSpyObj('BrokerService', ['downloadSpreadsheet']);
     router = jasmine.createSpyObj('Router', ['navigate']);
