@@ -1,13 +1,13 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {FetchSubmissionDataOptions} from "@shared/models/fetch-submission-data-options";
-import { values, isUndefined, omitBy, omit } from 'lodash';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {Account} from '@app/core/account';
 
 import {environment} from '@environments/environment';
-import {Account} from '@app/core/account';
-import {INVALID_FILE_TYPES, INVALID_FILE_TYPES_AND_CODES, METADATA_VALIDATION_STATES} from '../constants';
+import {FetchSubmissionDataOptions} from '@shared/models/fetch-submission-data-options';
+import {isUndefined, omit, omitBy, values} from 'lodash';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {INVALID_FILE_TYPES_AND_CODES, METADATA_VALIDATION_STATES} from '../constants';
 import {ArchiveEntity} from '../models/archiveEntity';
 import {ArchiveSubmission} from '../models/archiveSubmission';
 import {Criteria} from '../models/criteria';
