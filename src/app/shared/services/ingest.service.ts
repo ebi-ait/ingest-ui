@@ -249,18 +249,22 @@ export class IngestService {
       params['envelopeId'] = options.submissionId;
       delete params['envelopeUri']; // Don't need this if has been set
     }
+
+
     else if (options.filterState && !humanFriendlyTypes.includes(options.filterState)) {
       url = `${this.API_URL}/${options.entityType}/search/findBySubmissionEnvelopeAndValidationState`;
       params['envelopeUri'] = encodeURIComponent(submission_url);
       params['state'] = options.filterState.toUpperCase();
     }
-    else if (options.filterState) {
+
+    else if (options.filterState && humanFriendlyTypes.includes(options.filterState)) {
       if (options.entityType !== 'files') {
         throw new Error('Only files can be filtered by validation type.');
       }
 
       url = `${this.API_URL}/files/search/findBySubmissionEnvelopeIdAndErrorType`;
       const fileValidationTypeFilter = INVALID_FILE_TYPES_AND_CODES.find(type => type.humanFriendly === options.filterState).code;
+      params['envelopeUri'] = encodeURIComponent(submission_url);
       params['errorType'] = fileValidationTypeFilter;
       params['id'] = options.submissionId;
     }
