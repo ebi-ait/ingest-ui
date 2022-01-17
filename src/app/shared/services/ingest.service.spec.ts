@@ -125,13 +125,13 @@ describe('Ingest Service', () => {
     const submissionId = 'mockEnvelope';
     const entityType = 'mockEntity';
 
-    it('should use the base url', () => {
+    it('should use the base url when no sort or filtering params are given', () => {
       service.fetchSubmissionData({ submissionId, entityType }).subscribe(() => {});
       const req = httpTestingController.expectOne(`${api_url}/submissionEnvelopes/${submissionId}/${entityType}`);
       expect(req.request.method).toEqual('GET');
     });
 
-    it('should use the findBySubmissionEnvelope endpoint', () => {
+    it('should use the findBySubmissionEnvelope endpoint when there is a sort parameter', () => {
       service.fetchSubmissionData({
         submissionId,
         entityType,
@@ -142,7 +142,7 @@ describe('Ingest Service', () => {
       expect(req.request.method).toEqual('GET');
     });
 
-    it('should use the findBySubmissionIdWithGraphValidationErrors endpoint', () =>{
+    it('should use the findBySubmissionIdWithGraphValidationErrors endpoint when GraphInvalid filter state is given', () =>{
       service.fetchSubmissionData({
         submissionId,
         entityType,
@@ -154,7 +154,7 @@ describe('Ingest Service', () => {
       expect(req.request.method).toEqual('GET');
     });
 
-    it('should use the findBySubmissionEnvelopeAndValidationState endpoint', () =>{
+    it('should use the findBySubmissionEnvelopeAndValidationState endpoint when a metadata filter state is given', () =>{
       service.fetchSubmissionData({
         submissionId,
         entityType: 'files',
@@ -166,7 +166,7 @@ describe('Ingest Service', () => {
       expect(req.request.method).toEqual('GET');
     });
 
-    it('should use the findBySubmissionEnvelopeIdAndErrorType endpoint', () =>{
+    it('should use the findBySubmissionEnvelopeIdAndErrorType endpoint when a file validation state filter is given', () =>{
       service.fetchSubmissionData({
         submissionId,
         entityType: 'files',
