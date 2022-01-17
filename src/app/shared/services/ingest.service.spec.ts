@@ -129,7 +129,9 @@ describe('Ingest Service', () => {
       service.fetchSubmissionData({ submissionId, entityType }).subscribe(() => {});
       const req = httpTestingController.expectOne(`${api_url}/submissionEnvelopes/${submissionId}/${entityType}`);
       expect(req.request.method).toEqual('GET');
-    });
+    })
+
+    const expectSort = (req) => expect(req.request.params.has('sort')).toBeTruthy();
 
     it('should use the findBySubmissionEnvelope endpoint when there is a sort parameter', () => {
       service.fetchSubmissionData({
@@ -140,6 +142,7 @@ describe('Ingest Service', () => {
 
       const req = httpTestingController.expectOne(({url}) => url.includes('findBySubmissionEnvelope'));
       expect(req.request.method).toEqual('GET');
+      expectSort(req);
     });
 
     it('should use the findBySubmissionIdWithGraphValidationErrors endpoint when GraphInvalid filter state is given', () =>{
@@ -152,6 +155,7 @@ describe('Ingest Service', () => {
 
       const req = httpTestingController.expectOne(({url}) => url.includes('findBySubmissionIdWithGraphValidationErrors'));
       expect(req.request.method).toEqual('GET');
+      expectSort(req);
     });
 
     it('should use the findBySubmissionEnvelopeAndValidationState endpoint when a metadata filter state is given', () =>{
@@ -164,6 +168,7 @@ describe('Ingest Service', () => {
 
       const req = httpTestingController.expectOne(({url}) => url.includes('findBySubmissionEnvelopeAndValidationState'));
       expect(req.request.method).toEqual('GET');
+      expectSort(req);
     });
 
     it('should use the findBySubmissionEnvelopeIdAndErrorType endpoint when a file validation state filter is given', () =>{
@@ -176,6 +181,7 @@ describe('Ingest Service', () => {
 
       const req = httpTestingController.expectOne(({url}) => url.includes('findBySubmissionEnvelopeIdAndErrorType'));
       expect(req.request.method).toEqual('GET');
+      expectSort(req);
     });
 
     it('should pass through page and size', () => {
