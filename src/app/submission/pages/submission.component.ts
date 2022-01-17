@@ -384,7 +384,8 @@ export class SubmissionComponent implements OnInit, OnDestroy {
           submissionId: this.submissionEnvelopeId,
           entityType: type,
           filterState: params.filterState,
-          sort: params.sort
+          sort: params.sort,
+          ...params
         }),
         type
       );

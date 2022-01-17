@@ -4,6 +4,7 @@ import {Sort} from "@shared/models/paginatedEndpoint";
 export interface FetchSubmissionDataOptions {
   submissionId: string;
   entityType: string;
-  sort: Sort;
-  filterState: METADATA_VALIDATION_STATES | INVALID_FILE_TYPES;
+  sort?: Sort;
+  filterState?: METADATA_VALIDATION_STATES | INVALID_FILE_TYPES;
+  [x: string]: any;
 }

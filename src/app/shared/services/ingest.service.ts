@@ -1,7 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {FetchSubmissionDataOptions} from "@shared/models/fetch-submission-data-options";
-import values from 'lodash/values';
+import { values, isUndefined, clone, omitBy } from 'lodash';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
@@ -229,7 +229,8 @@ export class IngestService {
   public fetchSubmissionData(options: FetchSubmissionDataOptions): Observable<PagedData<MetadataDocument>> {
     let url = `${this.API_URL}/submissionEnvelopes/${options.submissionId}/${options.entityType}`;
     const submission_url = `${this.API_URL}/submissionEnvelopes/${options.submissionId}`;
-    const params = {};
+    const params: any = omitBy(clone(options), isUndefined);
+    console.log(params);
 
     // Depending on the options given, a different endpoint is used
     // This function abstracts away the logic of using different endpoints to filter by different means
