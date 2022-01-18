@@ -70,7 +70,7 @@ export class SubmitComponent implements OnInit {
   requestSubmit(submitLink, submitActions: string[]) {
     this.loaderService.display(true);
     this.ingestService.put(submitLink, submitActions).subscribe(
-      res => {
+      () => {
         setTimeout(() => {
             this.alertService.clear();
             this.loaderService.display(false);
@@ -93,7 +93,7 @@ export class SubmitComponent implements OnInit {
     if (confirm(message)) {
       this.ingestService.put(this.cleanupLink, undefined)
         .subscribe(
-          res => {
+          () => {
             setTimeout(() => {
                 this.alertService.clear();
                 this.loaderService.display(false);

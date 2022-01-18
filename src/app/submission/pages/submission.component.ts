@@ -391,8 +391,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   }
 
   onErrorClick({ source, validationState }): void {
-    const index = SubmissionTab[source.toUpperCase()].valueOf();
-    this.selectedIndex = index;
+    this.selectedIndex = SubmissionTab[source.toUpperCase()].valueOf();
 
     const dataSource = this[`${source}DataSource`];
 
@@ -441,8 +440,8 @@ export class SubmissionComponent implements OnInit, OnDestroy {
 
     const url = `${this.submissionEnvelope['_links']['self']['href']}/graphValidationRequestedEvent`
     this.ingestService.put(url, {}).subscribe(
-      (submissionEnvelope) => {
-        setTimeout(() => this.graphValidationButtonDisabled = false, SUBMISSION_POLL_INTERVAL * 4/3)
+      () => {
+        setTimeout(() => this.graphValidationButtonDisabled = false, SUBMISSION_POLL_INTERVAL * 4 / 3);
       },
       err => {
         this.alertService.error('An error occurred while triggering validation', err.message);
