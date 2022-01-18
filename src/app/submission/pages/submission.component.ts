@@ -1,7 +1,7 @@
 import {HttpErrorResponse} from '@angular/common/http';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {SUBMISSION_STATES, SUBMITTED_STATES} from "@shared/constants";
+import {SUBMISSION_STATES, SUBMITTED_STATES} from '@shared/constants';
 import {MetadataDataSource} from '@shared/data-sources/metadata-data-source';
 import {PaginatedDataSource} from '@shared/data-sources/paginated-data-source';
 import {SimpleDataSource} from '@shared/data-sources/simple-data-source';
@@ -15,7 +15,7 @@ import {AlertService} from '@shared/services/alert.service';
 import {BrokerService} from '@shared/services/broker.service';
 import {IngestService} from '@shared/services/ingest.service';
 import {LoaderService} from '@shared/services/loader.service';
-import {Observable, TimeoutError, of} from 'rxjs';
+import {Observable, of, TimeoutError} from 'rxjs';
 import {catchError, map, mergeMap} from 'rxjs/operators';
 import {CookieService} from 'ngx-cookie-service';
 
@@ -44,7 +44,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   isLinkingDone: boolean;
   isSubmitted: boolean;
   submitLink: string;
-  exportLink: string;
   cleanupLink: string;
   url: string;
   project: Project;
@@ -164,7 +163,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.submissionState = submissionEnvelope['submissionState'];
     this.isSubmitted = this.isStateSubmitted(SUBMISSION_STATES[submissionEnvelope.submissionState]);
     this.submitLink = this.getLink(submissionEnvelope, 'submit');
-    this.exportLink = this.getLink(submissionEnvelope, 'export');
     this.cleanupLink = this.getLink(submissionEnvelope, 'cleanup');
     this.url = this.getLink(submissionEnvelope, 'self');
   }

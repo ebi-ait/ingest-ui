@@ -1,6 +1,6 @@
 <ng-container>
   <h3 class="vf-u-margin__top--xxl vf-text vf-text-heading--4">What's next?</h3>
-  <ng-container *ngIf="submitLink || exportLink">
+  <ng-container *ngIf="submitLink">
     <p>You have entered all necessary information per Human Cell Atlas standards. That’s awesome!</p>
     <p>If everything looks correct, feel free to Submit your data.</p>
 
@@ -85,15 +85,9 @@
   </button>
 </ng-container>
 
-
-<ng-container *ngIf="exportLink">
-  <button mat-raised-button color="primary" (click)="requestExport()">Submit to HCA</button>
-</ng-container>
-
 <br/>
 <ng-container *ngIf="cleanupLink">
   <button mat-raised-button color="primary" (click)="requestCleanup()">Delete Upload Area</button>
 </ng-container>
 
 <br/>
-
