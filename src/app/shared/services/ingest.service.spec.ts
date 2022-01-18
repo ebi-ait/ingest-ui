@@ -1,6 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
+import {INVALID_FILE_TYPES_AND_CODES, METADATA_VALIDATION_STATES} from "@shared/constants";
 import {IngestService} from './ingest.service';
 
 describe('Ingest Service', () => {
@@ -118,5 +119,80 @@ describe('Ingest Service', () => {
       expect(req.request.method).toEqual('PATCH');
       expect(req.request.body).toEqual(body);
     });
+  });
+
+  describe('fetchSubmissionData', () => {
+    const submissionId = 'mockEnvelope';
+    const entityType = 'mockEntity';
+
+    it('should use the base url when no sort or filtering params are given', () => {
+      service.fetchSubmissionData({ submissionId, entityType }).subscribe(() => {});
+      const req = httpTestingController.expectOne(`${api_url}/submissionEnvelopes/${submissionId}/${entityType}`);
+      expect(req.request.method).toEqual('GET');
+    })
+
+    const expectSort = (req) => expect(req.request.params.has('sort')).toBeTruthy();
+
+    it('should use the findBySubmissionEnvelope endpoint when there is a sort parameter', () => {
+      service.fetchSubmissionData({
+        submissionId,
+        entityType,
+        sort: { column: 'test', direction: 'test' }
+      }).subscribe(() => {});
+
+      const req = httpTestingController.expectOne(({url}) => url.includes('findBySubmissionEnvelope'));
+      expect(req.request.method).toEqual('GET');
+      expectSort(req);
+    });
+
+    it('should use the findBySubmissionIdWithGraphValidationErrors endpoint when GraphInvalid filter state is given', () =>{
+      service.fetchSubmissionData({
+        submissionId,
+        entityType,
+        sort: { column: 'test', direction: 'test' },
+        filterState: METADATA_VALIDATION_STATES.GraphInvalid
+      }).subscribe(() => {});
+
+      const req = httpTestingController.expectOne(({url}) => url.includes('findBySubmissionIdWithGraphValidationErrors'));
+      expect(req.request.method).toEqual('GET');
+      expectSort(req);
+    });
+
+    it('should use the findBySubmissionEnvelopeAndValidationState endpoint when a metadata filter state is given', () =>{
+      service.fetchSubmissionData({
+        submissionId,
+        entityType: 'files',
+        sort: { column: 'test', direction: 'test' },
+        filterState: METADATA_VALIDATION_STATES.Invalid
+      }).subscribe(() => {});
+
+      const req = httpTestingController.expectOne(({url}) => url.includes('findBySubmissionEnvelopeAndValidationState'));
+      expect(req.request.method).toEqual('GET');
+      expectSort(req);
+    });
+
+    it('should use the findBySubmissionEnvelopeIdAndErrorType endpoint when a file validation state filter is given', () =>{
+      service.fetchSubmissionData({
+        submissionId,
+        entityType: 'files',
+        sort: { column: 'test', direction: 'test' },
+        filterState: INVALID_FILE_TYPES_AND_CODES[0].humanFriendly
+      }).subscribe(() => {});
+
+      const req = httpTestingController.expectOne(({url}) => url.includes('findBySubmissionEnvelopeIdAndErrorType'));
+      expect(req.request.method).toEqual('GET');
+      expectSort(req);
+    });
+
+    it('should pass through page and size', () => {
+      service.fetchSubmissionData({
+        submissionId,
+        entityType,
+        page: 0,
+        size: 20
+      }).subscribe(() => {});
+      const req = httpTestingController.expectOne(`${api_url}/submissionEnvelopes/${submissionId}/${entityType}?page=0&size=20`);
+      expect(req.request.method).toEqual('GET');
+    })
   });
 });

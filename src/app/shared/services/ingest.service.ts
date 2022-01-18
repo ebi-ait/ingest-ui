@@ -1,13 +1,13 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {FetchSubmissionDataOptions} from "@shared/models/fetch-submission-data-options";
-import values from 'lodash/values';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {Account} from '@app/core/account';
 
 import {environment} from '@environments/environment';
-import {Account} from '@app/core/account';
-import {INVALID_FILE_TYPES, INVALID_FILE_TYPES_AND_CODES, METADATA_VALIDATION_STATES} from '../constants';
+import {FetchSubmissionDataOptions} from '@shared/models/fetch-submission-data-options';
+import {isUndefined, omit, omitBy, values} from 'lodash';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {INVALID_FILE_TYPES_AND_CODES, METADATA_VALIDATION_STATES} from '../constants';
 import {ArchiveEntity} from '../models/archiveEntity';
 import {ArchiveSubmission} from '../models/archiveSubmission';
 import {Criteria} from '../models/criteria';
@@ -50,6 +50,10 @@ export class IngestService {
     return data;
   }
 
+  private static createAccount(user): Account {
+    return new Account(user);
+  }
+
   public getAllSubmissions(params): Observable<any> {
     return this.http.get(`${this.API_URL}/submissionEnvelopes`, {params: params});
   }
@@ -80,18 +84,14 @@ export class IngestService {
   public getUserAccount(): Observable<Account> {
     return this.http
       .get(`${this.API_URL}/auth/account`)
-      .pipe(map(data => this.createAccount(data)));
+      .pipe(map(data => IngestService.createAccount(data)));
   }
 
   public getWranglers(): Observable<Account[]> {
     return this.http
       .get<Account[]>(`${this.API_URL}/user/list`, {params: {'role': 'WRANGLER'}})
-      .pipe(map(wranglers => wranglers?.map(wrangler => this.createAccount(wrangler)) ?? []
+      .pipe(map(wranglers => wranglers?.map(wrangler => IngestService.createAccount(wrangler)) ?? []
       ));
-  }
-
-  private createAccount(user): Account {
-    return new Account(user);
   }
 
   public deleteSubmission(submissionId) {
@@ -229,7 +229,11 @@ export class IngestService {
   public fetchSubmissionData(options: FetchSubmissionDataOptions): Observable<PagedData<MetadataDocument>> {
     let url = `${this.API_URL}/submissionEnvelopes/${options.submissionId}/${options.entityType}`;
     const submission_url = `${this.API_URL}/submissionEnvelopes/${options.submissionId}`;
-    const params = {};
+    const params: any = omitBy(
+      // Only allow extra params that are not explicitly used by this function
+      omit(options, ['submissionId', 'entityType', 'sort', 'filterState']),
+      isUndefined
+    );
 
     // Depending on the options given, a different endpoint is used
     // This function abstracts away the logic of using different endpoints to filter by different means
@@ -245,19 +249,18 @@ export class IngestService {
       url = `${this.API_URL}/${options.entityType}/search/findBySubmissionIdWithGraphValidationErrors`;
       params['envelopeId'] = options.submissionId;
       delete params['envelopeUri']; // Don't need this if has been set
-    }
-    else if (options.filterState && !humanFriendlyTypes.includes(options.filterState)) {
+    } else if (options.filterState && !humanFriendlyTypes.includes(options.filterState)) {
       url = `${this.API_URL}/${options.entityType}/search/findBySubmissionEnvelopeAndValidationState`;
       params['envelopeUri'] = encodeURIComponent(submission_url);
       params['state'] = options.filterState.toUpperCase();
-    }
-    else if (options.filterState) {
+    } else if (options.filterState && humanFriendlyTypes.includes(options.filterState)) {
       if (options.entityType !== 'files') {
         throw new Error('Only files can be filtered by validation type.');
       }
 
       url = `${this.API_URL}/files/search/findBySubmissionEnvelopeIdAndErrorType`;
       const fileValidationTypeFilter = INVALID_FILE_TYPES_AND_CODES.find(type => type.humanFriendly === options.filterState).code;
+      params['envelopeUri'] = encodeURIComponent(submission_url);
       params['errorType'] = fileValidationTypeFilter;
       params['id'] = options.submissionId;
     }
