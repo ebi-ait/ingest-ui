@@ -232,7 +232,8 @@ export class IngestService {
     const params: any = omitBy(
       // Only allow extra params that are not explicitly used by this function
       omit(options, ['submissionId', 'entityType', 'sort', 'filterState']),
-    isUndefined);
+      isUndefined
+    );
 
     // Depending on the options given, a different endpoint is used
     // This function abstracts away the logic of using different endpoints to filter by different means
@@ -248,16 +249,11 @@ export class IngestService {
       url = `${this.API_URL}/${options.entityType}/search/findBySubmissionIdWithGraphValidationErrors`;
       params['envelopeId'] = options.submissionId;
       delete params['envelopeUri']; // Don't need this if has been set
-    }
-
-
-    else if (options.filterState && !humanFriendlyTypes.includes(options.filterState)) {
+    } else if (options.filterState && !humanFriendlyTypes.includes(options.filterState)) {
       url = `${this.API_URL}/${options.entityType}/search/findBySubmissionEnvelopeAndValidationState`;
       params['envelopeUri'] = encodeURIComponent(submission_url);
       params['state'] = options.filterState.toUpperCase();
-    }
-
-    else if (options.filterState && humanFriendlyTypes.includes(options.filterState)) {
+    } else if (options.filterState && humanFriendlyTypes.includes(options.filterState)) {
       if (options.entityType !== 'files') {
         throw new Error('Only files can be filtered by validation type.');
       }
