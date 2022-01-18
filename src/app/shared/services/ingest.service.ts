@@ -50,6 +50,10 @@ export class IngestService {
     return data;
   }
 
+  private static createAccount(user): Account {
+    return new Account(user);
+  }
+
   public getAllSubmissions(params): Observable<any> {
     return this.http.get(`${this.API_URL}/submissionEnvelopes`, {params: params});
   }
@@ -80,18 +84,14 @@ export class IngestService {
   public getUserAccount(): Observable<Account> {
     return this.http
       .get(`${this.API_URL}/auth/account`)
-      .pipe(map(data => this.createAccount(data)));
+      .pipe(map(data => IngestService.createAccount(data)));
   }
 
   public getWranglers(): Observable<Account[]> {
     return this.http
       .get<Account[]>(`${this.API_URL}/user/list`, {params: {'role': 'WRANGLER'}})
-      .pipe(map(wranglers => wranglers?.map(wrangler => this.createAccount(wrangler)) ?? []
+      .pipe(map(wranglers => wranglers?.map(wrangler => IngestService.createAccount(wrangler)) ?? []
       ));
-  }
-
-  private createAccount(user): Account {
-    return new Account(user);
   }
 
   public deleteSubmission(submissionId) {
