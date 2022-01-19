@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 // TODO
 // TODO
 import {from, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {filter, map, tap} from 'rxjs/operators';
 // TODO
 import {Project} from '@shared/models/project';
 import {AlertService} from '@shared/services/alert.service';
@@ -52,11 +52,9 @@ export class AutofillProjectFormComponent implements OnInit {
 
     if (this.publicationDoiCtrl.value) {
       const doi = this.publicationDoiCtrl.value;
-      this.doesProjectWithDoiExist(doi).subscribe(projectExists => {
-          if (projectExists) {
-            this.alertService.error('This doi has already been used. Please contact our wranglers for further assistance', '');
-            return;
-          }
+      this.doesProjectWithDoiExist(doi).pipe(
+        filter(projectExists => projectExists === false)
+      ).subscribe(() => {
           this.createProject(doi);
         },
         error => {
@@ -73,7 +71,21 @@ export class AutofillProjectFormComponent implements OnInit {
       'value': doi
     };
     query.push(criteria);
-    return this.ingestService.queryProjects(query).pipe(map(data => !!data.page.totalElements));
+    return this.ingestService.queryProjects(query).pipe(
+      map(data => !!data.page.totalElements),
+      tap(projectExists => {
+        if (projectExists) {
+          this.alertService.error('This doi has already been used. Please contact our wranglers for further assistance', '');
+        }
+      })
+    );
+  }
+
+  private createProject(doi) {
+    const params = {
+      [Identifier.DOI]: doi
+    };
+    this.router.navigate(['/projects', 'register'], {queryParams: params});
   }
 
   restoreProject() {
