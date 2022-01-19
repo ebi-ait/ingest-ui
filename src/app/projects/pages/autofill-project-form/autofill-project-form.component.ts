@@ -52,8 +52,8 @@ export class AutofillProjectFormComponent implements OnInit {
 
     if (this.publicationDoiCtrl.value) {
       const doi = this.publicationDoiCtrl.value;
-      this.doesDoiExist(doi).subscribe(doiExists => {
-          if (doiExists) {
+      this.doesProjectWithDoiExist(doi).subscribe(projectExists => {
+          if (projectExists) {
             this.alertService.error('This doi has already been used. Please contact our wranglers for further assistance', '');
             return;
           }
@@ -68,7 +68,7 @@ export class AutofillProjectFormComponent implements OnInit {
     }
   }
 
-  doesDoiExist(doi: string): Observable<boolean> {
+  doesProjectWithDoiExist(doi: string): Observable<boolean> {
     const query = [];
     const criteria = {
       'field': 'content.publications.doi',
