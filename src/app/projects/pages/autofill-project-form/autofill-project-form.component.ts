@@ -57,10 +57,7 @@ export class AutofillProjectFormComponent implements OnInit {
             this.alertService.error('This doi has already been used. Please contact our wranglers for further assistance', '');
             return;
           }
-          const params = {
-            [Identifier.DOI]: doi
-          };
-          this.router.navigate(['/projects', 'register'], {queryParams: params});
+          this.createProject(doi);
         },
         error => {
           this.alertService.error('An error occurred', error.message);
