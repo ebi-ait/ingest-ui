@@ -1,16 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-// TODO
-// TODO
 import {from, Observable} from 'rxjs';
-import {filter, map, tap} from 'rxjs/operators';
-// TODO
+import {filter, map, switchMapTo, tap} from 'rxjs/operators';
 import {Project} from '@shared/models/project';
 import {AlertService} from '@shared/services/alert.service';
 import {IngestService} from '@shared/services/ingest.service';
 import {Identifier} from '../../models/europe-pmc-search';
 import {ProjectCacheService} from '../../services/project-cache.service';
+import {AutofillProjectService} from '@projects/services/autofill-project.service';
 
 @Component({
   selector: 'app-doi-name-field',
@@ -25,7 +23,8 @@ export class AutofillProjectFormComponent implements OnInit {
               private router: Router,
               private ingestService: IngestService,
               private alertService: AlertService,
-              private projectCacheService: ProjectCacheService
+              private projectCacheService: ProjectCacheService,
+              private autofillProjectService: AutofillProjectService
   ) {
   }
 
@@ -53,7 +52,9 @@ export class AutofillProjectFormComponent implements OnInit {
     if (this.publicationDoiCtrl.value) {
       const doi = this.publicationDoiCtrl.value;
       this.doesProjectWithDoiExist(doi).pipe(
-        filter(projectExists => projectExists === false)
+        filter(projectExists => projectExists === false),
+        switchMapTo(this.doesDoiExist(doi)),
+        filter(doiExists => doiExists)
       ).subscribe(() => {
           this.createProject(doi);
         },
@@ -75,10 +76,24 @@ export class AutofillProjectFormComponent implements OnInit {
       map(data => !!data.page.totalElements),
       tap(projectExists => {
         if (projectExists) {
-          this.alertService.error('This doi has already been used. Please contact our wranglers for further assistance', '');
+          this.alertService.error('This DOI has already been used. Please contact our wranglers for further assistance', '');
         }
       })
     );
+  }
+
+  doesDoiExist(doi: string): Observable<boolean> {
+    const searchIdentifier = Identifier.DOI;
+    return this.autofillProjectService
+      .queryEuropePMC(searchIdentifier, doi)
+      .pipe(
+        map(response => response.resultList.result.length > 0),
+        tap(doiExists => {
+          if (!doiExists) {
+            this.alertService.error('This DOI cannot be found on Europe PMC. Please contact our wranglers for further assistance', '');
+          }
+        })
+      );
   }
 
   private createProject(doi) {

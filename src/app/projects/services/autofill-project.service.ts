@@ -26,6 +26,19 @@ export class AutofillProjectService {
     );
   }
 
+  private static removeHTMLTags(input: string): string {
+    return input.replace(/(<([^>]+)>)/gi, '');
+  }
+
+  queryEuropePMC(queryId: string, queryString: string): Observable<EuropePMCHttpSearchResponse> {
+    const params = {
+      query: queryId + ':' + queryString,
+      resultType: 'core',
+      format: 'json'
+    };
+    return this.http.get<EuropePMCHttpSearchResponse>(this.API_URL, {params});
+  }
+
   private createAutoFillProject(result: EuropePMCResult): AutofillProject {
     return {
       title: result.title,
@@ -42,18 +55,5 @@ export class AutofillProjectService {
           orcid_id: author.authorId?.type === 'ORCID' ? author.authorId.value : ''
         })) ?? []
     };
-  }
-
-  private queryEuropePMC(queryId: string, queryString: string): Observable<EuropePMCHttpSearchResponse> {
-    const params = {
-      query: queryId + ':' + queryString,
-      resultType: 'core',
-      format: 'json'
-    };
-    return this.http.get<EuropePMCHttpSearchResponse>(this.API_URL, {params});
-  }
-
-  private removeHTMLTags(input: string): string {
-    return input.replace(/(<([^>]+)>)/gi, '');
   }
 }
