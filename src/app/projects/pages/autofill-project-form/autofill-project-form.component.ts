@@ -93,7 +93,11 @@ export class AutofillProjectFormComponent implements OnInit {
         map(response => response.resultList.result.length > 0),
         tap(doiExists => {
           if (!doiExists) {
-            this.alertService.error('This DOI cannot be found on Europe PMC. Please contact our wranglers for further assistance', '');
+            const link = `mailto:wrangler-team@data.humancellatlas.org?subject=Cannot%20find%20project%20by%20DOI&body=${doi}`;
+            this.alertService.error(
+              'This DOI cannot be found on Europe PMC.',
+              `Please contact our <a href="${link}">wranglers</a> for further assistance.`
+            );
           }
         })
       );
