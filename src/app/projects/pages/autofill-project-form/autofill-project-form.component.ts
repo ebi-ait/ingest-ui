@@ -1,16 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-// TODO
-// TODO
 import {from, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-// TODO
+import {filter, map, switchMapTo, tap} from 'rxjs/operators';
 import {Project} from '@shared/models/project';
 import {AlertService} from '@shared/services/alert.service';
 import {IngestService} from '@shared/services/ingest.service';
 import {Identifier} from '../../models/europe-pmc-search';
 import {ProjectCacheService} from '../../services/project-cache.service';
+import {AutofillProjectService} from '@projects/services/autofill-project.service';
 
 @Component({
   selector: 'app-doi-name-field',
@@ -25,7 +23,8 @@ export class AutofillProjectFormComponent implements OnInit {
               private router: Router,
               private ingestService: IngestService,
               private alertService: AlertService,
-              private projectCacheService: ProjectCacheService
+              private projectCacheService: ProjectCacheService,
+              private autofillProjectService: AutofillProjectService
   ) {
   }
 
@@ -52,15 +51,12 @@ export class AutofillProjectFormComponent implements OnInit {
 
     if (this.publicationDoiCtrl.value) {
       const doi = this.publicationDoiCtrl.value;
-      this.doesDoiExist(doi).subscribe(doiExists => {
-          if (doiExists) {
-            this.alertService.error('This doi has already been used. Please contact our wranglers for further assistance', '');
-            return;
-          }
-          const params = {
-            [Identifier.DOI]: doi
-          };
-          this.router.navigate(['/projects', 'register'], {queryParams: params});
+      this.doesProjectWithDoiExist(doi).pipe(
+        filter(projectExists => projectExists === false),
+        switchMapTo(this.doesDoiExist(doi)),
+        filter(doiExists => doiExists)
+      ).subscribe(() => {
+          this.createProject(doi);
         },
         error => {
           this.alertService.error('An error occurred', error.message);
@@ -68,7 +64,7 @@ export class AutofillProjectFormComponent implements OnInit {
     }
   }
 
-  doesDoiExist(doi: string): Observable<boolean> {
+  doesProjectWithDoiExist(doi: string): Observable<boolean> {
     const query = [];
     const criteria = {
       'field': 'content.publications.doi',
@@ -76,7 +72,42 @@ export class AutofillProjectFormComponent implements OnInit {
       'value': doi
     };
     query.push(criteria);
-    return this.ingestService.queryProjects(query).pipe(map(data => !!data.page.totalElements));
+    return this.ingestService.queryProjects(query).pipe(
+      map(data => data?._embedded?.projects),
+      tap(projects => projects?.forEach(project => {
+        const project_title = project?.content?.['project_core']?.['project_title'];
+        const link = `/projects/detail?uuid=${project?.uuid?.uuid}`;
+        this.alertService.error(
+          'This DOI has already been used by project:',
+          `<a href="${link}">${project_title}</a>`);
+      })),
+      map(projects => !!projects)
+    );
+  }
+
+  doesDoiExist(doi: string): Observable<boolean> {
+    const searchIdentifier = Identifier.DOI;
+    return this.autofillProjectService
+      .queryEuropePMC(searchIdentifier, doi)
+      .pipe(
+        map(response => response.resultList.result.length > 0),
+        tap(doiExists => {
+          if (!doiExists) {
+            const link = `mailto:wrangler-team@data.humancellatlas.org?subject=Cannot%20find%20project%20by%20DOI&body=${doi}`;
+            this.alertService.error(
+              'This DOI cannot be found on Europe PMC.',
+              `Please contact our <a href="${link}">wranglers</a> for further assistance.`
+            );
+          }
+        })
+      );
+  }
+
+  private createProject(doi) {
+    const params = {
+      [Identifier.DOI]: doi
+    };
+    this.router.navigate(['/projects', 'register'], {queryParams: params});
   }
 
   restoreProject() {
