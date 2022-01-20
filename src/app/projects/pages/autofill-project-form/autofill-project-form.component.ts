@@ -73,12 +73,15 @@ export class AutofillProjectFormComponent implements OnInit {
     };
     query.push(criteria);
     return this.ingestService.queryProjects(query).pipe(
-      map(data => !!data.page.totalElements),
-      tap(projectExists => {
-        if (projectExists) {
-          this.alertService.error('This DOI has already been used. Please contact our wranglers for further assistance', '');
-        }
-      })
+      map(data => data?._embedded?.projects),
+      tap(projects => projects?.forEach(project => {
+        const project_title = project?.content?.['project_core']?.['project_title'];
+        const link = `/projects/detail?uuid=${project?.uuid?.uuid}`;
+        this.alertService.error(
+          'This DOI has already been used by project:',
+          `<a href="${link}">${project_title}</a>`);
+      })),
+      map(projects => !!projects)
     );
   }
 
