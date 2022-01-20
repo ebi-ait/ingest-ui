@@ -75,4 +75,14 @@ export class BrokerService {
     };
   }
 
+  public downloadSpreadsheetUsingGeo(geoAccession: string) {
+    console.log("am in the downloadSpreadsheetUsingGeo function")
+    // const x = this.API_URL;
+    const x = 'http://127.0.0.1:5000'
+    const params = {
+      'geo-accession': geoAccession,
+    };
+    return this.http.get(`${x}/spreadsheet`, {params});
+  }
+s
 }
