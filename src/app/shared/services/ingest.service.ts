@@ -32,7 +32,7 @@ export class IngestService {
 
   API_URL: string = environment.INGEST_API_URL;
 
-  public queryProjects = this.getQueryEntity('projects');
+  public queryProjects = this.getQueryEntity<Project>('projects');
   public queryBiomaterials = this.getQueryEntity('biomaterials');
   public queryProtocols = this.getQueryEntity('protocols');
   public queryFiles = this.getQueryEntity('files');
@@ -126,14 +126,14 @@ export class IngestService {
     return this.http.post(`${this.API_URL}/projects`, project);
   }
 
-  public getQueryEntity(entityType: string): (query: Criteria[], params?) => Observable<ListResult<MetadataDocument>> {
+  public getQueryEntity<T extends MetadataDocument>(entityType: string): (query: Criteria[], params?) => Observable<ListResult<T>> {
     const acceptedEntityTypes: string[] = ['files', 'processes', 'biomaterials', 'projects', 'protocols'];
     if (!acceptedEntityTypes.includes(entityType)) {
       throw new Error(`entityType must be one of ${acceptedEntityTypes.join()}`);
     }
     return (query: Criteria[], params?) =>
       this.http.post(`${this.API_URL}/${entityType}/query`, query, {params: params})
-        .pipe(map(data => data as ListResult<MetadataDocument>));
+        .pipe(map(data => data as ListResult<T>));
   }
 
   public addInputBiomaterialToProcess(processId: string, biomaterialId: string): Observable<Object> {
