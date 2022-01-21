@@ -66,20 +66,10 @@ export class AutofillProjectFormComponent implements OnInit {
           )
         ),
       ).subscribe(({projects, doiExists}) => {
-        projects.forEach(project => {
-          const title = project?.content?.['project_core']?.['project_title'];
-          const link = `/projects/detail?uuid=${project?.uuid?.uuid}`;
-          this.alertService.error(
-            'This DOI has already been used by project:',
-            `<a href="${link}">${title}</a>`);
-        });
+        this.showExistingProjectsAlert(projects);
 
         if (!doiExists) {
-            const link = `mailto:wrangler-team@data.humancellatlas.org?subject=Cannot%20find%20project%20by%20DOI&body=${doi}`;
-            this.alertService.error(
-              'This DOI cannot be found on Europe PMC.',
-              `Please contact our <a href="${link}">wranglers</a> for further assistance.`
-            );
+          this.showDOIExistsAlert(doi);
         }
 
         if(doiExists && projects.length == 0) {
@@ -93,6 +83,24 @@ export class AutofillProjectFormComponent implements OnInit {
           this.loading = false;
         });
     }
+  }
+
+  showDOIExistsAlert(doi) {
+    const link = `mailto:wrangler-team@data.humancellatlas.org?subject=Cannot%20find%20project%20by%20DOI&body=${doi}`;
+    this.alertService.error(
+      'This DOI cannot be found on Europe PMC.',
+      `Please contact our <a href="${link}">wranglers</a> for further assistance.`
+    );
+  }
+
+  showExistingProjectsAlert(projects: Project[]) {
+    projects.forEach(project => {
+      const title = project?.content?.['project_core']?.['project_title'];
+      const link = `/projects/detail?uuid=${project?.uuid?.uuid}`;
+      this.alertService.error(
+        'This DOI has already been used by project:',
+        `<a href="${link}">${title}</a>`);
+    });
   }
 
   getProjectsWithDOI(doi: string): Observable<Project[]> {
