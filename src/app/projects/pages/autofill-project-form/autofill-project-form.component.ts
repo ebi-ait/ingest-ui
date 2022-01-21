@@ -1,14 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {from, Observable} from 'rxjs';
-import {filter, map, switchMap, switchMapTo, tap} from 'rxjs/operators';
+import {AutofillProjectService} from '@projects/services/autofill-project.service';
 import {Project} from '@shared/models/project';
 import {AlertService} from '@shared/services/alert.service';
 import {IngestService} from '@shared/services/ingest.service';
+import {from, Observable} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
 import {Identifier} from '../../models/europe-pmc-search';
 import {ProjectCacheService} from '../../services/project-cache.service';
-import {AutofillProjectService} from '@projects/services/autofill-project.service';
 
 @Component({
   selector: 'app-doi-name-field',
