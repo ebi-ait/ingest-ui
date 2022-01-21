@@ -18,6 +18,7 @@ import {AutofillProjectService} from '@projects/services/autofill-project.servic
 export class AutofillProjectFormComponent implements OnInit {
   publicationDoiCtrl: FormControl;
   projectInCache$: Observable<Project>;
+  loading = false;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -57,15 +58,18 @@ export class AutofillProjectFormComponent implements OnInit {
 
     if (this.publicationDoiCtrl.value) {
       const doi = this.publicationDoiCtrl.value;
+      this.loading = true;
       this.doesProjectWithDoiExist(doi).pipe(
         filter(projectExists => projectExists === false),
         switchMapTo(this.doesDoiExist(doi)),
         filter(doiExists => doiExists)
       ).subscribe(() => {
           this.createProject(doi);
+          this.loading = false;
         },
         error => {
           this.alertService.error('An error occurred', error.message);
+          this.loading = true;
         });
     }
   }
