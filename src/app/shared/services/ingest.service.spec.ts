@@ -1,8 +1,10 @@
 import {HttpClient} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
-import {INVALID_FILE_TYPES_AND_CODES, METADATA_VALIDATION_STATES} from "@shared/constants";
+import {INVALID_FILE_TYPES_AND_CODES, METADATA_VALIDATION_STATES} from '@shared/constants';
 import {IngestService} from './ingest.service';
+import {MetadataDocument} from '@shared/models/metadata-document';
+import {Project} from '@shared/models/project';
 
 describe('Ingest Service', () => {
   let service: IngestService;
@@ -31,8 +33,25 @@ describe('Ingest Service', () => {
   });
 
   describe('query entity functions', () => {
+    const metaDoc: MetadataDocument = {
+      content: {},
+      submissionDate: '',
+      updateDate: '',
+      lastModifiedUser: '',
+      type: '',
+      uuid: {
+        uuid: 'my random name'
+      },
+      events: [],
+      dcpVersion: '',
+      validationState: '',
+      validationErrors: [],
+      isUpdate: false,
+      _links: {}
+    };
+
     const mockList = {
-      name: 'my random name'
+      _embedded: [metaDoc]
     };
 
     const criteria = [{
@@ -46,10 +65,7 @@ describe('Ingest Service', () => {
     }];
 
     it(`should work for getQueryEntity and a real entityType`, () => {
-
-      // TODO: Remove ts-ignore and mock returned ListResult properly
-      // @ts-ignore
-      service.getQueryEntity('protocols')(criteria).subscribe(res => expect(res.name).toEqual('my random name'));
+      service.getQueryEntity('protocols')(criteria).subscribe(res => expect(res._embedded?.[0]?.uuid?.uuid).toEqual('my random name'));
 
       const req = httpTestingController.expectOne(`${api_url}/protocols/query`);
       expect(req.request.method).toEqual('POST');
@@ -58,20 +74,14 @@ describe('Ingest Service', () => {
     });
 
     it(`should fail for getQueryEntity and a fake entityType`, () => {
-
-      // TODO: Remove ts-ignore and mock returned ListResult properly
-      // @ts-ignore
       expect(() => service.getQueryEntity('beeblebrox')).toThrow();
     });
 
-
     const makeTest = name => {
-      it(`should work for ${name}`, () => {
+      it(`should work for query${name}`, () => {
         const funcName = `query${name.charAt(0).toUpperCase()}${name.slice(1)}`;
 
-        // TODO: Remove ts-ignore and mock returned ListResult properly
-        // @ts-ignore
-        service[funcName](criteria).subscribe(res => expect(res.name).toEqual('my random name'));
+        service[funcName](criteria).subscribe(res => expect(res?._embedded?.[0]?.uuid?.uuid).toEqual('my random name'));
 
         const req = httpTestingController.expectOne(`${api_url}/${name}/query`);
         expect(req.request.method).toEqual('POST');
@@ -81,6 +91,17 @@ describe('Ingest Service', () => {
     };
 
     ['files', 'protocols', 'biomaterials', 'processes', 'projects'].forEach(makeTest);
+
+    it(`should work for queryProjects as Project type`, () => {
+      service.queryProjects(criteria).subscribe(res => {
+        const project: Project = res._embedded?.[0];
+        expect(project?.uuid?.uuid).toEqual('my random name');
+      });
+      const req = httpTestingController.expectOne(`${api_url}/projects/query`);
+      expect(req.request.method).toEqual('POST');
+      expect(req.request.body).toEqual(criteria);
+      req.flush(mockList);
+    });
   });
 
   describe('standard CRUD helpers', () => {
