@@ -90,7 +90,7 @@ export class AutofillProjectFormComponent implements OnInit {
         },
         error => {
           this.alertService.error('An error occurred', error.message);
-          this.loading = true;
+          this.loading = false;
         });
     }
   }
