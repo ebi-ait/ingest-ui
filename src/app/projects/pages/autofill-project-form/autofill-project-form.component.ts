@@ -69,7 +69,7 @@ export class AutofillProjectFormComponent implements OnInit {
         this.showExistingProjectsAlert(projects);
 
         if (!doiExists) {
-          this.showDOIExistsAlert(doi);
+          this.showDOINotExistsAlert(doi);
         }
 
         if(doiExists && projects.length == 0) {
@@ -85,7 +85,7 @@ export class AutofillProjectFormComponent implements OnInit {
     }
   }
 
-  showDOIExistsAlert(doi) {
+  showDOINotExistsAlert(doi) {
     const link = `mailto:wrangler-team@data.humancellatlas.org?subject=Cannot%20find%20project%20by%20DOI&body=${doi}`;
     this.alertService.error(
       'This DOI cannot be found on Europe PMC.',
