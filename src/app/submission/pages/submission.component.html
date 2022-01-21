@@ -11,7 +11,7 @@
          [queryParams]="{uuid:projectUuid}">
         <mat-icon matTooltip="Go back to project's page">keyboard_backspace</mat-icon>
       </a>
-      <button mat-icon-button *ngIf="isLinkingDone" [disabled]="downloadDisabled" (click)="downloadFile();">
+      <button mat-icon-button *ngIf="isLinkingDone" [disabled]="downloadDisabled" (click)="downloadSpreadsheet();">
         <mat-icon matTooltip="Download spreadsheet">get_app</mat-icon>
       </button>
       <button mat-icon-button *ngIf="submissionEnvelope && submissionEnvelope.open"
@@ -90,6 +90,59 @@
     <mat-tab label="Spreadsheet">
       <ng-template matTabContent>
         <div class="vf-u-margin__top--xxl">
+          <h3 class="vf-text vf-text-heading--4">Download latest generated spreadsheet</h3>
+          <div *ngIf="lastSpreadsheetJob['createdDate'] && !lastSpreadsheetJob['finishedDate']">
+            <p>
+              <mat-icon>info</mat-icon>
+              Spreadsheet is being generated. Please come back later.
+            </p>
+          </div>
+
+          <div *ngIf="lastSpreadsheetJob['finishedDate']" class="vf-u-margin__top--xxl">
+            <a mat-icon-button class="search-button" matSuffix mat-icon-button matTooltip="Download spreadsheet"
+               (click)="downloadSpreadsheet()">
+              <mat-icon>file_download</mat-icon>
+              {{submissionEnvelopeUuid + '_' + (lastSpreadsheetJob['createdDate'] | date:'YYYYMMdd-hhmmss') + '.xls'}}
+            </a>
+            <p> last generated: {{lastSpreadsheetJob['createdDate'] }}</p>
+            <p> submission last updated: {{submissionEnvelope['updateDate']}}
+              <a mat-icon-button class="search-button"
+                 matSuffix mat-icon-button
+                 matTooltip="refresh"
+                 (click)="checkWhenLastUpdated()">
+                <mat-icon>autorenew</mat-icon>
+              </a></p>
+
+            <p *ngIf="spreadsheetUpdated === false">
+              <mat-icon>thumb_down</mat-icon>
+              The spreadsheet is already outdated. Please export submission again to get the most up-to-date
+              spreadsheet.
+            </p>
+
+            <p *ngIf="spreadsheetUpdated">
+              <mat-icon>thumb_up</mat-icon>
+              The spreadsheet is up-to-date!
+            </p>
+          </div>
+
+
+          <h3 class="vf-text vf-text-heading--4">Export submission to spreadsheet</h3>
+          <p>Exporting the content of the submission may take some time. The link to download the spreadsheet should be
+            available here once spreadsheet has been generated. </p>
+          <p>The spreadsheet will contain the uuids and the properties for each metadata entities. You can update the
+            spreadsheet and import your updates.</p>
+
+
+          <button
+            *ngIf="!lastSpreadsheetJob['createdDate'] || lastSpreadsheetJob['finishedDate']"
+            type="button" class="vf-button vf-button--sm vf-button--primary"
+            (click)="generateSpreadsheet()">
+            Export to .xls file
+          </button>
+
+        </div>
+
+        <div class="vf-u-margin__top--xxl">
           <h3 class="vf-text vf-text-heading--4">Import a spreadsheet</h3>
           <p>You could import a spreadsheet to update the metadata in this submission.
             The spreadsheet should contain the uuid's of the metadata you want to update.</p>
@@ -131,7 +184,8 @@
       <h3 class="vf-u-margin__top--xxl vf-text vf-text-heading--4">Graph Validation</h3>
 
       <ng-container *ngIf="submissionState !== SUBMISSION_STATES.GraphValid; else graphValid">
-        <p>In order to finalize your submission, you must validate the graph, or the linking between metadata entities.</p>
+        <p>In order to finalize your submission, you must validate the graph, or the linking between metadata
+          entities.</p>
         <button
           *ngIf="submissionState !== SUBMISSION_STATES.GraphValidating && submissionState !== SUBMISSION_STATES.GraphValidationRequested"
           class="vf-button {{ graphValidationButtonDisabled ? 'vf-button--tertiary' : 'vf-button--primary' }} vf-button--sm"

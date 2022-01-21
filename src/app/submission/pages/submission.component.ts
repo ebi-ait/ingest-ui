@@ -58,6 +58,8 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   validationSummary: SubmissionSummary;
   isLoading: boolean;
   graphValidationButtonDisabled = false;
+  lastSpreadsheetJob: object;
+
 
   submissionDataSource: SimpleDataSource<SubmissionEnvelope>;
   projectDataSource: SimpleDataSource<Project>;
@@ -77,6 +79,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   downloadDisabled = false;
   DOWNLOAD_TIMEOUT_COOKIE = "_downloadTimedout"
   DOWNLOAD_BACKOFF_MINS = 20;
+  spreadsheetUpdated: boolean;
 
   constructor(
     private alertService: AlertService,
@@ -166,6 +169,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.submitLink = this.getLink(submissionEnvelope, 'submit');
     this.exportLink = this.getLink(submissionEnvelope, 'export');
     this.cleanupLink = this.getLink(submissionEnvelope, 'cleanup');
+    this.lastSpreadsheetJob = submissionEnvelope['lastSpreadsheetDownloadJob'] || {};
     this.url = this.getLink(submissionEnvelope, 'self');
   }
 
@@ -273,28 +277,37 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     return links && links[linkName] ? links[linkName]['href'] : null;
   }
 
-  downloadFile() {
+  generateSpreadsheet() {
+    const uuid = this.submissionEnvelope['uuid']['uuid'];
+    this.brokerService.exportToSpreadsheet(uuid).subscribe(response => {
+      this.alertService.success('',
+        'Successfully triggered spreadsheet generation! This may take a while. ' +
+        'Please come back later and check the link to download the file.');
+    });
+  }
+
+  downloadSpreadsheet() {
     this.downloadDisabled = true;
     const uuid = this.submissionEnvelope['uuid']['uuid'];
     this.loaderService.display(true, 'This may take a moment. Please wait...');
     // now set a cookie to disable further download attempt within X min of this request or
     // until a response is returned when the cookie gets deleted.
-    this.cookieService.set(this.DOWNLOAD_TIMEOUT_COOKIE, "1", {expires: this.DOWNLOAD_BACKOFF_MINS / (24*60)})
+    this.cookieService.set(this.DOWNLOAD_TIMEOUT_COOKIE, "1", {expires: this.DOWNLOAD_BACKOFF_MINS / (24 * 60)})
     this.brokerService.downloadSpreadsheet(uuid).subscribe(response => {
-      const filename = response['filename'];
-      const newBlob = new Blob([response['data']]);
+        const filename = response['filename'];
+        const newBlob = new Blob([response['data']]);
         this.saveFile(newBlob, filename);
         this.loaderService.display(false);
-      this.downloadDisabled = false;
-      this.cookieService.delete(this.DOWNLOAD_TIMEOUT_COOKIE);
-    },
-    err => {
-      if (err instanceof TimeoutError) {
-        this.loaderService.display(false);
-        this.alertService.error('', 'Spreadsheet download timed out. Please retry later.', true, true);
-        setTimeout(() => this.downloadDisabled = false, this.DOWNLOAD_BACKOFF_MINS * 60 * 1000);
-      }
-    });
+        this.downloadDisabled = false;
+        this.cookieService.delete(this.DOWNLOAD_TIMEOUT_COOKIE);
+      },
+      err => {
+        if (err instanceof TimeoutError) {
+          this.loaderService.display(false);
+          this.alertService.error('', 'Spreadsheet download timed out. Please retry later.', true, true);
+          setTimeout(() => this.downloadDisabled = false, this.DOWNLOAD_BACKOFF_MINS * 60 * 1000);
+        }
+      });
   }
 
   public saveFile(newBlob: Blob, filename) {
@@ -392,13 +405,13 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     });
   }
 
-  onErrorClick({ source, validationState }): void {
+  onErrorClick({source, validationState}): void {
     const index = SubmissionTab[source.toUpperCase()].valueOf();
     this.selectedIndex = index;
 
     const dataSource = this[`${source}DataSource`];
 
-    if(validationState === 'Invalid Graph') {
+    if (validationState === 'Invalid Graph') {
       // No way to filter by invalid graph for now until dcp-546
       dataSource.filterByState('')
     } else {
@@ -444,12 +457,20 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     const url = `${this.submissionEnvelope['_links']['self']['href']}/graphValidationRequestedEvent`
     this.ingestService.put(url, {}).subscribe(
       (submissionEnvelope) => {
-        setTimeout(() => this.graphValidationButtonDisabled = false, SUBMISSION_POLL_INTERVAL * 4/3)
+        setTimeout(() => this.graphValidationButtonDisabled = false, SUBMISSION_POLL_INTERVAL * 4 / 3)
       },
       err => {
         this.alertService.error('An error occurred while triggering validation', err.message);
         this.graphValidationButtonDisabled = false;
       }
     )
+  }
+
+  checkWhenLastUpdated() {
+    if (this.spreadsheetUpdated === undefined) {
+      this.spreadsheetUpdated = false;
+    } else {
+      this.spreadsheetUpdated = !this.spreadsheetUpdated;
+    }
   }
 }

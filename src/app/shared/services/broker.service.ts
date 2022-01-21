@@ -43,6 +43,12 @@ export class BrokerService {
       }));
   }
 
+  exportToSpreadsheet(submissionUuid): Observable<any> {
+    return this.http
+      .post(`${this.API_URL}/submissions/${submissionUuid}/spreadsheet`,
+        {observe: 'response', responseType: 'blob'});
+  }
+
   generateTemplate(spec: TemplateGenerationRequestParam): Observable<TemplateGenerationResponse> {
     console.log('requesting');
     const url = `${this.API_URL}/spreadsheets`;
