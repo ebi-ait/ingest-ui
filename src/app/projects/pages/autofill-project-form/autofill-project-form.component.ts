@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {from, Observable} from 'rxjs';
-import {filter, map, switchMapTo, tap} from 'rxjs/operators';
+import {filter, map, switchMap, switchMapTo, tap} from 'rxjs/operators';
 import {Project} from '@shared/models/project';
 import {AlertService} from '@shared/services/alert.service';
 import {IngestService} from '@shared/services/ingest.service';
@@ -59,13 +59,34 @@ export class AutofillProjectFormComponent implements OnInit {
     if (this.publicationDoiCtrl.value) {
       const doi = this.publicationDoiCtrl.value;
       this.loading = true;
-      this.doesProjectWithDoiExist(doi).pipe(
-        filter(projectExists => projectExists === false),
-        switchMapTo(this.doesDoiExist(doi)),
-        filter(doiExists => doiExists)
-      ).subscribe(() => {
-          this.createProject(doi);
-          this.loading = false;
+      this.getProjectsWithDOI(doi).pipe(
+        switchMap(projects =>
+          this.doesDoiExist(doi).pipe(
+            map(doiExists => ({ doiExists, projects }))
+          )
+        ),
+      ).subscribe(({projects, doiExists}) => {
+        projects.forEach(project => {
+          const title = project?.content?.['project_core']?.['project_title'];
+          const link = `/projects/detail?uuid=${project?.uuid?.uuid}`;
+          this.alertService.error(
+            'This DOI has already been used by project:',
+            `<a href="${link}">${title}</a>`);
+        });
+
+        if (!doiExists) {
+            const link = `mailto:wrangler-team@data.humancellatlas.org?subject=Cannot%20find%20project%20by%20DOI&body=${doi}`;
+            this.alertService.error(
+              'This DOI cannot be found on Europe PMC.',
+              `Please contact our <a href="${link}">wranglers</a> for further assistance.`
+            );
+        }
+
+        if(doiExists && projects.length == 0) {
+          this.createProject(doi)
+        }
+
+        this.loading = false;
         },
         error => {
           this.alertService.error('An error occurred', error.message);
@@ -74,7 +95,7 @@ export class AutofillProjectFormComponent implements OnInit {
     }
   }
 
-  doesProjectWithDoiExist(doi: string): Observable<boolean> {
+  getProjectsWithDOI(doi: string): Observable<Project[]> {
     const query = [];
     const criteria = {
       'field': 'content.publications.doi',
@@ -83,15 +104,7 @@ export class AutofillProjectFormComponent implements OnInit {
     };
     query.push(criteria);
     return this.ingestService.queryProjects(query).pipe(
-      map(data => data?._embedded?.projects),
-      tap(projects => projects?.forEach(project => {
-        const project_title = project?.content?.['project_core']?.['project_title'];
-        const link = `/projects/detail?uuid=${project?.uuid?.uuid}`;
-        this.alertService.error(
-          'This DOI has already been used by project:',
-          `<a href="${link}">${project_title}</a>`);
-      })),
-      map(projects => !!projects)
+      map(data => data?._embedded?.projects || []),
     );
   }
 
@@ -100,16 +113,7 @@ export class AutofillProjectFormComponent implements OnInit {
     return this.autofillProjectService
       .queryEuropePMC(searchIdentifier, doi)
       .pipe(
-        map(response => response.resultList.result.length > 0),
-        tap(doiExists => {
-          if (!doiExists) {
-            const link = `mailto:wrangler-team@data.humancellatlas.org?subject=Cannot%20find%20project%20by%20DOI&body=${doi}`;
-            this.alertService.error(
-              'This DOI cannot be found on Europe PMC.',
-              `Please contact our <a href="${link}">wranglers</a> for further assistance.`
-            );
-          }
-        })
+        map(response => response.resultList.result.length > 0)
       );
   }
 
