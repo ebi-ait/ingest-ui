@@ -29,7 +29,10 @@ export class AutofillProjectFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.publicationDoiCtrl = new FormControl('', Validators.required);
+    this.publicationDoiCtrl = new FormControl('', Validators.compose([
+      Validators.required,
+      Validators.pattern(/^10.\d{4,9}\/[-._;()\/:A-Z0-9]+$/i)
+    ]));
     this.projectInCache$ = from(this.projectCacheService.getProject());
   }
 
@@ -39,6 +42,9 @@ export class AutofillProjectFormComponent implements OnInit {
 
       if (errors['required']) {
         return 'This field is required';
+      }
+      if (errors['pattern']) {
+        return 'The DOI must be a valid DOI. E.g. 10.1038/s41467-021-26902-8'
       }
     }
   }
