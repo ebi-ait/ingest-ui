@@ -1,4 +1,4 @@
-import {HttpClient, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpResponse, HttpStatusCode} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, throwError} from 'rxjs';
 import {catchError, map, tap, timeout} from 'rxjs/operators';
@@ -75,14 +75,27 @@ export class BrokerService {
     };
   }
 
-  public downloadSpreadsheetUsingGeo(geoAccession: string) {
-    console.log("am in the downloadSpreadsheetUsingGeo function")
-    // const x = this.API_URL;
-    const x = 'http://127.0.0.1:5000'
+   downloadSpreadsheetUsingGeo(geoAccession: string): Observable<any> {
     const params = {
-      'geo-accession': geoAccession,
+      'accession': geoAccession,
     };
-    return this.http.get(`${x}/spreadsheet`, {params});
+    return this.http
+      .get(`${ this.API_URL}/geo-accession/spreadsheet`,
+        {params, responseType: 'blob', observe: 'response'}).pipe(
+          map(response => {
+            if (response.status == HttpStatusCode.Ok) {
+              const contentDisposition = response.headers.get('content-disposition');
+              const filename = contentDisposition.split(';')[1].split('filename')[1].split('=')[1].trim();
+              return {
+                'data': response.body,
+                'filename': filename
+              };
+            }
+            else {
+              throw throwError(response);
+            }
+          })
+      )
   }
-s
+
 }

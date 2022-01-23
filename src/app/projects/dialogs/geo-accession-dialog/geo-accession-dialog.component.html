@@ -5,8 +5,9 @@
     [label]="'GEO Accession'"
   ></app-vf-input>
 </div>
+
 <div mat-dialog-actions align="end">
-  <button (click)="onClose()" mat-button mat-dialog-close>Close</button>
-  <button (click)="onDownload()" mat-button mat-dialog-close>Download</button>
+  <button mat-button (click)="onClose()" >Cancel</button>
+  <button mat-button (click)="onDownload()">Download</button>
 </div>
 

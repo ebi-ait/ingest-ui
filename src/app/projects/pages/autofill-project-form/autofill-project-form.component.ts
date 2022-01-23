@@ -122,20 +122,6 @@ export class AutofillProjectFormComponent implements OnInit {
 
   openDialog() {
     const dialogRef = this.dialog.open(GeoAccessionDialogComponent);
-
-    // dialogRef.afterClosed().subscribe(result => {
-    //   console.log(`Dialog result: ${result}`);
-    // });
-
-    // const dialogConfig = new MatDialogConfig();
-
-    // dialogConfig.disableClose = true; // might need this cuz async call and stuff
-    // dialogConfig.autoFocus = true;
-
-    // this.dialog.open(CourseDialogComponent, dialogConfig);
-
-    // dialogRef.afterClosed().subscribe(result => {
-    //   console.log(`Dialog result: ${result}`);
-    // });
+    dialogRef.disableClose = true;
   }
 }
