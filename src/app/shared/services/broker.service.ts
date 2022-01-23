@@ -95,7 +95,7 @@ export class BrokerService {
               throw throwError(response);
             }
           })
-      )
+      );
   }
 
 }
