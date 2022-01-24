@@ -97,7 +97,7 @@ describe('Broker Service', () => {
           expect(res.data).toEqual(blob);
           done();
         });
-      const req = httpTestingController.expectOne(`${api_url}/geo-accession/spreadsheet?accession=${geoAccession}`);
+      const req = httpTestingController.expectOne(`${api_url}/import-geo?accession=${geoAccession}`);
 
       req.flush(blob, {
         headers: {'Content-Disposition': 'attachment; filename=myfile.xls'},
@@ -105,7 +105,7 @@ describe('Broker Service', () => {
         statusText: 'OK'
       });
 
-      expect(req.request.method).toEqual('GET');
+      expect(req.request.method).toEqual('POST');
       expect(req.request.body).toBeNull();
 
     });
