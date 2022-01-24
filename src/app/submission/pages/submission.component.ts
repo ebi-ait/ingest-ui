@@ -18,6 +18,7 @@ import {LoaderService} from '@shared/services/loader.service';
 import {Observable, TimeoutError, of} from 'rxjs';
 import {catchError, map, mergeMap} from 'rxjs/operators';
 import {CookieService} from 'ngx-cookie-service';
+import {SaveFileService} from "@shared/services/save-file.service";
 
 enum SubmissionTab {
   BIOMATERIALS = 0,
@@ -85,7 +86,8 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private loaderService: LoaderService,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    private saveFileService: SaveFileService
   ) {
   }
 
@@ -283,7 +285,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.brokerService.downloadSpreadsheet(uuid).subscribe(response => {
       const filename = response['filename'];
       const newBlob = new Blob([response['data']]);
-        this.saveFile(newBlob, filename);
+        this.saveFileService.saveFile(newBlob, filename);
         this.loaderService.display(false);
       this.downloadDisabled = false;
       this.cookieService.delete(this.DOWNLOAD_TIMEOUT_COOKIE);
@@ -297,23 +299,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     });
   }
 
-  public saveFile(newBlob: Blob, filename) {
-    // For other browsers:
-    // Create a link pointing to the ObjectURL containing the blob.
-    const data = window.URL.createObjectURL(newBlob);
 
-    const link = document.createElement('a');
-    link.href = data;
-    link.download = filename;
-    // this is necessary as link.click() does not work on the latest firefox
-    link.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true, view: window}));
-
-    setTimeout(function () {
-      // For Firefox it is necessary to delay revoking the ObjectURL
-      window.URL.revokeObjectURL(data);
-      link.remove();
-    }, 100);
-  }
 
   onDeleteSubmission(submissionEnvelope: SubmissionEnvelope) {
     const submissionId: String = SubmissionComponent.getSubmissionId(submissionEnvelope);
