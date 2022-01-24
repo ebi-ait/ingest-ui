@@ -51,6 +51,7 @@ export class AutofillProjectFormComponent implements OnInit {
   }
 
   submitForm() {
+    this.alertService.clear();
     if (this.publicationDoiCtrl.invalid) {
       this.publicationDoiCtrl.markAsTouched();
       return;
