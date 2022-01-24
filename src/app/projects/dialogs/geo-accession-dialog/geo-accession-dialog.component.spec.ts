@@ -5,9 +5,11 @@ import {LoaderService} from '@shared/services/loader.service';
 import {AlertService} from '@shared/services/alert.service';
 import {SaveFileService} from '@shared/services/save-file.service';
 import SpyObj = jasmine.SpyObj;
+import {HttpResponse} from "@angular/common/http";
+import {of} from "rxjs";
 
 describe('GeoAccessionDialogComponent', () => {
-  let component: GeoAccessionDialogComponent;
+  let geoComponent: GeoAccessionDialogComponent;
   let dialogRef: SpyObj<MatDialogRef<GeoAccessionDialogComponent>>;
   let brokerSvc: SpyObj<BrokerService>;
   let loaderSvc: SpyObj<LoaderService>;
@@ -16,23 +18,45 @@ describe('GeoAccessionDialogComponent', () => {
 
   beforeEach(() => {
     dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
-    brokerSvc = jasmine.createSpyObj('BrokerService', ['downloadSpreadsheet']);
+    brokerSvc = jasmine.createSpyObj('BrokerService', ['downloadSpreadsheetUsingGeo']);
     loaderSvc = jasmine.createSpyObj('LoaderService', ['display']);
     alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error']);
     saveFileSvc = jasmine.createSpyObj('SaveFileService', ['saveFile']);
 
-    component = new GeoAccessionDialogComponent(dialogRef, brokerSvc, loaderSvc, alertSvc, saveFileSvc);
+    geoComponent = new GeoAccessionDialogComponent(dialogRef, brokerSvc, loaderSvc, alertSvc, saveFileSvc);
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(geoComponent).toBeTruthy();
   });
 
-  it('should test onDownload method', () => {
-    throw new Error('Not Implemented');
+
+  it('loader gets displayed', () => {
+    geoComponent.ngOnInit();
+    const geoAccession = 'GSE001';
+    geoComponent.geoAccessionCtrl.setValue(geoAccession);
+
+    const body = new Blob([],
+            {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+          const response: HttpResponse<Blob> = new HttpResponse({body: body, status: 200});
+          const mock_return = {
+            'data': response.body,
+            'filename': 'filename.xls'
+          };
+
+    brokerSvc.downloadSpreadsheetUsingGeo.and.returnValue(of(mock_return));
+
+    //when
+    geoComponent.onDownload();
+
+    //then
+    expect(loaderSvc.display).toHaveBeenCalledTimes(2);
+    expect(dialogRef.close).toHaveBeenCalledTimes(1)
   });
 
-  it('should test onClose method', () => {
-    throw new Error('Not Implemented');
+  it('dialog box closes', () => {
+    geoComponent.onClose();
+    expect(dialogRef.close).toHaveBeenCalledTimes(1)
+
   });
 });

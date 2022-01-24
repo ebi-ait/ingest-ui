@@ -34,7 +34,7 @@ export class GeoAccessionDialogComponent implements OnInit {
   onDownload() {
     if (this.geoAccessionCtrl.value) {
       this.loaderService.display(true, 'This may take a moment. Please wait...');
-      this.dialogRef.close();
+      this.onClose();
       this.brokerService.downloadSpreadsheetUsingGeo(this.geoAccessionCtrl.value)
         .subscribe(response => {
           const filename = response['filename'];
