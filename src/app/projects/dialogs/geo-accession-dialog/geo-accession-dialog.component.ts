@@ -39,7 +39,7 @@ export class GeoAccessionDialogComponent implements OnInit {
         .subscribe(response => {
           const filename = response['filename'];
           const blob = new Blob([response['data']]);
-            this.saveFileService.saveFile(blob, filename);
+          this.saveFileService.saveFile(blob, filename);
           this.loaderService.display(false);
         },
         error => {

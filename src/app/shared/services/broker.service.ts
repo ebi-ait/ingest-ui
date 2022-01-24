@@ -80,7 +80,7 @@ export class BrokerService {
       'accession': geoAccession,
     };
     return this.http
-      .get(`${ this.API_URL}/geo-accession/spreadsheet`,
+      .post(`${ this.API_URL}/import-geo`, '',
         {params, responseType: 'blob', observe: 'response'}).pipe(
           map(response => {
             if (response.status == HttpStatusCode.Ok) {
