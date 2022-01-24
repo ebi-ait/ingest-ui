@@ -64,17 +64,17 @@ export class AutofillProjectFormComponent implements OnInit {
         projects: this.getProjectsWithDOI(doi),
         doiExists: this.doesDoiExist(doi)
       }).subscribe(({projects, doiExists}) => {
-        this.showExistingProjectsAlert(projects);
+          this.showExistingProjectsAlert(projects);
 
-        if (!doiExists) {
-          this.showDOINotExistsAlert(doi);
-        }
+          if (!doiExists) {
+            this.showDOINotExistsAlert(doi);
+          }
 
-        if(doiExists && projects.length == 0) {
-          this.createProject(doi)
-        }
+          if (doiExists && projects.length == 0) {
+            this.createProject(doi);
+          }
 
-        this.loading = false;
+          this.loading = false;
         },
         error => {
           this.alertService.error('An error occurred', error.message);
