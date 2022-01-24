@@ -5,8 +5,8 @@ import {AutofillProjectService} from '@projects/services/autofill-project.servic
 import {Project} from '@shared/models/project';
 import {AlertService} from '@shared/services/alert.service';
 import {IngestService} from '@shared/services/ingest.service';
-import {from, Observable} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {forkJoin, from, Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {Identifier} from '../../models/europe-pmc-search';
 import {ProjectCacheService} from '../../services/project-cache.service';
 
@@ -59,13 +59,10 @@ export class AutofillProjectFormComponent implements OnInit {
     if (this.publicationDoiCtrl.value) {
       const doi = this.publicationDoiCtrl.value;
       this.loading = true;
-      this.getProjectsWithDOI(doi).pipe(
-        switchMap(projects =>
-          this.doesDoiExist(doi).pipe(
-            map(doiExists => ({ doiExists, projects }))
-          )
-        ),
-      ).subscribe(({projects, doiExists}) => {
+      forkJoin({
+        projects: this.getProjectsWithDOI(doi),
+        doiExists: this.doesDoiExist(doi)
+      }).subscribe(({projects, doiExists}) => {
         this.showExistingProjectsAlert(projects);
 
         if (!doiExists) {
