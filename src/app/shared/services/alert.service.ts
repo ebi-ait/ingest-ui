@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
 import {NavigationStart, Router} from '@angular/router';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {Alert, AlertType} from '../models/alert';
-import { isNil } from 'lodash';
 
 @Injectable()
 export class AlertService {

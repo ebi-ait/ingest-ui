@@ -23,7 +23,7 @@ describe('SubmissionComponent', () => {
 
   beforeEach(() => {
     ingestSvc = jasmine.createSpyObj('IngestService', ['getUserAccount', 'getArchiveSubmission']);
-    alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error']);
+    alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error', 'clearGroup']);
     cookieSvc = jasmine.createSpyObj('CookieService', ['set', 'check', 'delete']);
     loaderSvc = jasmine.createSpyObj('LoaderService', ['display']);
     brokerSvc = jasmine.createSpyObj('BrokerService', ['downloadSpreadsheet']);
@@ -65,7 +65,7 @@ describe('SubmissionComponent', () => {
       submissionComponent.displaySubmissionErrors(submissionEnvelope);
 
       // then
-      expect(alertSvc.clear).toHaveBeenCalledTimes(1);
+      expect(alertSvc.clearGroup).toHaveBeenCalledTimes(1);
     });
   });
 
