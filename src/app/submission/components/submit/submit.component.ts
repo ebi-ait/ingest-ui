@@ -81,7 +81,7 @@ export class SubmitComponent implements OnInit {
       },
       err => {
         this.loaderService.display(false);
-        this.alertService.error('An error occurred on submitting your submission envelope.', err.message, true);
+        this.alertService.error('An error occurred on submitting your submission envelope.', err.message);
       }
     );
   }
