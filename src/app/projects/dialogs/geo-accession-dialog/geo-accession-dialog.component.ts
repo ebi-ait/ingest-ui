@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {MatDialogRef} from "@angular/material/dialog";
 import {BrokerService} from '@shared/services/broker.service';
@@ -47,8 +47,9 @@ export class GeoAccessionDialogComponent implements OnInit {
       this.brokerService.downloadSpreadsheetUsingGeo(this.geoAccessionCtrl.value)
         .subscribe(response => {
           const filename = response['filename'];
-          const blob = new Blob([response]['data']);
+          const blob = new Blob([response['data']]);
           this.saveFile(blob, filename);
+          this.dialogRef.close();
         })
     }
   }
