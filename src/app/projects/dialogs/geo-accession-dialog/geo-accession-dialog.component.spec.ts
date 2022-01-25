@@ -19,7 +19,7 @@ describe('GeoAccessionDialogComponent', () => {
   beforeEach(() => {
     dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
     brokerSvc = jasmine.createSpyObj('BrokerService', ['downloadSpreadsheetUsingGeo']);
-    loaderSvc = jasmine.createSpyObj('LoaderService', ['display']);
+    loaderSvc = jasmine.createSpyObj('LoaderService', ['display', 'hide']);
     alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error']);
     saveFileSvc = jasmine.createSpyObj('SaveFileService', ['saveFile']);
 
@@ -50,7 +50,8 @@ describe('GeoAccessionDialogComponent', () => {
     geoComponent.onDownload();
 
     //then
-    expect(loaderSvc.display).toHaveBeenCalledTimes(2);
+    expect(loaderSvc.display).toHaveBeenCalledTimes(1);
+    expect(loaderSvc.hide).toHaveBeenCalledTimes(1);
     expect(dialogRef.close).toHaveBeenCalledTimes(1)
   });
 
