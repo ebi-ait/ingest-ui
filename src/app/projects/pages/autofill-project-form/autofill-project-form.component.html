@@ -13,7 +13,10 @@
 
 <button
   (click)="submitForm()"
-  class="next-button vf-button vf-button--primary vf-button vf-u-margin__left--xxl">Next
+  class="next-button vf-button {{ loading ? 'vf-button--tertiary' : 'vf-button--primary' }} vf-u-margin__left--xxl"
+  [disabled]="loading"
+>
+  {{ loading ? '...' : 'Next' }}
 </button>
 
 
