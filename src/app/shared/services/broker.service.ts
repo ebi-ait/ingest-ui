@@ -34,12 +34,7 @@ export class BrokerService {
         {observe: 'response', responseType: 'blob'})
       .pipe(timeout(this.DOWNLOAD_SPREADSHEET_TIMEOUT),
         map((res) => {
-        const contentDisposition = res.headers.get('content-disposition');
-        const filename = contentDisposition.split(';')[1].split('filename')[1].split('=')[1].trim();
-        return {
-          'data': res.body,
-          'filename': filename
-        };
+          return this.getFileDataFromResponse(res);
       }));
   }
 
@@ -84,18 +79,22 @@ export class BrokerService {
         {params, responseType: 'blob', observe: 'response'}).pipe(
           map(response => {
             if (response.status == HttpStatusCode.Ok) {
-              const contentDisposition = response.headers.get('content-disposition');
-              const filename = contentDisposition.split(';')[1].split('filename')[1].split('=')[1].trim();
-              return {
-                'data': response.body,
-                'filename': filename
-              };
+             return this.getFileDataFromResponse(response)
             }
             else {
               throw throwError(response);
             }
           })
       );
+  }
+
+  private getFileDataFromResponse(response: HttpResponse<Blob>) {
+    const contentDisposition = response.headers.get('content-disposition');
+    const filename = contentDisposition.split(';')[1].split('filename')[1].split('=')[1].trim();
+    return {
+      'data': response.body,
+      'filename': filename
+    };
   }
 
 }
