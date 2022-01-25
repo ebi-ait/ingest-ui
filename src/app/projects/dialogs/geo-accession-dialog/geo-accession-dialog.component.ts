@@ -40,11 +40,11 @@ export class GeoAccessionDialogComponent implements OnInit {
           const filename = response['filename'];
           const blob = new Blob([response['data']]);
           this.saveFileService.saveFile(blob, filename);
-          this.loaderService.display(false);
+          this.loaderService.hide();
         },
         error => {
           this.alertService.error('Unable to download spreadsheet. Please retry later.', error.message );
-          this.loaderService.display(false);
+          this.loaderService.hide();
         })
     }
   }
