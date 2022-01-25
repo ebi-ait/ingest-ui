@@ -43,7 +43,9 @@ export class GeoAccessionDialogComponent implements OnInit {
           this.loaderService.hide();
         },
         error => {
-          this.alertService.error('Unable to download spreadsheet. Please retry later.', error.message );
+          console.log(error)
+          this.alertService.error('Unable to download spreadsheet using this GEO accession.' +
+            ' Please retry again.', error.message );
           this.loaderService.hide();
         })
     }
