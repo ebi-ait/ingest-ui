@@ -37,7 +37,6 @@ export class WranglerListInputComponent extends BaseInputComponent implements On
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.setDefaultWrangler();
     this.searchControl = this.createSearchControl(this.control.value);
     this.wranglers$ = this.ingestService.getWranglers();
     this.options$ = this.searchControl.valueChanges
@@ -66,15 +65,6 @@ export class WranglerListInputComponent extends BaseInputComponent implements On
 
   displayWranglerName(wrangler: Account) {
     return wrangler ? wrangler.name : '';
-  }
-
-  private getWranglerNames(): Observable<string[]> {
-    return this.ingestService.getWranglers().pipe(
-      map(wranglers => wranglers?.map(wrangler => wrangler.name)));
-  }
-
-  private setDefaultWrangler() {
-    // TODO set current account as default wrangler
   }
 
   private onSearchValueChanged(value: string | Account): Observable<Account[]> {
