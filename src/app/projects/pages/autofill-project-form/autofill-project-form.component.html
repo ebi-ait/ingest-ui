@@ -26,6 +26,13 @@
   </a>
 </div>
 
+<div class="vf-u-padding__top--xxl">
+  <a class="vf-link"
+    (click)="openDialog()">
+    Enter a GEO accession to create a pre-filled metadata spreadsheet
+  </a>
+</div>
+
 <div *ngIf="projectInCache$ | async" class="vf-u-padding__top--xxl">
   <a class="vf-link"
   (click)="restoreProject()">

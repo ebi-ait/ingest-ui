@@ -1,0 +1,13 @@
+<div mat-dialog-content>
+  <app-vf-input
+    dataType="string"
+    [formControl]="geoAccessionCtrl"
+    [label]="'GEO Accession'"
+  ></app-vf-input>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onClose()" >Close</button>
+  <button mat-button (click)="onDownload()">Download</button>
+</div>
+

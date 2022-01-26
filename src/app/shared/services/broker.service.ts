@@ -1,4 +1,4 @@
-import {HttpClient, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpResponse, HttpStatusCode} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, throwError} from 'rxjs';
 import {catchError, map, tap, timeout} from 'rxjs/operators';
@@ -34,12 +34,7 @@ export class BrokerService {
         {observe: 'response', responseType: 'blob'})
       .pipe(timeout(this.DOWNLOAD_SPREADSHEET_TIMEOUT),
         map((res) => {
-        const contentDisposition = res.headers.get('content-disposition');
-        const filename = contentDisposition.split(';')[1].split('filename')[1].split('=')[1].trim();
-        return {
-          'data': res.body,
-          'filename': filename
-        };
+          return this.getFileDataFromResponse(res);
       }));
   }
 
@@ -72,6 +67,33 @@ export class BrokerService {
 
       const error = err.error && err.error.message && err.error.details ? err.error : httpError;
       return throwError(error);
+    };
+  }
+
+   downloadSpreadsheetUsingGeo(geoAccession: string): Observable<any> {
+    const params = {
+      'accession': geoAccession,
+    };
+    return this.http
+      .post(`${ this.API_URL}/import-geo`, null,
+        {params, responseType: 'blob', observe: 'response'}).pipe(
+          map(response => {
+            if (response.status == HttpStatusCode.Ok) {
+             return this.getFileDataFromResponse(response)
+            }
+            else {
+              throw throwError(response);
+            }
+          })
+      );
+  }
+
+  private getFileDataFromResponse(response: HttpResponse<Blob>) {
+    const contentDisposition = response.headers.get('content-disposition');
+    const filename = contentDisposition.split(';')[1].split('filename')[1].split('=')[1].trim();
+    return {
+      'data': response.body,
+      'filename': filename
     };
   }
 

@@ -9,6 +9,8 @@ import {forkJoin, from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {Identifier} from '../../models/europe-pmc-search';
 import {ProjectCacheService} from '../../services/project-cache.service';
+import {MatDialog} from "@angular/material/dialog";
+import {GeoAccessionDialogComponent} from "@projects/dialogs/geo-accession-dialog/geo-accession-dialog.component";
 
 @Component({
   selector: 'app-doi-name-field',
@@ -25,6 +27,7 @@ export class AutofillProjectFormComponent implements OnInit {
               private ingestService: IngestService,
               private alertService: AlertService,
               private projectCacheService: ProjectCacheService,
+              private dialog: MatDialog,
               private autofillProjectService: AutofillProjectService
   ) {
   }
@@ -135,5 +138,10 @@ export class AutofillProjectFormComponent implements OnInit {
       restore: 'true'
     };
     this.router.navigate(['/projects', 'register'], {queryParams: params});
+  }
+
+  openDialog() {
+    const dialogRef = this.dialog.open(GeoAccessionDialogComponent);
+    dialogRef.disableClose = true;
   }
 }

@@ -9,6 +9,7 @@ import {CookieService} from 'ngx-cookie-service';
 import {HttpResponse} from '@angular/common/http';
 import {of, throwError, TimeoutError} from 'rxjs';
 import SpyObj = jasmine.SpyObj;
+import {SaveFileService} from "@shared/services/save-file.service";
 
 
 describe('SubmissionComponent', () => {
@@ -20,6 +21,7 @@ describe('SubmissionComponent', () => {
   let activatedRoute: ActivatedRoute;
   let router: SpyObj<Router>;
   let loaderSvc: SpyObj<LoaderService>;
+  let saveFileSvc: SpyObj<SaveFileService>;
 
   beforeEach(() => {
     ingestSvc = jasmine.createSpyObj('IngestService', ['getUserAccount', 'getArchiveSubmission']);
@@ -27,6 +29,7 @@ describe('SubmissionComponent', () => {
     cookieSvc = jasmine.createSpyObj('CookieService', ['set', 'check', 'delete']);
     loaderSvc = jasmine.createSpyObj('LoaderService', ['display']);
     brokerSvc = jasmine.createSpyObj('BrokerService', ['downloadSpreadsheet']);
+    saveFileSvc = jasmine.createSpyObj('SaveFileService', ['saveFile']);
     router = jasmine.createSpyObj('Router', ['navigate']);
 
     activatedRoute = {
@@ -34,7 +37,7 @@ describe('SubmissionComponent', () => {
     } as ActivatedRoute;
 
     ingestSvc.getArchiveSubmission.and.returnValue(of(null));
-    submissionComponent = new SubmissionComponent(alertSvc, ingestSvc, brokerSvc, activatedRoute, router, loaderSvc, cookieSvc);
+    submissionComponent = new SubmissionComponent(alertSvc, ingestSvc, brokerSvc, activatedRoute, router, loaderSvc, cookieSvc, saveFileSvc);
     submissionComponent.connectSubmissionEnvelope = jasmine.createSpy();
   });
 
@@ -77,7 +80,6 @@ describe('SubmissionComponent', () => {
         errors: []
       } as SubmissionEnvelope;
       submissionComponent.submissionEnvelope = submissionEnvelope;
-      submissionComponent.saveFile = jasmine.createSpy();
 
       const body = new Blob([],
         {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
