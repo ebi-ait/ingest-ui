@@ -15,9 +15,8 @@ import {AlertService} from '@shared/services/alert.service';
 import {BrokerService} from '@shared/services/broker.service';
 import {IngestService} from '@shared/services/ingest.service';
 import {LoaderService} from '@shared/services/loader.service';
-import {Observable, TimeoutError, of} from 'rxjs';
-import {catchError, map, mergeMap} from 'rxjs/operators';
-import {CookieService} from 'ngx-cookie-service';
+import {Observable, TimeoutError, of, BehaviorSubject} from 'rxjs';
+import {catchError, map, mergeMap, switchMap, tap} from 'rxjs/operators';
 
 enum SubmissionTab {
   BIOMATERIALS = 0,
@@ -26,12 +25,12 @@ enum SubmissionTab {
   FILES = 3
 }
 
-const SUBMISSION_POLL_INTERVAL = 5000;
+const SUBMISSION_POLL_INTERVAL = 30000;
 
 @Component({
   selector: 'app-submission',
   templateUrl: './submission.component.html',
-  styleUrls: ['./submission.component.scss']
+  styleUrls: ['./submission.component.scss'],
 })
 export class SubmissionComponent implements OnInit, OnDestroy {
 
@@ -59,7 +58,9 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   isLoading: boolean;
   graphValidationButtonDisabled = false;
   lastSpreadsheetJob: object;
+  contentLastUpdated: string;
 
+  refreshSubmission$ = new BehaviorSubject<boolean>(true);
 
   submissionDataSource: SimpleDataSource<SubmissionEnvelope>;
   projectDataSource: SimpleDataSource<Project>;
@@ -74,12 +75,12 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   SUBMISSION_STATES = SUBMISSION_STATES;
 
   private MAX_ERRORS = 1;
-  submissionTab = SubmissionTab;
 
-  downloadDisabled = false;
-  DOWNLOAD_TIMEOUT_COOKIE = "_downloadTimedout"
-  DOWNLOAD_BACKOFF_MINS = 20;
-  spreadsheetUpdated: boolean;
+  importDetailsOpened: boolean;
+  downloadDetailsOpened: boolean;
+  spreadsheetUpToDate: boolean;
+  pollTimeInSec = SUBMISSION_POLL_INTERVAL / 1000;
+  downloadJobOngoing: boolean;
 
   constructor(
     private alertService: AlertService,
@@ -87,8 +88,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     private brokerService: BrokerService,
     private route: ActivatedRoute,
     private router: Router,
-    private loaderService: LoaderService,
-    private cookieService: CookieService
+    private loaderService: LoaderService
   ) {
   }
 
@@ -105,24 +105,44 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       this.projectUuid = queryParams.get('project');
 
       this.connectSubmissionEnvelope();
+      this.refreshSubmission$.pipe(
+        switchMap(_ => this.submissionEnvelopeEndpoint()),
+      ).subscribe(
+        submissionEnvelope => {
+          this.doWhenSubmissionIsFetched(submissionEnvelope, true);
+          this.loaderService.display(false);
+        },
+        error => {
+          console.error('An error occurred in refreshing the submission.', error);
+          this.loaderService.display(false);
+        })
     });
 
     this.initArchiveEntityDataSource(this.submissionEnvelopeUuid);
-    if (this.cookieService.check(this.DOWNLOAD_TIMEOUT_COOKIE)) {
-      this.downloadDisabled = true;
-    }
   }
 
   connectSubmissionEnvelope() {
     this.submissionDataSource = new SimpleDataSource<SubmissionEnvelope>(this.submissionEnvelopeEndpoint.bind(this));
-    this.submissionDataSource.connect(true, SUBMISSION_POLL_INTERVAL).subscribe(submissionEnvelope => {
-      this.initSubmissionAttributes(submissionEnvelope);
-      this.displaySubmissionErrors(submissionEnvelope);
-      this.checkFromManifestIfLinkingIsDone(submissionEnvelope);
-      this.validationSummary = submissionEnvelope['summary'];
-      this.initDataSources();
-      this.connectProject(this.submissionEnvelopeId);
-    });
+
+    this.submissionDataSource.connect(true, SUBMISSION_POLL_INTERVAL).subscribe(
+      submissionEnvelope => {
+        this.doWhenSubmissionIsFetched(submissionEnvelope);
+      });
+  }
+
+  refreshSubmission() {
+    this.loaderService.display(true);
+    this.refreshSubmission$.next(true);
+  }
+
+  private doWhenSubmissionIsFetched(submissionEnvelope: SubmissionEnvelope, fromRefresh = false) {
+    this.initSubmissionAttributes(submissionEnvelope);
+    this.displaySubmissionErrors(submissionEnvelope);
+    this.checkFromManifestIfLinkingIsDone(submissionEnvelope);
+    this.validationSummary = submissionEnvelope['summary'];
+    this.initDataSources();
+    this.connectProject(this.submissionEnvelopeId);
+    this.checkIfSpreadsheetIsUpToDate(submissionEnvelope);
   }
 
   private checkFromManifestIfLinkingIsDone(submissionEnvelope: SubmissionEnvelope) {
@@ -171,6 +191,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.cleanupLink = this.getLink(submissionEnvelope, 'cleanup');
     this.lastSpreadsheetJob = submissionEnvelope['lastSpreadsheetDownloadJob'] || {};
     this.url = this.getLink(submissionEnvelope, 'self');
+    this.downloadJobOngoing = this.lastSpreadsheetJob && this.lastSpreadsheetJob['createdDate'] && !this.lastSpreadsheetJob['finishedDate'];
   }
 
   private submissionEnvelopeEndpoint() {
@@ -183,19 +204,29 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       this.ingestService.getSubmissionByUuid(this.submissionEnvelopeUuid);
 
     return submissionEnvelope$.pipe(
-      mergeMap(
-        this.submissionErrorsEndpoint.bind(this),
-        (submissionEnvelope, errors) => ({...submissionEnvelope, errors})
+      mergeMap(submission => this.submissionErrorsEndpoint(submission)
+        .pipe(
+          map(errors => ({...submission, errors})))
+      ),
+      mergeMap(submission => this.submissionManifestEndpoint(submission)
+        .pipe(
+          map(manifest => ({...submission, manifest})))
       ),
       mergeMap(
-        this.submissionManifestEndpoint.bind(this),
-        (submissionEnvelope, manifest) => ({...submissionEnvelope, manifest})
+        submission => this.ingestService.getSubmissionSummary(SubmissionComponent.getSubmissionId(submission))
+          .pipe(
+            map(summary => ({...submission, summary}))
+          )
       ),
-      mergeMap(
-        submissionEnvelope => this.ingestService.getSubmissionSummary(SubmissionComponent.getSubmissionId(submissionEnvelope)),
-        (submissionEnvelope, summary) => ({...submissionEnvelope, summary})
+      mergeMap(submission => this.submissionContentLastUpdatedEndpoint(submission)
+        .pipe(
+          map(contentLastUpdated => {
+            submission['contentLastUpdated'] = contentLastUpdated;
+            return submission;
+          })
+        )
       )
-    );
+    )
   }
 
   private submissionErrorsEndpoint(submissionEnvelope) {
@@ -203,6 +234,12 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       map(data => {
         return data['_embedded'] ? data['_embedded']['submissionErrors'] : [];
       })
+    );
+  }
+
+  private submissionContentLastUpdatedEndpoint(submissionEnvelope): Observable<string> {
+    return this.ingestService.get(submissionEnvelope['_links']['contentLastUpdated']['href']).pipe(
+      map(data => data as string)
     );
   }
 
@@ -279,34 +316,40 @@ export class SubmissionComponent implements OnInit, OnDestroy {
 
   generateSpreadsheet() {
     const uuid = this.submissionEnvelope['uuid']['uuid'];
-    this.brokerService.exportToSpreadsheet(uuid).subscribe(response => {
-      this.alertService.success('',
-        'Successfully triggered spreadsheet generation! This may take a while. ' +
-        'Please come back later and check the link to download the file.');
-    });
+    this.brokerService.generateSpreadsheetFromSubmission(uuid)
+      .subscribe(response => {
+          this.alertService.success('',
+            'Successfully triggered spreadsheet generation! This may take a while. ' +
+            'Please come back later and check the link to download the file.');
+          this.downloadJobOngoing = true;
+        },
+        error => {
+          const err = 'An error occurred in the request to generated the spreadsheet'
+          this.alertService.error('Error', err);
+          console.error(err, error);
+        });
   }
 
   downloadSpreadsheet() {
-    this.downloadDisabled = true;
     const uuid = this.submissionEnvelope['uuid']['uuid'];
     this.loaderService.display(true, 'This may take a moment. Please wait...');
-    // now set a cookie to disable further download attempt within X min of this request or
-    // until a response is returned when the cookie gets deleted.
-    this.cookieService.set(this.DOWNLOAD_TIMEOUT_COOKIE, "1", {expires: this.DOWNLOAD_BACKOFF_MINS / (24 * 60)})
+
     this.brokerService.downloadSpreadsheet(uuid).subscribe(response => {
         const filename = response['filename'];
         const newBlob = new Blob([response['data']]);
         this.saveFile(newBlob, filename);
         this.loaderService.display(false);
-        this.downloadDisabled = false;
-        this.cookieService.delete(this.DOWNLOAD_TIMEOUT_COOKIE);
       },
       err => {
+        const retry_message = 'Please retry later.';
         if (err instanceof TimeoutError) {
-          this.loaderService.display(false);
-          this.alertService.error('', 'Spreadsheet download timed out. Please retry later.', true, true);
-          setTimeout(() => this.downloadDisabled = false, this.DOWNLOAD_BACKOFF_MINS * 60 * 1000);
+          this.alertService.error('', 'Spreadsheet download timed out. ' + retry_message, false, true);
+        } else {
+          console.error(err)
+          this.alertService.error('', 'An error occurred when downloading the spreadsheet. ' + retry_message, false, true);
         }
+        this.loaderService.display(false);
+
       });
   }
 
@@ -466,11 +509,15 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     )
   }
 
-  checkWhenLastUpdated() {
-    if (this.spreadsheetUpdated === undefined) {
-      this.spreadsheetUpdated = false;
+  private checkIfSpreadsheetIsUpToDate(submissionEnvelope: SubmissionEnvelope) {
+    this.contentLastUpdated = submissionEnvelope['contentLastUpdated'];
+    if (this.lastSpreadsheetJob && this.lastSpreadsheetJob['finishedDate']) {
+      const spreadsheetGenerated = new Date(this.lastSpreadsheetJob['finishedDate']);
+      const contentLastUpdatedDate = new Date(this.contentLastUpdated);
+      this.spreadsheetUpToDate = spreadsheetGenerated.getTime() >= contentLastUpdatedDate.getTime();
     } else {
-      this.spreadsheetUpdated = !this.spreadsheetUpdated;
+      this.spreadsheetUpToDate = false;
     }
   }
+
 }

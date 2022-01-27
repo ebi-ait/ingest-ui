@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -20,6 +20,7 @@ import {SubmitComponent} from "./components/submit/submit.component";
 import {ValidationSummaryComponent} from "./components/validation-summary/validation-summary.component";
 import {SubmissionComponent} from "./pages/submission.component";
 import {SharedModule} from "@shared/shared.module";
+import {MetadataSchemaFormModule} from "@metadata-schema-form/metadata-schema-form.module";
 
 @NgModule({
   declarations: [
@@ -48,6 +49,8 @@ import {SharedModule} from "@shared/shared.module";
     NgxGraphModule,
     SubmissionRoutingModule,
     SharedModule,
+    MetadataSchemaFormModule,
   ]
 })
-export class SubmissionModule { }
+export class SubmissionModule {
+}

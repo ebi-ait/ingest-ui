@@ -1,4 +1,4 @@
-import {HttpClient, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpResponse, HttpStatusCode} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, throwError} from 'rxjs';
 import {catchError, map, tap, timeout} from 'rxjs/operators';
@@ -9,13 +9,11 @@ import {
 } from '@app/template-questionnaire/template-generator.service';
 import {UploadResults} from '../models/uploadResults';
 
-// Making use of https://stackoverflow.com/questions/35326689/how-to-catch-exception-correctly-from-http-request
-
 @Injectable()
 export class BrokerService {
 
   API_URL: string = environment.BROKER_API_URL;
-  DOWNLOAD_SPREADSHEET_TIMEOUT = 10*60*1000; // 10mins
+  DOWNLOAD_SPREADSHEET_TIMEOUT = 10 * 60 * 1000; // 10mins
 
   constructor(private http: HttpClient) {
   }
@@ -33,30 +31,30 @@ export class BrokerService {
       .get(`${this.API_URL}/submissions/${submissionUuid}/spreadsheet`,
         {observe: 'response', responseType: 'blob'})
       .pipe(timeout(this.DOWNLOAD_SPREADSHEET_TIMEOUT),
-        map((res) => {
-        const contentDisposition = res.headers.get('content-disposition');
-        const filename = contentDisposition.split(';')[1].split('filename')[1].split('=')[1].trim();
-        return {
-          'data': res.body,
-          'filename': filename
-        };
-      }));
+        map(response => {
+          if (response.status === HttpStatusCode.Ok) {
+            const contentDisposition = response.headers.get('content-disposition');
+            const filename = contentDisposition.split(';')[1].split('filename')[1].split('=')[1].trim();
+            return {
+              'data': response.body,
+              'filename': filename
+            };
+          } else if (response.status === HttpStatusCode.Accepted) {
+            throwError(new Error("The spreadsheet is not yet available and still being generated."))
+          }
+        }));
   }
 
-  exportToSpreadsheet(submissionUuid): Observable<any> {
-    return this.http
-      .post(`${this.API_URL}/submissions/${submissionUuid}/spreadsheet`,
-        {observe: 'response', responseType: 'blob'});
+  generateSpreadsheetFromSubmission(submissionUuid) {
+    return this.http.post(`${this.API_URL}/submissions/${submissionUuid}/spreadsheet`, null);
   }
 
   generateTemplate(spec: TemplateGenerationRequestParam): Observable<TemplateGenerationResponse> {
-    console.log('requesting');
     const url = `${this.API_URL}/spreadsheets`;
     return this.http.post<TemplateGenerationResponse>(url, spec);
   }
 
   downloadTemplate(relativeUrl: string): Observable<HttpResponse<Blob>> {
-    console.log('downloading');
     const url = `${this.API_URL}${relativeUrl}`;
     return this.http.get(url, {responseType: 'blob', observe: 'response'});
   }
