@@ -17,6 +17,7 @@ import {IngestService} from '@shared/services/ingest.service';
 import {LoaderService} from '@shared/services/loader.service';
 import {Observable, TimeoutError, of, BehaviorSubject} from 'rxjs';
 import {catchError, map, mergeMap, switchMap, tap} from 'rxjs/operators';
+import {SaveFileService} from "@shared/services/save-file.service";
 
 enum SubmissionTab {
   BIOMATERIALS = 0,
@@ -88,7 +89,8 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     private brokerService: BrokerService,
     private route: ActivatedRoute,
     private router: Router,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private saveFileService: SaveFileService
   ) {
   }
 
@@ -337,7 +339,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.brokerService.downloadSpreadsheet(uuid).subscribe(response => {
         const filename = response['filename'];
         const newBlob = new Blob([response['data']]);
-        this.saveFile(newBlob, filename);
+        this.saveFileService.saveFile(newBlob, filename);
         this.loaderService.display(false);
       },
       err => {
@@ -351,24 +353,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
         this.loaderService.display(false);
 
       });
-  }
-
-  public saveFile(newBlob: Blob, filename) {
-    // For other browsers:
-    // Create a link pointing to the ObjectURL containing the blob.
-    const data = window.URL.createObjectURL(newBlob);
-
-    const link = document.createElement('a');
-    link.href = data;
-    link.download = filename;
-    // this is necessary as link.click() does not work on the latest firefox
-    link.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true, view: window}));
-
-    setTimeout(function () {
-      // For Firefox it is necessary to delay revoking the ObjectURL
-      window.URL.revokeObjectURL(data);
-      link.remove();
-    }, 100);
   }
 
   onDeleteSubmission(submissionEnvelope: SubmissionEnvelope) {

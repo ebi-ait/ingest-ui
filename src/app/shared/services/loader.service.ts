@@ -10,4 +10,8 @@ export class LoaderService {
     this.status.next(value);
     this.message.next(message);
   }
+
+  hide() {
+    this.display(false);
+  }
 }

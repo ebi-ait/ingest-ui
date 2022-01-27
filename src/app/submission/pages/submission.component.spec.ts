@@ -7,6 +7,7 @@ import {LoaderService} from '@shared/services/loader.service';
 import {SubmissionComponent} from './submission.component';
 import {of} from 'rxjs';
 import SpyObj = jasmine.SpyObj;
+import {SaveFileService} from "@shared/services/save-file.service";
 
 
 describe('SubmissionComponent', () => {
@@ -17,12 +18,14 @@ describe('SubmissionComponent', () => {
   let activatedRoute: ActivatedRoute;
   let router: SpyObj<Router>;
   let loaderSvc: SpyObj<LoaderService>;
+  let saveFileSvc: SpyObj<SaveFileService>;
 
   beforeEach(() => {
     ingestSvc = jasmine.createSpyObj('IngestService', ['getUserAccount', 'getArchiveSubmission']);
     alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error']);
     loaderSvc = jasmine.createSpyObj('LoaderService', ['display']);
     brokerSvc = jasmine.createSpyObj('BrokerService', ['downloadSpreadsheet']);
+    saveFileSvc = jasmine.createSpyObj('SaveFileService', ['saveFile']);
     router = jasmine.createSpyObj('Router', ['navigate']);
 
     activatedRoute = {
@@ -30,7 +33,9 @@ describe('SubmissionComponent', () => {
     } as ActivatedRoute;
 
     ingestSvc.getArchiveSubmission.and.returnValue(of(null));
-    submissionComponent = new SubmissionComponent(alertSvc, ingestSvc, brokerSvc, activatedRoute, router, loaderSvc);
+
+    submissionComponent = new SubmissionComponent(alertSvc, ingestSvc, brokerSvc, activatedRoute, router, loaderSvc, saveFileSvc);
+
     submissionComponent.connectSubmissionEnvelope = jasmine.createSpy();
   });
 
@@ -53,7 +58,4 @@ describe('SubmissionComponent', () => {
     });
   });
 
-  describe('downloadFile', () => {
-
-  });
 });

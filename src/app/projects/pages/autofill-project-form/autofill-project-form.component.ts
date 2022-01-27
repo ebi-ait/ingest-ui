@@ -1,14 +1,16 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {from, Observable} from 'rxjs';
-import {filter, map, switchMapTo, tap} from 'rxjs/operators';
+import {AutofillProjectService} from '@projects/services/autofill-project.service';
 import {Project} from '@shared/models/project';
 import {AlertService} from '@shared/services/alert.service';
 import {IngestService} from '@shared/services/ingest.service';
+import {forkJoin, from, Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {Identifier} from '../../models/europe-pmc-search';
 import {ProjectCacheService} from '../../services/project-cache.service';
-import {AutofillProjectService} from '@projects/services/autofill-project.service';
+import {MatDialog} from "@angular/material/dialog";
+import {GeoAccessionDialogComponent} from "@projects/dialogs/geo-accession-dialog/geo-accession-dialog.component";
 
 @Component({
   selector: 'app-doi-name-field',
@@ -18,18 +20,23 @@ import {AutofillProjectService} from '@projects/services/autofill-project.servic
 export class AutofillProjectFormComponent implements OnInit {
   publicationDoiCtrl: FormControl;
   projectInCache$: Observable<Project>;
+  loading = false;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private ingestService: IngestService,
               private alertService: AlertService,
               private projectCacheService: ProjectCacheService,
+              private dialog: MatDialog,
               private autofillProjectService: AutofillProjectService
   ) {
   }
 
   ngOnInit(): void {
-    this.publicationDoiCtrl = new FormControl('', Validators.required);
+    this.publicationDoiCtrl = new FormControl('', Validators.compose([
+      Validators.required,
+      Validators.pattern(/^10.\d{4,9}\/[-._;()\/:A-Z0-9]+$/i)
+    ]));
     this.projectInCache$ = from(this.projectCacheService.getProject());
   }
 
@@ -40,10 +47,14 @@ export class AutofillProjectFormComponent implements OnInit {
       if (errors['required']) {
         return 'This field is required';
       }
+      if (errors['pattern']) {
+        return 'The DOI must be a valid DOI. E.g. 10.1038/s41467-021-26902-8'
+      }
     }
   }
 
   submitForm() {
+    this.alertService.clear();
     if (this.publicationDoiCtrl.invalid) {
       this.publicationDoiCtrl.markAsTouched();
       return;
@@ -51,20 +62,49 @@ export class AutofillProjectFormComponent implements OnInit {
 
     if (this.publicationDoiCtrl.value) {
       const doi = this.publicationDoiCtrl.value;
-      this.doesProjectWithDoiExist(doi).pipe(
-        filter(projectExists => projectExists === false),
-        switchMapTo(this.doesDoiExist(doi)),
-        filter(doiExists => doiExists)
-      ).subscribe(() => {
-          this.createProject(doi);
+      this.loading = true;
+      forkJoin({
+        projects: this.getProjectsWithDOI(doi),
+        doiExists: this.doesDoiExist(doi)
+      }).subscribe(({projects, doiExists}) => {
+          this.showExistingProjectsAlert(projects);
+
+          if (!doiExists) {
+            this.showDOINotExistsAlert(doi);
+          }
+
+          if (doiExists && projects.length == 0) {
+            this.createProject(doi);
+          }
+
+          this.loading = false;
         },
         error => {
           this.alertService.error('An error occurred', error.message);
+          this.loading = false;
         });
     }
   }
 
-  doesProjectWithDoiExist(doi: string): Observable<boolean> {
+  showDOINotExistsAlert(doi) {
+    const link = `mailto:wrangler-team@data.humancellatlas.org?subject=Cannot%20find%20project%20by%20DOI&body=${doi}`;
+    this.alertService.error(
+      'This DOI cannot be found on Europe PMC.',
+      `Please contact our <a href="${link}">wranglers</a> for further assistance.`
+    );
+  }
+
+  showExistingProjectsAlert(projects: Project[]) {
+    projects.forEach(project => {
+      const title = project?.content?.['project_core']?.['project_title'];
+      const link = `/projects/detail?uuid=${project?.uuid?.uuid}`;
+      this.alertService.error(
+        'This DOI has already been used by project:',
+        `<a href="${link}">${title}</a>`);
+    });
+  }
+
+  getProjectsWithDOI(doi: string): Observable<Project[]> {
     const query = [];
     const criteria = {
       'field': 'content.publications.doi',
@@ -73,15 +113,7 @@ export class AutofillProjectFormComponent implements OnInit {
     };
     query.push(criteria);
     return this.ingestService.queryProjects(query).pipe(
-      map(data => data?._embedded?.projects),
-      tap(projects => projects?.forEach(project => {
-        const project_title = project?.content?.['project_core']?.['project_title'];
-        const link = `/projects/detail?uuid=${project?.uuid?.uuid}`;
-        this.alertService.error(
-          'This DOI has already been used by project:',
-          `<a href="${link}">${project_title}</a>`);
-      })),
-      map(projects => !!projects)
+      map(data => data?._embedded?.projects || []),
     );
   }
 
@@ -90,16 +122,7 @@ export class AutofillProjectFormComponent implements OnInit {
     return this.autofillProjectService
       .queryEuropePMC(searchIdentifier, doi)
       .pipe(
-        map(response => response.resultList.result.length > 0),
-        tap(doiExists => {
-          if (!doiExists) {
-            const link = `mailto:wrangler-team@data.humancellatlas.org?subject=Cannot%20find%20project%20by%20DOI&body=${doi}`;
-            this.alertService.error(
-              'This DOI cannot be found on Europe PMC.',
-              `Please contact our <a href="${link}">wranglers</a> for further assistance.`
-            );
-          }
-        })
+        map(response => response.resultList.result.length > 0)
       );
   }
 
@@ -115,5 +138,10 @@ export class AutofillProjectFormComponent implements OnInit {
       restore: 'true'
     };
     this.router.navigate(['/projects', 'register'], {queryParams: params});
+  }
+
+  openDialog() {
+    const dialogRef = this.dialog.open(GeoAccessionDialogComponent);
+    dialogRef.disableClose = true;
   }
 }

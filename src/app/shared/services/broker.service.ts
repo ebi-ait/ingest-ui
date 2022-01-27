@@ -33,12 +33,7 @@ export class BrokerService {
       .pipe(timeout(this.DOWNLOAD_SPREADSHEET_TIMEOUT),
         map(response => {
           if (response.status === HttpStatusCode.Ok) {
-            const contentDisposition = response.headers.get('content-disposition');
-            const filename = contentDisposition.split(';')[1].split('filename')[1].split('=')[1].trim();
-            return {
-              'data': response.body,
-              'filename': filename
-            };
+            return this.getFileDataFromResponse(response);
           } else if (response.status === HttpStatusCode.Accepted) {
             throwError(new Error("The spreadsheet is not yet available and still being generated."))
           }
@@ -76,6 +71,32 @@ export class BrokerService {
 
       const error = err.error && err.error.message && err.error.details ? err.error : httpError;
       return throwError(error);
+    };
+  }
+
+  downloadSpreadsheetUsingGeo(geoAccession: string): Observable<any> {
+    const params = {
+      'accession': geoAccession,
+    };
+    return this.http
+      .post(`${this.API_URL}/import-geo`, null,
+        {params, responseType: 'blob', observe: 'response'}).pipe(
+        map(response => {
+          if (response.status == HttpStatusCode.Ok) {
+            return this.getFileDataFromResponse(response)
+          } else {
+            throw throwError(response);
+          }
+        })
+      );
+  }
+
+  private getFileDataFromResponse(response: HttpResponse<Blob>) {
+    const contentDisposition = response.headers.get('content-disposition');
+    const filename = contentDisposition.split(';')[1].split('filename')[1].split('=')[1].trim();
+    return {
+      'data': response.body,
+      'filename': filename
     };
   }
 
