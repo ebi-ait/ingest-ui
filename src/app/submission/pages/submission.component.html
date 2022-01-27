@@ -18,7 +18,7 @@
         </mat-icon>
       </button>
       <button mat-icon-button *ngIf="isLinkingDone" (click)="downloadDetailsOpened=true; selectedIndex=4">
-        <mat-icon matTooltip="Download spreadsheet">get_app</mat-icon>
+        <mat-icon matTooltip="Generate and download spreadsheet">get_app</mat-icon>
       </button>
       <button mat-icon-button *ngIf="submissionEnvelope && submissionEnvelope.open"
               (click)="onDeleteSubmission(submissionEnvelope)">
