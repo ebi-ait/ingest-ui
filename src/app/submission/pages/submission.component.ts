@@ -19,6 +19,7 @@ import {Observable, TimeoutError, of, BehaviorSubject} from 'rxjs';
 import {catchError, map, mergeMap, switchMap, tap} from 'rxjs/operators';
 import {SaveFileService} from "@shared/services/save-file.service";
 
+
 enum SubmissionTab {
   BIOMATERIALS = 0,
   PROCESSES = 1,
@@ -158,8 +159,9 @@ export class SubmissionComponent implements OnInit, OnDestroy {
 
   displaySubmissionErrors(submissionEnvelope: SubmissionEnvelope) {
     this.submissionErrors = submissionEnvelope['errors'];
+    const errorGroupName = 'submissionErrors';
     if (this.submissionErrors.length >= 0) {
-      this.alertService.clear();
+      this.alertService.clearGroup(errorGroupName);
     }
     if (this.submissionErrors.length > this.MAX_ERRORS) {
       const link = this.submissionEnvelope._links.submissionEnvelopeErrors.href;
@@ -168,14 +170,15 @@ export class SubmissionComponent implements OnInit, OnDestroy {
         `${this.submissionErrors.length - this.MAX_ERRORS} Other Errors`,
         `${message} <a href="${link}">View all ${this.submissionErrors.length} errors.</a>`,
         false,
-        false);
+        false,
+        errorGroupName);
     }
     let errors_displayed = 0;
     for (const err of this.submissionErrors) {
       if (errors_displayed >= this.MAX_ERRORS) {
         break;
       }
-      this.alertService.error(err['title'], err['detail'], false, false);
+      this.alertService.error(err['title'], err['detail'], false, false, errorGroupName);
       errors_displayed++;
     }
   }

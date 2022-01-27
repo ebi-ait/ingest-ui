@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {NavigationStart, Router} from '@angular/router';
-import {Observable, Subject} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {Alert, AlertType} from '../models/alert';
 
 @Injectable()
 export class AlertService {
-  private subject = new Subject<Alert>();
+  private subject = new BehaviorSubject<Alert[]>([]);
   private keepAfterRouteChange = false;
 
   constructor(private router: Router) {
@@ -27,28 +27,40 @@ export class AlertService {
     return this.subject.asObservable();
   }
 
-  success(title: string, message: string, keepAfterRouteChange = false, dismissible = true) {
-    this.alert(AlertType.Success, title, message, keepAfterRouteChange, dismissible);
+  success(title: string, message: string, keepAfterRouteChange = false, dismissible = true, groupName?: string) {
+    this.alert(AlertType.Success, title, message, keepAfterRouteChange, dismissible, groupName);
   }
 
-  error(title: string, message: string, keepAfterRouteChange = false, dismissible = true) {
-    this.alert(AlertType.Error, title, message, keepAfterRouteChange, dismissible);
+  error(title: string, message: string, keepAfterRouteChange = false, dismissible = true, groupName?: string) {
+    this.alert(AlertType.Error, title, message, keepAfterRouteChange, dismissible, groupName);
   }
 
-  info(title: string, message: string, keepAfterRouteChange = false, dismissible = true) {
-    this.alert(AlertType.Info, title, message, keepAfterRouteChange, dismissible);
+  info(title: string, message: string, keepAfterRouteChange = false, dismissible = true, groupName?: string) {
+    this.alert(AlertType.Info, title, message, keepAfterRouteChange, dismissible, groupName);
   }
 
-  warn(title: string, message: string, keepAfterRouteChange = false, dismissible = true) {
-    this.alert(AlertType.Warning, title, message, keepAfterRouteChange, dismissible);
+  warn(title: string, message: string, keepAfterRouteChange = false, dismissible = true, groupName?: string) {
+    this.alert(AlertType.Warning, title, message, keepAfterRouteChange, dismissible, groupName);
   }
 
-  alert(type: AlertType, title: string, message: string, keepAfterRouteChange = false, dismissible = true) {
+  alert(type: AlertType, title: string, message: string, keepAfterRouteChange = false, dismissible = true, groupName?: string) {
     this.keepAfterRouteChange = keepAfterRouteChange;
-    this.subject.next(<Alert>{ type: type, title: title, message: message, dismissible: dismissible});
+    const curValues = this.subject.getValue();
+    const alerts = [ ...curValues, <Alert>{type, title, message, dismissible, groupName, id: curValues.length }]
+    this.subject.next(alerts);
   }
 
   clear() {
-    this.subject.next(null);
+    this.subject.next([]);
+  }
+
+  clearOne(id: number) {
+    const curValues = this.subject.getValue();
+    this.subject.next(curValues.filter(alert => alert.id !== id))
+  }
+
+  clearGroup(groupName: string) {
+    const curValues = this.subject.getValue();
+    this.subject.next(curValues.filter(alert => alert.groupName !== groupName))
   }
 }

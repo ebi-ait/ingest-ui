@@ -40,7 +40,7 @@ export class SubmitComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.project$.subscribe(project => {
+    this.project$ && this.project$.subscribe(project => {
       this.releaseDate = project.releaseDate;
     });
   }
@@ -81,9 +81,7 @@ export class SubmitComponent implements OnInit {
       },
       err => {
         this.loaderService.display(false);
-        this.alertService.error('', 'An error occurred on submitting your submission envelope.', true);
-        console.log(err);
-
+        this.alertService.error('An error occurred on submitting your submission envelope.', err.error.exceptionMessage);
       }
     );
   }
