@@ -11,7 +11,7 @@
          [queryParams]="{uuid:projectUuid}">
         <mat-icon matTooltip="Go back to project's page">keyboard_backspace</mat-icon>
       </a>
-      <button mat-icon-button *ngIf="isLinkingDone" (click)="refreshSubmission()">
+      <button mat-icon-button (click)="refreshSubmission()">
         <mat-icon
           matTooltip="Click this button to refresh the page. By default, this page refreshes every {{pollTimeInSec}} seconds.">
           autorenew
@@ -186,8 +186,7 @@
       <h3 class="vf-u-margin__top--xxl vf-text vf-text-heading--4">Graph Validation</h3>
 
       <ng-container *ngIf="submissionState !== SUBMISSION_STATES.GraphValid; else graphValid">
-        <p>In order to finalize your submission, you must validate the graph, or the linking between metadata
-          entities.</p>
+        <p>In order to finalize your submission, you must validate the graph, or the linking between metadata entities.</p>
         <button
           *ngIf="submissionState !== SUBMISSION_STATES.GraphValidating && submissionState !== SUBMISSION_STATES.GraphValidationRequested"
           class="vf-button {{ graphValidationButtonDisabled ? 'vf-button--tertiary' : 'vf-button--primary' }} vf-button--sm"
