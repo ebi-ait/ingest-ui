@@ -25,6 +25,7 @@ import {ProjectsRoutingModule} from './projects-routing.module';
 import {AutofillProjectService} from './services/autofill-project.service';
 import {ProjectCacheService} from './services/project-cache.service';
 import { ProjectFiltersComponent } from './components/project-filters/project-filters.component';
+import { GeoAccessionDialogComponent } from './dialogs/geo-accession-dialog/geo-accession-dialog.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { ProjectFiltersComponent } from './components/project-filters/project-fi
     WranglerListInputComponent,
     NumberDropdownComponent,
     ProjectFiltersComponent,
+    GeoAccessionDialogComponent,
   ],
   imports: [
     CommonModule,

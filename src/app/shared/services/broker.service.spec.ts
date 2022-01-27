@@ -1,6 +1,6 @@
-import {HttpClient, HttpResponse} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
+import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {BrokerService} from './broker.service';
 import {TimeoutError} from 'rxjs';
 import {environment} from "@environments/environment";
@@ -84,4 +84,32 @@ describe('Broker Service', () => {
     }));
 
   });
+
+
+  describe('test download spreadsheet using geo accession', () => {
+    const geoAccession = 'geo_accession'
+
+    it(`should get response`, (done) => {
+      const blob = new Blob([],
+        {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+      service.downloadSpreadsheetUsingGeo(geoAccession)
+        .subscribe(res => {
+          expect(res.data).toEqual(blob);
+          done();
+        });
+      const req = httpTestingController.expectOne(`${api_url}/import-geo?accession=${geoAccession}`);
+
+      req.flush(blob, {
+        headers: {'Content-Disposition': 'attachment; filename=myfile.xls'},
+        status: 200,
+        statusText: 'OK'
+      });
+
+      expect(req.request.method).toEqual('POST');
+      expect(req.request.body).toBeNull();
+
+    });
+
+  });
+
 });
