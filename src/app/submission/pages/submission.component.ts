@@ -194,7 +194,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.submitLink = this.getLink(submissionEnvelope, 'submit');
     this.exportLink = this.getLink(submissionEnvelope, 'export');
     this.cleanupLink = this.getLink(submissionEnvelope, 'cleanup');
-    this.lastSpreadsheetJob = submissionEnvelope['lastSpreadsheetDownloadJob'] || {};
+    this.lastSpreadsheetJob = submissionEnvelope['lastSpreadsheetGenerationJob'] || {};
     this.url = this.getLink(submissionEnvelope, 'self');
     this.downloadJobOngoing = this.lastSpreadsheetJob && this.lastSpreadsheetJob['createdDate'] && !this.lastSpreadsheetJob['finishedDate'];
   }
