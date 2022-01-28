@@ -8,6 +8,7 @@ import {SubmissionComponent} from './submission.component';
 import {of} from 'rxjs';
 import SpyObj = jasmine.SpyObj;
 import {SaveFileService} from "@shared/services/save-file.service";
+import {ComponentFixture, TestBed, waitForAsync} from "@angular/core/testing";
 
 
 describe('SubmissionComponent', () => {
@@ -20,23 +21,43 @@ describe('SubmissionComponent', () => {
   let loaderSvc: SpyObj<LoaderService>;
   let saveFileSvc: SpyObj<SaveFileService>;
 
-  beforeEach(() => {
-    ingestSvc = jasmine.createSpyObj('IngestService', ['getUserAccount', 'getArchiveSubmission']);
+  let fixture: ComponentFixture<SubmissionComponent>;
+
+  beforeEach(waitForAsync(() => {
+    ingestSvc = jasmine.createSpyObj('IngestService', ['getUserAccount', 'getArchiveSubmission', 'getSubmission', 'getSubmissionByUuid']);
     alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error', 'clearGroup']);
     loaderSvc = jasmine.createSpyObj('LoaderService', ['display']);
     brokerSvc = jasmine.createSpyObj('BrokerService', ['downloadSpreadsheet']);
     saveFileSvc = jasmine.createSpyObj('SaveFileService', ['saveFile']);
     router = jasmine.createSpyObj('Router', ['navigate']);
-
     activatedRoute = {
       queryParamMap: of(convertToParamMap({id: 1}))
     } as ActivatedRoute;
 
+    let submission : SubmissionEnvelope;
+    ingestSvc.getSubmission.and.returnValue(of(submission));
     ingestSvc.getArchiveSubmission.and.returnValue(of(null));
 
-    submissionComponent = new SubmissionComponent(alertSvc, ingestSvc, brokerSvc, activatedRoute, router, loaderSvc, saveFileSvc);
+    TestBed.configureTestingModule({
+      declarations: [SubmissionComponent],
+      providers: [
+        {provide: IngestService, useValue: ingestSvc},
+        {provide: AlertService, useValue: alertSvc},
+        {provide: LoaderService, useValue: loaderSvc},
+        {provide: BrokerService, useValue: brokerSvc},
+        {provide: SaveFileService, useValue: saveFileSvc},
+        {provide: Router, useValue: router},
+        {provide: ActivatedRoute, useValue: activatedRoute},
+      ]
+    }).compileComponents();
+  }));
 
+  beforeEach(() => {
+    fixture = TestBed.createComponent(SubmissionComponent);
+    submissionComponent = fixture.componentInstance;
+    fixture.detectChanges();
     submissionComponent.connectSubmissionEnvelope = jasmine.createSpy();
+
   });
 
   it('should be created', () => {

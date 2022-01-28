@@ -13,7 +13,7 @@ import {UploadResults} from '../models/uploadResults';
 export class BrokerService {
 
   API_URL: string = environment.BROKER_API_URL;
-  DOWNLOAD_SPREADSHEET_TIMEOUT = 10 * 60 * 1000; // 10mins
+  DOWNLOAD_SPREADSHEET_TIMEOUT = 10 * 60 * 1000; // 10 mins
 
   constructor(private http: HttpClient) {
   }
