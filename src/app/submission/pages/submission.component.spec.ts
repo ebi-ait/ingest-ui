@@ -9,6 +9,7 @@ import {of} from 'rxjs';
 import SpyObj = jasmine.SpyObj;
 import {SaveFileService} from "@shared/services/save-file.service";
 import {ComponentFixture, TestBed, waitForAsync} from "@angular/core/testing";
+import {By} from "@angular/platform-browser";
 
 
 describe('SubmissionComponent', () => {
