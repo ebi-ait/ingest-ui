@@ -44,7 +44,10 @@ export class SpreadsheetTabDetailsComponent implements OnInit, OnChanges {
   contentLastUpdated: string;
 
   ngOnInit(): void {
-    console.log('submission envelope', this.submissionEnvelope);
+    this.loadSubmissionData();
+  }
+
+  ngOnChanges() {
     this.loadSubmissionData();
   }
 
@@ -53,10 +56,6 @@ export class SpreadsheetTabDetailsComponent implements OnInit, OnChanges {
     this.downloadJobOngoing = this.lastSpreadsheetJob && this.lastSpreadsheetJob['createdDate'] && !this.lastSpreadsheetJob['finishedDate'];
     this.lastSpreadsheetJob = this.submissionEnvelope['lastSpreadsheetGenerationJob'] || {};
     this.checkIfSpreadsheetIsUpToDate(this.submissionEnvelope);
-  }
-
-  ngOnChanges() {
-    this.loadSubmissionData();
   }
 
   generateSpreadsheet() {
