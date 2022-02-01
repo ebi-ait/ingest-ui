@@ -15,10 +15,10 @@ import {AlertService} from '@shared/services/alert.service';
 import {BrokerService} from '@shared/services/broker.service';
 import {IngestService} from '@shared/services/ingest.service';
 import {LoaderService} from '@shared/services/loader.service';
-import {CookieService} from 'ngx-cookie-service';
+import {Observable, TimeoutError, of, BehaviorSubject} from 'rxjs';
+import {catchError, map, mergeMap, switchMap, tap} from 'rxjs/operators';
 import {SaveFileService} from "@shared/services/save-file.service";
-import {Observable, of, TimeoutError} from 'rxjs';
-import {catchError, map, mergeMap} from 'rxjs/operators';
+
 
 enum SubmissionTab {
   BIOMATERIALS = 0,
@@ -27,15 +27,14 @@ enum SubmissionTab {
   FILES = 3
 }
 
-const SUBMISSION_POLL_INTERVAL = 5000;
+const SUBMISSION_POLL_INTERVAL = 30000;
 
 @Component({
   selector: 'app-submission',
   templateUrl: './submission.component.html',
-  styleUrls: ['./submission.component.scss']
+  styleUrls: ['./submission.component.scss'],
 })
 export class SubmissionComponent implements OnInit, OnDestroy {
-
   submissionEnvelopeId: string;
   submissionEnvelopeUuid: string;
   submissionEnvelope$: Observable<any>;
@@ -60,6 +59,8 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   isLoading: boolean;
   graphValidationButtonDisabled = false;
 
+  refreshSubmission$ = new BehaviorSubject<boolean>(true);
+
   submissionDataSource: SimpleDataSource<SubmissionEnvelope>;
   projectDataSource: SimpleDataSource<Project>;
 
@@ -73,11 +74,11 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   SUBMISSION_STATES = SUBMISSION_STATES;
 
   private MAX_ERRORS = 1;
-  submissionTab = SubmissionTab;
 
-  downloadDisabled = false;
-  DOWNLOAD_TIMEOUT_COOKIE = "_downloadTimedout"
-  DOWNLOAD_BACKOFF_MINS = 20;
+  pollTimeInSec = SUBMISSION_POLL_INTERVAL / 1000;
+
+  importDetailsOpened: boolean;
+  downloadDetailsOpened: boolean;
 
   constructor(
     private alertService: AlertService,
@@ -85,10 +86,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     private brokerService: BrokerService,
     private route: ActivatedRoute,
     private router: Router,
-    private loaderService: LoaderService,
-    private cookieService: CookieService,
-    private saveFileService: SaveFileService
-  ) {
+    private loaderService: LoaderService) {
   }
 
   private static getSubmissionId(submissionEnvelope) {
@@ -104,24 +102,44 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       this.projectUuid = queryParams.get('project');
 
       this.connectSubmissionEnvelope();
+      this.refreshSubmission$.pipe(
+        switchMap(_ => this.submissionEnvelopeEndpoint()),
+      ).subscribe(
+        submissionEnvelope => {
+          this.doWhenSubmissionIsFetched(submissionEnvelope, true);
+          this.loaderService.display(false);
+        },
+        error => {
+          console.error('An error occurred in refreshing the submission.', error);
+          this.loaderService.display(false);
+        })
     });
 
     this.initArchiveEntityDataSource(this.submissionEnvelopeUuid);
-    if (this.cookieService.check(this.DOWNLOAD_TIMEOUT_COOKIE)) {
-      this.downloadDisabled = true;
-    }
   }
 
   connectSubmissionEnvelope() {
     this.submissionDataSource = new SimpleDataSource<SubmissionEnvelope>(this.submissionEnvelopeEndpoint.bind(this));
-    this.submissionDataSource.connect(true, SUBMISSION_POLL_INTERVAL).subscribe(submissionEnvelope => {
-      this.initSubmissionAttributes(submissionEnvelope);
-      this.displaySubmissionErrors(submissionEnvelope);
-      this.checkFromManifestIfLinkingIsDone(submissionEnvelope);
-      this.validationSummary = submissionEnvelope['summary'];
-      this.initDataSources();
-      this.connectProject(this.submissionEnvelopeId);
-    });
+
+    this.submissionDataSource.connect(true, SUBMISSION_POLL_INTERVAL).subscribe(
+      submissionEnvelope => {
+        this.doWhenSubmissionIsFetched(submissionEnvelope);
+      });
+  }
+
+  refreshSubmission() {
+    this.loaderService.display(true);
+    this.refreshSubmission$.next(true);
+  }
+
+  private doWhenSubmissionIsFetched(submissionEnvelope: SubmissionEnvelope, fromRefresh = false) {
+
+    this.initSubmissionAttributes(submissionEnvelope);
+    this.displaySubmissionErrors(submissionEnvelope);
+    this.checkFromManifestIfLinkingIsDone(submissionEnvelope);
+    this.validationSummary = submissionEnvelope['summary'];
+    this.initDataSources();
+    this.connectProject(this.submissionEnvelopeId);
   }
 
   private checkFromManifestIfLinkingIsDone(submissionEnvelope: SubmissionEnvelope) {
@@ -162,7 +180,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   private initSubmissionAttributes(submissionEnvelope: SubmissionEnvelope) {
     // NOTE: this should be broken up and/or just use dataSource attributes directly in template but
     // we're getting rid of submissions anyway.
-    this.submissionEnvelope = submissionEnvelope;
+    this.submissionEnvelope = {...submissionEnvelope};
     this.submissionEnvelopeId = SubmissionComponent.getSubmissionId(submissionEnvelope);
     this.isValid = this.checkIfValid(submissionEnvelope);
     this.submissionState = submissionEnvelope['submissionState'];
@@ -171,6 +189,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.exportLink = this.getLink(submissionEnvelope, 'export');
     this.cleanupLink = this.getLink(submissionEnvelope, 'cleanup');
     this.url = this.getLink(submissionEnvelope, 'self');
+
   }
 
   private submissionEnvelopeEndpoint() {
@@ -183,19 +202,29 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       this.ingestService.getSubmissionByUuid(this.submissionEnvelopeUuid);
 
     return submissionEnvelope$.pipe(
-      mergeMap(
-        this.submissionErrorsEndpoint.bind(this),
-        (submissionEnvelope, errors) => ({...submissionEnvelope, errors})
+      mergeMap(submission => this.submissionErrorsEndpoint(submission)
+        .pipe(
+          map(errors => ({...submission, errors})))
+      ),
+      mergeMap(submission => this.submissionManifestEndpoint(submission)
+        .pipe(
+          map(manifest => ({...submission, manifest})))
       ),
       mergeMap(
-        this.submissionManifestEndpoint.bind(this),
-        (submissionEnvelope, manifest) => ({...submissionEnvelope, manifest})
+        submission => this.ingestService.getSubmissionSummary(SubmissionComponent.getSubmissionId(submission))
+          .pipe(
+            map(summary => ({...submission, summary}))
+          )
       ),
-      mergeMap(
-        submissionEnvelope => this.ingestService.getSubmissionSummary(SubmissionComponent.getSubmissionId(submissionEnvelope)),
-        (submissionEnvelope, summary) => ({...submissionEnvelope, summary})
+      mergeMap(submission => this.submissionContentLastUpdatedEndpoint(submission)
+        .pipe(
+          map(contentLastUpdated => {
+            submission['contentLastUpdated'] = contentLastUpdated;
+            return {...submission};
+          })
+        )
       )
-    );
+    )
   }
 
   private submissionErrorsEndpoint(submissionEnvelope) {
@@ -203,6 +232,12 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       map(data => {
         return data['_embedded'] ? data['_embedded']['submissionErrors'] : [];
       })
+    );
+  }
+
+  private submissionContentLastUpdatedEndpoint(submissionEnvelope): Observable<string> {
+    return this.ingestService.get(submissionEnvelope['_links']['contentLastUpdated']['href']).pipe(
+      map(data => data as string)
     );
   }
 
@@ -276,32 +311,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     const links = submissionEnvelope['_links'];
     return links && links[linkName] ? links[linkName]['href'] : null;
   }
-
-  downloadFile() {
-    this.downloadDisabled = true;
-    const uuid = this.submissionEnvelope['uuid']['uuid'];
-    this.loaderService.display(true, 'This may take a moment. Please wait...');
-    // now set a cookie to disable further download attempt within X min of this request or
-    // until a response is returned when the cookie gets deleted.
-    this.cookieService.set(this.DOWNLOAD_TIMEOUT_COOKIE, "1", {expires: this.DOWNLOAD_BACKOFF_MINS / (24*60)})
-    this.brokerService.downloadSpreadsheet(uuid).subscribe(response => {
-      const filename = response['filename'];
-      const newBlob = new Blob([response['data']]);
-        this.saveFileService.saveFile(newBlob, filename);
-        this.loaderService.display(false);
-      this.downloadDisabled = false;
-      this.cookieService.delete(this.DOWNLOAD_TIMEOUT_COOKIE);
-    },
-    err => {
-      if (err instanceof TimeoutError) {
-        this.loaderService.display(false);
-        this.alertService.error('', 'Spreadsheet download timed out. Please retry later.', true, true);
-        setTimeout(() => this.downloadDisabled = false, this.DOWNLOAD_BACKOFF_MINS * 60 * 1000);
-      }
-    });
-  }
-
-
 
   onDeleteSubmission(submissionEnvelope: SubmissionEnvelope) {
     const submissionId: String = SubmissionComponent.getSubmissionId(submissionEnvelope);
@@ -380,13 +389,13 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     });
   }
 
-  onErrorClick({ source, validationState }): void {
+  onErrorClick({source, validationState}): void {
     const index = SubmissionTab[source.toUpperCase()].valueOf();
     this.selectedIndex = index;
 
     const dataSource = this[`${source}DataSource`];
 
-    if(validationState === 'Invalid Graph') {
+    if (validationState === 'Invalid Graph') {
       // No way to filter by invalid graph for now until dcp-546
       dataSource.filterByState('')
     } else {
@@ -432,7 +441,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     const url = `${this.submissionEnvelope['_links']['self']['href']}/graphValidationRequestedEvent`
     this.ingestService.put(url, {}).subscribe(
       (submissionEnvelope) => {
-        setTimeout(() => this.graphValidationButtonDisabled = false, SUBMISSION_POLL_INTERVAL * 4/3)
+        setTimeout(() => this.graphValidationButtonDisabled = false, SUBMISSION_POLL_INTERVAL * 4 / 3)
       },
       err => {
         this.alertService.error('An error occurred while triggering validation', err.message);
@@ -440,4 +449,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       }
     )
   }
+
+
 }

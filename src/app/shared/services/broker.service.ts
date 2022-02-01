@@ -9,13 +9,11 @@ import {
 } from '@app/template-questionnaire/template-generator.service';
 import {UploadResults} from '../models/uploadResults';
 
-// Making use of https://stackoverflow.com/questions/35326689/how-to-catch-exception-correctly-from-http-request
-
 @Injectable()
 export class BrokerService {
 
   API_URL: string = environment.BROKER_API_URL;
-  DOWNLOAD_SPREADSHEET_TIMEOUT = 10*60*1000; // 10mins
+  DOWNLOAD_SPREADSHEET_TIMEOUT = 10 * 60 * 1000; // 10 mins
 
   constructor(private http: HttpClient) {
   }
@@ -33,19 +31,25 @@ export class BrokerService {
       .get(`${this.API_URL}/submissions/${submissionUuid}/spreadsheet`,
         {observe: 'response', responseType: 'blob'})
       .pipe(timeout(this.DOWNLOAD_SPREADSHEET_TIMEOUT),
-        map((res) => {
-          return this.getFileDataFromResponse(res);
-      }));
+        map(response => {
+          if (response.status === HttpStatusCode.Ok) {
+            return this.getFileDataFromResponse(response);
+          } else if (response.status === HttpStatusCode.Accepted) {
+            throwError(new Error("The spreadsheet is not yet available and still being generated."))
+          }
+        }));
+  }
+
+  generateSpreadsheetFromSubmission(submissionUuid) {
+    return this.http.post(`${this.API_URL}/submissions/${submissionUuid}/spreadsheet`, null);
   }
 
   generateTemplate(spec: TemplateGenerationRequestParam): Observable<TemplateGenerationResponse> {
-    console.log('requesting');
     const url = `${this.API_URL}/spreadsheets`;
     return this.http.post<TemplateGenerationResponse>(url, spec);
   }
 
   downloadTemplate(relativeUrl: string): Observable<HttpResponse<Blob>> {
-    console.log('downloading');
     const url = `${this.API_URL}${relativeUrl}`;
     return this.http.get(url, {responseType: 'blob', observe: 'response'});
   }
@@ -70,21 +74,20 @@ export class BrokerService {
     };
   }
 
-   downloadSpreadsheetUsingGeo(geoAccession: string): Observable<any> {
+  downloadSpreadsheetUsingGeo(geoAccession: string): Observable<any> {
     const params = {
       'accession': geoAccession,
     };
     return this.http
-      .post(`${ this.API_URL}/import-geo`, null,
+      .post(`${this.API_URL}/import-geo`, null,
         {params, responseType: 'blob', observe: 'response'}).pipe(
-          map(response => {
-            if (response.status == HttpStatusCode.Ok) {
-             return this.getFileDataFromResponse(response)
-            }
-            else {
-              throw throwError(response);
-            }
-          })
+        map(response => {
+          if (response.status == HttpStatusCode.Ok) {
+            return this.getFileDataFromResponse(response)
+          } else {
+            throw throwError(response);
+          }
+        })
       );
   }
 

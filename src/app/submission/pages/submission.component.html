@@ -11,8 +11,14 @@
          [queryParams]="{uuid:projectUuid}">
         <mat-icon matTooltip="Go back to project's page">keyboard_backspace</mat-icon>
       </a>
-      <button mat-icon-button *ngIf="isLinkingDone" [disabled]="downloadDisabled" (click)="downloadFile();">
-        <mat-icon matTooltip="Download spreadsheet">get_app</mat-icon>
+      <button mat-icon-button (click)="refreshSubmission()">
+        <mat-icon
+          matTooltip="Click this button to refresh the page. By default, this page refreshes every {{pollTimeInSec}} seconds.">
+          autorenew
+        </mat-icon>
+      </button>
+      <button mat-icon-button (click)="downloadDetailsOpened=true; selectedIndex=4">
+        <mat-icon id="exportToXlsBtn" matTooltip="Export submission to .xls file">get_app</mat-icon>
       </button>
       <button mat-icon-button *ngIf="submissionEnvelope && submissionEnvelope.open"
               (click)="onDeleteSubmission(submissionEnvelope)">
@@ -26,9 +32,11 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu" xPosition="before">
-        <button mat-menu-item (click)="selectedIndex=4">
-          <mat-icon>upload_file</mat-icon>
-          <span>Import a spreadsheet</span>
+        <button mat-menu-item (click)="downloadDetailsOpened=true; selectedIndex=4">
+          <span>Generate and Download spreadsheet</span>
+        </button>
+        <button mat-menu-item (click)="importDetailsOpened=true; selectedIndex=4">
+          <span>Import spreadsheet</span>
         </button>
       </mat-menu>
       <app-submission-state [state]="submissionState">{{submissionState}}</app-submission-state>
@@ -89,18 +97,11 @@
 
     <mat-tab label="Spreadsheet">
       <ng-template matTabContent>
-        <div class="vf-u-margin__top--xxl">
-          <h3 class="vf-text vf-text-heading--4">Import a spreadsheet</h3>
-          <p>You could import a spreadsheet to update the metadata in this submission.
-            The spreadsheet should contain the uuid's of the metadata you want to update.</p>
-          <p>Please note that updating the linking between entities is not supported via spreadsheets yet.</p>
-
-          <div class="vf-u-margin__top--xxl">
-            <app-upload [projectUuid]="projectUuid" [submissionUuid]="submissionEnvelopeUuid"
-                        [isUpdate]="true"></app-upload>
-            <br/>
-          </div>
-        </div>
+        <app-spreadsheet-tab-details [projectUuid]="projectUuid"
+                                     [submissionEnvelope]="submissionEnvelope"
+                                     [importDetailsOpened]="importDetailsOpened"
+                                     [downloadDetailsOpened]="downloadDetailsOpened"
+        ></app-spreadsheet-tab-details>
       </ng-template>
     </mat-tab>
 
@@ -131,7 +132,8 @@
       <h3 class="vf-u-margin__top--xxl vf-text vf-text-heading--4">Graph Validation</h3>
 
       <ng-container *ngIf="submissionState !== SUBMISSION_STATES.GraphValid; else graphValid">
-        <p>In order to finalize your submission, you must validate the graph, or the linking between metadata entities.</p>
+        <p>In order to finalize your submission, you must validate the graph, or the linking between metadata
+          entities.</p>
         <button
           *ngIf="submissionState !== SUBMISSION_STATES.GraphValidating && submissionState !== SUBMISSION_STATES.GraphValidationRequested"
           class="vf-button {{ graphValidationButtonDisabled ? 'vf-button--tertiary' : 'vf-button--primary' }} vf-button--sm"
