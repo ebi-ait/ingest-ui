@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input, OnChanges, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
 import {AlertService} from "@shared/services/alert.service";
 import {IngestService} from "@shared/services/ingest.service";
 import {BrokerService} from "@shared/services/broker.service";
@@ -17,7 +17,6 @@ export class SpreadsheetTabDetailsComponent implements OnInit, OnChanges {
 
   constructor(
     private alertService: AlertService,
-    private ingestService: IngestService,
     private brokerService: BrokerService,
     private loaderService: LoaderService,
     private saveFileService: SaveFileService
@@ -26,13 +25,10 @@ export class SpreadsheetTabDetailsComponent implements OnInit, OnChanges {
 
   @Input()
   projectUuid: string;
-
   @Input()
   submissionEnvelope: SubmissionEnvelope;
-
   @Input()
   downloadDetailsOpened: boolean;
-
   @Input()
   importDetailsOpened: boolean;
 
@@ -51,10 +47,11 @@ export class SpreadsheetTabDetailsComponent implements OnInit, OnChanges {
     this.loadSubmissionData();
   }
 
-  private loadSubmissionData() {
+  loadSubmissionData() {
+    console.log('laoding submission data');
     this.submissionEnvelopeUuid = this.submissionEnvelope['uuid']['uuid'];
-    this.downloadJobOngoing = this.lastSpreadsheetJob && this.lastSpreadsheetJob['createdDate'] && !this.lastSpreadsheetJob['finishedDate'];
     this.lastSpreadsheetJob = this.submissionEnvelope['lastSpreadsheetGenerationJob'] || {};
+    this.downloadJobOngoing = this.lastSpreadsheetJob && this.lastSpreadsheetJob['createdDate'] && !this.lastSpreadsheetJob['finishedDate'];
     this.checkIfSpreadsheetIsUpToDate(this.submissionEnvelope);
   }
 

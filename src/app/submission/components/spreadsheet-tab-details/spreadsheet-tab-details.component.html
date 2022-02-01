@@ -1,7 +1,8 @@
-<details class="vf-u-margin__top--xxl vf-details vf-box vf-box--outline" [attr.open]="downloadDetailsOpened">
+<details class="vf-u-margin__top--xxl vf-details vf-box vf-box--outline"
+         [attr.open]="downloadDetailsOpened">
   <summary class="vf-details--summary">Download spreadsheet</summary>
 
-  <div *ngIf="!lastSpreadsheetJob ||  (!spreadsheetUpToDate && ! downloadJobOngoing)">
+  <div *ngIf="!lastSpreadsheetJob ||  (!spreadsheetUpToDate && !downloadJobOngoing)">
     <p>You should generate the spreadsheet first. Generating the spreadsheet may take some time. The spreadsheet
       file should be available here once for download once its generated. </p>
     <button type="button" class="vf-button vf-button--sm vf-button--primary"
@@ -26,7 +27,8 @@
 
       <p>
         <mat-icon>insert_drive_file</mat-icon>
-        filename: {{submissionEnvelopeUuid + '_' + (lastSpreadsheetJob['createdDate'] | date:'YYYYMMdd-hhmmss') + '.xls'}}</p>
+        filename: {{submissionEnvelopeUuid + '_' + (lastSpreadsheetJob['createdDate'] | date:'YYYYMMdd-hhmmss') + '.xls'}}
+      </p>
       <div class="vf-u-margin__top--xxl">
         <p class="vf-text-body vf-text-body--5">last generated: {{lastSpreadsheetJob['createdDate'] }}</p>
         <p class="vf-text-body vf-text-body--5">submission last updated: {{contentLastUpdated}}</p>
