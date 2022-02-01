@@ -141,11 +141,11 @@ export class MetadataFormComponent implements OnInit {
     this.tabChange.emit(this.visibleTabs[tabIndex].key);
   }
 
-  onBack($event: MouseEvent) {
+  onBack() {
     this.back.emit();
   }
 
-  onReset($event: MouseEvent) {
+  onReset() {
     this.reset.emit();
   }
 }

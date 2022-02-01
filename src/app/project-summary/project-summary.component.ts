@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {MetadataFormConfig} from '@metadata-schema-form/models/metadata-form-config';
-import {SUBMISSION_STATES} from "@shared/constants";
+import {SUBMISSION_STATES} from '@shared/constants';
 import {Project} from '@shared/models/project';
 import {AlertService} from '@shared/services/alert.service';
 import {IngestService} from '@shared/services/ingest.service';

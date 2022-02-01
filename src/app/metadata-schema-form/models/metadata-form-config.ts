@@ -7,8 +7,8 @@ export interface MetadataFormConfig {
   viewMode?: boolean;
   layout?: MetadataFormLayout;
   inputType?: object;
-  overrideRequiredFields?: {[key: string]: boolean};
-  overrideGuidelines?: {[key: string]: string};
+  overrideRequiredFields?: { [key: string]: boolean };
+  overrideGuidelines?: { [key: string]: string };
   submitButtonLabel?: string;
   cancelButtonLabel?: string;
   showResetButton?: boolean;
