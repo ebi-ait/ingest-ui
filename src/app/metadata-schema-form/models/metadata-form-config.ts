@@ -2,7 +2,7 @@ import {MetadataFormLayout} from './metadata-form-layout';
 
 export interface MetadataFormConfig {
   hideFields?: string[];
-  removeEmptyFields?: boolean;
+  hideEmptyFields?: boolean;
   disableFields?: string[];
   viewMode?: boolean;
   layout?: MetadataFormLayout;

@@ -80,7 +80,7 @@ export class MetadataFormComponent implements OnInit {
   }
 
   tabIsVisible(tab: MetadataFormTab): boolean {
-    if (this.config.viewMode && this.config.removeEmptyFields && tab.items.length === 1) {
+    if (this.config.viewMode && this.config.hideEmptyFields && tab.items.length === 1) {
       if (tab.key === tab.items[0]) {
         let data = this.data;
         let chain = true;

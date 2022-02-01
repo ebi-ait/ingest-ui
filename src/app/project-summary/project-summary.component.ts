@@ -48,7 +48,7 @@ export class ProjectSummaryComponent implements OnInit {
         this.config = {
           hideFields: ['describedBy', 'schema_version', 'schema_type', 'provenance'],
           viewMode: true,
-          removeEmptyFields: true,
+          hideEmptyFields: true,
           layout: getLayout(false, account.isWrangler())
         };
         this.userAccount = account;

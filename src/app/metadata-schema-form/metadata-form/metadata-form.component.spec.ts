@@ -36,7 +36,7 @@ function createTab(title) {
 function createMetadataFormConfig(tabs: MetadataFormTab[]) {
   return {
     viewMode: true,
-    removeEmptyFields: true,
+    hideEmptyFields: true,
     layout: {
       tabs: tabs
     }
