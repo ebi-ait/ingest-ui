@@ -149,10 +149,23 @@ describe('MetadataFormComponent', () => {
       {name: 'true', value: {cleanAttributes: true}}
     ].forEach(defaultBehaviourTest);
 
-    it('cleanAttributes false behaviour, send no data to be cleaned', () => {
-      setupCleanAttributesTest({cleanAttributes: false});
+    const falseBehaviourTest = test => {
+      it(`cleanAttributes ${test.name} (false) behaviour, send no data to be cleaned`, () => {
+        setupCleanAttributesTest(test.value);
 
-      expect(metadataFormSvc.cleanFormData).not.toHaveBeenCalled();
+        expect(metadataFormSvc.cleanFormData).not.toHaveBeenCalled();
+      });
+    };
+
+    [
+      {name: 'false', value: {cleanAttributes: false}},
+      {name: 'empty Array', value: {cleanAttributes: []}},
+    ].forEach(falseBehaviourTest);
+
+    it('cleanAttributes array behaviour, send matching attributes to be cleaned', () => {
+      setupCleanAttributesTest({cleanAttributes: ['unsetAttribute', 'setObject']});
+
+      expect(metadataFormSvc.cleanFormData).toHaveBeenCalledWith([cleanTest.unsetAttribute, cleanTest.setObject]);
     });
   });
 });
