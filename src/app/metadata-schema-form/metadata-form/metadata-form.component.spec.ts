@@ -103,4 +103,33 @@ describe('MetadataFormComponent', () => {
       expect(component.tabIsVisible(contentTab)).toBe(false);
     });
   });
+
+  describe('cleanFormData tests', () => {
+    const cleanTest = {
+      unsetAttribute: null,
+      setAttribute: 'value',
+      unsetObject: {},
+      setObject: {
+        unsetObjectAttribute: null,
+        setObjectAttribute: 'objectValue'
+      }
+    };
+
+    beforeEach(() => {
+      formGroupSpy.getRawValue.and.returnValue(cleanTest);
+      formGroupSpy.valid = true;
+
+      configureFormAndSvc({});
+      component.data = cleanTest;
+
+      fixture.detectChanges();
+    });
+
+    it('cleanAttributes default behaviour, clean all attributes', () => {
+      component.getFormData();
+
+      expect(metadataFormSvc.cleanFormData).toHaveBeenCalledOnceWith(cleanTest);
+    });
+
+  });
 });
