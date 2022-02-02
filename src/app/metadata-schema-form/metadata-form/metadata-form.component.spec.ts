@@ -5,14 +5,15 @@ import {MetadataForm} from '../models/metadata-form';
 import {MetadataFormConfig} from '../models/metadata-form-config';
 import {MetadataFormTab} from '../models/metadata-form-layout';
 import {MetadataFormComponent} from './metadata-form.component';
+import {MetadataRegistry} from '@metadata-schema-form/models/metadata-registry';
 
 describe('MetadataFormComponent', () => {
   let component: MetadataFormComponent;
   let fixture: ComponentFixture<MetadataFormComponent>;
 
-  const metadataFormSvc = jasmine.createSpyObj('MetadataFormService', ['createForm', 'cleanFormData']);
-  const metadataRegistrySpy = jasmine.createSpyObj('MetadataRegistry', ['buildMetadataRegistry']);
-  const formGroupSpy = jasmine.createSpyObj('FormGroup', ['getRawValue', 'valueChanges'], ['valid']);
+  let metadataFormSvc;
+  let metadataRegistrySpy;
+  let formGroupSpy;
 
   interface metadataFormDependencies {
     key?: string;
@@ -33,12 +34,18 @@ describe('MetadataFormComponent', () => {
   function configureFormAndSvc({
                                  key = 'test key',
                                  schema = {'name': 'project'} as JsonSchema,
-                                 config = {layout: {tabs: [createTab('tab')]}}
+                                 config = {}
                                }: metadataFormDependencies) {
+    if (!config.layout) {
+      config.layout = {tabs: [createTab('tab')]};
+    }
+    if (!config.layout.tabs) {
+      config.layout.tabs = [createTab('tab')];
+    }
     const form = {
       key: key,
       jsonSchema: schema as JsonSchema,
-      config: config,
+      config: config as MetadataFormConfig,
       metadataRegistry: metadataRegistrySpy,
       formGroup: formGroupSpy
     } as MetadataForm;
@@ -50,6 +57,9 @@ describe('MetadataFormComponent', () => {
   }
 
   beforeEach(() => {
+    metadataFormSvc = jasmine.createSpyObj('MetadataFormService', ['createForm', 'cleanFormData']);
+    metadataRegistrySpy = jasmine.createSpyObj('MetadataRegistry', ['buildMetadataRegistry']);
+    formGroupSpy = jasmine.createSpyObj('FormGroup', ['getRawValue', 'valueChanges'], ['valid']);
     TestBed.configureTestingModule({
       providers: [
         {provide: MetadataFormService, useValue: metadataFormSvc},
@@ -91,9 +101,7 @@ describe('MetadataFormComponent', () => {
 
     beforeEach(() => {
       configureFormAndSvc({schema: schema, config: config});
-      component.schema = schema;
       component.data = data;
-      component.config = config;
       component.selectedTabKey = 'content';
       component.visibleTabs = tabs;
       fixture.detectChanges();
@@ -117,19 +125,34 @@ describe('MetadataFormComponent', () => {
 
     beforeEach(() => {
       formGroupSpy.getRawValue.and.returnValue(cleanTest);
-      formGroupSpy.valid = true;
+    });
 
-      configureFormAndSvc({});
+    function setupCleanAttributesTest(config: MetadataFormConfig) {
+      configureFormAndSvc({config: config});
       component.data = cleanTest;
-
       fixture.detectChanges();
-    });
 
-    it('cleanAttributes default behaviour, clean all attributes', () => {
       component.getFormData();
+    }
 
-      expect(metadataFormSvc.cleanFormData).toHaveBeenCalledOnceWith(cleanTest);
+    const defaultBehaviourTest = test => {
+      it(`cleanAttributes ${test.name} (default) behaviour: send all data to be cleaned`, () => {
+        setupCleanAttributesTest(test.value);
+
+        expect(metadataFormSvc.cleanFormData).toHaveBeenCalledOnceWith(cleanTest);
+      });
+    };
+
+    [
+      {name: 'missing', value: {}},
+      {name: 'null', value: {cleanAttributes: null}},
+      {name: 'true', value: {cleanAttributes: true}}
+    ].forEach(defaultBehaviourTest);
+
+    it('cleanAttributes false behaviour, send no data to be cleaned', () => {
+      setupCleanAttributesTest({cleanAttributes: false});
+
+      expect(metadataFormSvc.cleanFormData).not.toHaveBeenCalled();
     });
-
   });
 });
