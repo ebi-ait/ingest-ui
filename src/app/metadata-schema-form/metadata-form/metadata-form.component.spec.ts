@@ -144,7 +144,7 @@ describe('MetadataFormComponent', () => {
     };
 
     [
-      {name: 'missing', value: {}},
+      {name: 'undefined', value: {}},
       {name: 'null', value: {cleanAttributes: null}},
       {name: 'true', value: {cleanAttributes: true}}
     ].forEach(defaultBehaviourTest);

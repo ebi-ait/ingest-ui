@@ -119,8 +119,12 @@ export class MetadataFormComponent implements OnInit {
 
   getFormData() {
     const formValue = this.metadataForm.formGroup.getRawValue();
-    const formData = this.metadataFormService.cleanFormData(formValue);
-
+    let formData;
+    if (this.config.cleanAttributes === false) {
+      formData = formValue;
+    } else {
+      formData = this.metadataFormService.cleanFormData(formValue);
+    }
     return {
       value: formData,
       valid: this.formGroup.valid,
