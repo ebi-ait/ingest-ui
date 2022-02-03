@@ -194,7 +194,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
         this.project['content']['describedBy'] = schemaUrl;
         this.project['content']['schema_type'] = 'project';
       }),
-      concatMap(schemaUrl => this.schemaService.getDereferencedSchema(this.schemaUrl))
+      concatMap(() => this.schemaService.getDereferencedSchema(this.schemaUrl))
     ).subscribe(schema => {
       this.projectMetadataSchema = schema;
       this.projectIngestSchema['properties']['content'] = this.projectMetadataSchema;
