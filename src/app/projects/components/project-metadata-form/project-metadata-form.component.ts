@@ -99,6 +99,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
         'notes': 'textarea',
         'wranglingNotes': 'textarea'
       },
+      cleanFields: ['content'],
       overrideRequiredFields: {
         'project.content.contributors.project_role.text': false
       },
