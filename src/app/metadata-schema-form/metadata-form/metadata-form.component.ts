@@ -118,15 +118,16 @@ export class MetadataFormComponent implements OnInit {
   }
 
   getFormData() {
-    const formValue = this.metadataForm.formGroup.getRawValue();
-    let formData;
-    if (this.config.cleanAttributes === false) {
-      formData = formValue;
-    } else {
-      formData = this.metadataFormService.cleanFormData(formValue);
+    let formValue = this.metadataForm.formGroup.getRawValue();
+    if (Array.isArray(this.config.cleanAttributes)) {
+      this.config.cleanAttributes.forEach(attribute => {
+        formValue[attribute] = this.metadataFormService.cleanFormData(formValue[attribute]);
+      });
+    } else if (this.config.cleanAttributes !== false) {
+      formValue = this.metadataFormService.cleanFormData(formValue);
     }
     return {
-      value: formData,
+      value: formValue,
       valid: this.formGroup.valid,
       validationSkipped: this.overrideValidation
     };
