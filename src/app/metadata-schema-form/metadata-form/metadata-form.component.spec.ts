@@ -134,7 +134,7 @@ describe('MetadataFormComponent', () => {
     }
 
     const defaultBehaviourTest = test => {
-      it(`cleanAttributes ${test.name} (default) behaviour: send all data to be cleaned`, () => {
+      it(`cleanAttributes ${test.name} (default) behaviour: should send all data to be cleaned`, () => {
         // Given
         setupCleanAttributesTest(test.value);
 
@@ -153,7 +153,7 @@ describe('MetadataFormComponent', () => {
     ].forEach(defaultBehaviourTest);
 
     const falseBehaviourTest = test => {
-      it(`cleanAttributes ${test.name} (false) behaviour, send no data to be cleaned`, () => {
+      it(`cleanAttributes ${test.name} (false) behaviour, should send no data to be cleaned`, () => {
         // Given
         setupCleanAttributesTest(test.value);
 
@@ -170,7 +170,7 @@ describe('MetadataFormComponent', () => {
       {name: 'empty Array', value: {cleanAttributes: []}},
     ].forEach(falseBehaviourTest);
 
-    it('cleanAttributes array behaviour, send matching attributes to be cleaned', () => {
+    it('cleanAttributes array behaviour, should send matching attributes to be cleaned', () => {
       // Given
       setupCleanAttributesTest({cleanAttributes: ['unsetAttribute', 'setObject']});
       const unsetAttribute = cleanTest.unsetAttribute;
@@ -182,6 +182,18 @@ describe('MetadataFormComponent', () => {
       // Then
       expect(metadataFormSvc.cleanFormData).toHaveBeenCalledWith(unsetAttribute);
       expect(metadataFormSvc.cleanFormData).toHaveBeenCalledWith(setObject);
+    });
+
+    it('cleanAttributes array behaviour, should only send attributes to be cleaned if they exist', () => {
+      // Given
+      setupCleanAttributesTest({cleanAttributes: ['missingAttribute', 'unsetAttribute']});
+      const unsetAttribute = cleanTest.unsetAttribute;
+
+      // When
+      component.getFormData();
+
+      // Then
+      expect(metadataFormSvc.cleanFormData).toHaveBeenCalledOnceWith(unsetAttribute);
     });
   });
 });
