@@ -88,10 +88,6 @@ describe('MetadataFormComponent', () => {
       }
     } as MetadataFormConfig;
 
-    const schema = {
-      'name': 'project'
-    } as JsonSchema;
-
     const data = {
       content: null,
       admin: {
@@ -100,7 +96,8 @@ describe('MetadataFormComponent', () => {
     };
 
     beforeEach(() => {
-      configureFormAndSvc({schema: schema, config: config});
+      configureFormAndSvc({config: config});
+      formGroupSpy.getRawValue.and.returnValue(data);
       component.data = data;
       component.selectedTabKey = 'content';
       component.visibleTabs = tabs;
@@ -125,18 +122,14 @@ describe('MetadataFormComponent', () => {
 
     beforeEach(() => {
       formGroupSpy.getRawValue.and.returnValue(cleanTest);
-    });
-
-    function setupCleanAttributesTest(config: MetadataFormConfig) {
-      configureFormAndSvc({config: config});
       component.data = cleanTest;
-      fixture.detectChanges();
-    }
+    });
 
     const defaultBehaviourTest = test => {
       it(`cleanAttributes ${test.name} (default) behaviour: should send all data to be cleaned`, () => {
         // Given
-        setupCleanAttributesTest(test.value);
+        configureFormAndSvc({config: test.case});
+        fixture.detectChanges();
 
         // When
         component.getFormData();
@@ -147,15 +140,16 @@ describe('MetadataFormComponent', () => {
     };
 
     [
-      {name: 'undefined', value: {}},
-      {name: 'null', value: {cleanAttributes: null}},
-      {name: 'true', value: {cleanAttributes: true}}
+      {name: 'undefined', case: {}},
+      {name: 'null', case: {cleanAttributes: null}},
+      {name: 'true', case: {cleanAttributes: true}}
     ].forEach(defaultBehaviourTest);
 
     const falseBehaviourTest = test => {
       it(`cleanAttributes ${test.name} (false) behaviour, should send no data to be cleaned`, () => {
         // Given
-        setupCleanAttributesTest(test.value);
+        configureFormAndSvc({config: test.case});
+        fixture.detectChanges();
 
         // When
         component.getFormData();
@@ -166,15 +160,17 @@ describe('MetadataFormComponent', () => {
     };
 
     [
-      {name: 'false', value: {cleanAttributes: false}},
-      {name: 'empty Array', value: {cleanAttributes: []}},
+      {name: 'false', case: {cleanAttributes: false}},
+      {name: 'empty Array', case: {cleanAttributes: []}},
     ].forEach(falseBehaviourTest);
 
     it('cleanAttributes array behaviour, should send matching attributes to be cleaned', () => {
       // Given
-      setupCleanAttributesTest({cleanAttributes: ['unsetAttribute', 'setObject']});
       const unsetAttribute = cleanTest.unsetAttribute;
       const setObject = cleanTest.setObject;
+      const testCase = {cleanAttributes: ['unsetAttribute', 'setObject']};
+      configureFormAndSvc({config: testCase});
+      fixture.detectChanges();
 
       // When
       component.getFormData();
@@ -186,8 +182,10 @@ describe('MetadataFormComponent', () => {
 
     it('cleanAttributes array behaviour, should only send attributes to be cleaned if they exist', () => {
       // Given
-      setupCleanAttributesTest({cleanAttributes: ['missingAttribute', 'unsetAttribute']});
+      const testCase = {cleanAttributes: ['missingAttribute', 'unsetAttribute']};
       const unsetAttribute = cleanTest.unsetAttribute;
+      configureFormAndSvc({config: testCase});
+      fixture.detectChanges();
 
       // When
       component.getFormData();
