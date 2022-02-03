@@ -126,7 +126,7 @@ describe('MetadataFormComponent', () => {
     });
 
     const defaultBehaviourTest = test => {
-      it(`cleanAttributes ${test.name} (default) behaviour: should send all data to be cleaned`, () => {
+      it(`cleanFields ${test.name} (default) behaviour: should send all data to be cleaned`, () => {
         // Given
         configureFormAndSvc({config: test.case});
         fixture.detectChanges();
@@ -141,12 +141,12 @@ describe('MetadataFormComponent', () => {
 
     [
       {name: 'undefined', case: {}},
-      {name: 'null', case: {cleanAttributes: null}},
-      {name: 'true', case: {cleanAttributes: true}}
+      {name: 'null', case: {cleanFields: null}},
+      {name: 'true', case: {cleanFields: true}}
     ].forEach(defaultBehaviourTest);
 
     const falseBehaviourTest = test => {
-      it(`cleanAttributes ${test.name} (false) behaviour, should send no data to be cleaned`, () => {
+      it(`cleanFields ${test.name} (false) behaviour, should send no data to be cleaned`, () => {
         // Given
         configureFormAndSvc({config: test.case});
         fixture.detectChanges();
@@ -160,15 +160,15 @@ describe('MetadataFormComponent', () => {
     };
 
     [
-      {name: 'false', case: {cleanAttributes: false}},
-      {name: 'empty Array', case: {cleanAttributes: []}},
+      {name: 'false', case: {cleanFields: false}},
+      {name: 'empty Array', case: {cleanFields: []}},
     ].forEach(falseBehaviourTest);
 
-    it('cleanAttributes array behaviour, should send matching attributes to be cleaned', () => {
+    it('cleanFields array behaviour, should send matching attributes to be cleaned', () => {
       // Given
       const unsetAttribute = cleanTest.unsetAttribute;
       const setObject = cleanTest.setObject;
-      const testCase = {cleanAttributes: ['unsetAttribute', 'setObject']};
+      const testCase = {cleanFields: ['unsetAttribute', 'setObject']};
       configureFormAndSvc({config: testCase});
       fixture.detectChanges();
 
@@ -180,9 +180,9 @@ describe('MetadataFormComponent', () => {
       expect(metadataFormSvc.cleanFormData).toHaveBeenCalledWith(setObject);
     });
 
-    it('cleanAttributes array behaviour, should only send attributes to be cleaned if they exist', () => {
+    it('cleanFields array behaviour, should only send attributes to be cleaned if they exist', () => {
       // Given
-      const testCase = {cleanAttributes: ['missingAttribute', 'unsetAttribute']};
+      const testCase = {cleanFields: ['missingAttribute', 'unsetAttribute']};
       const unsetAttribute = cleanTest.unsetAttribute;
       configureFormAndSvc({config: testCase});
       fixture.detectChanges();
