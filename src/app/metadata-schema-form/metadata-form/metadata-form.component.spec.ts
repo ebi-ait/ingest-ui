@@ -131,14 +131,17 @@ describe('MetadataFormComponent', () => {
       configureFormAndSvc({config: config});
       component.data = cleanTest;
       fixture.detectChanges();
-
-      component.getFormData();
     }
 
     const defaultBehaviourTest = test => {
       it(`cleanAttributes ${test.name} (default) behaviour: send all data to be cleaned`, () => {
+        // Given
         setupCleanAttributesTest(test.value);
 
+        // When
+        component.getFormData();
+
+        // Then
         expect(metadataFormSvc.cleanFormData).toHaveBeenCalledOnceWith(cleanTest);
       });
     };
@@ -151,8 +154,13 @@ describe('MetadataFormComponent', () => {
 
     const falseBehaviourTest = test => {
       it(`cleanAttributes ${test.name} (false) behaviour, send no data to be cleaned`, () => {
+        // Given
         setupCleanAttributesTest(test.value);
 
+        // When
+        component.getFormData();
+
+        // Then
         expect(metadataFormSvc.cleanFormData).not.toHaveBeenCalled();
       });
     };
@@ -163,9 +171,17 @@ describe('MetadataFormComponent', () => {
     ].forEach(falseBehaviourTest);
 
     it('cleanAttributes array behaviour, send matching attributes to be cleaned', () => {
+      // Given
       setupCleanAttributesTest({cleanAttributes: ['unsetAttribute', 'setObject']});
+      const unsetAttribute = cleanTest.unsetAttribute;
+      const setObject = cleanTest.setObject;
 
-      expect(metadataFormSvc.cleanFormData).toHaveBeenCalledWith([cleanTest.unsetAttribute, cleanTest.setObject]);
+      // When
+      component.getFormData();
+
+      // Then
+      expect(metadataFormSvc.cleanFormData).toHaveBeenCalledWith(unsetAttribute);
+      expect(metadataFormSvc.cleanFormData).toHaveBeenCalledWith(setObject);
     });
   });
 });
