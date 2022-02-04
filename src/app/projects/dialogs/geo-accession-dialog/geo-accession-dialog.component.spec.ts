@@ -47,7 +47,7 @@ describe('GeoAccessionDialogComponent', () => {
     brokerSvc.downloadSpreadsheetUsingGeo.and.returnValue(of(mock_return));
 
     //when
-    geoComponent.onDownload();
+    geoComponent.onImportProject();
 
     //then
     expect(loaderSvc.display).toHaveBeenCalledTimes(1);

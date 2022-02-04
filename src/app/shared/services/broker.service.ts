@@ -74,6 +74,18 @@ export class BrokerService {
     };
   }
 
+  importProjectUsingGeo(geoAccession: string): Observable<any> {
+    const params = {
+      'accession': geoAccession,
+    };
+    return this.http
+      .post(`${this.API_URL}/import-geo-project`, null, {params});
+      // .pipe(
+      //   map(data => {
+      //     throw throwError(new Error('errorimport'))
+      //   }));
+  }
+
   downloadSpreadsheetUsingGeo(geoAccession: string): Observable<any> {
     const params = {
       'accession': geoAccession,
