@@ -1,4 +1,4 @@
-import {HttpClient, HttpResponse, HttpStatusCode} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpResponse, HttpStatusCode} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, throwError} from 'rxjs';
 import {catchError, map, tap, timeout} from 'rxjs/operators';
@@ -79,11 +79,12 @@ export class BrokerService {
       'accession': geoAccession,
     };
     return this.http
-      .post(`${this.API_URL}/import-geo-project`, null, {params});
-      // .pipe(
-      //   map(data => {
-      //     throw throwError(new Error('errorimport'))
-      //   }));
+      .post(`${this.API_URL}/import-geo-project`, null, {params})
+      .pipe(
+        catchError((errorResponse: HttpErrorResponse) => {
+          return throwError(errorResponse.error);
+        })
+      )
   }
 
   downloadSpreadsheetUsingGeo(geoAccession: string): Observable<any> {
@@ -92,17 +93,28 @@ export class BrokerService {
     };
     return this.http
       .post(`${this.API_URL}/import-geo`, null,
-        {params, responseType: 'blob', observe: 'response'}).pipe(
+        {params, responseType: 'blob', observe: 'response'})
+      .pipe(
+        catchError(this.parseErrorBlob),
         map(response => {
-          if (response.status == HttpStatusCode.Ok) {
-            return this.getFileDataFromResponse(response)
-          } else {
-            throw throwError(response);
+          if(response.status == HttpStatusCode.Ok){
+            return this.getFileDataFromResponse(response);
           }
         })
       );
   }
+  parseErrorBlob(err: HttpErrorResponse): Observable<any> {
+    const reader: FileReader = new FileReader();
 
+    const obs = new Observable((observer: any) => {
+      reader.onloadend = (e) => {
+        observer.error(JSON.parse(reader.result as string));
+        observer.complete();
+      }
+    });
+    reader.readAsText(err.error);
+    return obs;
+  }
   private getFileDataFromResponse(response: HttpResponse<Blob>) {
     const contentDisposition = response.headers.get('content-disposition');
     const filename = contentDisposition.split(';')[1].split('filename')[1].split('=')[1].trim();

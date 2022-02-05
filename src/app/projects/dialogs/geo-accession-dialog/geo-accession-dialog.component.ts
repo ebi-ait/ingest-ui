@@ -42,7 +42,8 @@ export class GeoAccessionDialogComponent implements OnInit {
       const geoAccession = this.geoAccessionCtrl.value;
       this.brokerService.importProjectUsingGeo(geoAccession).pipe(
         catchError(err => {
-          this.alertService.error('Errors', 'There were errors in importing project from GEO. Downloading the spreadsheet...', err.message);
+          this.loaderService.display(true, `Sorry, we are unable to import the project yet due to error: [${err.message}]. You can still get a spreadsheet to import the project later.
+           We are now generating the spreadsheet, please wait this may take a moment...`);
           return this.brokerService.downloadSpreadsheetUsingGeo(geoAccession);
         })
       ).subscribe(response => {
@@ -69,9 +70,7 @@ export class GeoAccessionDialogComponent implements OnInit {
 
         },
         error => {
-          console.log(error)
-          this.alertService.error('Unable to import project or download spreadsheet using this GEO accession.' +
-            ' Please retry again.', error.message);
+          this.alertService.error('Unable to import or download spreadsheet', error.message);
           this.loaderService.hide();
         })
     }
