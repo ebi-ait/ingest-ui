@@ -51,7 +51,11 @@ export class WranglerListInputComponent extends BaseInputComponent implements On
     const wranglerId = this.control.value;
     if (wranglerId) {
       this.findWrangler(wranglerId).subscribe(wrangler => {
-        this.selectedWrangler = wrangler;
+        if (wrangler) {
+          this.selectedWrangler = wrangler;
+        } else {
+          this.control.setValue(null);
+        }
       });
     }
   }
