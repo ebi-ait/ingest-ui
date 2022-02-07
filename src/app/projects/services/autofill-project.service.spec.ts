@@ -4,11 +4,29 @@ import {TestBed} from '@angular/core/testing';
 import {AutofillProject} from '../models/autofill-project';
 import {Identifier} from '../models/europe-pmc-search';
 import {AutofillProjectService} from './autofill-project.service';
+import {IngestService} from "@shared/services/ingest.service";
+import {ViewContainerRef} from "@angular/core";
 
 describe('AutofillProjectService', () => {
-  let service: AutofillProjectService, httpTestingController: HttpTestingController, httpClient: HttpClient;
+  let service: AutofillProjectService,
+    httpTestingController: HttpTestingController,
+    httpClient: HttpClient,
+    ingestSvc: jasmine.SpyObj<IngestService>;
+
   beforeEach(() => {
-    TestBed.configureTestingModule({ providers: [AutofillProjectService], imports: [HttpClientTestingModule] });
+    ingestSvc = jasmine.createSpyObj('IngestService',['queryProjects']);
+    TestBed.configureTestingModule(
+      {
+        providers: [
+          AutofillProjectService,
+          {
+            provide: IngestService,
+            useValue: ingestSvc
+          },
+        ],
+        imports: [HttpClientTestingModule]
+      }
+    );
     service = TestBed.inject(AutofillProjectService);
     httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);
@@ -26,14 +44,15 @@ describe('AutofillProjectService', () => {
       pmid: 1234,
       authors: ['Douglas Adams'],
       url: 'https://doi.org/10.1000/xyz123',
-      funders: [{ grant_id: 'ABC', organization: 'Vogons'}],
+      funders: [{grant_id: 'ABC', organization: 'Vogons'}],
       contributors: []
     };
 
     const testDoiResponse = {
       resultList: {
         result: [
-          { ...testResult,
+          {
+            ...testResult,
             abstractText: '<p>42</p>',
             authorString: 'Douglas Adams',
             grantsList: {
@@ -75,6 +94,6 @@ describe('AutofillProjectService', () => {
     );
 
     // Respond with mock error
-    req.flush(emsg, { status: 404, statusText: 'Not Found' });
+    req.flush(emsg, {status: 404, statusText: 'Not Found'});
   });
 });
