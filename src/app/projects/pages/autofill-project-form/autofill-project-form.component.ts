@@ -6,11 +6,13 @@ import {Project} from '@shared/models/project';
 import {AlertService} from '@shared/services/alert.service';
 import {IngestService} from '@shared/services/ingest.service';
 import {forkJoin, from, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {catchError} from 'rxjs/operators';
 import {Identifier} from '../../models/europe-pmc-search';
 import {ProjectCacheService} from '../../services/project-cache.service';
 import {MatDialog} from "@angular/material/dialog";
-import {GeoAccessionDialogComponent} from "@projects/dialogs/geo-accession-dialog/geo-accession-dialog.component";
+import {BrokerService} from "@shared/services/broker.service";
+import {LoaderService} from "@shared/services/loader.service";
+import {SaveFileService} from "@shared/services/save-file.service";
 
 @Component({
   selector: 'app-doi-name-field',
@@ -19,12 +21,18 @@ import {GeoAccessionDialogComponent} from "@projects/dialogs/geo-accession-dialo
 })
 export class AutofillProjectFormComponent implements OnInit {
   publicationDoiCtrl: FormControl;
+  geoAccessionCtrl: FormControl;
   projectInCache$: Observable<Project>;
   loading = false;
+  hasDoi: boolean;
+  hasGeo: boolean;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private ingestService: IngestService,
+              private brokerService: BrokerService,
+              private loaderService: LoaderService,
+              private saveFileService: SaveFileService,
               private alertService: AlertService,
               private projectCacheService: ProjectCacheService,
               private dialog: MatDialog,
@@ -37,10 +45,14 @@ export class AutofillProjectFormComponent implements OnInit {
       Validators.required,
       Validators.pattern(/^10.\d{4,9}\/[-._;()\/:A-Z0-9]+$/i)
     ]));
+    this.geoAccessionCtrl = new FormControl('', Validators.compose([
+      Validators.required,
+      Validators.pattern(/^GSE.*$/i)
+    ]));
     this.projectInCache$ = from(this.projectCacheService.getProject());
   }
 
-  showError(control: FormControl): string {
+  showError(control: FormControl, message: string): string {
     if (control.touched && control.errors) {
       const errors = control.errors;
 
@@ -48,42 +60,70 @@ export class AutofillProjectFormComponent implements OnInit {
         return 'This field is required';
       }
       if (errors['pattern']) {
-        return 'The DOI must be a valid DOI. E.g. 10.1038/s41467-021-26902-8'
+        return message;
       }
     }
   }
 
   submitForm() {
     this.alertService.clear();
-    if (this.publicationDoiCtrl.invalid) {
+
+    if (this.publicationDoiCtrl.invalid && this.geoAccessionCtrl.invalid) {
       this.publicationDoiCtrl.markAsTouched();
+      this.geoAccessionCtrl.markAsTouched();
       return;
     }
 
-    if (this.publicationDoiCtrl.value) {
-      const doi = this.publicationDoiCtrl.value;
-      this.loading = true;
-      forkJoin({
-        projects: this.getProjectsWithDOI(doi),
-        doiExists: this.doesDoiExist(doi)
-      }).subscribe(({projects, doiExists}) => {
-          this.showExistingProjectsAlert(projects);
-
-          if (!doiExists) {
-            this.showDOINotExistsAlert(doi);
-          }
-
-          if (doiExists && projects.length == 0) {
-            this.createProject(doi);
-          }
-
-          this.loading = false;
-        },
-        error => {
-          this.alertService.error('An error occurred', error.message);
-          this.loading = false;
-        });
+    const doi = this.publicationDoiCtrl.value;
+    if (this.hasDoi && doi) {
+      this.importProjectUsingDoi(doi);
     }
+
+    const geoAccession = this.geoAccessionCtrl.value;
+    if (this.hasGeo && geoAccession) {
+      this.importProjectUsingGeo(geoAccession);
+    }
+  }
+
+  private importProjectUsingDoi(doi: string) {
+    this.loading = true;
+    forkJoin({
+      projects: this.autofillProjectService.getProjectsWithDOI(doi),
+      doiExists: this.autofillProjectService.doesDoiExist(doi)
+    }).subscribe(({projects, doiExists}) => {
+        this.showExistingProjectsAlert(projects, 'doi');
+
+        if (!doiExists) {
+          this.showDOINotExistsAlert(doi);
+        }
+
+        if (doiExists && projects.length == 0) {
+          this.createProjectWithDoi(doi);
+        }
+
+        this.loading = false;
+      },
+      error => {
+        this.alertService.error('An error occurred', error.message);
+        this.loading = false;
+      });
+  }
+
+  private importProjectUsingGeo(geoAccession) {
+    this.loading = true;
+    forkJoin({
+      projects: this.autofillProjectService.getProjectsWithGeo(geoAccession),
+    }).subscribe(({projects}) => {
+        this.showExistingProjectsAlert(projects, 'geo accession');
+        if (projects.length == 0) {
+          this.onUniqueGeoAccession(geoAccession);
+        }
+        this.loading = false;
+      },
+      error => {
+        this.alertService.error('An error occurred', error.message);
+        this.loading = false;
+      });
   }
 
   showDOINotExistsAlert(doi) {
@@ -94,39 +134,18 @@ export class AutofillProjectFormComponent implements OnInit {
     );
   }
 
-  showExistingProjectsAlert(projects: Project[]) {
+  showExistingProjectsAlert(projects: Project[], publicationIdType: string) {
     projects.forEach(project => {
-      const title = project?.content?.['project_core']?.['project_title'];
+      const projectTitle = project?.content?.['project_core']?.['project_title'];
       const link = `/projects/detail?uuid=${project?.uuid?.uuid}`;
+      const errorTile = `This ${publicationIdType} has already been used by project:`
       this.alertService.error(
-        'This DOI has already been used by project:',
-        `<a href="${link}">${title}</a>`);
+        errorTile,
+        `<a href="${link}">${projectTitle}</a>`);
     });
   }
 
-  getProjectsWithDOI(doi: string): Observable<Project[]> {
-    const query = [];
-    const criteria = {
-      'field': 'content.publications.doi',
-      'operator': 'IS',
-      'value': doi
-    };
-    query.push(criteria);
-    return this.ingestService.queryProjects(query).pipe(
-      map(data => data?._embedded?.projects || []),
-    );
-  }
-
-  doesDoiExist(doi: string): Observable<boolean> {
-    const searchIdentifier = Identifier.DOI;
-    return this.autofillProjectService
-      .queryEuropePMC(searchIdentifier, doi)
-      .pipe(
-        map(response => response.resultList.result.length > 0)
-      );
-  }
-
-  private createProject(doi) {
+  createProjectWithDoi(doi) {
     const params = {
       [Identifier.DOI]: doi
     };
@@ -140,8 +159,57 @@ export class AutofillProjectFormComponent implements OnInit {
     this.router.navigate(['/projects', 'register'], {queryParams: params});
   }
 
-  openDialog() {
-    const dialogRef = this.dialog.open(GeoAccessionDialogComponent);
-    dialogRef.disableClose = true;
+  onDoiExistence($event: string) {
+    this.hasDoi = $event == 'Yes' ? true : false;
+    this.hasGeo = this.hasDoi && (this.hasGeo != undefined || this.hasGeo) ? false : this.hasGeo;
+  }
+
+  onGEOAccessionExistence($event: string) {
+    this.hasGeo = $event == 'Yes' ? true : false;
+    this.hasDoi = this.hasGeo && (this.hasDoi != undefined || this.hasDoi) ? false : this.hasDoi;
+  }
+
+  private onUniqueGeoAccession(geoAccession) {
+    this.loaderService.display(true, 'This may take a moment. Please wait...');
+    this.brokerService.importProjectUsingGeo(geoAccession).pipe(
+      catchError(err => {
+        this.loaderService.display(true, `Sorry, we are unable to import the project yet due to error: [${err.message}]. You can still get a spreadsheet to import the project later.
+           We are now generating the spreadsheet, please wait this may take a moment...`);
+        return this.brokerService.downloadSpreadsheetUsingGeo(geoAccession);
+      })
+    ).subscribe(response => {
+        const projectUuid = response['project_uuid'];
+        if (projectUuid) {
+          this.onSuccessfulProjectImportFromGeo(geoAccession, projectUuid);
+        } else {
+          this.onSuccessfulSpreadsheetDownloadFromGeo(response, geoAccession);
+        }
+        this.loaderService.hide();
+      },
+      error => {
+        this.alertService.error('Unable to import the project or download spreadsheet', error.message);
+        this.loaderService.hide();
+      })
+  }
+
+  private onSuccessfulSpreadsheetDownloadFromGeo(response, geoAccession) {
+    const filename = response['filename'];
+    const blob = new Blob([response['data']]);
+    this.saveFileService.saveFile(blob, filename);
+    this.alertService.success(
+      'Success',
+      `You've successfully downloaded the spreadsheet for GEO accession: ${geoAccession}`,
+      true
+    );
+  }
+
+  private onSuccessfulProjectImportFromGeo(geoAccession, projectUuid) {
+    this.alertService.success(
+      'Success',
+      `The project metadata with GEO accession ${geoAccession} has been successfully created.
+               You can download the GEO spreadsheet from Experiment Information tab.`,
+      true
+    );
+    this.router.navigate(['/projects/detail'], {queryParams: {uuid: projectUuid}});
   }
 }

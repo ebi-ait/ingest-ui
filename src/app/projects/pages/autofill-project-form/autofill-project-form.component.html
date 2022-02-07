@@ -2,24 +2,54 @@
   New Project - start
 </h1>
 
+<div class="vf-u-padding__top--xxl vf-u-padding__bottom--xxl">
+  <div class="vf-u-padding__top--xxl">
+    <app-select-radio
+      [id]="'doi-radio-option'"
+      [label]="'Do you have a DOI publication ID?'"
+      [options]="['Yes', 'No']"
+      (valueChanged)="onDoiExistence($event)"
+      [value]="hasDoi? 'Yes': 'No'">
+    </app-select-radio>
 
-<app-vf-input
-  dataType="string"
-  [error]="showError(publicationDoiCtrl)"
-  [formControl]="publicationDoiCtrl"
-  [helperText]="'Get started by entering a DOI to help us retrieve your project information'"
-  [isRequired]="true"
-  [label]="'Publication DOI'"
-></app-vf-input>
+    <app-vf-input
+      *ngIf="hasDoi"
+      dataType="string"
+      [error]="showError(publicationDoiCtrl, 'The DOI must be a valid DOI. E.g. 10.1038/s41467-021-26902-8')"
+      [formControl]="publicationDoiCtrl"
+      [helperText]="'Get started by entering a DOI to help us retrieve your project information'"
+      [isRequired]="false"
+      [label]="'Publication DOI'">
+    </app-vf-input>
+  </div>
 
-<button
-  (click)="submitForm()"
-  class="next-button vf-button {{ loading ? 'vf-button--tertiary' : 'vf-button--primary' }} vf-u-margin__left--xxl"
-  [disabled]="loading"
->
-  {{ loading ? '...' : 'Next' }}
-</button>
+  <div class="vf-u-padding__top--xxl vf-u-padding__bottom--xxl">
+    <app-select-radio
+      [id]="'geo-radio-option'"
+      [label]="'Do you have a GEO accession?'"
+      [options]="['Yes', 'No']"
+      (valueChanged)="onGEOAccessionExistence($event)"
+      [value]="hasGeo? 'Yes': 'No'">
+    </app-select-radio>
 
+    <app-vf-input
+      *ngIf="hasGeo"
+      dataType="string"
+      [error]="showError(geoAccessionCtrl, 'The GEO accession must be valid. E.g. GSE123456')"
+      [formControl]="geoAccessionCtrl"
+      [helperText]="'Get started by entering a GEO accession to your project information'"
+      [isRequired]="false"
+      [label]="'GEO Accession'">
+    </app-vf-input>
+  </div>
+  <button
+    (click)="submitForm()"
+    class="next-button vf-button {{ loading ? 'vf-button--tertiary' : 'vf-button--primary' }} vf-u-margin__left--xxl"
+    [disabled]="loading || (!hasDoi && !hasGeo)">
+    {{ loading ? '...' : 'Next' }}
+  </button>
+
+</div>
 
 <div class="vf-u-margin__top--xxl vf-u-padding__top--xxl">
   <a class="vf-link" routerLink="/projects/register">
@@ -27,16 +57,10 @@
   </a>
 </div>
 
-<div class="vf-u-padding__top--xxl">
-  <a class="vf-link"
-    (click)="openDialog()">
-    Enter a GEO accession to create a pre-filled metadata spreadsheet
-  </a>
-</div>
 
 <div *ngIf="projectInCache$ | async" class="vf-u-padding__top--xxl">
   <a class="vf-link"
-  (click)="restoreProject()">
+     (click)="restoreProject()">
     Restore your unsaved project
   </a>
 </div>

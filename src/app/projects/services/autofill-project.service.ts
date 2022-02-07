@@ -4,13 +4,16 @@ import {Observable, throwError} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AutofillProject} from '../models/autofill-project';
 import {EuropePMCHttpSearchResponse, EuropePMCResult, Identifier} from '../models/europe-pmc-search';
+import {Project} from "@shared/models/project";
+import {IngestService} from "@shared/services/ingest.service";
 
 @Injectable()
 export class AutofillProjectService {
   API_URL = 'https://www.ebi.ac.uk/europepmc/webservices/rest/search';
   DOI_BASE_URL = 'https://doi.org/';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private ingestService: IngestService) {
   }
 
   getProjectDetails(searchUsing: Identifier, searchString: string): Observable<AutofillProject> {
@@ -28,6 +31,41 @@ export class AutofillProjectService {
 
   private static removeHTMLTags(input: string): string {
     return input.replace(/(<([^>]+)>)/gi, '');
+  }
+
+  getProjectsWithDOI(doi: string): Observable<Project[]> {
+    const criteria = {
+      'field': 'content.publications.doi',
+      'operator': 'IS',
+      'value': doi
+    };
+    return this.getProjectsUsingCriteria(criteria);
+  }
+
+  getProjectsWithGeo(geoAccession: string): Observable<Project[]> {
+    const criteria = {
+      'field': 'content.geo_series_accessions',
+      'operator': 'IN',
+      'value': [geoAccession]
+    };
+    return this.getProjectsUsingCriteria(criteria);
+  }
+
+  getProjectsUsingCriteria(criteria: object): Observable<Project[]>{
+    const query = [];
+    query.push(criteria);
+    return this.ingestService.queryProjects(query).pipe(
+      map(data => data?._embedded?.projects || []),
+    );
+  }
+
+  doesDoiExist(doi: string): Observable<boolean> {
+    const searchIdentifier = Identifier.DOI;
+    return this
+      .queryEuropePMC(searchIdentifier, doi)
+      .pipe(
+        map(response => response.resultList.result.length > 0)
+      );
   }
 
   queryEuropePMC(queryId: string, queryString: string): Observable<EuropePMCHttpSearchResponse> {
