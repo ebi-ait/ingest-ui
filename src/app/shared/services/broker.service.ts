@@ -103,6 +103,7 @@ export class BrokerService {
         })
       );
   }
+
   parseErrorBlob(err: HttpErrorResponse): Observable<any> {
     const reader: FileReader = new FileReader();
 
@@ -115,6 +116,7 @@ export class BrokerService {
     reader.readAsText(err.error);
     return obs;
   }
+
   private getFileDataFromResponse(response: HttpResponse<Blob>) {
     const contentDisposition = response.headers.get('content-disposition');
     const filename = contentDisposition.split(';')[1].split('filename')[1].split('=')[1].trim();

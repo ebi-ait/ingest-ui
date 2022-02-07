@@ -23,9 +23,27 @@
         </button>
       </div>
       <mat-tab [label]="tabConfig[1].label">
-
         <div class="vf-u-margin__top--xxl">
-          <app-template-questionnaire></app-template-questionnaire>
+          <details *ngIf="getProjectGeoAccession()" class="vf-details vf-box vf-box--outline" [attr.open]="true">
+            <summary class="vf-details--summary">Download GEO Spreadsheet</summary>
+            <div class="vf-u-margin__top--xxl">
+              <p>Download spreadsheet using GEO accession {{getProjectGeoAccession()}}</p>
+
+              <div class="vf-u-margin__top--xxl">
+                <button type="button" class="vf-button vf-button--sm vf-button--primary" (click)="downloadGeoSpreadsheet()">
+                  Download spreadsheet
+                </button>
+                <br/>
+              </div>
+            </div>
+          </details>
+
+          <details class="vf-details vf-box vf-box--outline">
+            <summary class="vf-details--summary">Generate Metadata Template</summary>
+            <div class="vf-u-margin__top--xxl">
+              <app-template-questionnaire></app-template-questionnaire>
+            </div>
+          </details>
         </div>
       </mat-tab>
     </mat-tab>
