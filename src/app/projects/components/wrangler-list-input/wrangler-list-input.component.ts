@@ -86,12 +86,18 @@ export class WranglerListInputComponent extends BaseInputComponent implements On
       map(matchingWranglers => {
         if (matchingWranglers.length > 0) {
           if (matchingWranglers.length > 1) {
-            this.alertService.warn('Warning', 'Too many wranglers found for this project.');
+            let names: string[] = matchingWranglers.map(wrangler => wrangler.name ? wrangler.name : 'Missing Name');
+            this.alertService.warn(
+              'Multiple Wranglers Match Account',
+              `Multiple wranglers (${names.join(', ')}) match the Account saved against this project: ${accountId}`
+            );
           }
           return matchingWranglers[0];
         }
-        this.alertService.error('Error', 'The wrangler for this project could not be identified.');
-        return null;
+        this.alertService.warn(
+          'No Wranglers Match Account',
+          `No wranglers match the Account saved against this project: ${accountId}`
+        );
       })
     );
   }
