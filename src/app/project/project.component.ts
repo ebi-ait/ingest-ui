@@ -280,6 +280,7 @@ export class ProjectComponent implements OnInit {
   }
 
   downloadGeoSpreadsheet() {
+    this.loaderService.display(true, 'This may take a moment. Please wait...')
     const geo_accession = this.getProjectGeoAccession();
     if (geo_accession) {
       this.brokerService.downloadSpreadsheetUsingGeo(geo_accession)
