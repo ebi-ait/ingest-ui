@@ -7,7 +7,7 @@ import {Metadata} from '@metadata-schema-form/models/metadata';
 import {AlertService} from '@shared/services/alert.service';
 import {IngestService} from '@shared/services/ingest.service';
 import {Observable} from 'rxjs';
-import {debounceTime, distinctUntilChanged, filter, map, startWith, switchMap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, filter, map, startWith, switchMap, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-wrangler-list-input',
@@ -37,7 +37,6 @@ export class WranglerListInputComponent extends BaseInputComponent implements On
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.setDefaultWrangler();
     this.searchControl = this.createSearchControl(this.control.value);
     this.wranglers$ = this.ingestService.getWranglers();
     this.options$ = this.searchControl.valueChanges
@@ -49,20 +48,16 @@ export class WranglerListInputComponent extends BaseInputComponent implements On
         switchMap(newSearch => this.onSearchValueChanged(newSearch))
       );
 
-    const wrangler = this.control.value;
-    if (wrangler) {
-      this._filter(wrangler).subscribe(
-        wranglers => {
-          if (wranglers.length === 1) {
-            this.selectedWrangler = wranglers[0];
-          } else {
-            this.alertService.error('Error', 'The wrangler for this project could not be identified.' +
-              ' Please email hca-ingest-dev@ebi.ac.uk .');
-          }
+    const wranglerId = this.control.value;
+    if (wranglerId) {
+      this.findWrangler(wranglerId).subscribe(wrangler => {
+        if (wrangler) {
+          this.selectedWrangler = wrangler;
+        } else {
+          this.control.setValue(null);
         }
-      );
+      });
     }
-
   }
 
   createSearchControl(value: string) {
@@ -76,27 +71,38 @@ export class WranglerListInputComponent extends BaseInputComponent implements On
     return wrangler ? wrangler.name : '';
   }
 
-  private getWranglerNames(): Observable<string[]> {
-    return this.ingestService.getWranglers().pipe(
-      map(wranglers => wranglers?.map(wrangler => wrangler.name)));
-  }
-
-  private setDefaultWrangler() {
-    // TODO set current account as default wrangler
-  }
-
   private onSearchValueChanged(value: string | Account): Observable<Account[]> {
     const searchText = typeof value === 'string' ? value.toLowerCase() : value.name ? value.name.toLowerCase() : '';
-    return this._filter(searchText);
+    const emptyAccount = new Account({id: null, providerReference: null, name: 'Unassigned'});
+    return this.filterWranglers(searchText).pipe(
+      tap(found_wranglers => found_wranglers.unshift(emptyAccount))
+    );
   }
 
-  private _filter(name_or_id: string): Observable<Account[]> {
-    const filterValue = name_or_id.toLowerCase();
+  private filterWranglers(wranglerName: string): Observable<Account[]> {
+    const lowerName = wranglerName.toLowerCase();
+    return this.wranglers$.pipe(map(wranglers => wranglers.filter(wrangler => wrangler.name.toLowerCase().includes(lowerName))));
+  }
+
+  private findWrangler(accountId: string): Observable<Account> {
     return this.wranglers$.pipe(
-      map(wranglers => wranglers.filter(wrangler => {
-          return wrangler.name.toLowerCase().indexOf(filterValue) === 0 || wrangler.id === name_or_id;
-        })
-      )
+      map(allWranglers => allWranglers.filter(wrangler => wrangler.id === accountId)),
+      map(matchingWranglers => {
+        if (matchingWranglers.length > 0) {
+          if (matchingWranglers.length > 1) {
+            let names: string[] = matchingWranglers.map(wrangler => wrangler.name ? wrangler.name : 'Missing Name');
+            this.alertService.warn(
+              'Multiple Wranglers Match Account',
+              `Multiple wranglers (${names.join(', ')}) match the Account saved against this project: ${accountId}`
+            );
+          }
+          return matchingWranglers[0];
+        }
+        this.alertService.warn(
+          'No Wranglers Match Account',
+          `No wranglers match the Account saved against this project: ${accountId}`
+        );
+      })
     );
   }
 

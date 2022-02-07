@@ -1,104 +1,196 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MetadataFormService} from '../metadata-form.service';
 import {JsonSchema} from '../models/json-schema';
 import {MetadataForm} from '../models/metadata-form';
 import {MetadataFormConfig} from '../models/metadata-form-config';
 import {MetadataFormTab} from '../models/metadata-form-layout';
 import {MetadataFormComponent} from './metadata-form.component';
-import SpyObj = jasmine.SpyObj;
-
-function getSchema() {
-  return {
-    'name': 'project'
-  } as JsonSchema;
-}
-
-function getData() {
-  return {
-    content: null,
-    admin: {
-      key: 'value'
-    }
-  };
-}
-
-function createTab(title) {
-  return {
-    title: title,
-    key: 'project.' + title,
-    items: [
-      'project.' + title
-    ]
-  } as MetadataFormTab;
-}
-
-function createMetadataFormConfig(tabs: MetadataFormTab[]) {
-  return {
-    viewMode: true,
-    removeEmptyFields: true,
-    layout: {
-      tabs: tabs
-    }
-  } as MetadataFormConfig;
-}
-
-function createFormGroup() {
-  return new FormGroup({
-    x: new FormControl('', Validators.required),
-    y: new FormControl('', Validators.required),
-    z: new FormControl('', Validators.required),
-  });
-}
-
-function createMetadataForm(tabs: MetadataFormTab[]): MetadataForm {
-  return {
-    key: 'test key',
-    jsonSchema: getSchema(),
-    config: createMetadataFormConfig(tabs),
-    metadataRegistry: jasmine.createSpyObj('MetadataRegistry', ['buildMetadataRegistry']),
-    formGroup: createFormGroup()
-  } as MetadataForm;
-}
+import {MetadataRegistry} from '@metadata-schema-form/models/metadata-registry';
 
 describe('MetadataFormComponent', () => {
   let component: MetadataFormComponent;
   let fixture: ComponentFixture<MetadataFormComponent>;
 
-  let metadataFormSvc: SpyObj<MetadataFormService>;
+  let metadataFormSvc;
+  let metadataRegistrySpy;
+  let formGroupSpy;
 
-  const contentTab = createTab('content.contributors');
-  const adminTab = createTab('admin');
-  const tabs = [contentTab, adminTab];
+  interface metadataFormDependencies {
+    key?: string;
+    schema?: JsonSchema;
+    config?: MetadataFormConfig;
+  }
 
-  beforeEach(async(() => {
-    metadataFormSvc = jasmine.createSpyObj('MetadataFormService', ['createForm']);
-    metadataFormSvc.createForm.and.returnValue(createMetadataForm(tabs));
-    TestBed.configureTestingModule({
-      providers: [
-        { provide: MetadataFormService, useValue: metadataFormSvc},
-      ],
-      declarations: [MetadataFormComponent]
-    })
-      .compileComponents();
-  }));
+  function createTab(title) {
+    return {
+      title: title,
+      key: 'project.' + title,
+      items: [
+        'project.' + title
+      ]
+    } as MetadataFormTab;
+  }
+
+  function configureFormAndSvc({
+                                 key = 'test key',
+                                 schema = {'name': 'project'} as JsonSchema,
+                                 config = {}
+                               }: metadataFormDependencies) {
+    if (!config.layout || !config.layout.tabs) {
+      config.layout = {tabs: [createTab('tab')]};
+    }
+    const form = {
+      key: key,
+      jsonSchema: schema as JsonSchema,
+      config: config as MetadataFormConfig,
+      metadataRegistry: metadataRegistrySpy,
+      formGroup: formGroupSpy
+    } as MetadataForm;
+    metadataFormSvc.createForm.and.returnValue(form);
+    component.form = form;
+    component.formGroup = formGroupSpy;
+    component.schema = schema;
+    component.config = config;
+  }
 
   beforeEach(() => {
+    metadataFormSvc = jasmine.createSpyObj('MetadataFormService', ['createForm', 'cleanFormData']);
+    metadataRegistrySpy = jasmine.createSpyObj('MetadataRegistry', ['buildMetadataRegistry']);
+    formGroupSpy = jasmine.createSpyObj('FormGroup', ['getRawValue', 'valueChanges'], ['valid']);
+    TestBed.configureTestingModule({
+      providers: [
+        {provide: MetadataFormService, useValue: metadataFormSvc},
+      ],
+      declarations: [MetadataFormComponent]
+    }).compileComponents();
     fixture = TestBed.createComponent(MetadataFormComponent);
     component = fixture.componentInstance;
-    component.schema = getSchema();
-    component.data = getData();
-    component.config = createMetadataFormConfig(tabs);
-    component.selectedTabKey = 'content';
-    component.visibleTabs = tabs;
-    fixture.detectChanges();
+    spyOn(component, 'onFormChange');
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('tabIsVisible should pass with null content', () => {
-    expect(component.tabIsVisible(contentTab)).toBe(false);
+  describe('tab tests', () => {
+    const contentTab = createTab('content.contributors');
+    const adminTab = createTab('admin');
+    const tabs = [contentTab, adminTab];
+
+    const config = {
+      viewMode: true,
+      hideEmptyFields: true,
+      layout: {
+        tabs: tabs
+      }
+    } as MetadataFormConfig;
+
+    const data = {
+      content: null,
+      admin: {
+        key: 'value'
+      }
+    };
+
+    beforeEach(() => {
+      configureFormAndSvc({config: config});
+      formGroupSpy.getRawValue.and.returnValue(data);
+      component.data = data;
+      component.selectedTabKey = 'content';
+      component.visibleTabs = tabs;
+      fixture.detectChanges();
+    });
+
+    it('tabIsVisible should pass with null content', () => {
+      expect(component.tabIsVisible(contentTab)).toBe(false);
+    });
+  });
+
+  describe('cleanFormData tests', () => {
+    const cleanTest = {
+      unsetAttribute: null,
+      setAttribute: 'value',
+      unsetObject: {},
+      setObject: {
+        unsetObjectAttribute: null,
+        setObjectAttribute: 'objectValue'
+      }
+    };
+
+    beforeEach(() => {
+      formGroupSpy.getRawValue.and.returnValue(cleanTest);
+      component.data = cleanTest;
+    });
+
+    describe('cleanFields default behaviour', () => {
+      [
+        {name: 'undefined', case: {}},
+        {name: 'null', case: {cleanFields: null}},
+        {name: 'true', case: {cleanFields: true}}
+      ].forEach(test => {
+        it(`cleanFields ${test.name}: should send all data to be cleaned`, () => {
+          // Given
+          configureFormAndSvc({config: test.case});
+          fixture.detectChanges();
+
+          // When
+          component.getFormData();
+
+          // Then
+          expect(metadataFormSvc.cleanFormData).toHaveBeenCalledOnceWith(cleanTest);
+        });
+      });
+    });
+
+    describe('cleanFields false behaviour', () => {
+      [
+        {name: 'false', case: {cleanFields: false}},
+        {name: 'empty Array', case: {cleanFields: []}},
+      ].forEach(test => {
+        it(`cleanFields ${test.name}: should send no data to be cleaned`, () => {
+          // Given
+          configureFormAndSvc({config: test.case});
+          fixture.detectChanges();
+
+          // When
+          component.getFormData();
+
+          // Then
+          expect(metadataFormSvc.cleanFormData).not.toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('cleanFields array behaviour', () => {
+      it('should send matching attributes to be cleaned', () => {
+        // Given
+        const unsetAttribute = cleanTest.unsetAttribute;
+        const setObject = cleanTest.setObject;
+        const testCase = {cleanFields: ['unsetAttribute', 'setObject']};
+        configureFormAndSvc({config: testCase});
+        fixture.detectChanges();
+
+        // When
+        component.getFormData();
+
+        // Then
+        expect(metadataFormSvc.cleanFormData).toHaveBeenCalledWith(unsetAttribute);
+        expect(metadataFormSvc.cleanFormData).toHaveBeenCalledWith(setObject);
+      });
+
+      it('should only send attributes to be cleaned if they exist', () => {
+        // Given
+        const testCase = {cleanFields: ['missingAttribute', 'unsetAttribute']};
+        const unsetAttribute = cleanTest.unsetAttribute;
+        configureFormAndSvc({config: testCase});
+        fixture.detectChanges();
+
+        // When
+        component.getFormData();
+
+        // Then
+        expect(metadataFormSvc.cleanFormData).toHaveBeenCalledOnceWith(unsetAttribute);
+      });
+    });
   });
 });

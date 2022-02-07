@@ -46,7 +46,7 @@ export class MetadataRegistry {
     let isRequired = requiredFields.indexOf(key) >= 0;
     let isHidden = hiddenFields.indexOf(key) >= 0;
     let isDisabled = this.config && this.config.viewMode || disabledFields.indexOf(key) >= 0;
-    const isReadOnly = this.config && this.config.viewMode && this.config.removeEmptyFields;
+    const isReadOnly = this.config && this.config.viewMode && this.config.hideEmptyFields;
     let inputType = this.config && this.config.inputType && this.config.inputType[key] ? this.config.inputType[key] : undefined;
 
     if (metadataKey) {

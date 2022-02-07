@@ -2,13 +2,14 @@ import {MetadataFormLayout} from './metadata-form-layout';
 
 export interface MetadataFormConfig {
   hideFields?: string[];
-  removeEmptyFields?: boolean;
+  hideEmptyFields?: boolean;
   disableFields?: string[];
+  cleanFields?: boolean | string[];
   viewMode?: boolean;
   layout?: MetadataFormLayout;
   inputType?: object;
-  overrideRequiredFields?: {[key: string]: boolean};
-  overrideGuidelines?: {[key: string]: string};
+  overrideRequiredFields?: { [key: string]: boolean };
+  overrideGuidelines?: { [key: string]: string };
   submitButtonLabel?: string;
   cancelButtonLabel?: string;
   showResetButton?: boolean;

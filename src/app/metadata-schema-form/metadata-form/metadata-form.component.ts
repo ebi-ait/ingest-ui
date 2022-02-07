@@ -80,7 +80,7 @@ export class MetadataFormComponent implements OnInit {
   }
 
   tabIsVisible(tab: MetadataFormTab): boolean {
-    if (this.config.viewMode && this.config.removeEmptyFields && tab.items.length === 1) {
+    if (this.config.viewMode && this.config.hideEmptyFields && tab.items.length === 1) {
       if (tab.key === tab.items[0]) {
         let data = this.data;
         let chain = true;
@@ -118,11 +118,18 @@ export class MetadataFormComponent implements OnInit {
   }
 
   getFormData() {
-    const formValue = this.metadataForm.formGroup.getRawValue();
-    const formData = this.metadataFormService.cleanFormData(formValue);
-
+    let formValue = this.metadataForm.formGroup.getRawValue();
+    if (Array.isArray(this.config.cleanFields)) {
+      this.config.cleanFields.forEach(attribute => {
+        if (attribute in formValue) {
+          formValue[attribute] = this.metadataFormService.cleanFormData(formValue[attribute]);
+        }
+      });
+    } else if (this.config.cleanFields !== false) {
+      formValue = this.metadataFormService.cleanFormData(formValue);
+    }
     return {
-      value: formData,
+      value: formValue,
       valid: this.formGroup.valid,
       validationSkipped: this.overrideValidation
     };
@@ -141,11 +148,11 @@ export class MetadataFormComponent implements OnInit {
     this.tabChange.emit(this.visibleTabs[tabIndex].key);
   }
 
-  onBack($event: MouseEvent) {
+  onBack() {
     this.back.emit();
   }
 
-  onReset($event: MouseEvent) {
+  onReset() {
     this.reset.emit();
   }
 }
