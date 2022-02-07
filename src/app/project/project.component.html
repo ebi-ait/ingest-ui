@@ -24,7 +24,7 @@
       </div>
       <mat-tab [label]="tabConfig[1].label">
         <div class="vf-u-margin__top--xxl">
-          <details  class="vf-details vf-box vf-box--outline" [attr.open]="true">
+          <details class="vf-details vf-box vf-box--outline" [attr.open]="getProjectGeoAccession()">
             <summary class="vf-details--summary">Download Spreadsheet Using GEO Accession</summary>
             <div class="vf-u-margin__top--xxl">
               <p *ngIf="getProjectGeoAccession()">Download spreadsheet using GEO accession {{getProjectGeoAccession()}}</p>
