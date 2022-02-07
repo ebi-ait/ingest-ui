@@ -36,11 +36,8 @@ describe('MetadataFormComponent', () => {
                                  schema = {'name': 'project'} as JsonSchema,
                                  config = {}
                                }: metadataFormDependencies) {
-    if (!config.layout) {
+    if (!config.layout || !config.layout.tabs) {
       config.layout = {tabs: [createTab('tab')]};
-    }
-    if (!config.layout.tabs) {
-      config.layout.tabs = [createTab('tab')];
     }
     const form = {
       key: key,
