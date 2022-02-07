@@ -125,73 +125,75 @@ describe('MetadataFormComponent', () => {
       component.data = cleanTest;
     });
 
-    const defaultBehaviourTest = test => {
-      it(`cleanFields ${test.name} (default) behaviour: should send all data to be cleaned`, () => {
-        // Given
-        configureFormAndSvc({config: test.case});
-        fixture.detectChanges();
+    describe('cleanFields default behaviour', () => {
+      [
+        {name: 'undefined', case: {}},
+        {name: 'null', case: {cleanFields: null}},
+        {name: 'true', case: {cleanFields: true}}
+      ].forEach(test => {
+        it(`cleanFields ${test.name}: should send all data to be cleaned`, () => {
+          // Given
+          configureFormAndSvc({config: test.case});
+          fixture.detectChanges();
 
-        // When
-        component.getFormData();
+          // When
+          component.getFormData();
 
-        // Then
-        expect(metadataFormSvc.cleanFormData).toHaveBeenCalledOnceWith(cleanTest);
+          // Then
+          expect(metadataFormSvc.cleanFormData).toHaveBeenCalledOnceWith(cleanTest);
+        });
       });
-    };
-
-    [
-      {name: 'undefined', case: {}},
-      {name: 'null', case: {cleanFields: null}},
-      {name: 'true', case: {cleanFields: true}}
-    ].forEach(defaultBehaviourTest);
-
-    const falseBehaviourTest = test => {
-      it(`cleanFields ${test.name} (false) behaviour, should send no data to be cleaned`, () => {
-        // Given
-        configureFormAndSvc({config: test.case});
-        fixture.detectChanges();
-
-        // When
-        component.getFormData();
-
-        // Then
-        expect(metadataFormSvc.cleanFormData).not.toHaveBeenCalled();
-      });
-    };
-
-    [
-      {name: 'false', case: {cleanFields: false}},
-      {name: 'empty Array', case: {cleanFields: []}},
-    ].forEach(falseBehaviourTest);
-
-    it('cleanFields array behaviour, should send matching attributes to be cleaned', () => {
-      // Given
-      const unsetAttribute = cleanTest.unsetAttribute;
-      const setObject = cleanTest.setObject;
-      const testCase = {cleanFields: ['unsetAttribute', 'setObject']};
-      configureFormAndSvc({config: testCase});
-      fixture.detectChanges();
-
-      // When
-      component.getFormData();
-
-      // Then
-      expect(metadataFormSvc.cleanFormData).toHaveBeenCalledWith(unsetAttribute);
-      expect(metadataFormSvc.cleanFormData).toHaveBeenCalledWith(setObject);
     });
 
-    it('cleanFields array behaviour, should only send attributes to be cleaned if they exist', () => {
-      // Given
-      const testCase = {cleanFields: ['missingAttribute', 'unsetAttribute']};
-      const unsetAttribute = cleanTest.unsetAttribute;
-      configureFormAndSvc({config: testCase});
-      fixture.detectChanges();
+    describe('cleanFields false behaviour', () => {
+      [
+        {name: 'false', case: {cleanFields: false}},
+        {name: 'empty Array', case: {cleanFields: []}},
+      ].forEach(test => {
+        it(`cleanFields ${test.name}: should send no data to be cleaned`, () => {
+          // Given
+          configureFormAndSvc({config: test.case});
+          fixture.detectChanges();
 
-      // When
-      component.getFormData();
+          // When
+          component.getFormData();
 
-      // Then
-      expect(metadataFormSvc.cleanFormData).toHaveBeenCalledOnceWith(unsetAttribute);
+          // Then
+          expect(metadataFormSvc.cleanFormData).not.toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('cleanFields array behaviour', () => {
+      it('should send matching attributes to be cleaned', () => {
+        // Given
+        const unsetAttribute = cleanTest.unsetAttribute;
+        const setObject = cleanTest.setObject;
+        const testCase = {cleanFields: ['unsetAttribute', 'setObject']};
+        configureFormAndSvc({config: testCase});
+        fixture.detectChanges();
+
+        // When
+        component.getFormData();
+
+        // Then
+        expect(metadataFormSvc.cleanFormData).toHaveBeenCalledWith(unsetAttribute);
+        expect(metadataFormSvc.cleanFormData).toHaveBeenCalledWith(setObject);
+      });
+
+      it('should only send attributes to be cleaned if they exist', () => {
+        // Given
+        const testCase = {cleanFields: ['missingAttribute', 'unsetAttribute']};
+        const unsetAttribute = cleanTest.unsetAttribute;
+        configureFormAndSvc({config: testCase});
+        fixture.detectChanges();
+
+        // When
+        component.getFormData();
+
+        // Then
+        expect(metadataFormSvc.cleanFormData).toHaveBeenCalledOnceWith(unsetAttribute);
+      });
     });
   });
 });
