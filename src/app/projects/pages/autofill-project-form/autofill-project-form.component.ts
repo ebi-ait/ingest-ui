@@ -15,7 +15,7 @@ import {LoaderService} from "@shared/services/loader.service";
 import {SaveFileService} from "@shared/services/save-file.service";
 
 @Component({
-  selector: 'app-doi-name-field',
+  selector: 'app-autofill-project-form',
   templateUrl: './autofill-project-form.component.html',
   styleUrls: ['./autofill-project-form.component.css']
 })
@@ -138,9 +138,9 @@ export class AutofillProjectFormComponent implements OnInit {
     projects.forEach(project => {
       const projectTitle = project?.content?.['project_core']?.['project_title'];
       const link = `/projects/detail?uuid=${project?.uuid?.uuid}`;
-      const errorTile = `This ${publicationIdType} has already been used by project:`
+      const errorTitle = `This ${publicationIdType} has already been used by project:`
       this.alertService.error(
-        errorTile,
+        errorTitle,
         `<a href="${link}">${projectTitle}</a>`);
     });
   }

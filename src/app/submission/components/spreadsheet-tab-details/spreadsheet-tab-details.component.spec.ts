@@ -58,7 +58,7 @@ describe('SpreadsheetTabDetailsComponent', () => {
     }
   });
 
-  it('should display download button when file is ready', () => {
+  it('should display download button when file is ready', async () => {
     submission['lastSpreadsheetGenerationJob'] = {
       'finishedDate': '2022-01-31T22:34:48.731Z',
       'createdDate': '2022-01-31T22:34:45.323Z'
