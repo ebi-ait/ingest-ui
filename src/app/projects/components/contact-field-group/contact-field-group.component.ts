@@ -34,6 +34,7 @@ export class ContactFieldGroupComponent implements OnInit {
   ];
 
   userInfo: Profile;
+  readOnly: boolean;
 
   constructor(private aai: AaiService) {
     this.formHelper = new MetadataFormHelper();
@@ -73,6 +74,8 @@ export class ContactFieldGroupComponent implements OnInit {
         }
       });
     }
+
+    this.readOnly = !this.contributorMetadata.isDisabled;
   }
 
   removeFormControl(control: AbstractControl, i: number) {
