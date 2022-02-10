@@ -75,7 +75,7 @@ export class ContactFieldGroupComponent implements OnInit {
       });
     }
 
-    this.readOnly = !this.contributorMetadata.isDisabled;
+    this.readOnly = this.contributorMetadata.isDisabled;
   }
 
   removeFormControl(control: AbstractControl, i: number) {
