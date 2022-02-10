@@ -19,7 +19,7 @@
     </app-metadata-field>
   </ng-container>
 
-  <ng-container>
+  <ng-container *ngIf="readOnly">
     <div class="vf-u-padding__top--xxl"></div>
     <a class="vf-button vf-button--primary vf-button--outline"
        *ngIf="i!==0"
@@ -31,7 +31,7 @@
 
 </ng-container>
 
-<ng-container>
+<ng-container *ngIf="readOnly">
   <a class="vf-button vf-button--primary vf-button--outline"
      (click)="addFormControl(contributorMetadata, contributorsControl)">
     <mat-icon>add</mat-icon>
