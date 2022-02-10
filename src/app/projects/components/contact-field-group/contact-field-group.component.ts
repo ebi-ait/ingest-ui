@@ -92,4 +92,13 @@ export class ContactFieldGroupComponent implements OnInit {
     const formGroup: FormGroup = this.formHelper.toFormGroup(metadata.itemMetadata);
     formArray.insert(count, formGroup);
   }
+
+  getControlValueForMetadataItem(formGroup: FormGroup, metadataKey: string): any {
+    // Allows dot notation e.g. getControlValueForMetadataItem(fg, 'project_role.ontology')
+    let value = formGroup.value;
+    metadataKey.split('.').forEach(key => {
+      value = value[key]
+    });
+    return value;
+  }
 }
