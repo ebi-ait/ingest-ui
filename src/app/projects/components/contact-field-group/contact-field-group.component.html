@@ -1,4 +1,4 @@
-<table class="vf-table vf-table--striped vf-table--loose" *ngIf="readOnly" style="width: 100%">
+<table class="vf-table vf-table--striped vf-table--loose" style="width: 100%" *ngIf="readOnly; else writeMode">
   <thead class="vf-table__header">
     <tr class="vf-table__row">
       <th class="vf-table__heading" scope="col"> Contact Name</th>
@@ -24,7 +24,7 @@
   </tbody>
 </table>
 
-<ng-container *ngIf="!readOnly">
+<ng-template #writeMode>
   <p class="vf-text-body vf-text-body--3 vf-u-text-color--grey">
     Please enter the main people we can contact about this project and dataset submission.
   </p>
@@ -61,5 +61,5 @@
     <mat-icon>add</mat-icon>
     Add a contributor
   </a>
-</ng-container>
+</ng-template>
 
