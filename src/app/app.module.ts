@@ -54,6 +54,7 @@ import {SharedModule} from './shared/shared.module';
 import {SubmissionListComponent} from './submission-list/submission-list.component';
 import {TemplateQuestionnaireModule} from './template-questionnaire/template-questionnaire.module';
 import {WelcomeComponent} from './welcome/welcome.component';
+import { GeoAccessionComponent } from './project/geo-accession/geo-accession.component';
 
 const BROWSER_LOCALE = navigator.language;
 
@@ -76,6 +77,7 @@ const BROWSER_LOCALE = navigator.language;
     ErrorComponent,
     GlobalFooterComponent,
     MetadataDetailsDialogComponent,
+    GeoAccessionComponent,
   ],
   imports: [
     AaiSecurity,
