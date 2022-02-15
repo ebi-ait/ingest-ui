@@ -4,7 +4,6 @@ import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {BrokerService} from './broker.service';
 import {TimeoutError} from 'rxjs';
 import {environment} from "@environments/environment";
-import exp from "constants";
 
 describe('Broker Service', () => {
   let service: BrokerService;
