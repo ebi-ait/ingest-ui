@@ -22,23 +22,24 @@ export class GeoAccessionDownloadComponent {
 
 
   downloadSpreadsheetUsingGeo() {
-    this.loaderService.display(true, 'This may take a moment. Please wait...')
     const geo_accession = this.geoAccession;
-    if (geo_accession) {
-      this.brokerService.downloadSpreadsheetUsingGeo(geo_accession)
-        .subscribe(response => {
-            const filename = response['filename'];
-            const blob = new Blob([response['data']]);
-            this.saveFileService.saveFile(blob, filename);
-            this.loaderService.hide();
-          },
-          error => {
-            console.log(error)
-            this.alertService.error('Unable to download spreadsheet using this GEO accession.' +
-              ' Please retry again.', error.message );
-            this.loaderService.hide();
-          })
-    }
 
+    if (!geo_accession) return;
+
+    this.loaderService.display(true, 'This may take a moment. Please wait...')
+    this.brokerService.downloadSpreadsheetUsingGeo(geo_accession)
+      .subscribe(response => {
+          const filename = response['filename'];
+          const blob = new Blob([response['data']]);
+          this.saveFileService.saveFile(blob, filename);
+          this.loaderService.hide();
+        },
+        error => {
+          console.log(error)
+          this.alertService.error('Unable to download spreadsheet using this GEO accession.' +
+            ' Please retry again.', error.message );
+          this.loaderService.hide();
+        })
+    
   }
 }
