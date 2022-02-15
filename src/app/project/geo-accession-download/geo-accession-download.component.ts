@@ -1,16 +1,16 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {LoaderService} from "@shared/services/loader.service";
 import {SaveFileService} from "@shared/services/save-file.service";
 import {BrokerService} from "@shared/services/broker.service";
 import {AlertService} from "@shared/services/alert.service";
 
 @Component({
-  selector: 'app-geo-accession',
-  templateUrl: './geo-accession.component.html',
-  styleUrls: ['./geo-accession.component.css']
+  selector: 'app-geo-accession-download',
+  templateUrl: './geo-accession-download.component.html',
+  styleUrls: ['./geo-accession-download.component.css']
 })
 
-export class GeoAccessionComponent implements OnInit {
+export class GeoAccessionDownloadComponent {
   @Input() geoAccession;
 
   constructor(
@@ -20,8 +20,6 @@ export class GeoAccessionComponent implements OnInit {
     private alertService: AlertService,
   ) { }
 
-  ngOnInit(): void {
-  }
 
   downloadSpreadsheetUsingGeo() {
     this.loaderService.display(true, 'This may take a moment. Please wait...')
