@@ -66,5 +66,5 @@ export class AdminAreaComponent implements OnInit {
     this.releaseMetadata = this.metadataForm.get(releaseSchemaKey);
     this.releaseControl = this.metadataForm.getControl(releaseSchemaKey) as FormControl;
     this.releaseOptions = Utils.generateNumbers1toN(MAX_DCP_RELEASE_NUMBER).map(String)
-  }Ingest
+  }
 }
