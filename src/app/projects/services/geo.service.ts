@@ -23,7 +23,24 @@ export class GeoService {
               private router: Router) {
   }
 
-  getProjectsWithGeo(geoAccession: string): Observable<Project[]> {
+  importProjectUsingGeo(geoAccession) {
+    this.loading.next(true)
+    this.getProjectsWithGeo(geoAccession)
+      .subscribe(projects => {
+          this.showExistingProjectsAlert(projects, 'geo accession');
+          if (projects.length == 0) {
+            this.onUniqueGeoAccession(geoAccession);
+          }
+          this.loading.next(false)
+        },
+        error => {
+          this.alertService.error('An error occurred', error.message);
+          this.loading.next(false);
+        }
+      );
+  }
+
+  private getProjectsWithGeo(geoAccession: string): Observable<Project[]> {
     const criteria = {
       'field': 'content.geo_series_accessions',
       'operator': 'IN',
@@ -32,7 +49,7 @@ export class GeoService {
     return this.ingestService.getProjectsUsingCriteria(criteria);
   }
 
-  onUniqueGeoAccession(geoAccession) {
+  private onUniqueGeoAccession(geoAccession) {
     this.loaderService.display(true, 'This may take a moment. Please wait...');
     this.brokerService.importProjectUsingGeo(geoAccession).pipe(
       catchError(err => {
@@ -55,24 +72,7 @@ export class GeoService {
       })
   }
 
-  importProjectUsingGeo(geoAccession) {
-    this.loading.next(true)
-    this.getProjectsWithGeo(geoAccession)
-      .subscribe(projects => {
-          this.showExistingProjectsAlert(projects, 'geo accession');
-          if (projects.length == 0) {
-            this.onUniqueGeoAccession(geoAccession);
-          }
-          this.loading.next(false)
-        },
-        error => {
-          this.alertService.error('An error occurred', error.message);
-          this.loading.next(false);
-        }
-      );
-  }
-
-  showExistingProjectsAlert(projects: Project[], publicationIdType: string) {
+  private showExistingProjectsAlert(projects: Project[], publicationIdType: string) {
     projects.forEach(project => {
       const projectTitle = project?.content?.['project_core']?.['project_title'];
       const link = `/projects/detail?uuid=${project?.uuid?.uuid}`;

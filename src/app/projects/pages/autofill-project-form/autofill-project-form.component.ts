@@ -12,7 +12,8 @@ import {GeoService} from "@projects/services/geo.service";
 @Component({
   selector: 'app-autofill-project-form',
   templateUrl: './autofill-project-form.component.html',
-  styleUrls: ['./autofill-project-form.component.css']
+  styleUrls: ['./autofill-project-form.component.css'],
+  providers: [DoiService, GeoService]
 })
 export class AutofillProjectFormComponent implements OnInit {
   publicationDoiCtrl: FormControl;

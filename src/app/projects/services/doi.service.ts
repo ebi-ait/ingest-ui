@@ -22,30 +22,6 @@ export class DoiService {
               private router: Router) {
   }
 
-  getProjectDetails(searchUsing: Identifier, searchString: string): Observable<AutofillProject> {
-    return this.queryEuropePMC(searchUsing, searchString).pipe(
-      map(response => {
-        const result = response.resultList.result[0];
-        if (result) {
-          return this.createAutoFillProject(result);
-        } else {
-          throw throwError(response);
-        }
-      })
-    );
-  }
-
-  showExistingProjectsAlert(projects: Project[], publicationIdType: string) {
-    projects.forEach(project => {
-      const projectTitle = project?.content?.['project_core']?.['project_title'];
-      const link = `/projects/detail?uuid=${project?.uuid?.uuid}`;
-      const errorTitle = `This ${publicationIdType} has already been used by project:`
-      this.alertService.error(
-        errorTitle,
-        `<a href="${link}">${projectTitle}</a>`);
-    });
-  }
-
   importProjectUsingDoi(doi: string) {
     this.loading.next(true);
     forkJoin({
@@ -71,7 +47,31 @@ export class DoiService {
     );
   }
 
-  getProjectsWithDOI(doi: string): Observable<Project[]> {
+  getProjectDetails(searchUsing: Identifier, searchString: string): Observable<AutofillProject> {
+    return this.queryEuropePMC(searchUsing, searchString).pipe(
+      map(response => {
+        const result = response.resultList.result[0];
+        if (result) {
+          return this.createAutoFillProject(result);
+        } else {
+          throw throwError(response);
+        }
+      })
+    );
+  }
+  
+  private showExistingProjectsAlert(projects: Project[], publicationIdType: string) {
+    projects.forEach(project => {
+      const projectTitle = project?.content?.['project_core']?.['project_title'];
+      const link = `/projects/detail?uuid=${project?.uuid?.uuid}`;
+      const errorTitle = `This ${publicationIdType} has already been used by project:`
+      this.alertService.error(
+        errorTitle,
+        `<a href="${link}">${projectTitle}</a>`);
+    });
+  }
+
+  private getProjectsWithDOI(doi: string): Observable<Project[]> {
     const criteria = {
       'field': 'content.publications.doi',
       'operator': 'IS',
@@ -80,7 +80,7 @@ export class DoiService {
     return this.ingestService.getProjectsUsingCriteria(criteria);
   }
 
-  doesDoiExist(doi: string): Observable<boolean> {
+  private doesDoiExist(doi: string): Observable<boolean> {
     const searchIdentifier = Identifier.DOI;
     return this
       .queryEuropePMC(searchIdentifier, doi)
@@ -89,7 +89,7 @@ export class DoiService {
       );
   }
 
-  queryEuropePMC(queryId: string, queryString: string): Observable<EuropePMCHttpSearchResponse> {
+  private queryEuropePMC(queryId: string, queryString: string): Observable<EuropePMCHttpSearchResponse> {
     const params = {
       query: queryId + ':' + queryString,
       resultType: 'core',
@@ -98,14 +98,14 @@ export class DoiService {
     return this.http.get<EuropePMCHttpSearchResponse>(this.API_URL, {params});
   }
 
-  createProjectWithDoi(doi) {
+  private createProjectWithDoi(doi) {
     const params = {
       [Identifier.DOI]: doi
     };
     this.router.navigate(['/projects', 'register'], {queryParams: params});
   }
 
-  showDOINotExistsAlert(doi) {
+  private showDOINotExistsAlert(doi) {
     const link = `mailto:wrangler-team@data.humancellatlas.org?subject=Cannot%20find%20project%20by%20DOI&body=${doi}`;
     this.alertService.error(
       'This DOI cannot be found on Europe PMC.',
