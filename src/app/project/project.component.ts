@@ -271,6 +271,7 @@ export class ProjectComponent implements OnInit {
 
   getProjectGeoAccession() {
     const content: { geo_series_accessions?: string[] } = this.project?.content;
-    return content?.geo_series_accessions ? content?.geo_series_accessions[0] : undefined;
+    const geoAccessions = content?.geo_series_accessions
+    return geoAccessions && geoAccessions.length > 0 ? geoAccessions[0] : undefined;
   }
 }
