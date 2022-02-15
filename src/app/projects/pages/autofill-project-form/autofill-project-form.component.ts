@@ -111,9 +111,8 @@ export class AutofillProjectFormComponent implements OnInit {
 
   private importProjectUsingGeo(geoAccession) {
     this.loading = true;
-    forkJoin({
-      projects: this.autofillProjectService.getProjectsWithGeo(geoAccession),
-    }).subscribe(({projects}) => {
+    this.autofillProjectService.getProjectsWithGeo(geoAccession)
+      .subscribe(projects => {
         this.showExistingProjectsAlert(projects, 'geo accession');
         if (projects.length == 0) {
           this.onUniqueGeoAccession(geoAccession);
