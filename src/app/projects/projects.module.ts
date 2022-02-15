@@ -5,6 +5,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatTabsModule} from '@angular/material/tabs';
+import {ContactNameFieldComponent} from "@projects/components/contact-name-field/contact-name-field.component";
 import {MaterialModule} from '../material.module';
 import {MetadataSchemaFormModule} from '@metadata-schema-form/metadata-schema-form.module';
 import {SharedModule} from '@shared/shared.module';
@@ -28,23 +29,24 @@ import { ProjectFiltersComponent } from './components/project-filters/project-fi
 import { GeoAccessionDialogComponent } from './dialogs/geo-accession-dialog/geo-accession-dialog.component';
 
 @NgModule({
-  declarations: [
-    AutofillProjectFormComponent,
-    AccessionFieldGroupComponent,
-    AdminAreaComponent,
-    ContactFieldGroupComponent,
-    CreateProjectComponent,
-    EditProjectComponent,
-    FunderFieldGroupComponent,
-    ProjectIdComponent,
-    ProjectMetadataFormComponent,
-    ProjectRegistrationSaveComponent,
-    PublicationFieldGroupComponent,
-    WranglerListInputComponent,
-    NumberDropdownComponent,
-    ProjectFiltersComponent,
-    GeoAccessionDialogComponent,
-  ],
+    declarations: [
+        AutofillProjectFormComponent,
+        AccessionFieldGroupComponent,
+        AdminAreaComponent,
+        ContactFieldGroupComponent,
+        CreateProjectComponent,
+        EditProjectComponent,
+        FunderFieldGroupComponent,
+        ProjectIdComponent,
+        ProjectMetadataFormComponent,
+        ProjectRegistrationSaveComponent,
+        PublicationFieldGroupComponent,
+        WranglerListInputComponent,
+        NumberDropdownComponent,
+        ProjectFiltersComponent,
+        GeoAccessionDialogComponent,
+        ContactNameFieldComponent,
+    ],
   imports: [
     CommonModule,
     FormsModule,
