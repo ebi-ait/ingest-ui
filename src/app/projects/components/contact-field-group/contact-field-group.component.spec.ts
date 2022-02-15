@@ -210,4 +210,14 @@ describe('ContactFieldGroupComponent', () => {
     expect(component.contributorsControl['controls'][0]['controls']['email'].value).toEqual('mail');
     expect(component.contributorsControl['controls'][0]['controls']['name'].value).toEqual('Test,,User');
   });
+
+  it('should provide the current value of a form item', () => {
+    const fg = component.contributorsControl['controls'][0];
+
+    fg.patchValue({ email: 'test', project_role: { text: 'test' }});
+
+    ['email', 'project_role.text'].forEach(key => {
+      expect(component.getControlValueForMetadataItem(fg, key)).toEqual('test')
+    });
+  })
 });
