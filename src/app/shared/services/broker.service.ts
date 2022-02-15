@@ -74,12 +74,12 @@ export class BrokerService {
     };
   }
 
-  importProjectUsingGeo(accession: string): Observable<any> {
+  importProjectUsingGeo(accession: string): Observable<{ project_uuid: string}> {
     const params = {
       'accession': accession,
     };
     return this.http
-      .post(`${this.API_URL}/import-geo-project`, null, {params})
+      .post<{ project_uuid: string}>(`${this.API_URL}/import-geo-project`, null, {params})
       .pipe(
         catchError((errorResponse: HttpErrorResponse) => {
           return throwError(errorResponse.error);
