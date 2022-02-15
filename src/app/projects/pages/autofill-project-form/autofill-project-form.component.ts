@@ -103,26 +103,27 @@ export class AutofillProjectFormComponent implements OnInit {
 
         this.loading = false;
       },
-      error => {
-        this.alertService.error('An error occurred', error.message);
-        this.loading = false;
-      });
+      error => this.handleError(error)
+    );
   }
 
   private importProjectUsingGeo(geoAccession) {
     this.loading = true;
     this.autofillProjectService.getProjectsWithGeo(geoAccession)
       .subscribe(projects => {
-        this.showExistingProjectsAlert(projects, 'geo accession');
-        if (projects.length == 0) {
-          this.onUniqueGeoAccession(geoAccession);
-        }
-        this.loading = false;
-      },
-      error => {
-        this.alertService.error('An error occurred', error.message);
-        this.loading = false;
-      });
+          this.showExistingProjectsAlert(projects, 'geo accession');
+          if (projects.length == 0) {
+            this.onUniqueGeoAccession(geoAccession);
+          }
+          this.loading = false;
+        },
+        error => this.handleError(error)
+      );
+  }
+
+  private handleError(error: { message: string }) {
+    this.alertService.error('An error occurred', error.message);
+    this.loading = false;
   }
 
   showDOINotExistsAlert(doi) {
@@ -211,4 +212,5 @@ export class AutofillProjectFormComponent implements OnInit {
     );
     this.router.navigate(['/projects/detail'], {queryParams: {uuid: projectUuid}});
   }
+
 }
