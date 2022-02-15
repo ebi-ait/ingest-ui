@@ -106,15 +106,8 @@ export class BrokerService {
 
   parseErrorBlob(err: HttpErrorResponse): Observable<any> {
     const reader: FileReader = new FileReader();
-
-    const obs = new Observable((observer: any) => {
-      reader.onloadend = (e) => {
-        observer.error(JSON.parse(reader.result as string));
-        observer.complete();
-      }
-    });
     reader.readAsText(err.error);
-    return obs;
+    return throwError(JSON.parse(reader.result as string));
   }
 
   private getFileDataFromResponse(response: HttpResponse<Blob>) {
