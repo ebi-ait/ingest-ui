@@ -25,26 +25,27 @@ import {EditProjectComponent} from './pages/edit-project/edit-project.component'
 import {ProjectsRoutingModule} from './projects-routing.module';
 import {AutofillProjectService} from './services/autofill-project.service';
 import {ProjectCacheService} from './services/project-cache.service';
-import { ProjectFiltersComponent } from './components/project-filters/project-filters.component';
+import {ProjectFiltersComponent} from './components/project-filters/project-filters.component';
+import {GeoService} from "@projects/services/geo.service";
 
 @NgModule({
-    declarations: [
-        AutofillProjectFormComponent,
-        AccessionFieldGroupComponent,
-        AdminAreaComponent,
-        ContactFieldGroupComponent,
-        CreateProjectComponent,
-        EditProjectComponent,
-        FunderFieldGroupComponent,
-        ProjectIdComponent,
-        ProjectMetadataFormComponent,
-        ProjectRegistrationSaveComponent,
-        PublicationFieldGroupComponent,
-        WranglerListInputComponent,
-        NumberDropdownComponent,
-        ProjectFiltersComponent,
-        ContactNameFieldComponent,
-    ],
+  declarations: [
+    AutofillProjectFormComponent,
+    AccessionFieldGroupComponent,
+    AdminAreaComponent,
+    ContactFieldGroupComponent,
+    CreateProjectComponent,
+    EditProjectComponent,
+    FunderFieldGroupComponent,
+    ProjectIdComponent,
+    ProjectMetadataFormComponent,
+    ProjectRegistrationSaveComponent,
+    PublicationFieldGroupComponent,
+    WranglerListInputComponent,
+    NumberDropdownComponent,
+    ProjectFiltersComponent,
+    ContactNameFieldComponent,
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -63,7 +64,9 @@ import { ProjectFiltersComponent } from './components/project-filters/project-fi
   ],
   providers: [
     AutofillProjectService,
+    GeoService,
     ProjectCacheService,
   ]
 })
-export class ProjectsModule { }
+export class ProjectsModule {
+}

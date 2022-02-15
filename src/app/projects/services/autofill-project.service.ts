@@ -1,19 +1,25 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable, throwError} from 'rxjs';
+import {forkJoin, Observable, Subject, throwError} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AutofillProject} from '../models/autofill-project';
 import {EuropePMCHttpSearchResponse, EuropePMCResult, Identifier} from '../models/europe-pmc-search';
 import {Project} from "@shared/models/project";
 import {IngestService} from "@shared/services/ingest.service";
+import {Router} from "@angular/router";
+import {AlertService} from "@shared/services/alert.service";
 
 @Injectable()
 export class AutofillProjectService {
   API_URL = 'https://www.ebi.ac.uk/europepmc/webservices/rest/search';
   DOI_BASE_URL = 'https://doi.org/';
 
+  loading: Subject<boolean> = new Subject<boolean>();
+
   constructor(private http: HttpClient,
-              private ingestService: IngestService) {
+              private ingestService: IngestService,
+              private alertService: AlertService,
+              private router: Router) {
   }
 
   getProjectDetails(searchUsing: Identifier, searchString: string): Observable<AutofillProject> {
@@ -29,8 +35,40 @@ export class AutofillProjectService {
     );
   }
 
-  private static removeHTMLTags(input: string): string {
-    return input.replace(/(<([^>]+)>)/gi, '');
+  showExistingProjectsAlert(projects: Project[], publicationIdType: string) {
+    projects.forEach(project => {
+      const projectTitle = project?.content?.['project_core']?.['project_title'];
+      const link = `/projects/detail?uuid=${project?.uuid?.uuid}`;
+      const errorTitle = `This ${publicationIdType} has already been used by project:`
+      this.alertService.error(
+        errorTitle,
+        `<a href="${link}">${projectTitle}</a>`);
+    });
+  }
+
+  importProjectUsingDoi(doi: string) {
+    this.loading.next(true);
+    forkJoin({
+      projects: this.getProjectsWithDOI(doi),
+      doiExists: this.doesDoiExist(doi)
+    }).subscribe(({projects, doiExists}) => {
+        this.showExistingProjectsAlert(projects, 'doi');
+
+        if (!doiExists) {
+          this.showDOINotExistsAlert(doi);
+        }
+
+        if (doiExists && projects.length == 0) {
+          this.createProjectWithDoi(doi);
+        }
+
+        this.loading.next(false)
+      },
+      error => {
+        this.alertService.error('An error occurred', error.message);
+        this.loading.next(false);
+      }
+    );
   }
 
   getProjectsWithDOI(doi: string): Observable<Project[]> {
@@ -39,24 +77,7 @@ export class AutofillProjectService {
       'operator': 'IS',
       'value': doi
     };
-    return this.getProjectsUsingCriteria(criteria);
-  }
-
-  getProjectsWithGeo(geoAccession: string): Observable<Project[]> {
-    const criteria = {
-      'field': 'content.geo_series_accessions',
-      'operator': 'IN',
-      'value': [geoAccession]
-    };
-    return this.getProjectsUsingCriteria(criteria);
-  }
-
-  getProjectsUsingCriteria(criteria: object): Observable<Project[]>{
-    const query = [];
-    query.push(criteria);
-    return this.ingestService.queryProjects(query).pipe(
-      map(data => data?._embedded?.projects || []),
-    );
+    return this.ingestService.getProjectsUsingCriteria(criteria);
   }
 
   doesDoiExist(doi: string): Observable<boolean> {
@@ -77,6 +98,21 @@ export class AutofillProjectService {
     return this.http.get<EuropePMCHttpSearchResponse>(this.API_URL, {params});
   }
 
+  createProjectWithDoi(doi) {
+    const params = {
+      [Identifier.DOI]: doi
+    };
+    this.router.navigate(['/projects', 'register'], {queryParams: params});
+  }
+
+  showDOINotExistsAlert(doi) {
+    const link = `mailto:wrangler-team@data.humancellatlas.org?subject=Cannot%20find%20project%20by%20DOI&body=${doi}`;
+    this.alertService.error(
+      'This DOI cannot be found on Europe PMC.',
+      `Please contact our <a href="${link}">wranglers</a> for further assistance.`
+    );
+  }
+
   private createAutoFillProject(result: EuropePMCResult): AutofillProject {
     return {
       title: result.title,
@@ -94,4 +130,9 @@ export class AutofillProjectService {
       })) ?? []
     };
   }
+
+  private static removeHTMLTags(input: string): string {
+    return input.replace(/(<([^>]+)>)/gi, '');
+  }
+
 }

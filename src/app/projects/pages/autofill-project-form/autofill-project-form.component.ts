@@ -4,15 +4,10 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {AutofillProjectService} from '@projects/services/autofill-project.service';
 import {Project} from '@shared/models/project';
 import {AlertService} from '@shared/services/alert.service';
-import {IngestService} from '@shared/services/ingest.service';
-import {forkJoin, from, Observable} from 'rxjs';
-import {catchError} from 'rxjs/operators';
-import {Identifier} from '../../models/europe-pmc-search';
+import {from, Observable} from 'rxjs';
 import {ProjectCacheService} from '../../services/project-cache.service';
 import {MatDialog} from "@angular/material/dialog";
-import {BrokerService} from "@shared/services/broker.service";
-import {LoaderService} from "@shared/services/loader.service";
-import {SaveFileService} from "@shared/services/save-file.service";
+import {GeoService} from "@projects/services/geo.service";
 
 @Component({
   selector: 'app-autofill-project-form',
@@ -29,14 +24,11 @@ export class AutofillProjectFormComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private router: Router,
-              private ingestService: IngestService,
-              private brokerService: BrokerService,
-              private loaderService: LoaderService,
-              private saveFileService: SaveFileService,
               private alertService: AlertService,
               private projectCacheService: ProjectCacheService,
               private dialog: MatDialog,
-              private autofillProjectService: AutofillProjectService
+              private autofillProjectService: AutofillProjectService,
+              private geoService: GeoService
   ) {
   }
 
@@ -50,6 +42,17 @@ export class AutofillProjectFormComponent implements OnInit {
       Validators.pattern(/^GSE.*$/i)
     ]));
     this.projectInCache$ = from(this.projectCacheService.getProject());
+
+    this.geoService.loading.subscribe(
+      loading => {
+        this.loading = loading;
+      }
+    );
+    this.autofillProjectService.loading.subscribe(
+      loading => {
+        this.loading = loading;
+      }
+    )
   }
 
   showError(control: FormControl, message: string): string {
@@ -76,87 +79,13 @@ export class AutofillProjectFormComponent implements OnInit {
 
     const doi = this.publicationDoiCtrl.value;
     if (this.hasDoi && doi) {
-      this.importProjectUsingDoi(doi);
+      this.autofillProjectService.importProjectUsingDoi(doi);
     }
 
     const geoAccession = this.geoAccessionCtrl.value;
     if (this.hasGeo && geoAccession) {
-      this.importProjectUsingGeo(geoAccession);
+      this.geoService.importProjectUsingGeo(geoAccession);
     }
-  }
-
-  private importProjectUsingDoi(doi: string) {
-    this.loading = true;
-    forkJoin({
-      projects: this.autofillProjectService.getProjectsWithDOI(doi),
-      doiExists: this.autofillProjectService.doesDoiExist(doi)
-    }).subscribe(({projects, doiExists}) => {
-        this.showExistingProjectsAlert(projects, 'doi');
-
-        if (!doiExists) {
-          this.showDOINotExistsAlert(doi);
-        }
-
-        if (doiExists && projects.length == 0) {
-          this.createProjectWithDoi(doi);
-        }
-
-        this.loading = false;
-      },
-      error => this.handleError(error)
-    );
-  }
-
-  private importProjectUsingGeo(geoAccession) {
-    this.loading = true;
-    this.autofillProjectService.getProjectsWithGeo(geoAccession)
-      .subscribe(projects => {
-          this.showExistingProjectsAlert(projects, 'geo accession');
-          if (projects.length == 0) {
-            this.onUniqueGeoAccession(geoAccession);
-          }
-          this.loading = false;
-        },
-        error => this.handleError(error)
-      );
-  }
-
-  private handleError(error: { message: string }) {
-    this.alertService.error('An error occurred', error.message);
-    this.loading = false;
-  }
-
-  showDOINotExistsAlert(doi) {
-    const link = `mailto:wrangler-team@data.humancellatlas.org?subject=Cannot%20find%20project%20by%20DOI&body=${doi}`;
-    this.alertService.error(
-      'This DOI cannot be found on Europe PMC.',
-      `Please contact our <a href="${link}">wranglers</a> for further assistance.`
-    );
-  }
-
-  showExistingProjectsAlert(projects: Project[], publicationIdType: string) {
-    projects.forEach(project => {
-      const projectTitle = project?.content?.['project_core']?.['project_title'];
-      const link = `/projects/detail?uuid=${project?.uuid?.uuid}`;
-      const errorTitle = `This ${publicationIdType} has already been used by project:`
-      this.alertService.error(
-        errorTitle,
-        `<a href="${link}">${projectTitle}</a>`);
-    });
-  }
-
-  createProjectWithDoi(doi) {
-    const params = {
-      [Identifier.DOI]: doi
-    };
-    this.router.navigate(['/projects', 'register'], {queryParams: params});
-  }
-
-  restoreProject() {
-    const params = {
-      restore: 'true'
-    };
-    this.router.navigate(['/projects', 'register'], {queryParams: params});
   }
 
   onDoiExistence($event: string) {
@@ -169,48 +98,10 @@ export class AutofillProjectFormComponent implements OnInit {
     this.hasDoi = this.hasGeo && (this.hasDoi != undefined || this.hasDoi) ? false : this.hasDoi;
   }
 
-  private onUniqueGeoAccession(geoAccession) {
-    this.loaderService.display(true, 'This may take a moment. Please wait...');
-    this.brokerService.importProjectUsingGeo(geoAccession).pipe(
-      catchError(err => {
-        this.loaderService.display(true, `Sorry, we are unable to import the project yet due to error: [${err.message}]. You can still get a spreadsheet to import the project later.
-           We are now generating the spreadsheet, please wait this may take a moment...`);
-        return this.brokerService.downloadSpreadsheetUsingGeo(geoAccession);
-      })
-    ).subscribe(response => {
-        const projectUuid = response['project_uuid'];
-        if (projectUuid) {
-          this.onSuccessfulProjectImportFromGeo(geoAccession, projectUuid);
-        } else {
-          this.onSuccessfulSpreadsheetDownloadFromGeo(response, geoAccession);
-        }
-        this.loaderService.hide();
-      },
-      error => {
-        this.alertService.error('Unable to import the project or download spreadsheet', error.message);
-        this.loaderService.hide();
-      })
+  restoreProject() {
+    const params = {
+      restore: 'true'
+    };
+    this.router.navigate(['/projects', 'register'], {queryParams: params});
   }
-
-  private onSuccessfulSpreadsheetDownloadFromGeo(response, geoAccession) {
-    const filename = response['filename'];
-    const blob = new Blob([response['data']]);
-    this.saveFileService.saveFile(blob, filename);
-    this.alertService.success(
-      'Success',
-      `You've successfully downloaded the spreadsheet for GEO accession: ${geoAccession}`,
-      true
-    );
-  }
-
-  private onSuccessfulProjectImportFromGeo(geoAccession, projectUuid) {
-    this.alertService.success(
-      'Success',
-      `The project metadata with GEO accession ${geoAccession} has been successfully created.
-               You can download the GEO spreadsheet from Experiment Information tab.`,
-      true
-    );
-    this.router.navigate(['/projects/detail'], {queryParams: {uuid: projectUuid}});
-  }
-
 }
