@@ -54,7 +54,7 @@ import {SharedModule} from './shared/shared.module';
 import {SubmissionListComponent} from './submission-list/submission-list.component';
 import {TemplateQuestionnaireModule} from './template-questionnaire/template-questionnaire.module';
 import {WelcomeComponent} from './welcome/welcome.component';
-import { GeoAccessionDownloadComponent } from './geo-accession-download/geo-accession-download.component';
+import {GeoAccessionDownloadComponent} from './geo-accession-download/geo-accession-download.component';
 
 const BROWSER_LOCALE = navigator.language;
 
