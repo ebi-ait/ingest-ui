@@ -35,11 +35,9 @@ export class GeoAccessionDownloadComponent {
           this.loaderService.hide();
         },
         error => {
-          console.log(error)
           this.alertService.error('Unable to download spreadsheet using this GEO accession.' +
             ' Please retry again.', error.message );
           this.loaderService.hide();
         })
-    
   }
 }
