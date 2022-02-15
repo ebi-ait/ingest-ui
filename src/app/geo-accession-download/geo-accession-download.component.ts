@@ -24,7 +24,10 @@ export class GeoAccessionDownloadComponent {
   downloadSpreadsheetUsingGeo() {
     const geo_accession = this.geoAccession;
 
-    if (!geo_accession) return;
+    if (!geo_accession) {
+      console.log('Unable to download the spreadsheet as GEO accession is not specified')
+      return;
+    }
 
     this.loaderService.display(true, 'This may take a moment. Please wait...')
     this.brokerService.downloadSpreadsheetUsingGeo(geo_accession)
