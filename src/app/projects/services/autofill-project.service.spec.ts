@@ -3,14 +3,14 @@ import {HttpClientTestingModule, HttpTestingController} from '@angular/common/ht
 import {TestBed} from '@angular/core/testing';
 import {AutofillProject} from '../models/autofill-project';
 import {Identifier} from '../models/europe-pmc-search';
-import {AutofillProjectService} from './autofill-project.service';
+import {DoiService} from './doi.service';
 import {IngestService} from "@shared/services/ingest.service";
 import {AlertService} from "@shared/services/alert.service";
 import {Router} from "@angular/router";
 
 
-describe('AutofillProjectService', () => {
-  let service: AutofillProjectService,
+describe('DoiService', () => {
+  let service: DoiService,
     httpTestingController: HttpTestingController,
     httpClient: HttpClient,
     ingestSvc: jasmine.SpyObj<IngestService>,
@@ -24,7 +24,7 @@ describe('AutofillProjectService', () => {
     TestBed.configureTestingModule(
       {
         providers: [
-          AutofillProjectService,
+          DoiService,
           {
             provide: IngestService,
             useValue: ingestSvc
@@ -41,7 +41,7 @@ describe('AutofillProjectService', () => {
         imports: [HttpClientTestingModule]
       }
     );
-    service = TestBed.inject(AutofillProjectService);
+    service = TestBed.inject(DoiService);
     httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);
   });

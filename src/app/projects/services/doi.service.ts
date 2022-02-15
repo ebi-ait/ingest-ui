@@ -10,7 +10,7 @@ import {Router} from "@angular/router";
 import {AlertService} from "@shared/services/alert.service";
 
 @Injectable()
-export class AutofillProjectService {
+export class DoiService {
   API_URL = 'https://www.ebi.ac.uk/europepmc/webservices/rest/search';
   DOI_BASE_URL = 'https://doi.org/';
 
@@ -116,7 +116,7 @@ export class AutofillProjectService {
   private createAutoFillProject(result: EuropePMCResult): AutofillProject {
     return {
       title: result.title,
-      description: result.abstractText ? AutofillProjectService.removeHTMLTags(result.abstractText) : null,
+      description: result.abstractText ? DoiService.removeHTMLTags(result.abstractText) : null,
       doi: result.doi,
       authors: result.authorString ? result.authorString.replace('.', '').split(',') : null,
       pmid: result.pmid ? Number(result.pmid) : null,

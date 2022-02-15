@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AutofillProjectService} from '@projects/services/autofill-project.service';
+import {DoiService} from '@projects/services/doi.service';
 import {Project} from '@shared/models/project';
 import {AlertService} from '@shared/services/alert.service';
 import {from, Observable} from 'rxjs';
@@ -27,7 +27,7 @@ export class AutofillProjectFormComponent implements OnInit {
               private alertService: AlertService,
               private projectCacheService: ProjectCacheService,
               private dialog: MatDialog,
-              private autofillProjectService: AutofillProjectService,
+              private doiService: DoiService,
               private geoService: GeoService
   ) {
   }
@@ -48,7 +48,7 @@ export class AutofillProjectFormComponent implements OnInit {
         this.loading = loading;
       }
     );
-    this.autofillProjectService.loading.subscribe(
+    this.doiService.loading.subscribe(
       loading => {
         this.loading = loading;
       }
@@ -79,7 +79,7 @@ export class AutofillProjectFormComponent implements OnInit {
 
     const doi = this.publicationDoiCtrl.value;
     if (this.hasDoi && doi) {
-      this.autofillProjectService.importProjectUsingDoi(doi);
+      this.doiService.importProjectUsingDoi(doi);
     }
 
     const geoAccession = this.geoAccessionCtrl.value;

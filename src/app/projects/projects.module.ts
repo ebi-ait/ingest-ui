@@ -23,7 +23,7 @@ import {AutofillProjectFormComponent} from './pages/autofill-project-form/autofi
 import {CreateProjectComponent} from './pages/create-project/create-project.component';
 import {EditProjectComponent} from './pages/edit-project/edit-project.component';
 import {ProjectsRoutingModule} from './projects-routing.module';
-import {AutofillProjectService} from './services/autofill-project.service';
+import {DoiService} from './services/doi.service';
 import {ProjectCacheService} from './services/project-cache.service';
 import {ProjectFiltersComponent} from './components/project-filters/project-filters.component';
 import {GeoService} from "@projects/services/geo.service";
@@ -63,7 +63,7 @@ import {GeoService} from "@projects/services/geo.service";
     ProjectFiltersComponent
   ],
   providers: [
-    AutofillProjectService,
+    DoiService,
     GeoService,
     ProjectCacheService,
   ]
