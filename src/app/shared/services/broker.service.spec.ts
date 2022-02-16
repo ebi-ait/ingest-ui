@@ -110,7 +110,7 @@ describe('Broker Service', () => {
 
     });
 
-    it(`should parse error blob from http error response`, async () => {
+    it(`should parse error blob from http error response`, (done) => {
       const expectedError = {'message': 'error-message'}
       const errorStr = JSON.stringify(expectedError);
       const blob = new Blob([errorStr], {type: 'application/json'});
@@ -119,13 +119,13 @@ describe('Broker Service', () => {
         status: 400,
         statusText: 'bad request'
       });
-      let actualResult, actualError;
       service.downloadSpreadsheetUsingGeo(geoAccession)
         .subscribe(
-          res => actualResult = res,
+          next => {
+          },
           err => {
-            actualError = err
-            expect(actualError.message).toEqual(expectedError.message)
+            expect(err.message).toEqual(expectedError.message)
+            done();
           }
         );
       const req = httpTestingController.expectOne(`${api_url}/import-geo?accession=${geoAccession}`);
