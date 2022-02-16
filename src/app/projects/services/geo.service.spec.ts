@@ -113,7 +113,7 @@ describe('GeoService', () => {
     });
 
     describe('when import project has error', function () {
-      it('should save file on download spreadsheet on success download', async () => {
+      it('should save file on download spreadsheet on successful download', async () => {
         ingestSvc.getProjectsUsingCriteria.and.returnValue(of([]));
         const importProjectError = 'error-message'
         brokerSvc.importProjectUsingGeo.and.returnValue(throwError({message: importProjectError}));
@@ -138,7 +138,7 @@ describe('GeoService', () => {
         )
       });
 
-      it('should parse and alert error message on download spreadsheet error', async () => {
+      it('should alert error message on download spreadsheet error', async () => {
         ingestSvc.getProjectsUsingCriteria.and.returnValue(of([]));
         const importProjectError = 'import-project-error-message';
         const downloadError = 'download-error-message';
