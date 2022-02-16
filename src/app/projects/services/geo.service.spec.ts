@@ -1,18 +1,18 @@
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
+import {Router} from '@angular/router';
+import {Project} from "@shared/models/project";
+import {AlertService} from '@shared/services/alert.service';
+import {BrokerService} from '@shared/services/broker.service';
+import {IngestService} from '@shared/services/ingest.service';
+import {LoaderService} from '@shared/services/loader.service';
+import {SaveFileService} from "@shared/services/save-file.service";
+import {of, throwError} from "rxjs";
 
 import {GeoService} from './geo.service';
-import {IngestService} from '@shared/services/ingest.service';
-import {AlertService} from '@shared/services/alert.service';
-import {Router} from '@angular/router';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {LoaderService} from '@shared/services/loader.service';
-import {BrokerService} from '@shared/services/broker.service';
-import {Project} from "@shared/models/project";
-import {of, throwError} from "rxjs";
 import any = jasmine.any;
-import stringMatching = jasmine.stringMatching;
 import objectContaining = jasmine.objectContaining;
-import {SaveFileService} from "@shared/services/save-file.service";
+import stringMatching = jasmine.stringMatching;
 
 describe('GeoService', () => {
   let service: GeoService,
