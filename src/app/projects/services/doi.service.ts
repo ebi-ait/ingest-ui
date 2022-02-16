@@ -8,11 +8,12 @@ import {Project} from "@shared/models/project";
 import {IngestService} from "@shared/services/ingest.service";
 import {Router} from "@angular/router";
 import {AlertService} from "@shared/services/alert.service";
+import {environment} from '@environments/environment';
 
 @Injectable()
 export class DoiService {
-  API_URL = 'https://www.ebi.ac.uk/europepmc/webservices/rest/search';
-  DOI_BASE_URL = 'https://doi.org/';
+  API_URL = environment.EUROPE_PMC_API_URL
+  DOI_BASE_URL = environment.DOI_BASE_URL;
 
   loading: Subject<boolean> = new Subject<boolean>();
 
@@ -59,7 +60,7 @@ export class DoiService {
       })
     );
   }
-  
+
   private showExistingProjectsAlert(projects: Project[], publicationIdType: string) {
     projects.forEach(project => {
       const projectTitle = project?.content?.['project_core']?.['project_title'];
@@ -106,7 +107,7 @@ export class DoiService {
   }
 
   private showDOINotExistsAlert(doi) {
-    const link = `mailto:wrangler-team@data.humancellatlas.org?subject=Cannot%20find%20project%20by%20DOI&body=${doi}`;
+    const link = `mailto:${environment.WRANGLER_EMAIL}?subject=Cannot%20find%20project%20by%20DOI&body=${doi}`;
     this.alertService.error(
       'This DOI cannot be found on Europe PMC.',
       `Please contact our <a href="${link}">wranglers</a> for further assistance.`

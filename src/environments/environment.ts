@@ -17,5 +17,8 @@ export const environment = {
 
   OLS_URL: 'https://ontology.dev.archive.data.humancellatlas.org',
 
-  AUTOSAVE_PERIOD_MILLIS: 10 * 1000
+  AUTOSAVE_PERIOD_MILLIS: 10 * 1000,
+  WRANGLER_EMAIL: 'wrangler-team@data.humancellatlas.org',
+  EUROPE_PMC_API_URL: 'https://www.ebi.ac.uk/europepmc/webservices/rest/search',
+  DOI_BASE_URL: 'https://doi.org/'
 };
