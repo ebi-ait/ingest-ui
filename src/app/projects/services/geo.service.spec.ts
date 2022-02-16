@@ -8,26 +8,31 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {LoaderService} from '@shared/services/loader.service';
 import {BrokerService} from '@shared/services/broker.service';
 import {Project} from "@shared/models/project";
-import {of} from "rxjs";
+import {of, throwError} from "rxjs";
 import any = jasmine.any;
 import stringMatching = jasmine.stringMatching;
-import arrayContaining = jasmine.arrayContaining;
 import objectContaining = jasmine.objectContaining;
+import {SaveFileService} from "@shared/services/save-file.service";
 
 describe('GeoService', () => {
   let service: GeoService,
     ingestSvc: jasmine.SpyObj<IngestService>,
     router: jasmine.SpyObj<Router>,
-    loader: jasmine.SpyObj<LoaderService>,
+    loaderSvc: jasmine.SpyObj<LoaderService>,
     brokerSvc: jasmine.SpyObj<BrokerService>,
-    alertSvc: jasmine.SpyObj<AlertService>;
+    alertSvc: jasmine.SpyObj<AlertService>,
+    saveFileSvc: jasmine.SpyObj<SaveFileService>,
+    geoAccession: string;
 
   beforeEach(() => {
     ingestSvc = jasmine.createSpyObj('IngestService', ['getProjectsUsingCriteria']);
     alertSvc = jasmine.createSpyObj('AlertService', ['error', 'success']);
     router = jasmine.createSpyObj('Router', ['navigate']);
-    loader = jasmine.createSpyObj('LoaderService', ['hide','display']);
+    loaderSvc = jasmine.createSpyObj('LoaderService', ['hide', 'display']);
     brokerSvc = jasmine.createSpyObj('BrokerService', ['importProjectUsingGeo', 'downloadSpreadsheetUsingGeo']);
+    saveFileSvc = jasmine.createSpyObj('SaveFileService', ['saveFile']);
+
+    geoAccession = 'GSE123';
 
     TestBed.configureTestingModule(
       {
@@ -47,11 +52,15 @@ describe('GeoService', () => {
           },
           {
             provide: LoaderService,
-            useValue: loader
+            useValue: loaderSvc
           },
           {
             provide: BrokerService,
             useValue: brokerSvc
+          },
+          {
+            provide: SaveFileService,
+            useValue: saveFileSvc
           },
         ],
         imports: [HttpClientTestingModule]
@@ -78,7 +87,7 @@ describe('GeoService', () => {
       } as Project;
       ingestSvc.getProjectsUsingCriteria.and.returnValue(of([project]));
 
-      service.importProjectUsingGeo('GSE123')
+      service.importProjectUsingGeo(geoAccession)
 
       expect(alertSvc.error).toHaveBeenCalledWith(stringMatching('has already been used by project'), stringMatching('project-title'));
       service.loading.subscribe(
@@ -88,12 +97,12 @@ describe('GeoService', () => {
       )
     });
 
-    it('should redirect to project on successful import project', async () => {
+    it('should alert success and redirect to project on successful import project', async () => {
       ingestSvc.getProjectsUsingCriteria.and.returnValue(of([]));
       brokerSvc.importProjectUsingGeo.and.returnValue(of({project_uuid: 'project-uuid'}));
-      service.importProjectUsingGeo('GSE123')
+      service.importProjectUsingGeo(geoAccession)
 
-      expect(alertSvc.success).toHaveBeenCalledWith(stringMatching('Success'), stringMatching('GSE123'), true);
+      expect(alertSvc.success).toHaveBeenCalledWith(stringMatching('Success'), stringMatching(geoAccession), true);
       expect(router.navigate).toHaveBeenCalledWith(['/projects/detail'], objectContaining({queryParams: {uuid: 'project-uuid'}}));
 
       service.loading.subscribe(
@@ -102,5 +111,52 @@ describe('GeoService', () => {
         }
       )
     });
+
+    describe('when import project has error', function () {
+      it('should save file on download spreadsheet on success download', async () => {
+        ingestSvc.getProjectsUsingCriteria.and.returnValue(of([]));
+        const importProjectError = 'error-message'
+        brokerSvc.importProjectUsingGeo.and.returnValue(throwError({message: importProjectError}));
+
+        const body = new Blob([],
+          {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+        const filename = 'filename.xls';
+        brokerSvc.downloadSpreadsheetUsingGeo.and.returnValue(of({
+          data: body,
+          filename: filename
+        }));
+
+        service.importProjectUsingGeo(geoAccession)
+
+        expect(loaderSvc.display).toHaveBeenCalledWith(true, stringMatching(importProjectError));
+        expect(saveFileSvc.saveFile).toHaveBeenCalledWith(any(Blob), filename);
+
+        service.loading.subscribe(
+          loading => {
+            expect(loading).toBeFalse();
+          }
+        )
+      });
+
+      it('should parse and alert error message on download spreadsheet error', async () => {
+        ingestSvc.getProjectsUsingCriteria.and.returnValue(of([]));
+        const importProjectError = 'import-project-error-message';
+        const downloadError = 'download-error-message';
+        brokerSvc.importProjectUsingGeo.and.returnValue(throwError({message: importProjectError}));
+        brokerSvc.downloadSpreadsheetUsingGeo.and.returnValue(throwError({message: downloadError}));
+
+        service.importProjectUsingGeo(geoAccession)
+
+        expect(loaderSvc.display).toHaveBeenCalledWith(true, stringMatching(importProjectError));
+        expect(alertSvc.error).toHaveBeenCalledWith(any(String), stringMatching(downloadError));
+
+        service.loading.subscribe(
+          loading => {
+            expect(loading).toBeFalse();
+          }
+        )
+      });
+    });
+
   })
 });
