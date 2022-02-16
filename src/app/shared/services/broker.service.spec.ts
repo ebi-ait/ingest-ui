@@ -110,7 +110,7 @@ describe('Broker Service', () => {
 
     });
 
-    it(`should parse error blob from http error response`, async () => {
+    it(`should parse error blob from http error response`, (done) => {
       const expectedError = {'message': 'error-message'}
       const errorStr = JSON.stringify(expectedError);
       const blob = new Blob([errorStr], {type: 'application/json'});
@@ -121,8 +121,11 @@ describe('Broker Service', () => {
       });
       service.downloadSpreadsheetUsingGeo(geoAccession)
         .subscribe(
+          next => {
+          },
           err => {
             expect(err.message).toEqual(expectedError.message)
+            done();
           }
         );
       const req = httpTestingController.expectOne(`${api_url}/import-geo?accession=${geoAccession}`);
