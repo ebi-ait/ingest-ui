@@ -53,7 +53,7 @@ export class GeoService {
     this.loaderService.display(true, 'This may take a moment. Please wait...');
     this.brokerService.importProjectUsingGeo(geoAccession).pipe(
       catchError(err => {
-        this.loaderService.display(true, `Sorry, we are unable to import the project yet due to error: [${err.message}]. You can still get a spreadsheet to import the project later.
+        this.loaderService.display(true, `Unable to import the project due to error: [${err.message}]. You can still get a spreadsheet to import the project later.
            We are now generating the spreadsheet, please wait this may take a moment...`);
         return this.brokerService.downloadSpreadsheetUsingGeo(geoAccession);
       })
