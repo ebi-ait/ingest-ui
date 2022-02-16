@@ -18,7 +18,7 @@ describe('DoiService', () => {
     alertSvc: jasmine.SpyObj<AlertService>;
 
   beforeEach(() => {
-    ingestSvc = jasmine.createSpyObj('IngestService',['queryProjects']);
+    ingestSvc = jasmine.createSpyObj('IngestService',['getProjectsUsingCriteria']);
     alertSvc = jasmine.createSpyObj('AlertService',['error']);
     router = jasmine.createSpyObj('Router',['navigate']);
     TestBed.configureTestingModule(
