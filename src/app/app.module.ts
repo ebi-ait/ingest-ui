@@ -18,12 +18,13 @@ import {NgxGraphModule} from '@swimlane/ngx-graph';
 import {AaiCallbackComponent} from './aai-callback/aai-callback.component';
 import {AaiSecurity} from './aai/aai.module';
 import {OidcInterceptor} from './aai/oidc-interceptor';
-import {AllProjectsComponent} from './projects/pages/all-projects/all-projects.component';
 
 import {AppComponent} from './app.component';
 
 import {ROUTES} from './app.routes';
 import {ErrorComponent} from './error/error.component';
+import {GeoAccessionDownloadComponent} from './geo-accession-download/geo-accession-download.component';
+
 import {GlobalFooterComponent} from './global-footer/global-footer.component';
 import {GlobalHeaderComponent} from './global-header/global-header.component';
 import {GlobalNavigationComponent} from './global-navigation/global-navigation.component';
@@ -33,10 +34,11 @@ import {MaterialModule} from './material.module';
 import {MetadataDetailsDialogComponent} from './metadata-details-dialog/metadata-details-dialog.component';
 import {MetadataSchemaFormModule} from './metadata-schema-form/metadata-schema-form.module';
 import {MyProjectsComponent} from './my-projects/my-projects.component';
-import {ProjectsModule} from './projects/projects.module';
 import {ProjectSummaryComponent} from './project-summary/project-summary.component';
 
 import {ProjectComponent} from './project/project.component';
+import {AllProjectsComponent} from './projects/pages/all-projects/all-projects.component';
+import {ProjectsModule} from './projects/projects.module';
 import {RegistrationComponent} from './registration/registration.component';
 import {AlertComponent} from './shared/components/alert/alert.component';
 import {ProjectListComponent} from './shared/components/project-list/project-list.component';
@@ -76,6 +78,7 @@ const BROWSER_LOCALE = navigator.language;
     ErrorComponent,
     GlobalFooterComponent,
     MetadataDetailsDialogComponent,
+    GeoAccessionDownloadComponent,
   ],
   imports: [
     AaiSecurity,

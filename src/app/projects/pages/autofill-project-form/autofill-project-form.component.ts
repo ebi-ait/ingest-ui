@@ -1,34 +1,35 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AutofillProjectService} from '@projects/services/autofill-project.service';
+import {DoiService} from '@projects/services/doi.service';
 import {Project} from '@shared/models/project';
 import {AlertService} from '@shared/services/alert.service';
-import {IngestService} from '@shared/services/ingest.service';
-import {forkJoin, from, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {Identifier} from '../../models/europe-pmc-search';
+import {from, Observable} from 'rxjs';
 import {ProjectCacheService} from '../../services/project-cache.service';
 import {MatDialog} from "@angular/material/dialog";
-import {GeoAccessionDialogComponent} from "@projects/dialogs/geo-accession-dialog/geo-accession-dialog.component";
+import {GeoService} from "@projects/services/geo.service";
 
 @Component({
-  selector: 'app-doi-name-field',
+  selector: 'app-autofill-project-form',
   templateUrl: './autofill-project-form.component.html',
-  styleUrls: ['./autofill-project-form.component.css']
+  styleUrls: ['./autofill-project-form.component.css'],
+  providers: [DoiService, GeoService]
 })
 export class AutofillProjectFormComponent implements OnInit {
   publicationDoiCtrl: FormControl;
+  geoAccessionCtrl: FormControl;
   projectInCache$: Observable<Project>;
   loading = false;
+  hasDoi: boolean;
+  hasGeo: boolean;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
-              private ingestService: IngestService,
               private alertService: AlertService,
               private projectCacheService: ProjectCacheService,
               private dialog: MatDialog,
-              private autofillProjectService: AutofillProjectService
+              private doiService: DoiService,
+              private geoService: GeoService
   ) {
   }
 
@@ -37,10 +38,25 @@ export class AutofillProjectFormComponent implements OnInit {
       Validators.required,
       Validators.pattern(/^10.\d{4,9}\/[-._;()\/:A-Z0-9]+$/i)
     ]));
+    this.geoAccessionCtrl = new FormControl('', Validators.compose([
+      Validators.required,
+      Validators.pattern(/^GSE.*$/i)
+    ]));
     this.projectInCache$ = from(this.projectCacheService.getProject());
+
+    this.geoService.loading.subscribe(
+      loading => {
+        this.loading = loading;
+      }
+    );
+    this.doiService.loading.subscribe(
+      loading => {
+        this.loading = loading;
+      }
+    )
   }
 
-  showError(control: FormControl): string {
+  showError(control: FormControl, message: string): string {
     if (control.touched && control.errors) {
       const errors = control.errors;
 
@@ -48,89 +64,39 @@ export class AutofillProjectFormComponent implements OnInit {
         return 'This field is required';
       }
       if (errors['pattern']) {
-        return 'The DOI must be a valid DOI. E.g. 10.1038/s41467-021-26902-8'
+        return message;
       }
     }
   }
 
   submitForm() {
     this.alertService.clear();
-    if (this.publicationDoiCtrl.invalid) {
+
+    if (this.publicationDoiCtrl.invalid && this.geoAccessionCtrl.invalid) {
       this.publicationDoiCtrl.markAsTouched();
+      this.geoAccessionCtrl.markAsTouched();
       return;
     }
 
-    if (this.publicationDoiCtrl.value) {
-      const doi = this.publicationDoiCtrl.value;
-      this.loading = true;
-      forkJoin({
-        projects: this.getProjectsWithDOI(doi),
-        doiExists: this.doesDoiExist(doi)
-      }).subscribe(({projects, doiExists}) => {
-          this.showExistingProjectsAlert(projects);
+    const doi = this.publicationDoiCtrl.value;
+    if (this.hasDoi && doi) {
+      this.doiService.importProjectUsingDoi(doi);
+    }
 
-          if (!doiExists) {
-            this.showDOINotExistsAlert(doi);
-          }
-
-          if (doiExists && projects.length == 0) {
-            this.createProject(doi);
-          }
-
-          this.loading = false;
-        },
-        error => {
-          this.alertService.error('An error occurred', error.message);
-          this.loading = false;
-        });
+    const geoAccession = this.geoAccessionCtrl.value;
+    if (this.hasGeo && geoAccession) {
+      this.geoService.importProjectUsingGeo(geoAccession);
     }
   }
 
-  showDOINotExistsAlert(doi) {
-    const link = `mailto:wrangler-team@data.humancellatlas.org?subject=Cannot%20find%20project%20by%20DOI&body=${doi}`;
-    this.alertService.error(
-      'This DOI cannot be found on Europe PMC.',
-      `Please contact our <a href="${link}">wranglers</a> for further assistance.`
-    );
+  onDoiExistence($event: string) {
+    this.hasDoi = $event == 'Yes' ? true : false;
+    this.hasGeo = this.hasDoi && (this.hasGeo != undefined || this.hasGeo) ? false : this.hasGeo;
   }
 
-  showExistingProjectsAlert(projects: Project[]) {
-    projects.forEach(project => {
-      const title = project?.content?.['project_core']?.['project_title'];
-      const link = `/projects/detail?uuid=${project?.uuid?.uuid}`;
-      this.alertService.error(
-        'This DOI has already been used by project:',
-        `<a href="${link}">${title}</a>`);
-    });
-  }
-
-  getProjectsWithDOI(doi: string): Observable<Project[]> {
-    const query = [];
-    const criteria = {
-      'field': 'content.publications.doi',
-      'operator': 'IS',
-      'value': doi
-    };
-    query.push(criteria);
-    return this.ingestService.queryProjects(query).pipe(
-      map(data => data?._embedded?.projects || []),
-    );
-  }
-
-  doesDoiExist(doi: string): Observable<boolean> {
-    const searchIdentifier = Identifier.DOI;
-    return this.autofillProjectService
-      .queryEuropePMC(searchIdentifier, doi)
-      .pipe(
-        map(response => response.resultList.result.length > 0)
-      );
-  }
-
-  private createProject(doi) {
-    const params = {
-      [Identifier.DOI]: doi
-    };
-    this.router.navigate(['/projects', 'register'], {queryParams: params});
+  onGEOAccessionExistence($event: string) {
+    this.hasGeo = $event == 'Yes' ? true : false;
+    this.hasDoi = this.hasGeo && (this.hasDoi != undefined || this.hasDoi) ? false : this.hasDoi;
   }
 
   restoreProject() {
@@ -138,10 +104,5 @@ export class AutofillProjectFormComponent implements OnInit {
       restore: 'true'
     };
     this.router.navigate(['/projects', 'register'], {queryParams: params});
-  }
-
-  openDialog() {
-    const dialogRef = this.dialog.open(GeoAccessionDialogComponent);
-    dialogRef.disableClose = true;
   }
 }

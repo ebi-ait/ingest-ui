@@ -23,30 +23,29 @@ import {AutofillProjectFormComponent} from './pages/autofill-project-form/autofi
 import {CreateProjectComponent} from './pages/create-project/create-project.component';
 import {EditProjectComponent} from './pages/edit-project/edit-project.component';
 import {ProjectsRoutingModule} from './projects-routing.module';
-import {AutofillProjectService} from './services/autofill-project.service';
+import {DoiService} from './services/doi.service';
 import {ProjectCacheService} from './services/project-cache.service';
-import { ProjectFiltersComponent } from './components/project-filters/project-filters.component';
-import { GeoAccessionDialogComponent } from './dialogs/geo-accession-dialog/geo-accession-dialog.component';
+import {ProjectFiltersComponent} from './components/project-filters/project-filters.component';
+import {GeoService} from "@projects/services/geo.service";
 
 @NgModule({
-    declarations: [
-        AutofillProjectFormComponent,
-        AccessionFieldGroupComponent,
-        AdminAreaComponent,
-        ContactFieldGroupComponent,
-        CreateProjectComponent,
-        EditProjectComponent,
-        FunderFieldGroupComponent,
-        ProjectIdComponent,
-        ProjectMetadataFormComponent,
-        ProjectRegistrationSaveComponent,
-        PublicationFieldGroupComponent,
-        WranglerListInputComponent,
-        NumberDropdownComponent,
-        ProjectFiltersComponent,
-        GeoAccessionDialogComponent,
-        ContactNameFieldComponent,
-    ],
+  declarations: [
+    AutofillProjectFormComponent,
+    AccessionFieldGroupComponent,
+    AdminAreaComponent,
+    ContactFieldGroupComponent,
+    CreateProjectComponent,
+    EditProjectComponent,
+    FunderFieldGroupComponent,
+    ProjectIdComponent,
+    ProjectMetadataFormComponent,
+    ProjectRegistrationSaveComponent,
+    PublicationFieldGroupComponent,
+    WranglerListInputComponent,
+    NumberDropdownComponent,
+    ProjectFiltersComponent,
+    ContactNameFieldComponent,
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -64,8 +63,10 @@ import { GeoAccessionDialogComponent } from './dialogs/geo-accession-dialog/geo-
     ProjectFiltersComponent
   ],
   providers: [
-    AutofillProjectService,
+    DoiService,
+    GeoService,
     ProjectCacheService,
   ]
 })
-export class ProjectsModule { }
+export class ProjectsModule {
+}

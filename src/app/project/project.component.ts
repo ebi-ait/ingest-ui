@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {SUBMISSION_STATES} from "@shared/constants";
 import {MetadataDataSource} from '@shared/data-sources/metadata-data-source';
 import {ListResult} from '@shared/models/hateoas';
 import {MetadataDocument} from '@shared/models/metadata-document';
@@ -56,7 +55,7 @@ export class ProjectComponent implements OnInit {
   ];
 
   wranglerTabConfig = [
-      ...this.sharedTabConfig,
+    ...this.sharedTabConfig,
     {
       key: 'metadata',
       label: '4. View Metadata'
@@ -233,7 +232,7 @@ export class ProjectComponent implements OnInit {
       [],
       {
         relativeTo: this.route,
-        queryParams: { tab: this.selectedMainTabKey },
+        queryParams: {tab: this.selectedMainTabKey},
         queryParamsHandling: 'merge'
       });
   }
@@ -241,23 +240,23 @@ export class ProjectComponent implements OnInit {
   private fetchProjectEntities(projectData, entityType: string, params?): Observable<PagedData<any>> {
     const projectUrl = projectData._links['self']['href'];
     return this.ingestService.get(`${projectUrl}/${entityType}`, {params}).pipe(
-        map(data => data as ListResult<any>),
-        map(data => {
-              // TODO always get the content for now
-              return {
-                data: (data && data._embedded ? data._embedded[entityType] : []).map(resource => resource['content']),
-                page: data.page
-              };
-            }
-        ));
+      map(data => data as ListResult<any>),
+      map(data => {
+          // TODO always get the content for now
+          return {
+            data: (data && data._embedded ? data._embedded[entityType] : []).map(resource => resource['content']),
+            page: data.page
+          };
+        }
+      ));
   }
 
   private initDataSources(projectData: Project) {
     // TODO changes needed in Ingest Core so that these project entity endpoints can be in found in _links
     ['biomaterials', 'protocols', 'processes', 'files'].forEach(entityType => {
       this[`${entityType}DataSource`] = new MetadataDataSource(
-          params => this.fetchProjectEntities(projectData, entityType, params),
-          entityType
+        params => this.fetchProjectEntities(projectData, entityType, params),
+        entityType
       );
     });
   }
@@ -268,5 +267,10 @@ export class ProjectComponent implements OnInit {
     } else {
       return 0;
     }
+  }
+
+  getProjectGeoAccession() {
+    const content: { geo_series_accessions?: string[] } = this.project?.content;
+    return content?.geo_series_accessions?.[0];
   }
 }

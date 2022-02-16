@@ -48,7 +48,6 @@ export class SpreadsheetTabDetailsComponent implements OnInit, OnChanges {
   }
 
   loadSubmissionData() {
-    console.log('laoding submission data');
     this.submissionEnvelopeUuid = this.submissionEnvelope['uuid']['uuid'];
     this.lastSpreadsheetJob = this.submissionEnvelope['lastSpreadsheetGenerationJob'] || {};
     this.downloadJobOngoing = this.lastSpreadsheetJob && this.lastSpreadsheetJob['createdDate'] && !this.lastSpreadsheetJob['finishedDate'];

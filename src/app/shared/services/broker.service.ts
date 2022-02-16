@@ -1,4 +1,4 @@
-import {HttpClient, HttpResponse, HttpStatusCode} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpResponse, HttpStatusCode} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, throwError} from 'rxjs';
 import {catchError, map, tap, timeout} from 'rxjs/operators';
@@ -74,21 +74,40 @@ export class BrokerService {
     };
   }
 
+  importProjectUsingGeo(accession: string): Observable<{ project_uuid: string}> {
+    const params = {
+      'accession': accession,
+    };
+    return this.http
+      .post<{ project_uuid: string}>(`${this.API_URL}/import-geo-project`, null, {params})
+      .pipe(
+        catchError((errorResponse: HttpErrorResponse) => {
+          return throwError(errorResponse.error);
+        })
+      )
+  }
+
   downloadSpreadsheetUsingGeo(geoAccession: string): Observable<any> {
     const params = {
       'accession': geoAccession,
     };
     return this.http
       .post(`${this.API_URL}/import-geo`, null,
-        {params, responseType: 'blob', observe: 'response'}).pipe(
+        {params, responseType: 'blob', observe: 'response'})
+      .pipe(
+        catchError(this.parseErrorBlob),
         map(response => {
-          if (response.status == HttpStatusCode.Ok) {
-            return this.getFileDataFromResponse(response)
-          } else {
-            throw throwError(response);
+          if(response.status == HttpStatusCode.Ok){
+            return this.getFileDataFromResponse(response);
           }
         })
       );
+  }
+
+  parseErrorBlob(err: HttpErrorResponse): Observable<any> {
+    const reader: FileReader = new FileReader();
+    reader.readAsText(err.error);
+    return throwError(JSON.parse(reader.result as string));
   }
 
   private getFileDataFromResponse(response: HttpResponse<Blob>) {

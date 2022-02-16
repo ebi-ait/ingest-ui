@@ -6,7 +6,7 @@ import {environment} from '@environments/environment';
 import {IngestService} from '@shared/services/ingest.service';
 import {AutofillProject} from '../../models/autofill-project';
 import {Identifier} from '../../models/europe-pmc-search';
-import {AutofillProjectService} from '../../services/autofill-project.service';
+import {DoiService} from '../../services/doi.service';
 import {ProjectCacheService} from '../../services/project-cache.service';
 
 const EMPTY_PROJECT = {
@@ -27,7 +27,7 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
   private unsubscribe = new Subject<void>();
 
   constructor(private route: ActivatedRoute,
-              private autofillProjectService: AutofillProjectService,
+              private doiService: DoiService,
               private projectCacheService: ProjectCacheService,
               private ingestService: IngestService,
   ) { }
@@ -54,7 +54,7 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
   }
 
   private autofillProjectDetails(id, search): Observable<object> {
-    return this.autofillProjectService.getProjectDetails(id, search)
+    return this.doiService.getProjectDetails(id, search)
       .pipe(
         map(
           (data: AutofillProject) => {

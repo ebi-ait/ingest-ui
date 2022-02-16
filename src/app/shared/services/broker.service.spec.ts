@@ -1,4 +1,4 @@
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {BrokerService} from './broker.service';
@@ -58,7 +58,8 @@ describe('Broker Service', () => {
 
     it(`should timeout`, (done) => {
       service.downloadSpreadsheet(submissionUuid)
-        .subscribe(res => {},
+        .subscribe(res => {
+          },
           err => {
             expect(err.statusText).toEqual('Request Timeout');
             done();
@@ -89,13 +90,12 @@ describe('Broker Service', () => {
   describe('test download spreadsheet using geo accession', () => {
     const geoAccession = 'geo_accession'
 
-    it(`should get response`, (done) => {
+    it(`should get response`, async () => {
       const blob = new Blob([],
         {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
       service.downloadSpreadsheetUsingGeo(geoAccession)
         .subscribe(res => {
           expect(res.data).toEqual(blob);
-          done();
         });
       const req = httpTestingController.expectOne(`${api_url}/import-geo?accession=${geoAccession}`);
 
@@ -108,6 +108,47 @@ describe('Broker Service', () => {
       expect(req.request.method).toEqual('POST');
       expect(req.request.body).toBeNull();
 
+    });
+
+    it(`should parse error blob from http error response`, async () => {
+      const expectedError = {'message': 'error-message'}
+      const errorStr = JSON.stringify(expectedError);
+      const blob = new Blob([errorStr], {type: 'application/json'});
+      const errorResponse: HttpErrorResponse = new HttpErrorResponse({
+        error: blob,
+        status: 400,
+        statusText: 'bad request'
+      });
+      let actualResult, actualError;
+      service.downloadSpreadsheetUsingGeo(geoAccession)
+        .subscribe(
+          res => actualResult = res,
+          err => {
+            actualError = err
+            expect(actualError.message).toEqual(expectedError.message)
+          }
+        );
+      const req = httpTestingController.expectOne(`${api_url}/import-geo?accession=${geoAccession}`);
+      req.flush(blob, errorResponse);
+      expect(req.request.method).toEqual('POST');
+      expect(req.request.body).toBeNull();
+    });
+
+    it(`should throw error object from http error response`, async () => {
+      const expectedError = {'message': 'error-message'}
+      const errorResponse: HttpErrorResponse = new HttpErrorResponse({status: 400, statusText: 'bad request'});
+      let actualResult, actualError;
+      service.importProjectUsingGeo(geoAccession)
+        .subscribe(
+          res => actualResult = res,
+          err => actualError = err
+        );
+
+      const req = httpTestingController.expectOne(`${api_url}/import-geo-project?accession=${geoAccession}`);
+      req.flush(expectedError, errorResponse);
+      expect(req.request.method).toEqual('POST');
+      expect(req.request.body).toBeNull();
+      expect(actualError.message).toEqual(expectedError.message)
     });
 
   });
