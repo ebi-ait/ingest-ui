@@ -119,13 +119,10 @@ describe('Broker Service', () => {
         status: 400,
         statusText: 'bad request'
       });
-      let actualResult, actualError;
       service.downloadSpreadsheetUsingGeo(geoAccession)
         .subscribe(
-          res => actualResult = res,
           err => {
-            actualError = err
-            expect(actualError.message).toEqual(expectedError.message)
+            expect(err.message).toEqual(expectedError.message)
           }
         );
       const req = httpTestingController.expectOne(`${api_url}/import-geo?accession=${geoAccession}`);

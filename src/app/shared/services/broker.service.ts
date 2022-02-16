@@ -74,12 +74,12 @@ export class BrokerService {
     };
   }
 
-  importProjectUsingGeo(accession: string): Observable<{ project_uuid: string}> {
+  importProjectUsingGeo(accession: string): Observable<{ project_uuid: string }> {
     const params = {
       'accession': accession,
     };
     return this.http
-      .post<{ project_uuid: string}>(`${this.API_URL}/import-geo-project`, null, {params})
+      .post<{ project_uuid: string }>(`${this.API_URL}/import-geo-project`, null, {params})
       .pipe(
         catchError((errorResponse: HttpErrorResponse) => {
           return throwError(errorResponse.error);
@@ -97,7 +97,7 @@ export class BrokerService {
       .pipe(
         catchError(this.parseErrorBlob),
         map(response => {
-          if(response.status == HttpStatusCode.Ok){
+          if (response.status == HttpStatusCode.Ok) {
             return this.getFileDataFromResponse(response);
           }
         })
@@ -107,7 +107,13 @@ export class BrokerService {
   parseErrorBlob(err: HttpErrorResponse): Observable<any> {
     const reader: FileReader = new FileReader();
     reader.readAsText(err.error);
-    return throwError(JSON.parse(reader.result as string));
+    const obs = new Observable((observer: any) => {
+      reader.onloadend = (e) => {
+        observer.error(JSON.parse(reader.result as string));
+        observer.complete();
+      }
+    });
+    return obs;
   }
 
   private getFileDataFromResponse(response: HttpResponse<Blob>) {
