@@ -34,6 +34,8 @@ describe('GeoService', () => {
 
     geoAccession = 'GSE123';
 
+    ingestSvc.getProjectsUsingCriteria.and.returnValue(of([]));
+
     TestBed.configureTestingModule(
       {
         providers: [
@@ -98,8 +100,8 @@ describe('GeoService', () => {
     });
 
     it('should alert success and redirect to project on successful import project', async () => {
-      ingestSvc.getProjectsUsingCriteria.and.returnValue(of([]));
       brokerSvc.importProjectUsingGeo.and.returnValue(of({project_uuid: 'project-uuid'}));
+
       service.importProjectUsingGeo(geoAccession)
 
       expect(alertSvc.success).toHaveBeenCalledWith(stringMatching('Success'), stringMatching(geoAccession), true);
@@ -114,7 +116,6 @@ describe('GeoService', () => {
 
     describe('when import project has error', function () {
       it('should save file on download spreadsheet on successful download', async () => {
-        ingestSvc.getProjectsUsingCriteria.and.returnValue(of([]));
         const importProjectError = 'error-message'
         brokerSvc.importProjectUsingGeo.and.returnValue(throwError({message: importProjectError}));
 
@@ -139,7 +140,6 @@ describe('GeoService', () => {
       });
 
       it('should alert error message on download spreadsheet error', async () => {
-        ingestSvc.getProjectsUsingCriteria.and.returnValue(of([]));
         const importProjectError = 'import-project-error-message';
         const downloadError = 'download-error-message';
         brokerSvc.importProjectUsingGeo.and.returnValue(throwError({message: importProjectError}));
