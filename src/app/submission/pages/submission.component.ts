@@ -80,6 +80,8 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   importDetailsOpened: boolean;
   downloadDetailsOpened: boolean;
 
+  percentLinkingDone: number;
+
   constructor(
     private alertService: AlertService,
     private ingestService: IngestService,
@@ -149,6 +151,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     if (!expectedLinks || (actualLinks === expectedLinks)) {
       this.isLinkingDone = true;
     }
+    this.percentLinkingDone = (actualLinks/expectedLinks) * 100;
   }
 
   displaySubmissionErrors(submissionEnvelope: SubmissionEnvelope) {

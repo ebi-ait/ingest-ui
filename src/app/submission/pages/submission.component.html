@@ -17,8 +17,11 @@
           autorenew
         </mat-icon>
       </button>
-      <button mat-icon-button (click)="downloadDetailsOpened=true; selectedIndex=4">
-        <mat-icon id="exportToXlsBtn" matTooltip="Export submission to .xls file">get_app</mat-icon>
+      <button mat-icon-button (click)="downloadDetailsOpened=true; selectedIndex=4" [disabled]="!isLinkingDone">
+        <mat-icon id="exportToXlsBtn"
+                  [matTooltip]="isLinkingDone ? 'Export submission to .xls file' : 'Linking is in progress. The exporting/importing of .xls file is not yet available.'">
+          get_app
+        </mat-icon>
       </button>
       <button mat-icon-button *ngIf="submissionEnvelope && submissionEnvelope.open"
               (click)="onDeleteSubmission(submissionEnvelope)">
@@ -63,6 +66,7 @@
     </div>
   </div>
   <br/>
+  <p *ngIf="!isLinkingDone">* Linking is in progress: {{percentLinkingDone | number:'.2-2' }}% done </p>
   <br/>
   <mat-tab-group *ngIf="submissionEnvelopeId" [(selectedIndex)]="selectedIndex">
     <mat-tab label="Biomaterials">
@@ -95,7 +99,10 @@
       </ng-template>
     </mat-tab>
 
-    <mat-tab label="Spreadsheet">
+    <mat-tab [disabled]="!isLinkingDone" >
+      <ng-template mat-tab-label>
+        <label  class="labelHeading" [matTooltip]="!isLinkingDone ? 'Not Available when linking is in progress' : 'Export & Import .xls file'">Spreadsheet</label>
+      </ng-template>
       <ng-template matTabContent>
         <app-spreadsheet-tab-details [projectUuid]="projectUuid"
                                      [submissionEnvelope]="submissionEnvelope"
@@ -129,6 +136,9 @@
       *ngIf="displayValidateAndSubmitTabs()"
       [disabled]="graphValidationTabDisabled()"
     >
+      <ng-template mat-tab-label>
+        <label  class="labelHeading" [matTooltip]="!isLinkingDone ? 'Not Available when linking is in progress' : 'Export & Import .xls file'">Spreadsheet</label>
+      </ng-template>
       <h3 class="vf-u-margin__top--xxl vf-text vf-text-heading--4">Graph Validation</h3>
 
       <ng-container *ngIf="submissionState !== SUBMISSION_STATES.GraphValid; else graphValid">
