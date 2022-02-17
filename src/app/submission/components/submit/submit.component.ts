@@ -16,7 +16,7 @@ export class SubmitComponent implements OnInit {
   @Input() submissionEnvelope$;
   @Input() submitLink: string;
   @Input() exportLink: string;
-  @Input() exportLinkSCEA: string;
+  @Input() convertLinkSCEA: string;
   @Input() cleanupLink: string;
   @Input() isSubmitted: boolean;
   @Input() submissionUrl: string;
@@ -107,8 +107,8 @@ export class SubmitComponent implements OnInit {
       );
   }
 
-  requestExportSCEA() {
-    this.ingestService.put(this.exportLinkSCEA, undefined)
+  requestConvertToSCEA() {
+    this.ingestService.put(this.convertLinkSCEA, undefined)
       .subscribe(
         res => {
           setTimeout(() => {
