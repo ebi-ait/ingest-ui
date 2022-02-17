@@ -19,7 +19,7 @@
       </button>
       <button mat-icon-button (click)="downloadDetailsOpened=true; selectedIndex=4" [disabled]="!isLinkingDone">
         <mat-icon id="exportToXlsBtn"
-                  [matTooltip]="isLinkingDone ? 'Export submission to .xls file' : 'Linking is in progress. The exporting/importing of .xls file is not yet available.'">
+                  [matTooltip]="isLinkingDone ? 'Export submission to .xls file' : 'Linking is in progress.'">
           get_app
         </mat-icon>
       </button>
@@ -31,17 +31,19 @@
          href="{{submissionEnvelope?._links?.self?.href}}">
         <mat-icon matTooltip="See Ingest API JSON">open_in_new</mat-icon>
       </a>
-      <button mat-icon-button [matMenuTriggerFor]="menu">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-      <mat-menu #menu="matMenu" xPosition="before">
-        <button mat-menu-item (click)="downloadDetailsOpened=true; selectedIndex=4">
-          <span>Generate and Download spreadsheet</span>
+      <ng-container *ngIf="isLinkingDone">
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
         </button>
-        <button mat-menu-item (click)="importDetailsOpened=true; selectedIndex=4">
-          <span>Import spreadsheet</span>
-        </button>
-      </mat-menu>
+        <mat-menu #menu="matMenu" xPosition="before">
+          <button mat-menu-item (click)="downloadDetailsOpened=true; selectedIndex=4">
+            <span>Generate and Download spreadsheet</span>
+          </button>
+          <button mat-menu-item (click)="importDetailsOpened=true; selectedIndex=4">
+            <span>Import spreadsheet</span>
+          </button>
+        </mat-menu>
+      </ng-container>
       <app-submission-state [state]="submissionState">{{submissionState}}</app-submission-state>
     </div>
 
@@ -66,7 +68,8 @@
     </div>
   </div>
   <br/>
-  <p  class="vf-u-text-color--red" *ngIf="manifest && !isLinkingDone">Linking is progress: {{percentLinkingDone | number:'.2-2' }}% done </p>
+  <p class="vf-u-text-color--red" *ngIf="manifest && !isLinkingDone">Linking is
+    progress: {{percentLinkingDone | number:'.2-2' }}% done </p>
   <br/>
   <mat-tab-group *ngIf="submissionEnvelopeId" [(selectedIndex)]="selectedIndex">
     <mat-tab label="Biomaterials">
@@ -102,7 +105,7 @@
     <mat-tab [disabled]="!isLinkingDone">
       <ng-template mat-tab-label>
         <label
-          [matTooltip]="isLinkingDone ? 'Export & Import .xls file' : 'Linking is in progress'">
+          [matTooltip]="isLinkingDone ? 'Export or Import spreadsheet' : 'Linking is in progress'">
           Spreadsheet
         </label>
       </ng-template>
