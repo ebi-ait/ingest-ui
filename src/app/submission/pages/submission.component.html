@@ -17,8 +17,11 @@
           autorenew
         </mat-icon>
       </button>
-      <button mat-icon-button (click)="downloadDetailsOpened=true; selectedIndex=4">
-        <mat-icon id="exportToXlsBtn" matTooltip="Export submission to .xls file">get_app</mat-icon>
+      <button mat-icon-button (click)="downloadDetailsOpened=true; selectedIndex=4" [disabled]="!isLinkingDone">
+        <mat-icon id="exportToXlsBtn"
+                  [matTooltip]="isLinkingDone ? 'Export submission to .xls file' : 'Linking is in progress.'">
+          get_app
+        </mat-icon>
       </button>
       <button mat-icon-button *ngIf="submissionEnvelope && submissionEnvelope.open"
               (click)="onDeleteSubmission(submissionEnvelope)">
@@ -28,17 +31,19 @@
          href="{{submissionEnvelope?._links?.self?.href}}">
         <mat-icon matTooltip="See Ingest API JSON">open_in_new</mat-icon>
       </a>
-      <button mat-icon-button [matMenuTriggerFor]="menu">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-      <mat-menu #menu="matMenu" xPosition="before">
-        <button mat-menu-item (click)="downloadDetailsOpened=true; selectedIndex=4">
-          <span>Generate and Download spreadsheet</span>
+      <ng-container *ngIf="isLinkingDone">
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
         </button>
-        <button mat-menu-item (click)="importDetailsOpened=true; selectedIndex=4">
-          <span>Import spreadsheet</span>
-        </button>
-      </mat-menu>
+        <mat-menu #menu="matMenu" xPosition="before">
+          <button mat-menu-item (click)="downloadDetailsOpened=true; selectedIndex=4">
+            <span>Generate and Download spreadsheet</span>
+          </button>
+          <button mat-menu-item (click)="importDetailsOpened=true; selectedIndex=4">
+            <span>Import spreadsheet</span>
+          </button>
+        </mat-menu>
+      </ng-container>
       <app-submission-state [state]="submissionState">{{submissionState}}</app-submission-state>
     </div>
 
@@ -63,6 +68,8 @@
     </div>
   </div>
   <br/>
+  <p class="vf-u-text-color--red" *ngIf="manifest && !isLinkingDone">Linking is
+    progress: {{percentLinkingDone | number:'.0-0' }}% done </p>
   <br/>
   <mat-tab-group *ngIf="submissionEnvelopeId" [(selectedIndex)]="selectedIndex">
     <mat-tab label="Biomaterials">
@@ -95,7 +102,13 @@
       </ng-template>
     </mat-tab>
 
-    <mat-tab label="Spreadsheet">
+    <mat-tab [disabled]="!isLinkingDone">
+      <ng-template mat-tab-label>
+        <label
+          [matTooltip]="isLinkingDone ? 'Export or Import spreadsheet' : 'Linking is in progress'">
+          Spreadsheet
+        </label>
+      </ng-template>
       <ng-template matTabContent>
         <app-spreadsheet-tab-details [projectUuid]="projectUuid"
                                      [submissionEnvelope]="submissionEnvelope"
@@ -125,10 +138,15 @@
     </mat-tab>
 
     <mat-tab
-      label="Validate"
       *ngIf="displayValidateAndSubmitTabs()"
       [disabled]="graphValidationTabDisabled()"
     >
+      <ng-template mat-tab-label>
+        <label class="labelHeading"
+               [matTooltip]="!isLinkingDone ? 'Linking is in progress': undefined">
+          Validate
+        </label>
+      </ng-template>
       <h3 class="vf-u-margin__top--xxl vf-text vf-text-heading--4">Graph Validation</h3>
 
       <ng-container *ngIf="submissionState !== SUBMISSION_STATES.GraphValid; else graphValid">
@@ -151,7 +169,13 @@
       </ng-template>
     </mat-tab>
 
-    <mat-tab label="Submit" [disabled]="!isValid" *ngIf="displayValidateAndSubmitTabs()">
+    <mat-tab [disabled]="!isValid" *ngIf="displayValidateAndSubmitTabs()">
+      <ng-template mat-tab-label>
+        <label class="labelHeading"
+               [matTooltip]="!isValid ? 'The submission is not valid yet.': undefined">
+          Submit
+        </label>
+      </ng-template>
       <ng-template matTabContent>
         <app-submit
           [project$]="project$"
