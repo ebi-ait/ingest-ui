@@ -16,6 +16,7 @@ export class SubmitComponent implements OnInit {
   @Input() submissionEnvelope$;
   @Input() submitLink: string;
   @Input() exportLink: string;
+  @Input() exportLinkSCEA: string;
   @Input() cleanupLink: string;
   @Input() isSubmitted: boolean;
   @Input() submissionUrl: string;
@@ -100,6 +101,26 @@ export class SubmitComponent implements OnInit {
         err => {
           this.loaderService.display(false);
           this.alertService.error('', 'An error occurred on the request to export your submission envelope.');
+          console.log(err);
+
+        }
+      );
+  }
+
+  requestExportSCEA() {
+    this.ingestService.put(this.exportLinkSCEA, undefined)
+      .subscribe(
+        res => {
+          setTimeout(() => {
+              this.alertService.clear();
+              this.loaderService.display(false);
+              this.alertService.success('', 'Your SCEA submission should start exporting shortly.');
+            },
+            3000);
+        },
+        err => {
+          this.loaderService.display(false);
+          this.alertService.error('', 'An error occurred on the request to export your SCEA submission.');
           console.log(err);
 
         }

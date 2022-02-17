@@ -96,4 +96,8 @@
 </ng-container>
 
 <br/>
+<ng-container *ngIf="exportLinkSCEA">
+  <button mat-raised-button color="primary" (click)="requestExportSCEA()">Submit to SCEA</button>
+</ng-container>
 
+<br/>

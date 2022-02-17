@@ -46,6 +46,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   submitLink: string;
   exportLink: string;
   cleanupLink: string;
+  exportLinkSCEA: string;
   url: string;
   project: Project;
   project$: Observable<Project>;
@@ -188,6 +189,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.submitLink = this.getLink(submissionEnvelope, 'submit');
     this.exportLink = this.getLink(submissionEnvelope, 'export');
     this.cleanupLink = this.getLink(submissionEnvelope, 'cleanup');
+    this.exportLinkSCEA = this.getLink(submissionEnvelope, 'export-scea');
     this.url = this.getLink(submissionEnvelope, 'self');
 
   }
