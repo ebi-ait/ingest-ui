@@ -151,7 +151,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     if (!expectedLinks || (actualLinks === expectedLinks)) {
       this.isLinkingDone = true;
     }
-    this.percentLinkingDone = (actualLinks/expectedLinks) * 100;
+    this.percentLinkingDone = (actualLinks / expectedLinks) * 100;
   }
 
   displaySubmissionErrors(submissionEnvelope: SubmissionEnvelope) {
@@ -429,13 +429,13 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   }
 
   graphValidationTabDisabled(): boolean {
-    return ![
+    return !(this.isLinkingDone && [
       SUBMISSION_STATES.Valid,
       SUBMISSION_STATES.GraphValid,
       SUBMISSION_STATES.GraphInvalid,
       SUBMISSION_STATES.GraphValidating,
       SUBMISSION_STATES.GraphValidationRequested
-    ].some(state => this.submissionState === state)
+    ].some(state => this.submissionState === state))
   }
 
   triggerGraphValidation(): void {
