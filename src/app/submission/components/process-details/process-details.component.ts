@@ -21,7 +21,7 @@ export class ProcessDetailsComponent implements OnInit {
   schemaUrl: string;
 
   @Input()
-  submissionEnvelopeId: string;
+  projectId: string;
 
   processId: string;
 

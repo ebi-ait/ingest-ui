@@ -78,15 +78,15 @@
               <p><strong>type: </strong> {{input?.content['schema_type']}}</p>
               <p><strong>uuid: </strong> {{input?.uuid?.uuid}}</p>
             </mat-card-content>
-            <button (click)="removeInputFile(input)" style="cursor: pointer" matTooltip="Unlink Files">
-              Unlink Files
+            <button (click)="removeInputFile(input)" style="cursor: pointer" matTooltip="Unlink File">
+              Unlink File
             </button>
           </mat-card>
         </div>
       </ng-container>
 
       <app-metadata-picker [entityType]="'biomaterials'"
-                           [submissionEnvelopeId]="submissionEnvelopeId"
+                           [projectId]="projectId"
                            (picked)="onInputBiomaterialPicked($event)">
       </app-metadata-picker>
 
@@ -111,7 +111,7 @@
         Link Biomaterials
       </button>
       <app-metadata-picker [entityType]="'files'"
-                           [submissionEnvelopeId]="submissionEnvelopeId"
+                           [projectId]="projectId"
                            (picked)="onInputFilePicked($event)">
       </app-metadata-picker>
 
@@ -160,7 +160,7 @@
       </ng-container>
 
       <app-metadata-picker [entityType]="'protocols'"
-                           [submissionEnvelopeId]="submissionEnvelopeId"
+                           [projectId]="projectId"
                            (picked)="onProtocolPicked($event)">
       </app-metadata-picker>
 
@@ -225,7 +225,7 @@
       </ng-container>
 
       <app-metadata-picker [entityType]="'biomaterials'"
-                           [submissionEnvelopeId]="submissionEnvelopeId"
+                           [projectId]="projectId"
                            (picked)="onDerivedBiomaterialPicked($event)">
       </app-metadata-picker>
 
@@ -251,7 +251,7 @@
       </button>
 
       <app-metadata-picker [entityType]="'files'"
-                           [submissionEnvelopeId]="submissionEnvelopeId"
+                           [projectId]="projectId"
                            (picked)="onDerivedFilePicked($event)">
       </app-metadata-picker>
 

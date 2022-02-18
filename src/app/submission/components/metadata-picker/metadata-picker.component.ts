@@ -17,7 +17,7 @@ export class MetadataPickerComponent implements OnInit {
   entityType: string;
 
   @Input()
-  submissionEnvelopeId: string;
+  projectId: string;
 
   @Output()
   picked = new EventEmitter<MetadataDocument>();
@@ -94,11 +94,11 @@ export class MetadataPickerComponent implements OnInit {
       }
     ];
 
-    if (this.submissionEnvelopeId) {
+    if (this.projectId) {
       query.push({
-        field: 'submissionEnvelope.id',
+        field: 'project.id',
         operator: 'IS',
-        value: this.submissionEnvelopeId
+        value: this.projectId
       });
     }
     return this.queryEntity(query, {operator: 'AND'});

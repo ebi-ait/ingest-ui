@@ -6,7 +6,7 @@ import {MetadataDataSource} from '@shared/data-sources/metadata-data-source';
 import {PaginatedDataSource} from '@shared/data-sources/paginated-data-source';
 import {SimpleDataSource} from '@shared/data-sources/simple-data-source';
 import {ArchiveEntity} from '@shared/models/archiveEntity';
-import {ListResult} from '@shared/models/hateoas';
+import {HalDoc, ListResult} from '@shared/models/hateoas';
 import {MetadataDocument} from '@shared/models/metadata-document';
 import {Project} from '@shared/models/project';
 import {SubmissionEnvelope} from '@shared/models/submissionEnvelope';
@@ -15,6 +15,7 @@ import {AlertService} from '@shared/services/alert.service';
 import {BrokerService} from '@shared/services/broker.service';
 import {IngestService} from '@shared/services/ingest.service';
 import {LoaderService} from '@shared/services/loader.service';
+import Utils from "@shared/utils";
 import {Observable, TimeoutError, of, BehaviorSubject} from 'rxjs';
 import {catchError, map, mergeMap, switchMap, tap} from 'rxjs/operators';
 import {SaveFileService} from "@shared/services/save-file.service";
@@ -50,6 +51,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   project: Project;
   project$: Observable<Project>;
   projectUuid: string;
+  projectId: string;
   projectTitle: string;
   projectShortName: string;
   manifest: Object;
@@ -91,9 +93,14 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     private loaderService: LoaderService) {
   }
 
-  private static getSubmissionId(submissionEnvelope) {
-    const links = submissionEnvelope['_links'];
+  private static getEntityId(entity) {
+    const links = entity['_links'];
     return links && links['self'] && links['self']['href'] ? links['self']['href'].split('/').pop() : '';
+  }
+
+  getLink(entity, linkName) {
+    const links = entity['_links'];
+    return links && links[linkName] ? links[linkName]['href'] : null;
   }
 
   ngOnInit() {
@@ -184,14 +191,14 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     // NOTE: this should be broken up and/or just use dataSource attributes directly in template but
     // we're getting rid of submissions anyway.
     this.submissionEnvelope = {...submissionEnvelope};
-    this.submissionEnvelopeId = SubmissionComponent.getSubmissionId(submissionEnvelope);
+    this.submissionEnvelopeId = Utils.getIdFromHalDoc(submissionEnvelope as HalDoc);
     this.isValid = this.checkIfValid(submissionEnvelope);
     this.submissionState = submissionEnvelope['submissionState'];
     this.isSubmitted = this.isStateSubmitted(SUBMISSION_STATES[submissionEnvelope.submissionState]);
     this.submitLink = this.getLink(submissionEnvelope, 'submit');
     this.exportLink = this.getLink(submissionEnvelope, 'export');
     this.cleanupLink = this.getLink(submissionEnvelope, 'cleanup');
-    this.url = this.getLink(submissionEnvelope, 'self');
+    this.url = Utils.getLinkHref(submissionEnvelope, 'self');
 
   }
 
@@ -214,7 +221,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
           map(manifest => ({...submission, manifest})))
       ),
       mergeMap(
-        submission => this.ingestService.getSubmissionSummary(SubmissionComponent.getSubmissionId(submission))
+        submission => this.ingestService.getSubmissionSummary(SubmissionComponent.getEntityId(submission))
           .pipe(
             map(summary => ({...submission, summary}))
           )
@@ -289,6 +296,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       this.projectShortName = this.getProjectShortName();
       this.projectTitle = this.getProjectTitle();
       this.projectUuid = this.getProjectUuid();
+      this.projectId = Utils.getIdFromHalDoc(project as HalDoc);
     }
   }
 
@@ -306,17 +314,17 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     return this.project && this.project['uuid'] ? this.project['uuid']['uuid'] : '';
   }
 
+  getProjectId() {
+    const projectLink = this.getLink(this.project, 'self')
+    return this.project && this.project['uuid'] ? this.project['uuid']['uuid'] : '';
+  }
+
   isStateSubmitted(state) {
     return (SUBMITTED_STATES.indexOf(state) >= 0);
   }
 
-  getLink(submissionEnvelope, linkName) {
-    const links = submissionEnvelope['_links'];
-    return links && links[linkName] ? links[linkName]['href'] : null;
-  }
-
   onDeleteSubmission(submissionEnvelope: SubmissionEnvelope) {
-    const submissionId: String = SubmissionComponent.getSubmissionId(submissionEnvelope);
+    const submissionId: String = SubmissionComponent.getEntityId(submissionEnvelope);
     const projectInfo = this.projectTitle ? `(${this.projectTitle})` : '';
     const submissionUuid = submissionEnvelope['uuid']['uuid'];
     const message = `This may take some time. Are you sure you want to delete the submission with UUID ${submissionUuid} ${projectInfo} ?`;
