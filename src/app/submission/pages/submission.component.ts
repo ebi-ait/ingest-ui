@@ -93,11 +93,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     private loaderService: LoaderService) {
   }
 
-  getLink(entity, linkName) {
-    const links = entity['_links'];
-    return links && links[linkName] ? links[linkName]['href'] : null;
-  }
-
   ngOnInit() {
     this.isLoading = true;
     this.route.queryParamMap.subscribe(queryParams => {
