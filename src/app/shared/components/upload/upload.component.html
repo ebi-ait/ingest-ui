@@ -1,0 +1,26 @@
+<div>
+  <div>
+    <div>
+      <h4>Import a Spreadsheet</h4>
+      <br/>
+      <p>
+        <input type="file" #fileInput placeholder="Upload file..."/>
+      </p>
+
+      <ng-container *ngIf="projectUuid && !isUpdate">
+        <mat-radio-group [(ngModel)]="updateProject">
+          <mat-radio-button [value]="false" [checked]="!updateProject">
+            <span><b>Do not update the project metadata.</b> This will ignore project worksheet in the spreadsheet.</span>
+          </mat-radio-button>
+          <mat-radio-button [value]="true" [checked]="updateProject">
+            <span><b>Update the project metadata.</b> This will overwrite the existing project metadata.</span>
+          </mat-radio-button>
+        </mat-radio-group>
+      </ng-container>
+
+      <p>
+        <button type="button" (click)="upload()" class="vf-button vf-button--primary vf-button--sm">Import spreadsheet</button>
+      </p>
+    </div>
+  </div>
+</div>

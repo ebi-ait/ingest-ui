@@ -1,0 +1,199 @@
+<div fxLayout="column" *ngIf="isLoading">
+  Loading...
+</div>
+<div fxLayout="column" *ngIf="!isLoading">
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+    <h2 class="vf-text vf-text-heading--2">
+      Submission {{projectShortName ? ' - ' + projectShortName : ''}}
+    </h2>
+    <div fxLayoutAlign="space-between center">
+      <a mat-icon-button *ngIf="projectUuid" [routerLink]="['/projects/detail']"
+         [queryParams]="{uuid:projectUuid}">
+        <mat-icon matTooltip="Go back to project's page">keyboard_backspace</mat-icon>
+      </a>
+      <button mat-icon-button (click)="refreshSubmission()">
+        <mat-icon
+          matTooltip="Click this button to refresh the page. By default, this page refreshes every {{pollTimeInSec}} seconds.">
+          autorenew
+        </mat-icon>
+      </button>
+      <button mat-icon-button (click)="downloadDetailsOpened=true; selectedIndex=4" [disabled]="!isLinkingDone">
+        <mat-icon id="exportToXlsBtn"
+                  [matTooltip]="isLinkingDone ? 'Export submission to .xls file' : 'Linking is in progress.'">
+          get_app
+        </mat-icon>
+      </button>
+      <button mat-icon-button *ngIf="submissionEnvelope && submissionEnvelope.open"
+              (click)="onDeleteSubmission(submissionEnvelope)">
+        <mat-icon matTooltip="Delete submission">delete_forever</mat-icon>
+      </button>
+      <a mat-icon-button target="_blank"
+         href="{{submissionEnvelope?._links?.self?.href}}">
+        <mat-icon matTooltip="See Ingest API JSON">open_in_new</mat-icon>
+      </a>
+      <ng-container *ngIf="isLinkingDone">
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu" xPosition="before">
+          <button mat-menu-item (click)="downloadDetailsOpened=true; selectedIndex=4">
+            <span>Generate and Download spreadsheet</span>
+          </button>
+          <button mat-menu-item (click)="importDetailsOpened=true; selectedIndex=4">
+            <span>Import spreadsheet</span>
+          </button>
+        </mat-menu>
+      </ng-container>
+      <app-submission-state [state]="submissionState">{{submissionState}}</app-submission-state>
+    </div>
+
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+    <div>
+      <div class="vf-text-body vf-text-body--2">{{projectTitle}}</div>
+      <div class="vf-text-body vf-text-body--3">{{getContributors(project)}}</div>
+    </div>
+    <div></div>
+  </div>
+
+  <div>
+    <app-validation-summary [summary]="validationSummary" (errorClick)="onErrorClick($event)"></app-validation-summary>
+    <div *ngIf=" project?.validationErrors && project?.validationErrors.length > 0">
+      <span class="vf-text-body vf-text-body--3 vf-u-text-color--red">Project is Invalid. Please go back and edit the project.</span><br/>
+      <ng-container *ngFor="let error of project?.validationErrors">
+        <span class="vf-text-body vf-text-body--3 vf-u-text-color--red">* {{error.userFriendlyMessage}}</span>
+        <br/>
+      </ng-container>
+    </div>
+  </div>
+  <br/>
+  <p class="vf-u-text-color--red" *ngIf="manifest && !isLinkingDone">Linking is
+    progress: {{percentLinkingDone | number:'.0-0' }}% done </p>
+  <br/>
+  <mat-tab-group *ngIf="submissionEnvelopeId" [(selectedIndex)]="selectedIndex">
+    <mat-tab label="Biomaterials">
+      <ng-template matTabContent>
+        <app-metadata-list [dataSource]="biomaterialsDataSource"
+                           [submissionEnvelopeId]="submissionEnvelopeId"
+                           [config]="{displayLinking: true}"
+                           [expectedCount]="manifest ? manifest['expectedBiomaterials'] : null"></app-metadata-list>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Processes">
+      <ng-template matTabContent>
+        <app-metadata-list [dataSource]="processesDataSource"
+                           [submissionEnvelopeId]="submissionEnvelopeId"
+                           [expectedCount]="manifest ? manifest['expectedProcesses'] : null"></app-metadata-list>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Protocols">
+      <ng-template matTabContent>
+        <app-metadata-list [dataSource]="protocolsDataSource"
+                           [submissionEnvelopeId]="submissionEnvelopeId"
+                           [config]="{displayLinking: true}"
+                           [expectedCount]="manifest ? manifest['expectedProtocols'] : null"></app-metadata-list>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Data" [disabled]="!submissionEnvelopeId">
+      <ng-template matTabContent>
+        <app-files
+          [dataSource]="filesDataSource"
+          [submissionEnvelope]="submissionEnvelope"
+          [manifest]="manifest">
+        </app-files>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab [disabled]="!isLinkingDone">
+      <ng-template mat-tab-label>
+        <label
+          [matTooltip]="isLinkingDone ? 'Export or Import spreadsheet' : 'Linking is in progress'">
+          Spreadsheet
+        </label>
+      </ng-template>
+      <ng-template matTabContent>
+        <app-spreadsheet-tab-details [projectUuid]="projectUuid"
+                                     [submissionEnvelope]="submissionEnvelope"
+                                     [importDetailsOpened]="importDetailsOpened"
+                                     [downloadDetailsOpened]="downloadDetailsOpened"
+        ></app-spreadsheet-tab-details>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab label="Assays" *ngIf="isSubmitted">
+      <ng-template matTabContent>
+        <app-metadata-list
+          [dataSource]="bundleManifestsDataSource"
+          [config]="{displayAll: true, hideWhenEmptyRows: true}">
+        </app-metadata-list>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab label="Accessions" *ngIf="displayAccessionTab()">
+      <ng-template matTabContent>
+        <br/>
+        <app-data-table [dataSource]="archiveEntityDataSource"
+                        [idColumn]="'alias'"
+                        [columns]="['type', 'accession', 'alias', '_links.self.href']">
+        </app-data-table>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab
+      *ngIf="displayValidateAndSubmitTabs()"
+      [disabled]="graphValidationTabDisabled()"
+    >
+      <ng-template mat-tab-label>
+        <label class="labelHeading"
+               [matTooltip]="!isLinkingDone ? 'Linking is in progress': undefined">
+          Validate
+        </label>
+      </ng-template>
+      <h3 class="vf-u-margin__top--xxl vf-text vf-text-heading--4">Graph Validation</h3>
+
+      <ng-container *ngIf="submissionState !== SUBMISSION_STATES.GraphValid; else graphValid">
+        <p>In order to finalize your submission, you must validate the graph, or the linking between metadata
+          entities.</p>
+        <button
+          *ngIf="submissionState !== SUBMISSION_STATES.GraphValidating && submissionState !== SUBMISSION_STATES.GraphValidationRequested"
+          class="vf-button {{ graphValidationButtonDisabled ? 'vf-button--tertiary' : 'vf-button--primary' }} vf-button--sm"
+          [disabled]="graphValidationButtonDisabled"
+          (click)="triggerGraphValidation()"
+        >
+          Validate Submission
+        </button>
+      </ng-container>
+
+      <ng-template #graphValid>
+        <p>
+          You've validated the submission with the graph validator, awesome! You can proceed to the Submit tab.
+        </p>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab [disabled]="!isValid" *ngIf="displayValidateAndSubmitTabs()">
+      <ng-template mat-tab-label>
+        <label class="labelHeading"
+               [matTooltip]="!isValid ? 'The submission is not valid yet.': undefined">
+          Submit
+        </label>
+      </ng-template>
+      <ng-template matTabContent>
+        <app-submit
+          [project$]="project$"
+          [submissionEnvelope$]="submissionEnvelope$"
+          [submitLink]="submitLink"
+          [exportLink]="exportLink"
+          [cleanupLink]="cleanupLink"
+          [isSubmitted]="isSubmitted"
+          [submissionUrl]="url"
+          [submissionEnvelopeId]="submissionEnvelopeId"
+          [isLinkingDone]="isLinkingDone"
+          [manifest]="manifest">
+        </app-submit>
+      </ng-template>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>

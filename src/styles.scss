@@ -1,0 +1,56 @@
+// custom angular material theme
+@import 'hca-blue-app-theme';
+
+.starter-template {
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+@import '~@swimlane/ngx-datatable/index.css';
+@import '~@swimlane/ngx-datatable/themes/material.scss';
+@import '~@swimlane/ngx-datatable/assets/icons.css';
+
+
+$grey-color: #f2f2f2;
+$dark-grey-color: #d4d4d4;
+
+.dashboard {
+  table{
+    border-spacing: 2px;
+    width: 100%;
+  }
+
+  thead {
+    th {
+      background-color: $dark-grey-color;
+      padding: 10px;
+      font-weight: 300;
+    }
+  }
+
+  tbody {
+    tr:nth-child(even) {
+      background-color: $grey-color;
+    }
+
+    td {
+      padding: 10px;
+      font-weight: 300;
+    }
+
+  }
+}
+
+
+.vf-form__item {
+  display: grid;
+  grid-template-columns: 70% 30%;
+  grid-template-rows: auto auto;
+  align-items: start;
+  column-gap: 1em;
+  margin: 1em;
+}
+
+.vf-form__label{
+  display: inline-block;
+}

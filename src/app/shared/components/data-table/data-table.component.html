@@ -1,0 +1,36 @@
+<p *ngIf="!rows">Loading...</p>
+
+<ng-container *ngIf="dataSource.page$ | async as page">
+  <ngx-datatable #datatable
+                 *ngIf="rows && (rows.length > 0)"
+                 class="material expandable"
+                 [columnMode]="'force'"
+                 [rows]="rows"
+                 [headerHeight]="50"
+                 [footerHeight]="50"
+                 [rowHeight]="40"
+                 [rowIdentity]="getRowId"
+                 [scrollbarH]="true"
+                 [count]="page.totalElements"
+                 [offset]="dataSource.requestedOffset$ | async"
+                 [limit]="page.size"
+                 [loadingIndicator]="(dataSource.loading$ | async) && (dataSource.polling$ | async) === false"
+                 [externalPaging]="page"
+                 (page)='setPage($event)'>
+
+    <ng-container *ngFor="let column of getAllColumns(rows)">
+      <ngx-datatable-column prop="{{column}}">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <span *ngIf="isUrl(value); else showAsText">
+            <a target="_blank" href="{{value}}">
+              <mat-icon style="color: lightgrey">link</mat-icon>
+            </a>
+          </span>
+          <ng-template #showAsText>{{value}}</ng-template>
+        </ng-template>
+      </ngx-datatable-column>
+    </ng-container>
+
+  </ngx-datatable>
+</ng-container>
+<p style="text-align: center" *ngIf="rows && rows.length === 0">There's no data</p>

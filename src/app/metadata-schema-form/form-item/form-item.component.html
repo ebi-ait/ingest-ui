@@ -1,0 +1,13 @@
+<div [ngClass]="rootClass">
+  <div [ngClass]="{'label': true, 'read-only': data.disabled}">
+    <label class="vf-form__label" *ngIf="this.readOnlyOrNotCheckbox()">{{data.label}}</label>
+    <app-vf-asterisk *ngIf="this.notReadOnlyOrCheckbox()" [isRequired]="data.isRequired"></app-vf-asterisk>
+  </div>
+  <div></div>
+
+  <ng-content></ng-content>
+
+  <div *ngIf="!data.disabled">
+    <p *ngIf="data.helperText" class="vf-form__helper" [innerHtml]="data.helperText"></p>
+  </div>
+</div>

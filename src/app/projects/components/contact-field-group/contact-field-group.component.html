@@ -1,0 +1,65 @@
+<table class="vf-table vf-table--striped vf-table--loose" style="width: 100%" *ngIf="readOnly; else writeMode">
+  <thead class="vf-table__header">
+    <tr class="vf-table__row">
+      <th class="vf-table__heading" scope="col"> Contact Name</th>
+      <th class="vf-table__heading" scope="col"> Institute</th>
+      <th class="vf-table__heading" scope="col"> Country</th>
+      <th class="vf-table__heading" scope="col"> Role</th>
+      <th class="vf-table__heading" scope="col" width="15%"> Primary Contact</th>
+    </tr>
+  </thead>
+
+  <tbody class="vf-table__body">
+    <tr class="vf-table__row" *ngFor="let formGroup of contributorsControl['controls'] ; let i = index">
+      <td
+        *ngFor="let key of ['name', 'institution', 'country', 'project_role.text']"
+        class="vf-table__cell"
+      >
+        {{getControlValueForMetadataItem(formGroup, key)}}
+      </td>
+      <td class="vf-table__cell" style="text-align: center">
+        <span *ngIf="getControlValueForMetadataItem(formGroup, 'corresponding_contributor')">&#x2714;</span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<ng-template #writeMode>
+  <p class="vf-text-body vf-text-body--3 vf-u-text-color--grey">
+    Please enter the main people we can contact about this project and dataset submission.
+  </p>
+
+  <ng-container *ngFor="let formGroup of contributorsControl['controls'] ; let i = index">
+
+    <app-contact-name-field
+      [id]="'project.content.contributors' + '-' + i + '-' + 'name'"
+      [metadata]="metadataForm.get('project.content.contributors.name')"
+      [control]="formGroup['controls']['name']"
+    >
+    </app-contact-name-field>
+
+    <ng-container *ngFor="let child of contactFieldMetadataList">
+      <app-metadata-field [id]="'project.content.contributors' + '-' + i + '-' + child.key"
+                          [metadata]="child"
+                          [control]="formGroup['controls'][child.key]">
+
+      </app-metadata-field>
+    </ng-container>
+
+    <div class="vf-u-padding__top--xxl"></div>
+    <a class="vf-button vf-button--primary vf-button--outline"
+       *ngIf="i!==0"
+       (click)="removeFormControl(contributorsControl, i)">
+      <mat-icon>remove</mat-icon>
+      Remove contact
+    </a>
+
+  </ng-container>
+
+  <a class="vf-button vf-button--primary vf-button--outline"
+     (click)="addFormControl(contributorMetadata, contributorsControl)">
+    <mat-icon>add</mat-icon>
+    Add a contributor
+  </a>
+</ng-template>
+

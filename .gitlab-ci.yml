@@ -1,10 +1,8 @@
 include:
   remote: 'https://raw.githubusercontent.com/ebi-ait/gitlab-ci-templates/master/build-release-deploy.yml'
 
-Unit Test:
+Test:
   image: quay.io/ebi-ait/ingest-base-images:trion_ng-cli-karma_11.2.6
-  stage: build
   script:
-    - cd client/
-    - npm install
-    - ng test --watch false
+    - yarn install
+    - ng lint && ng test --watch false

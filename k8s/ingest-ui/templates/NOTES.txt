@@ -1,1 +1,0 @@
-Ingest-ui powered by helm charts

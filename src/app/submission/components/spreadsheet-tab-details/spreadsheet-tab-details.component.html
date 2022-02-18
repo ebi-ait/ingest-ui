@@ -1,0 +1,60 @@
+<details class="vf-u-margin__top--xxl vf-details vf-box vf-box--outline"
+         [attr.open]="downloadDetailsOpened">
+  <summary class="vf-details--summary">Download spreadsheet</summary>
+
+  <div *ngIf="!lastSpreadsheetJob ||  (!spreadsheetUpToDate && !downloadJobOngoing)">
+    <p>You should generate the spreadsheet first. Generating the spreadsheet may take some time. The spreadsheet
+      file should be available here once for download once its generated. </p>
+    <button type="button" class="vf-button vf-button--sm vf-button--primary"
+            (click)="generateSpreadsheet()">
+      Generate spreadsheet
+    </button>
+  </div>
+
+  <div class="vf-u-margin__top--xxl">
+    <div *ngIf="downloadJobOngoing">
+      <p>
+        <mat-icon>info</mat-icon>
+        Spreadsheet is being generated. Please come back later.
+      </p>
+      <br/>
+    </div>
+
+    <div *ngIf="spreadsheetUpToDate && lastSpreadsheetJob['finishedDate']" class="vf-u-margin__top--xxl">
+
+      <p>The spreadsheet should contain the uuids and the properties for each metadata entities. After download,
+        you can update the spreadsheet and import your updates.</p>
+
+      <p>
+        <mat-icon>insert_drive_file</mat-icon>
+        filename: {{submissionEnvelopeUuid + '_' + (lastSpreadsheetJob['createdDate'] | date:'YYYYMMdd-hhmmss') + '.xls'}}
+      </p>
+      <div class="vf-u-margin__top--xxl">
+        <p class="vf-text-body vf-text-body--5">last generated: {{lastSpreadsheetJob['createdDate'] }}</p>
+        <p class="vf-text-body vf-text-body--5">submission last updated: {{contentLastUpdated}}</p>
+      </div>
+
+      <button type="button" class="vf-u-margin__top--xxl vf-button vf-button--sm vf-button--primary"
+              (click)="downloadSpreadsheet()">
+        Download File
+      </button>
+      <br/>
+    </div>
+
+
+  </div>
+</details>
+<details class="vf-details vf-box vf-box--outline" [attr.open]="importDetailsOpened">
+  <summary class="vf-details--summary">Import spreadsheet</summary>
+  <div class="vf-u-margin__top--xxl">
+    <p>You could import a spreadsheet to update the metadata in this submission.
+      The spreadsheet should contain the uuid's of the metadata you want to update.</p>
+    <p>Please note that updating the linking between entities is not supported via spreadsheets yet.</p>
+
+    <div class="vf-u-margin__top--xxl">
+      <app-upload [projectUuid]="projectUuid" [submissionUuid]="submissionEnvelopeUuid"
+                  [isUpdate]="true"></app-upload>
+      <br/>
+    </div>
+  </div>
+</details>

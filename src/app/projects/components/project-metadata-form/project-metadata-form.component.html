@@ -1,0 +1,19 @@
+<ng-container *ngIf= "isFormDataComplete() ; else loading">
+  <app-metadata-form name="project"
+                     [useVf]="true"
+                     [schema]="projectIngestSchema"
+                     [data]="project"
+                     [config]="config"
+                     [selectedTabKey]="projectFormTabKey"
+                     [allowValidationOverride]="userIsWrangler"
+                     (cancel)="onCancel($event)"
+                     (back)="decrementProjectTab()"
+                     (tabChange)="onTabChange($event)"
+                     (save)="onSave($event)"
+                     (formValueChange)="onFormValueChange($event)">
+  </app-metadata-form>
+</ng-container>
+
+<ng-template #loading>
+  <p>Loading...</p>
+</ng-template>

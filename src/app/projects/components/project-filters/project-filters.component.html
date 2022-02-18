@@ -1,0 +1,126 @@
+<form [formGroup]="filtersForm" class="filters">
+  <mat-form-field class="search-bar">
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput placeholder="Search Projects" formControlName="search">
+    <button *ngIf="filtersForm.controls.search.value" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="onClearSearch()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-select placeholder="Search Type"
+                class="search-type"
+                formControlName="searchType">
+      <mat-option *ngFor="let type of searchTypes" [value]="type[0]">
+        {{type[1]}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <ng-container *ngIf="isExpanded">
+    <mat-form-field>
+      <mat-select placeholder="Status" formControlName="wranglingState">
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let state of wranglingStates" [value]="cleanWranglingState(state)">{{state}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-select placeholder="Wrangler" formControlName="primaryWrangler">
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let wrangler of wranglers$ | async" [value]="wrangler.id">{{wrangler.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-select placeholder="Priority" formControlName="wranglingPriority">
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let priority of getWranglingPriorities()" [value]="priority">{{priority}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-select placeholder="HCA Publication" formControlName="hasOfficialHcaPublication">
+        <mat-option>None</mat-option>
+        <mat-option [value]="true">Yes</mat-option>
+        <mat-option [value]="false">No</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="cell-count">
+      <div class="heading">
+        <span formGroupName="controlsForm">
+          <mat-checkbox formControlName="filterByCellCount"></mat-checkbox>
+        </span>
+        <p class="heading">Filter by Cell Count</p>
+      </div>
+
+      <div class="cell-count__slider cell-count__slider--min">
+        <mat-slider
+          formControlName="minCellCount"
+          min="0"
+          [max]="filtersForm.get('maxCellCount').value"
+          thumbLabel
+          [displayWith]="formatCellCountLabel"
+        >
+        </mat-slider>
+        <small class="slider__label">Min.</small>
+      </div>
+      <div class="cell-count__slider cell-count__slider--max">
+        <mat-slider
+          formControlName="maxCellCount"
+          min="0"
+          [max]="maxCellCount"
+          thumbLabel
+          [displayWith]="formatCellCountLabel"
+        >
+        </mat-slider>
+        <small class="slider__label">Max.</small>
+      </div>
+    </div>
+
+    <mat-form-field>
+      <mat-select placeholder="Species" formControlName="identifyingOrganism">
+        <mat-option>None</mat-option>
+        <mat-option value="Human">Human</mat-option>
+        <mat-option value="Mouse">Mouse</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Organ</mat-label>
+      <!--Organ search input-->
+      <span formGroupName="controlsForm">
+        <input type="text"
+               placeholder="Organ"
+               matInput
+               formControlName="organSearchValue"
+               [matAutocomplete]="auto">
+      </span>
+      <!--Organ autocomplete dropdown-->
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOrganSelected($event)">
+        <mat-option *ngFor="let organ of organs$ | async" [value]="organ">
+          {{formatOrgan(organ)}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-select placeholder="Access Type" formControlName="dataAccess">
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let type of dataAccessTypes" [value]="type[0]">
+          {{type[1]}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-select placeholder="Release" formControlName="dcpReleaseNumber">
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let release of getDCPReleaseNumbers()" [value]="release">{{release}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </ng-container>
+</form>
+
+<a class="vf-link" style="float: right; margin: 1rem 0;" href="javascript:void(0)" (click)="toggleFilters()">{{isExpanded ? 'Hide' : 'Show'}} filters</a>

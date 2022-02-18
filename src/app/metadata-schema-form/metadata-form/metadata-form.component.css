@@ -1,0 +1,8 @@
+.form-actions {
+  display: flex;
+  flex-direction: column;
+}
+
+.next-button {
+  min-width: 20%;
+}

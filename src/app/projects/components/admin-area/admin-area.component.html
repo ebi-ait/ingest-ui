@@ -1,0 +1,36 @@
+<div class="vf-grid vf-grid__col-2">
+
+<app-wrangler-list-input [metadata]="primaryWranglerMetadata"
+                    [control]="primaryWranglerControl"
+                    [id]="primaryWranglerMetadata.key">
+</app-wrangler-list-input>
+
+<app-metadata-field [metadata]="wranglingStatusMetadata"
+                   [control]="wranglingStatusControl"
+                   [id]="wranglingStatusMetadata.key"
+>
+</app-metadata-field>
+
+<app-wrangler-list-input [metadata]="secondaryWranglerMetadata"
+                         [control]="secondaryWranglersControl"
+                         [id]="secondaryWranglerMetadata.key">
+</app-wrangler-list-input>
+
+<app-number-dropdown [metadata]="wranglingPriorityMetadata"
+                    [control]="wranglingPriorityControl"
+                    [id]="wranglingPriorityMetadata.key"
+                    [options]="wranglingPriorityOptions">
+</app-number-dropdown>
+
+<app-metadata-field [metadata]="wranglingNotesMetadata"
+                    [control]="wranglingNotesControl"
+                    [id]="wranglingNotesMetadata.key">
+</app-metadata-field>
+
+<app-number-dropdown [metadata]="releaseMetadata"
+                    [control]="releaseControl"
+                    [id]="releaseMetadata.key"
+                    [options]="releaseOptions">
+</app-number-dropdown>
+
+</div>
