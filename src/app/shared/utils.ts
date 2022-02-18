@@ -20,6 +20,10 @@ export default class Utils {
 
   static getIdFromHalDoc(doc: HalDoc): string {
     const selfHref = Utils.getLinkHref(doc, 'self');
+    return Utils.getIdFromSelfHref(selfHref);
+  }
+
+  static getIdFromSelfHref(selfHref: string): string {
     return selfHref ? selfHref.split('/').pop() : '';
   }
 
