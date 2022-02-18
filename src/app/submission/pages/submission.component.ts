@@ -93,11 +93,6 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     private loaderService: LoaderService) {
   }
 
-  private static getEntityId(entity) {
-    const links = entity['_links'];
-    return links && links['self'] && links['self']['href'] ? links['self']['href'].split('/').pop() : '';
-  }
-
   getLink(entity, linkName) {
     const links = entity['_links'];
     return links && links[linkName] ? links[linkName]['href'] : null;
@@ -195,9 +190,9 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     this.isValid = this.checkIfValid(submissionEnvelope);
     this.submissionState = submissionEnvelope['submissionState'];
     this.isSubmitted = this.isStateSubmitted(SUBMISSION_STATES[submissionEnvelope.submissionState]);
-    this.submitLink = this.getLink(submissionEnvelope, 'submit');
-    this.exportLink = this.getLink(submissionEnvelope, 'export');
-    this.cleanupLink = this.getLink(submissionEnvelope, 'cleanup');
+    this.submitLink = Utils.getLinkHref(submissionEnvelope, 'submit');
+    this.exportLink = Utils.getLinkHref(submissionEnvelope, 'export');
+    this.cleanupLink = Utils.getLinkHref(submissionEnvelope, 'cleanup');
     this.url = Utils.getLinkHref(submissionEnvelope, 'self');
 
   }
@@ -221,7 +216,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
           map(manifest => ({...submission, manifest})))
       ),
       mergeMap(
-        submission => this.ingestService.getSubmissionSummary(SubmissionComponent.getEntityId(submission))
+        submission => this.ingestService.getSubmissionSummary(Utils.getIdFromHalDoc(submission))
           .pipe(
             map(summary => ({...submission, summary}))
           )
@@ -314,17 +309,12 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     return this.project && this.project['uuid'] ? this.project['uuid']['uuid'] : '';
   }
 
-  getProjectId() {
-    const projectLink = this.getLink(this.project, 'self')
-    return this.project && this.project['uuid'] ? this.project['uuid']['uuid'] : '';
-  }
-
   isStateSubmitted(state) {
     return (SUBMITTED_STATES.indexOf(state) >= 0);
   }
 
   onDeleteSubmission(submissionEnvelope: SubmissionEnvelope) {
-    const submissionId: String = SubmissionComponent.getEntityId(submissionEnvelope);
+    const submissionId: String = Utils.getIdFromHalDoc(submissionEnvelope);
     const projectInfo = this.projectTitle ? `(${this.projectTitle})` : '';
     const submissionUuid = submissionEnvelope['uuid']['uuid'];
     const message = `This may take some time. Are you sure you want to delete the submission with UUID ${submissionUuid} ${projectInfo} ?`;
