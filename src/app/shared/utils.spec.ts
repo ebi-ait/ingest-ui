@@ -62,4 +62,18 @@ describe('Utils', () => {
     });
   });
 
+  describe('getValueOfPath', ()=>{
+    it(`should return value given the object and path`, () => {
+      const obj = {
+        'file_core': {
+          'filename': 'value'
+        }
+      }
+      expect(Utils.getValueOfPath(obj, 'file_core.filename')).toEqual('value');
+      expect(Utils.getValueOfPath(obj, 'file_core')).toEqual({
+        'filename': 'value'
+      });
+    });
+  });
+
 });

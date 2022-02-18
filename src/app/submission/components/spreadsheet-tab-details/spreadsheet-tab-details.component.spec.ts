@@ -54,6 +54,11 @@ describe('SpreadsheetTabDetailsComponent', () => {
       'lastSpreadsheetGenerationJob': {
         'finishedDate': '2022-01-31T01:00:00.000Z',
         'createdDate': '2022-01-31T00:00:00.000Z'
+      },
+      _links:{
+        self:{
+          href:'sub/id'
+        }
       }
     }
   });

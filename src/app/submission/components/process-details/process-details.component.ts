@@ -61,10 +61,6 @@ export class ProcessDetailsComponent implements OnInit {
     return metadata.content['describedBy'].split('/').pop();
   }
 
-  fitGraph() {
-    this.zoomToFit$.next(true);
-  }
-
   onProtocolPicked($event: MetadataDocument) {
     this.protocolsToAdd.push($event);
   }
@@ -213,8 +209,8 @@ export class ProcessDetailsComponent implements OnInit {
       tap(data => {
         const inputs = data._embedded ? data._embedded.biomaterials : [];
         inputs.map(input => {
-          this.nodes.push(this.ngxNodeFromBiomaterial(input));
-          this.links.push(this.ngxLinkFromInputBiomaterial(input));
+          this.nodes.push(this.ngxNode(input, 'content.biomaterial_core.biomaterial_id'));
+          this.links.push(this.ngxLink(input, 'input', false));
         });
         this.inputBiomaterials = inputs;
       }));
@@ -225,8 +221,8 @@ export class ProcessDetailsComponent implements OnInit {
       tap(data => {
         const inputs = data._embedded ? data._embedded.files : [];
         inputs.map(input => {
-          this.nodes.push(this.ngxNodeFromFile(input));
-          this.links.push(this.ngxLinkFromInputFile(input));
+          this.nodes.push(this.ngxNode(input, 'content.file_core.file_name'));
+          this.links.push(this.ngxLink(input, 'input', true));
         });
         this.inputFiles = inputs;
       }));
@@ -238,8 +234,8 @@ export class ProcessDetailsComponent implements OnInit {
         const protocols = data._embedded ? data._embedded.protocols : [];
         this.protocols = protocols;
         protocols.map(p => {
-          this.nodes.push(this.ngxNodeFromProtocol(p));
-          this.links.push(this.ngxLinkFromProtocol(p));
+          this.nodes.push(this.ngxNode(p, 'content.protocol_core.protocol_id'));
+          this.links.push(this.ngxLink(p, 'protocol', undefined));
         });
       }));
   }
@@ -251,8 +247,8 @@ export class ProcessDetailsComponent implements OnInit {
         this.derivedBiomaterials = biomaterials;
 
         biomaterials.map(b => {
-          this.nodes.push(this.ngxNodeFromBiomaterial(b));
-          this.links.push(this.ngxLinkFromOutputBiomaterial(b));
+          this.nodes.push(this.ngxNode(b, 'content.biomaterial_core.biomaterial_id'));
+          this.links.push(this.ngxLink(b, 'output', false));
         });
 
       }));
@@ -264,8 +260,8 @@ export class ProcessDetailsComponent implements OnInit {
         const outputFiles = data._embedded ? data._embedded.files : [];
         this.outputFiles = outputFiles;
         outputFiles.map(d => {
-          this.nodes.push(this.ngxNodeFromFile(d));
-          this.links.push(this.ngxLinkFromOutputFile(d));
+          this.nodes.push(this.ngxNode(d, 'content.file_core.file_name'));
+          this.links.push(this.ngxLink(d, 'output', false));
         });
 
       }));
@@ -279,69 +275,20 @@ export class ProcessDetailsComponent implements OnInit {
     this.links = [];
   }
 
-  private ngxNodeFromProtocol(protocol: MetadataDocument): NgxNode {
+  private ngxNode(metadata: MetadataDocument, idPath:string): NgxNode {
     return {
-      id: protocol.uuid.uuid,
-      label: protocol.content['protocol_core']['protocol_id'],
-    } as NgxNode
-  }
-
-  private ngxLinkFromProtocol(protocol: MetadataDocument): NgxLink {
-    return {
-      id: `protocol-${protocol.uuid.uuid}`,
-      source: 'process',
-      target: protocol.uuid.uuid,
-      label: 'protocols'
-    } as NgxLink
-  }
-
-  private ngxNodeFromBiomaterial(biomaterial: MetadataDocument): NgxNode {
-    return {
-      id: biomaterial.uuid.uuid,
-      label: biomaterial.content['biomaterial_core']['biomaterial_id'],
-    } as NgxNode
-  }
-
-  private ngxLinkFromInputBiomaterial(biomaterial: MetadataDocument): NgxLink {
-    return {
-      id: `input-biomaterial-${biomaterial.uuid.uuid}`,
-      source: biomaterial.uuid.uuid,
-      target: 'process',
-      label: 'input'
-    } as NgxLink;
-  }
-
-  private ngxLinkFromOutputBiomaterial(biomaterial: MetadataDocument): NgxLink {
-    return {
-      id: `derived-biomaterial-${biomaterial.uuid.uuid}`,
-      source: 'process',
-      target: biomaterial.uuid.uuid,
-      label: 'output'
-    } as NgxLink
-  }
-
-  private ngxNodeFromFile(file: MetadataDocument): NgxNode {
-    return {
-      id: file.uuid.uuid,
-      label: file.content['file_core']['file_name'],
+      id: metadata.uuid.uuid,
+      label: Utils.getValueOfPath(metadata, idPath),
     } as NgxNode;
   }
 
-  private ngxLinkFromInputFile(file: MetadataDocument): NgxLink {
+  private ngxLink(metadata: MetadataDocument, link_type:string, source:boolean): NgxLink {
+    const metadataType = metadata.type.toLowerCase();
     return {
-      id: `input-file-${file.uuid.uuid}`,
-      source: file.uuid.uuid,
-      target: 'process',
-      label: 'input'
-    } as NgxLink
-  }
-
-  private ngxLinkFromOutputFile(file: MetadataDocument): NgxLink {
-    return {
-      id: `derived-file-${file.uuid.uuid}`,
-      source: 'process',
-      target: file.uuid.uuid,
-      label: 'output'
+      id: `${link_type}-${metadataType}-${metadata.uuid.uuid}`,
+      source: source? metadata.uuid.uuid : 'process',
+      target: source? 'process': metadata.uuid.uuid,
+      label: link_type
     } as NgxLink;
   }
 
