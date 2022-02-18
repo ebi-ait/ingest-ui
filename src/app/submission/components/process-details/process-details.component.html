@@ -53,9 +53,9 @@
         <div class="vf-u-padding__bottom--xl">
           <app-process-node-details
             [metadata]="input"
-            [idPath]="'biomaterial_core.biomaterial_id'"
-            [namePath]="'biomaterial_core.biomaterial_name'"
-            [descriptionPath]="'biomaterial_core.biomaterial_description'">
+            [idPath]="'content.biomaterial_core.biomaterial_id'"
+            [namePath]="'content.biomaterial_core.biomaterial_name'"
+            [descriptionPath]="'content.biomaterial_core.biomaterial_description'">
             <button (click)="removeInputBiomaterial(input)" style="cursor: pointer"
                     matTooltip="This will not remove the biomaterial from the submission. This will only remove the linking between this biomaterial to this process.">
               Unlink Biomaterial
@@ -67,7 +67,7 @@
         <div class="vf-u-padding__bottom--xl">
           <app-process-node-details
             [metadata]="input"
-            [idPath]="'file_core.file_name'">
+            [idPath]="'content.file_core.file_name'">
             <button (click)="removeInputFile(input)" style="cursor: pointer" matTooltip="Unlink File">
               Unlink File
             </button>
@@ -84,9 +84,9 @@
         <div class="vf-u-padding__bottom--xl">
           <app-process-node-details
             [metadata]="input"
-            [idPath]="'biomaterial_core.biomaterial_id'"
-            [namePath]="'biomaterial_core.biomaterial_name'"
-            [descriptionPath]="'biomaterial_core.biomaterial_description'">
+            [idPath]="'content.biomaterial_core.biomaterial_id'"
+            [namePath]="'content.biomaterial_core.biomaterial_name'"
+            [descriptionPath]="'content.biomaterial_core.biomaterial_description'">
           </app-process-node-details>
         </div>
       </ng-container>
@@ -102,15 +102,10 @@
 
       <ng-container *ngFor="let input of inputFilesToAdd">
         <div class="vf-u-padding__bottom--xl">
-          <mat-card class="wrap-text">
-            <mat-card-content>
-              <p class="vf-text-body vf-text-body--3">
-                <strong>id: </strong> {{input?.content['file_core']['file_name']}}</p>
-              <p><strong>concrete type: </strong> {{getConcreteType(input)}}</p>
-              <p><strong>type: </strong> {{input?.content['schema_type']}}</p>
-              <p><strong>uuid: </strong> {{input?.uuid?.uuid}}</p>
-            </mat-card-content>
-          </mat-card>
+          <app-process-node-details
+            [metadata]="input"
+            [idPath]="'content.file_core.file_name'">
+          </app-process-node-details>
         </div>
       </ng-container>
 
@@ -129,9 +124,9 @@
         <div class="vf-u-padding__bottom--xl">
           <app-process-node-details
             [metadata]="protocol"
-            [idPath]="'protocol_core.protocol_id'"
-            [namePath]="'protocol_core.protocol_name'"
-            [descriptionPath]="'protocol_core.protocol_description'">
+            [idPath]="'content.protocol_core.protocol_id'"
+            [namePath]="'content.protocol_core.protocol_name'"
+            [descriptionPath]="'content.protocol_core.protocol_description'">
             <button (click)="removeProtocol(protocol)" style="cursor: pointer" matTooltip="Unlink Protocol">
               Unlink Protocol
             </button>
@@ -148,9 +143,9 @@
         <div class="vf-u-padding__bottom--xl">
           <app-process-node-details
             [metadata]="protocol"
-            [idPath]="'protocol_core.protocol_id'"
-            [namePath]="'protocol_core.protocol_name'"
-            [descriptionPath]="'protocol_core.protocol_description'">
+            [idPath]="'content.protocol_core.protocol_id'"
+            [namePath]="'content.protocol_core.protocol_name'"
+            [descriptionPath]="'content.protocol_core.protocol_description'">
           </app-process-node-details>
         </div>
       </ng-container>
@@ -167,9 +162,9 @@
         <div class="vf-u-padding__bottom--xl">
           <app-process-node-details
             [metadata]="output"
-            [idPath]="'biomaterial_core.biomaterial_id'"
-            [namePath]="'biomaterial_core.biomaterial_name'"
-            [descriptionPath]="'biomaterial_core.biomaterial_description'">
+            [idPath]="'content.biomaterial_core.biomaterial_id'"
+            [namePath]="'content.biomaterial_core.biomaterial_name'"
+            [descriptionPath]="'content.biomaterial_core.biomaterial_description'">
             <button (click)="removeOutputBiomaterial(output)" style="cursor: pointer"
                     matTooltip="Unlink Biomaterial">
               Unlink Biomaterial
@@ -181,7 +176,7 @@
         <div class="vf-u-padding__bottom--xl">
           <app-process-node-details
             [metadata]="output"
-            [idPath]="'file_core.file_name'">
+            [idPath]="'content.file_core.file_name'">
             <button (click)="removeOutputFile(output)" style="cursor: pointer" matTooltip="Unlink File">
               Unlink File
             </button>
@@ -197,9 +192,9 @@
         <div class="vf-u-padding__bottom--xl">
           <app-process-node-details
             [metadata]="output"
-            [idPath]="'biomaterial_core.biomaterial_id'"
-            [namePath]="'biomaterial_core.biomaterial_name'"
-            [descriptionPath]="'biomaterial_core.biomaterial_description'">
+            [idPath]="'content.biomaterial_core.biomaterial_id'"
+            [namePath]="'content.biomaterial_core.biomaterial_name'"
+            [descriptionPath]="'content.biomaterial_core.biomaterial_description'">
           </app-process-node-details>
         </div>
       </ng-container>
@@ -218,7 +213,7 @@
         <div class="vf-u-padding__bottom--xl">
           <app-process-node-details
             [metadata]="output"
-            [idPath]="'file_core.file_name'">
+            [idPath]="'content.file_core.file_name'">
           </app-process-node-details>
         </div>
       </ng-container>
