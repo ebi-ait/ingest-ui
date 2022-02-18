@@ -29,7 +29,7 @@ export class ProcessDetailsComponent implements OnInit {
   inputBiomaterials: MetadataDocument[];
   inputFiles: MetadataDocument[];
   protocols: MetadataDocument[];
-  derivedBiomaterials: MetadataDocument[];
+  outputBiomaterials: MetadataDocument[];
   outputFiles: MetadataDocument[];
 
   protocolsToAdd: MetadataDocument[] = [];
@@ -210,7 +210,7 @@ export class ProcessDetailsComponent implements OnInit {
         const inputs = data._embedded ? data._embedded.biomaterials : [];
         inputs.map(input => {
           this.nodes.push(this.ngxNode(input, 'content.biomaterial_core.biomaterial_id'));
-          this.links.push(this.ngxLink(input, 'input', false));
+          this.links.push(this.ngxLink(input, 'input', true));
         });
         this.inputBiomaterials = inputs;
       }));
@@ -244,7 +244,7 @@ export class ProcessDetailsComponent implements OnInit {
     return this.ingestService.get<ListResult<MetadataDocument>>(`${processUrl}/derivedBiomaterials`).pipe(
       tap(data => {
         const biomaterials = data._embedded ? data._embedded.biomaterials : [];
-        this.derivedBiomaterials = biomaterials;
+        this.outputBiomaterials = biomaterials;
 
         biomaterials.map(b => {
           this.nodes.push(this.ngxNode(b, 'content.biomaterial_core.biomaterial_id'));

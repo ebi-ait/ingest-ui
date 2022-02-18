@@ -51,37 +51,27 @@
     <div class="vf-u-margin__top--xxl vf-u-margin__bottom--xxl">
       <ng-container *ngFor="let input of inputBiomaterials">
         <div class="vf-u-padding__bottom--xl">
-          <mat-card class="wrap-text">
-            <mat-card-content>
-              <p class="vf-text-body vf-text-body--3">
-                <strong>id: </strong> {{input?.content['biomaterial_core']['biomaterial_id']}}</p>
-              <p><strong>concrete type: </strong> {{getConcreteType(input)}}</p>
-              <p><strong>type: </strong> {{input?.content['schema_type']}}</p>
-              <p><strong>uuid: </strong> {{input?.uuid?.uuid}}</p>
-              <p><strong>name: </strong> {{input?.content['biomaterial_core']['biomaterial_name']}}</p>
-              <p><strong>description: </strong> {{input?.content['biomaterial_core']['biomaterial_description']}}</p>
-            </mat-card-content>
+          <app-process-node-details
+            [metadata]="input"
+            [idPath]="'biomaterial_core.biomaterial_id'"
+            [namePath]="'biomaterial_core.biomaterial_name'"
+            [descriptionPath]="'biomaterial_core.biomaterial_description'">
             <button (click)="removeInputBiomaterial(input)" style="cursor: pointer"
-                             matTooltip="This will not remove the biomaterial from the submission. This will only remove the linking between this biomaterial to this process.">
+                    matTooltip="This will not remove the biomaterial from the submission. This will only remove the linking between this biomaterial to this process.">
               Unlink Biomaterial
             </button>
-          </mat-card>
+          </app-process-node-details>
         </div>
       </ng-container>
       <ng-container *ngFor="let input of inputFiles">
         <div class="vf-u-padding__bottom--xl">
-          <mat-card class="wrap-text">
-            <mat-card-content>
-              <p class="vf-text-body vf-text-body--3">
-                <strong>id: </strong> {{input?.content['file_core']['file_name']}}</p>
-              <p><strong>concrete type: </strong> {{getConcreteType(input)}}</p>
-              <p><strong>type: </strong> {{input?.content['schema_type']}}</p>
-              <p><strong>uuid: </strong> {{input?.uuid?.uuid}}</p>
-            </mat-card-content>
+          <app-process-node-details
+            [metadata]="input"
+            [idPath]="'file_core.file_name'">
             <button (click)="removeInputFile(input)" style="cursor: pointer" matTooltip="Unlink File">
               Unlink File
             </button>
-          </mat-card>
+          </app-process-node-details>
         </div>
       </ng-container>
 
@@ -92,21 +82,16 @@
 
       <ng-container *ngFor="let input of inputBiomaterialsToAdd">
         <div class="vf-u-padding__bottom--xl">
-          <mat-card class="wrap-text">
-            <mat-card-content>
-              <p class="vf-text-body vf-text-body--3">
-                <strong>id: </strong> {{input?.content['biomaterial_core']['biomaterial_id']}}</p>
-              <p><strong>concrete type: </strong> {{getConcreteType(input)}}</p>
-              <p><strong>type: </strong> {{input?.content['schema_type']}}</p>
-              <p><strong>uuid: </strong> {{input?.uuid?.uuid}}</p>
-              <p><strong>name: </strong> {{input?.content['biomaterial_core']['biomaterial_name']}}</p>
-              <p><strong>description: </strong> {{input?.content['biomaterial_core']['biomaterial_description']}}</p>
-            </mat-card-content>
-          </mat-card>
+          <app-process-node-details
+            [metadata]="input"
+            [idPath]="'biomaterial_core.biomaterial_id'"
+            [namePath]="'biomaterial_core.biomaterial_name'"
+            [descriptionPath]="'biomaterial_core.biomaterial_description'">
+          </app-process-node-details>
         </div>
       </ng-container>
       <button *ngIf="inputBiomaterialsToAdd.length > 0" (click)="addInputBiomaterials()"
-                       style="cursor: pointer" matTooltip="Link Biomaterials">
+              style="cursor: pointer" matTooltip="Link Biomaterials">
 
         Link Biomaterials
       </button>
@@ -130,7 +115,7 @@
       </ng-container>
 
       <button *ngIf="inputFilesToAdd.length > 0" (click)="addInputFiles()" style="cursor: pointer"
-                       matTooltip="Link Files">
+              matTooltip="Link Files">
         Link Files
       </button>
 
@@ -142,20 +127,15 @@
     <div class="vf-u-margin__top--xxl vf-u-margin__bottom--xxl">
       <ng-container *ngFor="let protocol of protocols">
         <div class="vf-u-padding__bottom--xl">
-          <mat-card class="wrap-text">
-            <mat-card-content>
-              <p class="vf-text-body vf-text-body--3">
-                <strong>id: </strong> {{protocol?.content['protocol_core']['protocol_id']}}</p>
-              <p><strong>concrete type: </strong> {{getConcreteType(protocol)}}</p>
-              <p><strong>type: </strong> {{protocol?.content['schema_type']}}</p>
-              <p><strong>uuid: </strong> {{protocol?.uuid?.uuid}}</p>
-              <p><strong>name: </strong> {{protocol?.content['protocol_core']['protocol_name']}}</p>
-              <p><strong>description: </strong> {{protocol?.content['protocol_core']['protocol_description']}}</p>
-            </mat-card-content>
+          <app-process-node-details
+            [metadata]="protocol"
+            [idPath]="'protocol_core.protocol_id'"
+            [namePath]="'protocol_core.protocol_name'"
+            [descriptionPath]="'protocol_core.protocol_description'">
             <button (click)="removeProtocol(protocol)" style="cursor: pointer" matTooltip="Unlink Protocol">
               Unlink Protocol
             </button>
-          </mat-card>
+          </app-process-node-details>
         </div>
       </ng-container>
 
@@ -166,21 +146,16 @@
 
       <ng-container *ngFor="let protocol of protocolsToAdd">
         <div class="vf-u-padding__bottom--xl">
-          <mat-card class="wrap-text">
-            <mat-card-content>
-              <p class="vf-text-body vf-text-body--3">
-                <strong>id: </strong> {{protocol?.content['protocol_core']['protocol_id']}}</p>
-              <p><strong>concrete type: </strong> {{getConcreteType(protocol)}}</p>
-              <p><strong>type: </strong> {{protocol?.content['schema_type']}}</p>
-              <p><strong>uuid: </strong> {{protocol?.uuid?.uuid}}</p>
-              <p><strong>name: </strong> {{protocol?.content['protocol_core']['protocol_name']}}</p>
-              <p><strong>description: </strong> {{protocol?.content['protocol_core']['protocol_description']}}</p>
-            </mat-card-content>
-          </mat-card>
+          <app-process-node-details
+            [metadata]="protocol"
+            [idPath]="'protocol_core.protocol_id'"
+            [namePath]="'protocol_core.protocol_name'"
+            [descriptionPath]="'protocol_core.protocol_description'">
+          </app-process-node-details>
         </div>
       </ng-container>
       <button *ngIf="protocolsToAdd.length > 0" (click)="addProtocols()" style="cursor: pointer"
-                       matTooltip="Link Protocols">
+              matTooltip="Link Protocols">
         Link Protocols
       </button>
     </div>
@@ -188,42 +163,31 @@
   <div>
     <h4>Outputs</h4>
     <div class="vf-u-margin__top--xxl vf-u-margin__bottom--xxl">
-      <ng-container *ngFor="let output of derivedBiomaterials">
+      <ng-container *ngFor="let output of outputBiomaterials">
         <div class="vf-u-padding__bottom--xl">
-          <mat-card class="wrap-text">
-            <mat-card-content>
-              <p class="vf-text-body vf-text-body--3">
-                <strong>id: </strong> {{output?.content['biomaterial_core']['biomaterial_id']}}</p>
-              <p><strong>concrete type: </strong> {{getConcreteType(output)}}</p>
-              <p><strong>type: </strong> {{output?.content['schema_type']}}</p>
-              <p><strong>uuid: </strong> {{output?.uuid?.uuid}}</p>
-              <p><strong>name: </strong> {{output?.content['biomaterial_core']['biomaterial_name']}}</p>
-              <p><strong>description: </strong> {{output?.content['biomaterial_core']['biomaterial_description']}}</p>
-            </mat-card-content>
+          <app-process-node-details
+            [metadata]="output"
+            [idPath]="'biomaterial_core.biomaterial_id'"
+            [namePath]="'biomaterial_core.biomaterial_name'"
+            [descriptionPath]="'biomaterial_core.biomaterial_description'">
             <button (click)="removeOutputBiomaterial(output)" style="cursor: pointer"
-                             matTooltip="Unlink Biomaterial">
+                    matTooltip="Unlink Biomaterial">
               Unlink Biomaterial
             </button>
-          </mat-card>
+          </app-process-node-details>
         </div>
       </ng-container>
       <ng-container *ngFor="let output of outputFiles">
         <div class="vf-u-padding__bottom--xl">
-          <mat-card class="wrap-text">
-            <mat-card-content>
-              <p class="vf-text-body vf-text-body--3">
-                <strong>id: </strong> {{output?.content['file_core']['file_name']}}</p>
-              <p><strong>concrete type: </strong> {{getConcreteType(output)}}</p>
-              <p><strong>type: </strong> {{output?.content['schema_type']}}</p>
-              <p><strong>uuid: </strong> {{output?.uuid?.uuid}}</p>
-            </mat-card-content>
+          <app-process-node-details
+            [metadata]="output"
+            [idPath]="'file_core.file_name'">
             <button (click)="removeOutputFile(output)" style="cursor: pointer" matTooltip="Unlink File">
               Unlink File
             </button>
-          </mat-card>
+          </app-process-node-details>
         </div>
       </ng-container>
-
       <app-metadata-picker [entityType]="'biomaterials'"
                            [projectId]="projectId"
                            (picked)="onDerivedBiomaterialPicked($event)">
@@ -231,22 +195,17 @@
 
       <ng-container *ngFor="let output of outputBiomaterialsToAdd">
         <div class="vf-u-padding__bottom--xl">
-          <mat-card class="wrap-text">
-            <mat-card-content>
-              <p class="vf-text-body vf-text-body--3">
-                <strong>id: </strong> {{output?.content['biomaterial_core']['biomaterial_id']}}</p>
-              <p><strong>concrete type: </strong> {{getConcreteType(output)}}</p>
-              <p><strong>type: </strong> {{output?.content['schema_type']}}</p>
-              <p><strong>uuid: </strong> {{output?.uuid?.uuid}}</p>
-              <p><strong>name: </strong> {{output?.content['biomaterial_core']['biomaterial_name']}}</p>
-              <p><strong>description: </strong> {{output?.content['biomaterial_core']['biomaterial_description']}}</p>
-            </mat-card-content>
-          </mat-card>
+          <app-process-node-details
+            [metadata]="output"
+            [idPath]="'biomaterial_core.biomaterial_id'"
+            [namePath]="'biomaterial_core.biomaterial_name'"
+            [descriptionPath]="'biomaterial_core.biomaterial_description'">
+          </app-process-node-details>
         </div>
       </ng-container>
 
       <button *ngIf="outputBiomaterialsToAdd.length > 0" (click)="addOutputBiomaterials()"
-                       style="cursor: pointer" matTooltip="Link Biomaterials">
+              style="cursor: pointer" matTooltip="Link Biomaterials">
         Link Biomaterials
       </button>
 
@@ -257,20 +216,15 @@
 
       <ng-container *ngFor="let output of outputFilesToAdd">
         <div class="vf-u-padding__bottom--xl">
-          <mat-card class="wrap-text">
-            <mat-card-content>
-              <p class="vf-text-body vf-text-body--3">
-                <strong>id: </strong> {{output?.content['file_core']['file_name']}}</p>
-              <p><strong>concrete type: </strong> {{getConcreteType(output)}}</p>
-              <p><strong>type: </strong> {{output?.content['schema_type']}}</p>
-              <p><strong>uuid: </strong> {{output?.uuid?.uuid}}</p>
-            </mat-card-content>
-          </mat-card>
+          <app-process-node-details
+            [metadata]="output"
+            [idPath]="'file_core.file_name'">
+          </app-process-node-details>
         </div>
       </ng-container>
 
       <button *ngIf="outputFilesToAdd.length > 0" (click)="addOutputFiles()" style="cursor: pointer"
-                       matTooltip="Link Files">
+              matTooltip="Link Files">
         Link Files
       </button>
     </div>

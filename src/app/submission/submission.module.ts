@@ -22,6 +22,7 @@ import {SubmissionComponent} from "./pages/submission.component";
 import {SharedModule} from "@shared/shared.module";
 import {MetadataSchemaFormModule} from "@metadata-schema-form/metadata-schema-form.module";
 import { SpreadsheetTabDetailsComponent } from './components/spreadsheet-tab-details/spreadsheet-tab-details.component';
+import { ProcessNodeDetailsComponent } from './components/process-node-details/process-node-details.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { SpreadsheetTabDetailsComponent } from './components/spreadsheet-tab-det
     FilesComponent,
     EntityValidationSummaryComponent,
     MetadataPickerComponent,
-    SpreadsheetTabDetailsComponent
+    SpreadsheetTabDetailsComponent,
+    ProcessNodeDetailsComponent
   ],
   imports: [
     CommonModule,

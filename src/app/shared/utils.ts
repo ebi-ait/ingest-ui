@@ -30,7 +30,7 @@ export default class Utils {
   static getValueOfPath(obj:object, path: string): any {
     let value = obj;
     path.split('.').forEach(key => {
-      value = value[key]
+      value = value?.[key]
     });
 
     return value;
