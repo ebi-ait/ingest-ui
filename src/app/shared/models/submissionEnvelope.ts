@@ -1,4 +1,6 @@
-export interface SubmissionEnvelope {
+import {HalDoc} from "@shared/models/hateoas";
+
+export interface SubmissionEnvelope extends HalDoc{
   uuid: object;
   submissionDate: string;
   updateDate: string;
