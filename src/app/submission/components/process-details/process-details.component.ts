@@ -123,7 +123,7 @@ export class ProcessDetailsComponent implements OnInit {
 
   // TODO Check if POST with comma-delimited resource uri's payload will do linking to all resources in the uri list
   addProtocols() {
-    const tasks = this.protocolsToAdd.map(protocol => this.ingestService.addProtocolToProcess(this.processId, Utils.getIdFromHalDoc(protocol)));
+    const tasks = this.protocolsToAdd.forEach(protocol => this.ingestService.addProtocolToProcess(this.processId, Utils.getIdFromHalDoc(protocol)));
     forkJoin(tasks).subscribe(
       data => {
         this.protocolsToAdd = [];
@@ -133,7 +133,7 @@ export class ProcessDetailsComponent implements OnInit {
   }
 
   addOutputFiles() {
-    const tasks = this.outputFilesToAdd.map(file => this.ingestService.addOutputFileToProcess(this.processId, Utils.getIdFromHalDoc(file)));
+    const tasks = this.outputFilesToAdd.forEach(file => this.ingestService.addOutputFileToProcess(this.processId, Utils.getIdFromHalDoc(file)));
     forkJoin(tasks).subscribe(
       data => {
         this.outputFilesToAdd = [];
@@ -143,7 +143,7 @@ export class ProcessDetailsComponent implements OnInit {
   }
 
   addInputBiomaterials() {
-    const tasks = this.inputBiomaterialsToAdd.map(biomaterial => {
+    const tasks = this.inputBiomaterialsToAdd.forEach(biomaterial => {
       const biomaterialId = Utils.getIdFromHalDoc(biomaterial);
       return this.ingestService.addInputBiomaterialToProcess(this.processId, biomaterialId);
     });
@@ -157,7 +157,7 @@ export class ProcessDetailsComponent implements OnInit {
   }
 
   addInputFiles() {
-    const tasks = this.inputFilesToAdd.map(file => {
+    const tasks = this.inputFilesToAdd.forEach(file => {
       const fileId = Utils.getIdFromHalDoc(file);
       return this.ingestService.addInputFileToProcess(this.processId, fileId);
     });
@@ -171,7 +171,7 @@ export class ProcessDetailsComponent implements OnInit {
   }
 
   addOutputBiomaterials() {
-    const tasks = this.outputBiomaterialsToAdd.map(biomaterial => {
+    const tasks = this.outputBiomaterialsToAdd.forEach(biomaterial => {
       const biomaterialId = Utils.getIdFromHalDoc(biomaterial);
       return this.ingestService.addOutputBiomaterialToProcess(this.processId, biomaterialId);
     });
@@ -208,7 +208,7 @@ export class ProcessDetailsComponent implements OnInit {
     return this.ingestService.get<ListResult<MetadataDocument>>(`${processUrl}/inputBiomaterials`).pipe(
       tap(data => {
         const inputs = data._embedded ? data._embedded.biomaterials : [];
-        inputs.map(input => {
+        inputs.forEach(input => {
           this.nodes.push(this.ngxNode(input, 'content.biomaterial_core.biomaterial_id'));
           this.links.push(this.ngxLink(input, 'input', true));
         });
@@ -220,7 +220,7 @@ export class ProcessDetailsComponent implements OnInit {
     return this.ingestService.get<ListResult<MetadataDocument>>(`${processUrl}/inputFiles`).pipe(
       tap(data => {
         const inputs = data._embedded ? data._embedded.files : [];
-        inputs.map(input => {
+        inputs.forEach(input => {
           this.nodes.push(this.ngxNode(input, 'content.file_core.file_name'));
           this.links.push(this.ngxLink(input, 'input', true));
         });
@@ -233,7 +233,7 @@ export class ProcessDetailsComponent implements OnInit {
       tap(data => {
         const protocols = data._embedded ? data._embedded.protocols : [];
         this.protocols = protocols;
-        protocols.map(p => {
+        protocols.forEach(p => {
           this.nodes.push(this.ngxNode(p, 'content.protocol_core.protocol_id'));
           this.links.push(this.ngxLink(p, 'protocol', undefined));
         });
@@ -246,7 +246,7 @@ export class ProcessDetailsComponent implements OnInit {
         const biomaterials = data._embedded ? data._embedded.biomaterials : [];
         this.outputBiomaterials = biomaterials;
 
-        biomaterials.map(b => {
+        biomaterials.forEach(b => {
           this.nodes.push(this.ngxNode(b, 'content.biomaterial_core.biomaterial_id'));
           this.links.push(this.ngxLink(b, 'output', false));
         });
@@ -259,7 +259,7 @@ export class ProcessDetailsComponent implements OnInit {
       tap(data => {
         const outputFiles = data._embedded ? data._embedded.files : [];
         this.outputFiles = outputFiles;
-        outputFiles.map(d => {
+        outputFiles.forEach(d => {
           this.nodes.push(this.ngxNode(d, 'content.file_core.file_name'));
           this.links.push(this.ngxLink(d, 'output', false));
         });
