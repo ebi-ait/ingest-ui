@@ -123,7 +123,7 @@ export class ProcessDetailsComponent implements OnInit {
 
   // TODO Check if POST with comma-delimited resource uri's payload will do linking to all resources in the uri list
   addProtocols() {
-    const tasks = this.protocolsToAdd.forEach(protocol => this.ingestService.addProtocolToProcess(this.processId, Utils.getIdFromHalDoc(protocol)));
+    const tasks = this.protocolsToAdd.map(protocol => this.ingestService.addProtocolToProcess(this.processId, Utils.getIdFromHalDoc(protocol)));
     forkJoin(tasks).subscribe(
       data => {
         this.protocolsToAdd = [];
@@ -133,7 +133,7 @@ export class ProcessDetailsComponent implements OnInit {
   }
 
   addOutputFiles() {
-    const tasks = this.outputFilesToAdd.forEach(file => this.ingestService.addOutputFileToProcess(this.processId, Utils.getIdFromHalDoc(file)));
+    const tasks = this.outputFilesToAdd.map(file => this.ingestService.addOutputFileToProcess(this.processId, Utils.getIdFromHalDoc(file)));
     forkJoin(tasks).subscribe(
       data => {
         this.outputFilesToAdd = [];
@@ -143,7 +143,7 @@ export class ProcessDetailsComponent implements OnInit {
   }
 
   addInputBiomaterials() {
-    const tasks = this.inputBiomaterialsToAdd.forEach(biomaterial => {
+    const tasks = this.inputBiomaterialsToAdd.map(biomaterial => {
       const biomaterialId = Utils.getIdFromHalDoc(biomaterial);
       return this.ingestService.addInputBiomaterialToProcess(this.processId, biomaterialId);
     });
@@ -157,7 +157,7 @@ export class ProcessDetailsComponent implements OnInit {
   }
 
   addInputFiles() {
-    const tasks = this.inputFilesToAdd.forEach(file => {
+    const tasks = this.inputFilesToAdd.map(file => {
       const fileId = Utils.getIdFromHalDoc(file);
       return this.ingestService.addInputFileToProcess(this.processId, fileId);
     });
@@ -171,7 +171,7 @@ export class ProcessDetailsComponent implements OnInit {
   }
 
   addOutputBiomaterials() {
-    const tasks = this.outputBiomaterialsToAdd.forEach(biomaterial => {
+    const tasks = this.outputBiomaterialsToAdd.map(biomaterial => {
       const biomaterialId = Utils.getIdFromHalDoc(biomaterial);
       return this.ingestService.addOutputBiomaterialToProcess(this.processId, biomaterialId);
     });
