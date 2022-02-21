@@ -1,0 +1,7 @@
+.wrap-text {
+  white-space: pre-wrap;
+}
+
+span.bold {
+  font-weight: bold;
+}

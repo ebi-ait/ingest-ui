@@ -17,7 +17,7 @@ export class MetadataPickerComponent implements OnInit {
   entityType: string;
 
   @Input()
-  submissionEnvelopeId: string;
+  projectId: string;
 
   @Output()
   picked = new EventEmitter<MetadataDocument>();
@@ -33,7 +33,7 @@ export class MetadataPickerComponent implements OnInit {
   private searchField = {
     'biomaterials': 'content.biomaterial_core.biomaterial_id',
     'protocols': 'content.protocol_core.protocol_id',
-    'files': 'content.file_core.file_name',
+    'files': 'content.file_core.file_name'
   };
 
   constructor(private ingestService: IngestService) {
@@ -94,11 +94,11 @@ export class MetadataPickerComponent implements OnInit {
       }
     ];
 
-    if (this.submissionEnvelopeId) {
+    if (this.projectId) {
       query.push({
-        field: 'submissionEnvelope.id',
+        field: 'project.id',
         operator: 'IS',
-        value: this.submissionEnvelopeId
+        value: this.projectId
       });
     }
     return this.queryEntity(query, {operator: 'AND'});

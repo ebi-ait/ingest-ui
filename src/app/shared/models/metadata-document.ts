@@ -1,4 +1,6 @@
-export interface MetadataDocument {
+import {HalDoc} from "@shared/models/hateoas";
+
+export interface MetadataDocument extends HalDoc {
   content: object;
   submissionDate: string;
   updateDate: string;
@@ -14,7 +16,6 @@ export interface MetadataDocument {
   // Present on metadata entities except submission
   graphValidationErrors?: string[];
   isUpdate: boolean;
-  _links: object;
 }
 
 interface Uuid {

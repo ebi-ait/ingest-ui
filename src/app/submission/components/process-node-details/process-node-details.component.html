@@ -1,0 +1,12 @@
+<mat-card class="wrap-text">
+  <mat-card-content>
+    <p class="vf-text-body vf-text-body--3">
+      <span class="bold">id: </span> {{id}}</p>
+    <p><span class="bold">concrete type: </span> {{concreteType}}</p>
+    <p><span class="bold">type: </span> {{type}}</p>
+    <p><span class="bold">uuid: </span> {{uuid}}</p>
+    <p *ngIf="name"><span class="bold">name: </span> {{name}}</p>
+    <p *ngIf="description"><span class="bold">description: </span> {{description}}</p>
+  </mat-card-content>
+  <ng-content></ng-content>
+</mat-card>

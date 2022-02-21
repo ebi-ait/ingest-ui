@@ -18,3 +18,17 @@ export interface EmbeddedList<T> {
   archiveEntities: T[];
   archiveSubmissions: T[];
 }
+
+export interface HalDoc {
+  _links: Links;
+}
+
+export interface Self {
+  href: string;
+}
+
+export interface Links {
+  self: Self;
+}
+
+

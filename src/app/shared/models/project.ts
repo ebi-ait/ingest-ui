@@ -12,7 +12,6 @@ export interface Project extends MetadataDocument {
   dataAccess?: object;
   technology?: object;
   identifyingOrganisms?: object;
-  _links: object;
 }
 
 export const enum ProjectColumn {

@@ -47,7 +47,11 @@ describe('Ingest Service', () => {
       validationState: '',
       validationErrors: [],
       isUpdate: false,
-      _links: {}
+      _links: {
+        self:{
+          href:'sub/id'
+        }
+      }
     };
 
     const mockList = {

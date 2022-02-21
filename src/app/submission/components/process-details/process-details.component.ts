@@ -2,9 +2,10 @@ import {Component, Input, OnInit} from '@angular/core';
 import {ListResult} from '@shared/models/hateoas';
 import {MetadataDocument} from '@shared/models/metadata-document';
 import {IngestService} from '@shared/services/ingest.service';
+import Utils from "@shared/utils";
 import {forkJoin, Observable, Subject} from 'rxjs';
 import {tap} from 'rxjs/operators';
-import {Link} from './link';
+import {NgxLink} from './ngxLink';
 import {NgxNode} from './ngxNode';
 
 @Component({
@@ -21,21 +22,23 @@ export class ProcessDetailsComponent implements OnInit {
   schemaUrl: string;
 
   @Input()
-  submissionEnvelopeId: string;
+  projectId: string;
 
   processId: string;
 
   inputBiomaterials: MetadataDocument[];
+  inputFiles: MetadataDocument[];
   protocols: MetadataDocument[];
-  derivedBiomaterials: MetadataDocument[];
-  derivedFiles: MetadataDocument[];
+  outputBiomaterials: MetadataDocument[];
+  outputFiles: MetadataDocument[];
 
   protocolsToAdd: MetadataDocument[] = [];
   inputBiomaterialsToAdd: MetadataDocument[] = [];
+  inputFilesToAdd: MetadataDocument[] = [];
   outputBiomaterialsToAdd: MetadataDocument[] = [];
   outputFilesToAdd: MetadataDocument[] = [];
 
-  links: Link[] = [];
+  links: NgxLink[] = [];
   nodes: NgxNode[] = [];
   done: boolean;
 
@@ -46,7 +49,7 @@ export class ProcessDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.processId = this.getIdFromUrl(this.processUrl);
+    this.processId = Utils.getIdFromSelfHref(this.processUrl);
     this.refreshGraph();
   }
 
@@ -56,10 +59,6 @@ export class ProcessDetailsComponent implements OnInit {
 
   getConcreteType(metadata: MetadataDocument): string {
     return metadata.content['describedBy'].split('/').pop();
-  }
-
-  fitGraph() {
-    this.zoomToFit$.next(true);
   }
 
   onProtocolPicked($event: MetadataDocument) {
@@ -78,25 +77,37 @@ export class ProcessDetailsComponent implements OnInit {
     this.inputBiomaterialsToAdd.push($event);
   }
 
+  onInputFilePicked($event: MetadataDocument) {
+    this.inputFilesToAdd.push($event);
+  }
+
   // TODO Add success or error status for add and remove operations
 
   removeInputBiomaterial(biomaterial: MetadataDocument) {
-    const biomaterialId = this.getId(biomaterial);
+    const biomaterialId = Utils.getIdFromHalDoc(biomaterial)
     this.ingestService.deleteInputBiomaterialFromProcess(this.processId, biomaterialId).subscribe(data => {
       console.log('deleteInputBiomaterialFromProcess', data);
       this.refreshGraph();
     });
   }
 
+  removeInputFile(file: MetadataDocument) {
+    const fileId = Utils.getIdFromHalDoc(file);
+    this.ingestService.deleteInputFileFromProcess(this.processId, fileId).subscribe(data => {
+      console.log('deleteInputFileFromProcess', data);
+      this.refreshGraph();
+    });
+  }
+
   removeProtocol(protocol: MetadataDocument) {
-    const protocolId = this.getId(protocol);
+    const protocolId = Utils.getIdFromHalDoc(protocol);
     this.ingestService.deleteProtocolFromProcess(this.processId, protocolId).subscribe(data => {
       this.refreshGraph();
     });
   }
 
   removeOutputBiomaterial(biomaterial: MetadataDocument) {
-    const biomaterialId = this.getId(biomaterial);
+    const biomaterialId = Utils.getIdFromHalDoc(biomaterial);
     this.ingestService.deleteOutputBiomaterialFromProcess(this.processId, biomaterialId).subscribe(data => {
       console.log('deleteOutputBiomaterialFromProcess', data);
       this.refreshGraph();
@@ -104,7 +115,7 @@ export class ProcessDetailsComponent implements OnInit {
   }
 
   removeOutputFile(file: MetadataDocument) {
-    const fileId = this.getId(file);
+    const fileId = Utils.getIdFromHalDoc(file);
     this.ingestService.deleteOutputFileFromProcess(this.processId, fileId).subscribe(data => {
       this.refreshGraph();
     });
@@ -112,7 +123,7 @@ export class ProcessDetailsComponent implements OnInit {
 
   // TODO Check if POST with comma-delimited resource uri's payload will do linking to all resources in the uri list
   addProtocols() {
-    const tasks = this.protocolsToAdd.map(protocol => this.ingestService.addProtocolToProcess(this.processId, this.getId(protocol)));
+    const tasks = this.protocolsToAdd.forEach(protocol => this.ingestService.addProtocolToProcess(this.processId, Utils.getIdFromHalDoc(protocol)));
     forkJoin(tasks).subscribe(
       data => {
         this.protocolsToAdd = [];
@@ -122,7 +133,7 @@ export class ProcessDetailsComponent implements OnInit {
   }
 
   addOutputFiles() {
-    const tasks = this.outputFilesToAdd.map(file => this.ingestService.addOutputFileToProcess(this.processId, this.getId(file)));
+    const tasks = this.outputFilesToAdd.forEach(file => this.ingestService.addOutputFileToProcess(this.processId, Utils.getIdFromHalDoc(file)));
     forkJoin(tasks).subscribe(
       data => {
         this.outputFilesToAdd = [];
@@ -132,8 +143,8 @@ export class ProcessDetailsComponent implements OnInit {
   }
 
   addInputBiomaterials() {
-    const tasks = this.inputBiomaterialsToAdd.map(biomaterial => {
-      const biomaterialId = this.getId(biomaterial);
+    const tasks = this.inputBiomaterialsToAdd.forEach(biomaterial => {
+      const biomaterialId = Utils.getIdFromHalDoc(biomaterial);
       return this.ingestService.addInputBiomaterialToProcess(this.processId, biomaterialId);
     });
 
@@ -145,9 +156,23 @@ export class ProcessDetailsComponent implements OnInit {
     );
   }
 
+  addInputFiles() {
+    const tasks = this.inputFilesToAdd.forEach(file => {
+      const fileId = Utils.getIdFromHalDoc(file);
+      return this.ingestService.addInputFileToProcess(this.processId, fileId);
+    });
+
+    forkJoin(tasks).subscribe(
+      data => {
+        this.inputFilesToAdd = [];
+        this.refreshGraph();
+      }
+    );
+  }
+
   addOutputBiomaterials() {
-    const tasks = this.outputBiomaterialsToAdd.map(biomaterial => {
-      const biomaterialId = this.getId(biomaterial);
+    const tasks = this.outputBiomaterialsToAdd.forEach(biomaterial => {
+      const biomaterialId = Utils.getIdFromHalDoc(biomaterial);
       return this.ingestService.addOutputBiomaterialToProcess(this.processId, biomaterialId);
     });
 
@@ -167,6 +192,7 @@ export class ProcessDetailsComponent implements OnInit {
       {
         protocols: this.getProtocols(this.processUrl),
         inputBiomaterials: this.getInputBiomaterials(this.processUrl),
+        inputFiles: this.getInputFiles(this.processUrl),
         derivedBiomaterials: this.getDerivedBiomaterials(this.processUrl),
         derivedFiles: this.getDerivedFiles(this.processUrl)
       }
@@ -182,20 +208,23 @@ export class ProcessDetailsComponent implements OnInit {
     return this.ingestService.get<ListResult<MetadataDocument>>(`${processUrl}/inputBiomaterials`).pipe(
       tap(data => {
         const inputs = data._embedded ? data._embedded.biomaterials : [];
-        inputs.map(input => {
-          this.nodes.push({
-            id: input.uuid.uuid,
-            label: input.content['biomaterial_core']['biomaterial_id'],
-          } as NgxNode);
-          this.links.push({
-            id: `input-biomaterial-${input.uuid.uuid}`,
-            source: input.uuid.uuid,
-            target: 'process',
-            label: 'input'
-          } as Link);
+        inputs.forEach(input => {
+          this.nodes.push(this.ngxNode(input, 'content.biomaterial_core.biomaterial_id'));
+          this.links.push(this.ngxLink(input, 'input', true));
         });
-
         this.inputBiomaterials = inputs;
+      }));
+  }
+
+  private getInputFiles(processUrl: string): Observable<ListResult<MetadataDocument>> {
+    return this.ingestService.get<ListResult<MetadataDocument>>(`${processUrl}/inputFiles`).pipe(
+      tap(data => {
+        const inputs = data._embedded ? data._embedded.files : [];
+        inputs.forEach(input => {
+          this.nodes.push(this.ngxNode(input, 'content.file_core.file_name'));
+          this.links.push(this.ngxLink(input, 'input', true));
+        });
+        this.inputFiles = inputs;
       }));
   }
 
@@ -204,17 +233,9 @@ export class ProcessDetailsComponent implements OnInit {
       tap(data => {
         const protocols = data._embedded ? data._embedded.protocols : [];
         this.protocols = protocols;
-        protocols.map(p => {
-          this.nodes.push({
-            id: p.uuid.uuid,
-            label: p.content['protocol_core']['protocol_id'],
-          } as NgxNode);
-          this.links.push({
-            id: `protocol-${p.uuid.uuid}`,
-            source: 'process',
-            target: p.uuid.uuid,
-            label: 'protocols'
-          } as Link);
+        protocols.forEach(p => {
+          this.nodes.push(this.ngxNode(p, 'content.protocol_core.protocol_id'));
+          this.links.push(this.ngxLink(p, 'protocol', undefined));
         });
       }));
   }
@@ -223,19 +244,11 @@ export class ProcessDetailsComponent implements OnInit {
     return this.ingestService.get<ListResult<MetadataDocument>>(`${processUrl}/derivedBiomaterials`).pipe(
       tap(data => {
         const biomaterials = data._embedded ? data._embedded.biomaterials : [];
-        this.derivedBiomaterials = biomaterials;
+        this.outputBiomaterials = biomaterials;
 
-        biomaterials.map(b => {
-          this.nodes.push({
-            id: b.uuid.uuid,
-            label: b.content['biomaterial_core']['biomaterial_id']
-          } as NgxNode);
-          this.links.push({
-            id: `derived-biomaterial-${b.uuid.uuid}`,
-            source: 'process',
-            target: b.uuid.uuid,
-            label: 'output'
-          } as Link);
+        biomaterials.forEach(b => {
+          this.nodes.push(this.ngxNode(b, 'content.biomaterial_core.biomaterial_id'));
+          this.links.push(this.ngxLink(b, 'output', false));
         });
 
       }));
@@ -244,31 +257,14 @@ export class ProcessDetailsComponent implements OnInit {
   private getDerivedFiles(processUrl) {
     return this.ingestService.get<ListResult<MetadataDocument>>(`${processUrl}/derivedFiles`).pipe(
       tap(data => {
-        const derivedFiles = data._embedded ? data._embedded.files : [];
-        this.derivedFiles = derivedFiles;
-
-        derivedFiles.map(d => {
-          this.nodes.push({
-            id: d.uuid.uuid,
-            label: d.content['file_core']['file_name']
-          } as NgxNode);
-          this.links.push({
-            id: `derived-file-${d.uuid.uuid}`,
-            source: 'process',
-            target: d.uuid.uuid,
-            label: 'output'
-          } as Link);
+        const outputFiles = data._embedded ? data._embedded.files : [];
+        this.outputFiles = outputFiles;
+        outputFiles.forEach(d => {
+          this.nodes.push(this.ngxNode(d, 'content.file_core.file_name'));
+          this.links.push(this.ngxLink(d, 'output', false));
         });
 
       }));
-  }
-
-  private getId(metadata: MetadataDocument) {
-    return this.getIdFromUrl(metadata._links['self']['href']).split('/').pop();
-  }
-
-  private getIdFromUrl(url: string): string {
-    return url.split('/').pop();
   }
 
   private initGraphModel() {
@@ -279,6 +275,22 @@ export class ProcessDetailsComponent implements OnInit {
     this.links = [];
   }
 
+  private ngxNode(metadata: MetadataDocument, idPath:string): NgxNode {
+    return {
+      id: metadata.uuid.uuid,
+      label: Utils.getValueOfPath(metadata, idPath),
+    } as NgxNode;
+  }
+
+  private ngxLink(metadata: MetadataDocument, link_type:string, source:boolean): NgxLink {
+    const metadataType = metadata.type.toLowerCase();
+    return {
+      id: `${link_type}-${metadataType}-${metadata.uuid.uuid}`,
+      source: source? metadata.uuid.uuid : 'process',
+      target: source? 'process': metadata.uuid.uuid,
+      label: link_type
+    } as NgxLink;
+  }
 
 }
 

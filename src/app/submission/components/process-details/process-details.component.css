@@ -5,9 +5,5 @@
   align-items: start;
   column-gap: 1em;
   margin: 1em;
+  max-width: fit-content;
 }
-
-.wrap-text {
-  white-space: pre-wrap;
-}
-

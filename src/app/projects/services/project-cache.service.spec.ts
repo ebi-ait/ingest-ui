@@ -27,7 +27,11 @@ describe('ProjectCacheService', () => {
     const project: Project = {
       hasOpenSubmission: false,
       technology: ['test'],
-      _links: {},
+      _links: {
+        self: {
+          href: 'sub/id'
+        }
+      },
       content: {},
       submissionDate: '25-09-1995',
       updateDate: '28-07-2021',

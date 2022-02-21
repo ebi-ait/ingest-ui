@@ -148,6 +148,18 @@ export class IngestService {
     );
   }
 
+  public addInputFileToProcess(processId: string, fileId: string): Observable<Object> {
+    return this.http.post(
+      `${this.API_URL}/files/${fileId}/inputToProcesses`,
+      `${this.API_URL}/processes/${processId}`,
+      {
+        headers: {
+          'Content-Type': 'text/uri-list',
+        }
+      }
+    );
+  }
+
   public addOutputBiomaterialToProcess(processId: string, biomaterialId: string): Observable<Object> {
     return this.http.post(
       `${this.API_URL}/biomaterials/${biomaterialId}/derivedByProcesses`,
@@ -186,6 +198,12 @@ export class IngestService {
   public deleteInputBiomaterialFromProcess(processId: string, biomaterialId: string): Observable<Object> {
     return this.http.delete(
       `${this.API_URL}/biomaterials/${biomaterialId}/inputToProcesses/${processId}`
+    );
+  }
+
+  public deleteInputFileFromProcess(processId: string, fileId: string): Observable<Object> {
+    return this.http.delete(
+      `${this.API_URL}/files/${fileId}/inputToProcesses/${processId}`
     );
   }
 

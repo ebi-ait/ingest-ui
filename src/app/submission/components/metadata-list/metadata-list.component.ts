@@ -41,7 +41,8 @@ export class MetadataListComponent implements OnInit, OnDestroy {
     Object.assign(this._config, config);
   }
 
-  @Input() submissionEnvelopeId: string;
+  @Input() projectId: string;
+
   rows: any[];
   expandAll: boolean;
   validationStates: string[];
