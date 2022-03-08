@@ -38,34 +38,25 @@ $ ng --version
                 |___/
     
 
-Angular CLI: 9.1.1
-Node: 12.16.2
+Angular CLI: 12.1.3
+Node: 12.16.3
+Package Manager: yarn 1.22.4
 OS: darwin x64
 
-Angular: 9.1.2
-... animations, common, compiler, compiler-cli, core, forms
-... language-service, platform-browser, platform-browser-dynamic
-... router
-Ivy Workspace: Yes
+Angular: 12.1.3
+... animations, cdk, cli, common, compiler, compiler-cli, core
+... forms, language-service, material, platform-browser
+... platform-browser-dynamic, router
 
-Package                           Version
------------------------------------------------------------
-@angular-devkit/architect         0.901.1
-@angular-devkit/build-angular     0.901.1
-@angular-devkit/build-optimizer   0.901.1
-@angular-devkit/build-webpack     0.901.1
-@angular-devkit/core              9.1.1
-@angular-devkit/schematics        9.1.1
-@angular/cdk                      9.2.1
-@angular/cli                      9.1.1
-@angular/flex-layout              9.0.0-beta.29
-@angular/material                 9.2.1
-@ngtools/webpack                  9.1.1
-@schematics/angular               9.1.1
-@schematics/update                0.901.1
-rxjs                              6.5.5
-typescript                        3.8.3
-webpack                           4.42.0
+Package                         Version
+---------------------------------------------------------
+@angular-devkit/architect       0.1201.3
+@angular-devkit/build-angular   12.1.3
+@angular-devkit/core            12.1.3
+@angular-devkit/schematics      12.1.3
+@angular/flex-layout            12.0.0-beta.34
+@schematics/angular             12.1.3
+typescript                      4.3.5
     
 ```
 
