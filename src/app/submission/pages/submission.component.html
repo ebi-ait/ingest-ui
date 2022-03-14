@@ -159,19 +159,35 @@
         </label>
       </ng-template>
 
+      <br/>
+      <br/>
+
       <mat-tab-group>
-        <mat-tab>
+        <mat-tab *ngIf="submissionEnvelopeId">
           <ng-template mat-tab-label>
             <label class="labelHeading">
               EMBL Archives
             </label>
           </ng-template>
+          <ng-template matTabContent>
+            <app-export-to-archives
+              [project$]="project$"
+              [submissionEnvelope$]="submissionEnvelope$"
+              [exportLink]="exportLink"
+              [isSubmitted]="isSubmitted"
+              [submissionUrl]="url"
+              [submissionEnvelopeId]="submissionEnvelopeId"
+              [isLinkingDone]="isLinkingDone"
+              [manifest]="manifest">
+            </app-export-to-archives>
+          </ng-template>
         </mat-tab>
 
-        <mat-tab>
+        <mat-tab *ngIf="submissionEnvelopeId">
           <ng-template mat-tab-label>
             <label class="labelHeading"
-                  [matTooltip]="!isValid ? 'The submission is not valid yet.': undefined">
+                  [matTooltip]="!isValid ? 'The submission is not valid yet.': undefined"
+                   *ngIf="submissionEnvelopeId">
               DCP
             </label>
           </ng-template>
@@ -191,12 +207,25 @@
           </ng-template>
         </mat-tab>
 
-        <mat-tab>
+        <mat-tab *ngIf="submissionEnvelopeId">
           <ng-template mat-tab-label>
             <label class="labelHeading"
-                  [matTooltip]="!isValid ? 'The submission is not valid yet.': undefined">
+                  [matTooltip]="!isValid ? 'The submission is not valid yet.': undefined"
+                   *ngIf="submissionEnvelopeId">
               SCEA
             </label>
+          </ng-template>
+          <ng-template matTabContent>
+            <app-submit-to-scea
+              [project$]="project$"
+              [submissionEnvelope$]="submissionEnvelope$"
+              [convertLinkSCEA]="convertLinkSCEA"
+              [isSubmitted]="isSubmitted"
+              [submissionUrl]="url"
+              [submissionEnvelopeId]="submissionEnvelopeId"
+              [isLinkingDone]="isLinkingDone"
+              [manifest]="manifest">
+            </app-submit-to-scea>
           </ng-template>
         </mat-tab>
 

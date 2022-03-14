@@ -1,8 +1,8 @@
 <ng-container>
   <h3 class="vf-u-margin__top--xxl vf-text vf-text-heading--4">What's next?</h3>
-  <ng-container *ngIf="submitLink || exportLink">
+  <ng-container *ngIf="submitLink">
     <p>You have entered all necessary information per Human Cell Atlas standards. That’s awesome!</p>
-    <p>If everything looks correct, feel free to Submit your data.</p>
+    <p>If everything looks correct, feel free to Submit your data to the HCA DCP.</p>
 
     <ul class="list-group">
       <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -34,17 +34,7 @@
 </ng-container>
 
 <ng-container *ngIf="submitLink">
-  <div>
-    <mat-checkbox
-      [(ngModel)]="submitToArchives" labelPosition="after">
-      Submit to the <a href="https://www.ebi.ac.uk/services" class="vf-link"
-                       matTooltip="European Nucleotide Archive (ENA), BioStudies, BioSamples">EMBL-EBI public
-      archives </a> and get
-      accessions. Data will be public on {{ releaseDate ? (releaseDate | date: 'medium') : '(unset)' }} as specified
-      in the release date of this project.
-    </mat-checkbox>
 
-  </div>
   <div>
     <mat-checkbox
       [(ngModel)]="submitMetadataToDcp" labelPosition="after"
@@ -93,11 +83,6 @@
 <br/>
 <ng-container *ngIf="cleanupLink">
   <button mat-raised-button color="primary" (click)="requestCleanup()">Delete Upload Area</button>
-</ng-container>
-
-<br/>
-<ng-container *ngIf="convertLinkSCEA">
-  <button mat-raised-button color="primary" (click)="requestConvertToSCEA()">Submit to SCEA</button>
 </ng-container>
 
 <br/>
