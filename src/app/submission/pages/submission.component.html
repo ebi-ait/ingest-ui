@@ -151,122 +151,59 @@
       </ng-template>
     </mat-tab>
 
-    <mat-tab label="Submit" [disabled]="!isValid" *ngIf="displayValidateAndSubmitTabs()">
-      <mat-tab-group *ngIf="submissionEnvelopeId" [(selectedIndex)]="selectedIndex">
+    <mat-tab [disabled]="!isValid" *ngIf="displayValidateAndSubmitTabs()">
+      <ng-template mat-tab-label>
+        <label class="labelHeading"
+               [matTooltip]="!isValid ? 'The submission is not valid yet.': undefined">
+          Submit
+        </label>
+      </ng-template>
 
-        <mat-tab
-          label="EMBL Archives"
-          *ngIf="displayValidateAndSubmitTabs()"
-          [disabled]="graphValidationTabDisabled()"
-        >
-          <h3 class="vf-u-margin__top--xxl vf-text vf-text-heading--4">Graph Validation</h3>
-
-          <ng-container *ngIf="submissionState !== SUBMISSION_STATES.GraphValid; else graphValid">
-            <p>In order to finalize your submission, you must validate the graph, or the linking between metadata
-              entities.</p>
-            <button
-              *ngIf="submissionState !== SUBMISSION_STATES.GraphValidating && submissionState !== SUBMISSION_STATES.GraphValidationRequested"
-              class="vf-button {{ graphValidationButtonDisabled ? 'vf-button--tertiary' : 'vf-button--primary' }} vf-button--sm"
-              [disabled]="graphValidationButtonDisabled"
-              (click)="triggerGraphValidation()"
-            >
-              Validate Submission
-            </button>
-          </ng-container>
-
-          <ng-template #graphValid>
-            <p>
-              You've validated the submission with the graph validator, awesome! You can proceed to the Submit tab.
-            </p>
+      <mat-tab-group>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <label class="labelHeading">
+              EMBL Archives
+            </label>
           </ng-template>
         </mat-tab>
 
-        <mat-tab
-          label="DCP"
-          *ngIf="displayValidateAndSubmitTabs()"
-          [disabled]="graphValidationTabDisabled()"
-        >
-          <h3 class="vf-u-margin__top--xxl vf-text vf-text-heading--4">Graph Validation</h3>
-
-          <ng-container *ngIf="submissionState !== SUBMISSION_STATES.GraphValid; else graphValid">
-            <p>In order to finalize your submission, you must validate the graph, or the linking between metadata
-              entities.</p>
-            <button
-              *ngIf="submissionState !== SUBMISSION_STATES.GraphValidating && submissionState !== SUBMISSION_STATES.GraphValidationRequested"
-              class="vf-button {{ graphValidationButtonDisabled ? 'vf-button--tertiary' : 'vf-button--primary' }} vf-button--sm"
-              [disabled]="graphValidationButtonDisabled"
-              (click)="triggerGraphValidation()"
-            >
-              Validate Submission
-            </button>
-          </ng-container>
-
-          <ng-template #graphValid>
-            <p>
-              You've validated the submission with the graph validator, awesome! You can proceed to the Submit tab.
-            </p>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <label class="labelHeading"
+                  [matTooltip]="!isValid ? 'The submission is not valid yet.': undefined">
+              DCP
+            </label>
+          </ng-template>
+          <ng-template matTabContent>
+            <app-submit
+              [project$]="project$"
+              [submissionEnvelope$]="submissionEnvelope$"
+              [submitLink]="submitLink"
+              [exportLink]="exportLink"
+              [cleanupLink]="cleanupLink"
+              [isSubmitted]="isSubmitted"
+              [submissionUrl]="url"
+              [submissionEnvelopeId]="submissionEnvelopeId"
+              [isLinkingDone]="isLinkingDone"
+              [manifest]="manifest">
+            </app-submit>
           </ng-template>
         </mat-tab>
 
-        <mat-tab
-          label="SCEA"
-          *ngIf="displayValidateAndSubmitTabs()"
-          [disabled]="graphValidationTabDisabled()"
-        >
-          <h3 class="vf-u-margin__top--xxl vf-text vf-text-heading--4">Submit to SCEA</h3>
-
-          <ng-container *ngIf="submissionState !== SUBMISSION_STATES.GraphValid; else graphValid">
-            <p>In order to finalize your submission, you must validate the graph, or the linking between metadata
-              entities.</p>
-            <button
-              *ngIf="submissionState !== SUBMISSION_STATES.GraphValidating && submissionState !== SUBMISSION_STATES.GraphValidationRequested"
-              class="vf-button {{ graphValidationButtonDisabled ? 'vf-button--tertiary' : 'vf-button--primary' }} vf-button--sm"
-              [disabled]="graphValidationButtonDisabled"
-              (click)="triggerGraphValidation()"
-            >
-              Validate Submission
-            </button>
-          </ng-container>
-
-          <ng-template #graphValid>
-            <p>
-              You've validated the submission with the graph validator, awesome! You can proceed to Submit the dataset for conversion to SCEA MAGE-TAB files.
-            </p>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <label class="labelHeading"
+                  [matTooltip]="!isValid ? 'The submission is not valid yet.': undefined">
+              SCEA
+            </label>
           </ng-template>
         </mat-tab>
-
-        <ng-template matTabContent>
-          <app-submit
-            [project$]="project$"
-            [submissionEnvelope$]="submissionEnvelope$"
-            [submitLink]="submitLink"
-            [exportLink]="exportLink"
-            [cleanupLink]="cleanupLink"
-            [isSubmitted]="isSubmitted"
-            [submissionUrl]="url"
-            [submissionEnvelopeId]="submissionEnvelopeId"
-            [isLinkingDone]="isLinkingDone"
-            [manifest]="manifest">
-          </app-submit>
-        </ng-template>
 
       </mat-tab-group>
 
-      <ng-template matTabContent>
-        <app-submit
-          [project$]="project$"
-          [submissionEnvelope$]="submissionEnvelope$"
-          [submitLink]="submitLink"
-          [exportLink]="exportLink"
-          [cleanupLink]="cleanupLink"
-          [isSubmitted]="isSubmitted"
-          [submissionUrl]="url"
-          [submissionEnvelopeId]="submissionEnvelopeId"
-          [isLinkingDone]="isLinkingDone"
-          [manifest]="manifest">
-        </app-submit>
-      </ng-template>
     </mat-tab>
 
   </mat-tab-group>
+
 </div>
