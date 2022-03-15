@@ -28,12 +28,18 @@
     </div>
     <div>
       <mat-checkbox labelPosition="after">
-        The dataset does not consist of pooled donors, samples or cell suspensions.
+        The dataset does not consist of pooled donors, pooled samples or pooled cell suspensions.
       </mat-checkbox>
     </div>
     <div>
       <mat-checkbox labelPosition="after">
         The dataset consists of 1 species type. The list of donors are all Human or all Mouse.
+      </mat-checkbox>
+    </div>
+    <div>
+      <mat-checkbox labelPosition="after">
+        If cell lines, organoids, or both are included, they are each linked to the specimen and donor from which
+        they are derived.
       </mat-checkbox>
     </div>
   </ng-container>
@@ -70,7 +76,7 @@
   <label for="ex3">Study Accession   </label>
   <input class="form-control" id="ex3" type="text" placeholder="SRP259912"  formControlName="study_accession">
   <br/>
-  <button mat-raised-button color="primary" type="submit" *ngIf="submitLink" [disabled]="!sceaForm.valid" (click)="requestConvertToSCEA()">
+  <button class="vf-button vf-button--sm vf-button--primary" type="submit" *ngIf="submitLink" [disabled]="!sceaForm.valid" (click)="requestConvertToSCEA()">
   Convert To SCEA
 </button>
 </form>
