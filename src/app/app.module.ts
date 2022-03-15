@@ -24,6 +24,7 @@ import {AppComponent} from './app.component';
 import {ROUTES} from './app.routes';
 import {ErrorComponent} from './error/error.component';
 import {GeoAccessionDownloadComponent} from './geo-accession-download/geo-accession-download.component';
+import {SCEAFileDownloadComponent} from './scea-file-download/scea-file-download.component';
 
 import {GlobalFooterComponent} from './global-footer/global-footer.component';
 import {GlobalHeaderComponent} from './global-header/global-header.component';
@@ -79,6 +80,7 @@ const BROWSER_LOCALE = navigator.language;
     GlobalFooterComponent,
     MetadataDetailsDialogComponent,
     GeoAccessionDownloadComponent,
+    SCEAFileDownloadComponent,
   ],
   imports: [
     AaiSecurity,
