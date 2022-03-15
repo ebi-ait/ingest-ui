@@ -4,6 +4,7 @@ import {AlertService} from "@shared/services/alert.service";
 import {IngestService} from "@shared/services/ingest.service";
 import {LoaderService} from "@shared/services/loader.service";
 import {Observable} from "rxjs";
+import {FormGroup, FormControl} from '@angular/forms';
 
 @Component({
   selector: 'app-submit-to-scea',
@@ -17,29 +18,36 @@ export class SubmitToSCEAComponent implements OnInit {
   @Input() submissionEnvelopeId;
   @Input() submissionEnvelope$;
   @Input() submitLink: string;
-  @Input() exportLink: string;
   @Input() convertLinkSCEA: string;
-  @Input() cleanupLink: string;
   @Input() isSubmitted: boolean;
   @Input() submissionUrl: string;
   @Input() isLinkingDone: boolean;
   @Input() manifest: object;
-  submitToArchives: boolean;
-  submitMetadataToDcp: boolean;
-  submitToDcp: boolean;
-  cleanup: boolean;
   releaseDate: string;
+  project_uuid: string;
+  accession_num: string;
+  curator: string;
+  experiment_type: string;
+  factor_values: string;
+  public_release_date: string;
+  hca_release_date: string;
+  study_accession: string;
+  test: string;
 
-  deleteWarning = 'The upload area cannot be deleted until the data files are submitted to Human Cell Atlas.';
+  sceaForm = new FormGroup({
+    project_uuid: new FormControl(''),
+    accession_num: new FormControl(''),
+    curator: new FormControl(''),
+    experiment_type: new FormControl(''),
+    factor_values: new FormControl(''),
+    public_release_date: new FormControl(''),
+    hca_release_date: new FormControl(''),
+    study_accession: new FormControl(''),
+  });
 
   constructor(private ingestService: IngestService,
               private loaderService: LoaderService,
               private alertService: AlertService) {
-
-    this.submitToArchives = false;
-    this.submitToDcp = false;
-    this.cleanup = false;
-    this.submitMetadataToDcp = false;
   }
 
   ngOnInit() {
@@ -48,65 +56,17 @@ export class SubmitToSCEAComponent implements OnInit {
     });
   }
 
-  onSubmit() {
-    const submitActions = [];
+  onFilledForm() {
 
-    if (this.submitToArchives) {
-      submitActions.push(SubmitActions.Archive);
-    }
+    this.project_uuid = this.sceaForm.get('project_uuid').value;
+    this.accession_num = this.sceaForm.get('accession_num').value;
+    this.curator = this.sceaForm.get('curator').value;
+    this.experiment_type = this.sceaForm.get('experiment_type').value;
+    this.factor_values = this.sceaForm.get('factor_values').value;
+    this.public_release_date = this.sceaForm.get('public_release_date').value;
+    this.hca_release_date = this.sceaForm.get('hca_release_date').value;
+    this.study_accession = this.sceaForm.get('study_accession').value;
 
-    if (this.submitToDcp) {
-      submitActions.push(SubmitActions.Export);
-    }
-
-    if (this.submitMetadataToDcp) {
-      submitActions.push(SubmitActions.ExportMetadata);
-    }
-
-    if (this.cleanup) {
-      submitActions.push(SubmitActions.Cleanup);
-    }
-
-    this.requestSubmit(this.submitLink, submitActions);
-
-  }
-
-  requestSubmit(submitLink, submitActions: string[]) {
-    this.loaderService.display(true);
-    this.ingestService.put(submitLink, submitActions).subscribe(
-      res => {
-        setTimeout(() => {
-            this.alertService.clear();
-            this.loaderService.display(false);
-            this.alertService.success('', 'You have successfully submitted your submission envelope.');
-          },
-          3000);
-      },
-      err => {
-        this.loaderService.display(false);
-        this.alertService.error('An error occurred on submitting your submission envelope.', err.error.exceptionMessage);
-      }
-    );
-  }
-
-  requestExport() {
-    this.ingestService.put(this.exportLink, undefined)
-      .subscribe(
-        res => {
-          setTimeout(() => {
-              this.alertService.clear();
-              this.loaderService.display(false);
-              this.alertService.success('', 'Your submission envelope should start exporting shortly.');
-            },
-            3000);
-        },
-        err => {
-          this.loaderService.display(false);
-          this.alertService.error('', 'An error occurred on the request to export your submission envelope.');
-          console.log(err);
-
-        }
-      );
   }
 
   requestConvertToSCEA() {
@@ -116,7 +76,7 @@ export class SubmitToSCEAComponent implements OnInit {
           setTimeout(() => {
               this.alertService.clear();
               this.loaderService.display(false);
-              this.alertService.success('', 'Your SCEA submission should start exporting shortly.');
+              this.alertService.success('', 'Your dataset should start converting shortly.');
             },
             3000);
         },
@@ -128,61 +88,4 @@ export class SubmitToSCEAComponent implements OnInit {
         }
       );
   }
-
-  requestCleanup() {
-    const message = 'Are you sure you want to delete all data files from this submission? This cannot be undone.';
-
-    if (confirm(message)) {
-      this.ingestService.put(this.cleanupLink, undefined)
-        .subscribe(
-          res => {
-            setTimeout(() => {
-                this.alertService.clear();
-                this.loaderService.display(false);
-                this.alertService.success('', 'Your submission envelope upload area will now be deleted.');
-              },
-              3000);
-          },
-          err => {
-            this.loaderService.display(false);
-            this.alertService.error('', 'An error occurred on the request to clean up the upload area of your submission envelope.');
-            console.log(err);
-
-          }
-        );
-    }
-  }
-
-
-  getLinkingProgress(manifest) {
-    if (manifest) {
-      const percentage = manifest['actualLinks'] / manifest['expectedLinks'] * 100;
-      return percentage || 0;
-    }
-    return 100;
-  }
-
-  onSubmitToDspChange() {
-    if (!this.submitToDcp) {
-      this.cleanup = false;
-    } else {
-      this.submitMetadataToDcp = false;
-    }
-  }
-
-  onSubmitMetadataToDspChange() {
-    this.submitToDcp = !this.submitMetadataToDcp;
-    this.cleanup = !this.submitMetadataToDcp;
-  }
-
-  isSubmitAction() {
-    return this.submitToDcp || this.submitMetadataToDcp || this.submitToArchives;
-  }
-}
-
-enum SubmitActions {
-  Archive = 'Archive',
-  Export = 'Export',
-  ExportMetadata = 'Export_Metadata',
-  Cleanup = 'Cleanup'
 }

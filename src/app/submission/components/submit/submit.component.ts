@@ -4,6 +4,7 @@ import {Project} from '@shared/models/project';
 import {AlertService} from '@shared/services/alert.service';
 import {IngestService} from '@shared/services/ingest.service';
 import {LoaderService} from '@shared/services/loader.service';
+import {MetadataForm} from '@metadata-schema-form/models/metadata-form';
 
 @Component({
   selector: 'app-submit',
@@ -11,6 +12,7 @@ import {LoaderService} from '@shared/services/loader.service';
   styleUrls: ['./submit.component.css']
 })
 export class SubmitComponent implements OnInit {
+  metadataForm: MetadataForm;
   @Input() project$: Observable<Project>;
   @Input() submissionEnvelopeId;
   @Input() submissionEnvelope$;
