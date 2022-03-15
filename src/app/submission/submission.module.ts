@@ -15,6 +15,7 @@ import {EntityValidationSummaryComponent} from "./components/entity-validation-s
 import {FilesComponent} from "./components/files/files.component";
 import {MetadataListComponent} from "./components/metadata-list/metadata-list.component";
 import {MetadataPickerComponent} from "./components/metadata-picker/metadata-picker.component";
+import {MetadataCreationComponent} from './components/metadata-new/metadata-new.component';
 import {ProcessDetailsComponent} from "./components/process-details/process-details.component";
 import {ProcessNodeDetailsComponent} from './components/process-node-details/process-node-details.component';
 import {SpreadsheetTabDetailsComponent} from './components/spreadsheet-tab-details/spreadsheet-tab-details.component';
@@ -32,6 +33,7 @@ import {SubmissionRoutingModule} from "./submission-routing.module";
     ValidationSummaryComponent,
     SubmitComponent,
     MetadataListComponent,
+    MetadataCreationComponent,
     FilesComponent,
     EntityValidationSummaryComponent,
     MetadataPickerComponent,
