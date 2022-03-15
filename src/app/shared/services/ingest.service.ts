@@ -297,6 +297,11 @@ export class IngestService {
       }));
   }
 
+  public addSubmissionMetadata(submissionId, resourceType, metadata) {
+    const url = `${this.API_URL}/submissionEnvelopes/${submissionId}/${resourceType}`
+    return this.post(url, metadata)
+  }
+
   public getSubmissionSummary(submissionId): Observable<SubmissionSummary> {
     return this.http.get<SubmissionSummary>(`${this.API_URL}/submissionEnvelopes/${submissionId}/summary`);
   }
