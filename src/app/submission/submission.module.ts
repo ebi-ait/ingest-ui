@@ -17,6 +17,8 @@ import {EntityValidationSummaryComponent} from "./components/entity-validation-s
 import {FilesComponent} from "./components/files/files.component";
 import {MetadataListComponent} from "./components/metadata-list/metadata-list.component";
 import {SubmitComponent} from "./components/submit/submit.component";
+import {SubmitToSceaComponent} from "./components/submit-to-scea/submit-to-scea.component";
+import {ExportToArchivesComponent} from "./components/export-to-archives/export-to-archives.component";
 import {ValidationSummaryComponent} from "./components/validation-summary/validation-summary.component";
 import {SubmissionComponent} from "./pages/submission.component";
 import {SharedModule} from "@shared/shared.module";
@@ -30,6 +32,8 @@ import { SpreadsheetTabDetailsComponent } from './components/spreadsheet-tab-det
     UploadInfoComponent,
     ValidationSummaryComponent,
     SubmitComponent,
+    SubmitToSceaComponent,
+    ExportToArchivesComponent,
     MetadataListComponent,
     FilesComponent,
     EntityValidationSummaryComponent,

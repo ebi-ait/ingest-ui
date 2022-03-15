@@ -1,15 +1,25 @@
-import {LoaderService} from '@shared/services/loader.service';
+import {Component, Input, OnInit} from '@angular/core';
+import {Project} from "@shared/models/project";
+import {AlertService} from "@shared/services/alert.service";
+import {IngestService} from "@shared/services/ingest.service";
+import {LoaderService} from "@shared/services/loader.service";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-export-to-archives',
   templateUrl: './export-to-archives.component.html',
   styleUrls: ['./export-to-archives.component.css']
 })
-export class SubmitComponent implements OnInit {
+
+export class ExportToArchivesComponent implements OnInit {
+
   @Input() project$: Observable<Project>;
   @Input() submissionEnvelopeId;
   @Input() submissionEnvelope$;
+  @Input() submitLink: string;
   @Input() exportLink: string;
+  @Input() convertLinkSCEA: string;
+  @Input() cleanupLink: string;
   @Input() isSubmitted: boolean;
   @Input() submissionUrl: string;
   @Input() isLinkingDone: boolean;
@@ -19,6 +29,8 @@ export class SubmitComponent implements OnInit {
   submitToDcp: boolean;
   cleanup: boolean;
   releaseDate: string;
+
+  deleteWarning = 'The upload area cannot be deleted until the data files are submitted to Human Cell Atlas.';
 
   constructor(private ingestService: IngestService,
               private loaderService: LoaderService,
@@ -174,4 +186,5 @@ enum SubmitActions {
   ExportMetadata = 'Export_Metadata',
   Cleanup = 'Cleanup'
 }
+
 

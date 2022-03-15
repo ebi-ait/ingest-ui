@@ -1,7 +1,14 @@
-<h3 class="vf-u-margin__top--xxl vf-text vf-text-heading--4">Submit to SCEA</h3>
-
-<p>Fill in the hca-to-scea command-line arguments in the box below, and then click Submit.</p>
+<ng-container>
+  <h3 class="vf-u-margin__top--xxl vf-text vf-text-heading--4">Submit To SCEA</h3>
+  <ng-container>
+    <p>You have entered all necessary information per Human Cell Atlas standards. That’s awesome!</p>
+    <p>Now you can proceed to submit your dataset to SCEA. Please fill in the hca2scea command-line
+      arguments below, and click Submit to convert your dataset to SCEA MAGE-TAB files.</p></ng-container>
+</ng-container>
 
 <br/>
+<br/>
 
-<button mat-raised-button color="primary">Submit To SCEA</button>
+<ng-container>
+  <button mat-raised-button color="primary" *ngIf="submitLink">Submit To SCEA</button>
+</ng-container>

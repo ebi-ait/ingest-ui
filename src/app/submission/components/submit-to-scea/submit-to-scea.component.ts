@@ -1,16 +1,18 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Observable} from 'rxjs';
-import {Project} from '@shared/models/project';
-import {AlertService} from '@shared/services/alert.service';
-import {IngestService} from '@shared/services/ingest.service';
-import {LoaderService} from '@shared/services/loader.service';
+import {Project} from "@shared/models/project";
+import {AlertService} from "@shared/services/alert.service";
+import {IngestService} from "@shared/services/ingest.service";
+import {LoaderService} from "@shared/services/loader.service";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-submit-to-scea',
   templateUrl: './submit-to-scea.component.html',
   styleUrls: ['./submit-to-scea.component.css']
 })
-export class SubmitComponent implements OnInit {
+
+export class SubmitToSCEAComponent implements OnInit {
+
   @Input() project$: Observable<Project>;
   @Input() submissionEnvelopeId;
   @Input() submissionEnvelope$;
@@ -159,3 +161,28 @@ export class SubmitComponent implements OnInit {
     }
     return 100;
   }
+
+  onSubmitToDspChange() {
+    if (!this.submitToDcp) {
+      this.cleanup = false;
+    } else {
+      this.submitMetadataToDcp = false;
+    }
+  }
+
+  onSubmitMetadataToDspChange() {
+    this.submitToDcp = !this.submitMetadataToDcp;
+    this.cleanup = !this.submitMetadataToDcp;
+  }
+
+  isSubmitAction() {
+    return this.submitToDcp || this.submitMetadataToDcp || this.submitToArchives;
+  }
+}
+
+enum SubmitActions {
+  Archive = 'Archive',
+  Export = 'Export',
+  ExportMetadata = 'Export_Metadata',
+  Cleanup = 'Cleanup'
+}

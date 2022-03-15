@@ -165,7 +165,9 @@
       <mat-tab-group>
         <mat-tab *ngIf="submissionEnvelopeId">
           <ng-template mat-tab-label>
-            <label class="labelHeading">
+            <label class="labelHeading"
+              [matTooltip]="!isValid ? 'The submission is not valid yet.': undefined"
+              *ngIf="submissionEnvelopeId">
               EMBL Archives
             </label>
           </ng-template>
@@ -173,7 +175,9 @@
             <app-export-to-archives
               [project$]="project$"
               [submissionEnvelope$]="submissionEnvelope$"
+              [submitLink]="submitLink"
               [exportLink]="exportLink"
+              [cleanupLink]="cleanupLink"
               [isSubmitted]="isSubmitted"
               [submissionUrl]="url"
               [submissionEnvelopeId]="submissionEnvelopeId"
@@ -219,7 +223,9 @@
             <app-submit-to-scea
               [project$]="project$"
               [submissionEnvelope$]="submissionEnvelope$"
-              [convertLinkSCEA]="convertLinkSCEA"
+              [submitLink]="submitLink"
+              [exportLink]="exportLink"
+              [cleanupLink]="cleanupLink"
               [isSubmitted]="isSubmitted"
               [submissionUrl]="url"
               [submissionEnvelopeId]="submissionEnvelopeId"
