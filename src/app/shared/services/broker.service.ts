@@ -67,7 +67,7 @@ export class BrokerService {
         'protocol': 'https://schema.humancellatlas.org/type/protocol/7.1.0/protocol'
       });
     }
-    return of([]);
+    return of({});
   }
 
   uploadSpreadsheet(formData): Observable<UploadResults> {
