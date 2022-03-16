@@ -39,9 +39,8 @@ export class MetadataCreationComponent implements OnInit {
     this.concreteTypes$.subscribe(types => {
       this.concreteTypes = types;
     });
-    if (this.domainEntity === 'process') {
-      //ToDo: (Skip if list only has one entry)
-      this.chooseType('process')
+    if (Object.keys(this.concreteTypes).length === 1) {
+      this.chooseType(Object.keys(this.concreteTypes)[0])
     } else {
       //ToDo: Click new link to get drop down of concrete types
     }
