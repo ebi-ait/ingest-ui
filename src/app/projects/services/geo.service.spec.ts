@@ -89,7 +89,7 @@ describe('GeoService', () => {
       } as Project;
       ingestSvc.getProjectsUsingCriteria.and.returnValue(of([project]));
 
-      service.importProjectUsingGeoOrSra(geoAccession)
+      service.importProject(geoAccession)
 
       expect(alertSvc.error).toHaveBeenCalledWith(stringMatching('has already been used by project'), stringMatching('project-title'));
       service.loading.subscribe(
@@ -102,7 +102,7 @@ describe('GeoService', () => {
     it('should alert success and redirect to project on successful import project', async () => {
       brokerSvc.importProjectUsingGeo.and.returnValue(of({project_uuid: 'project-uuid'}));
 
-      service.importProjectUsingGeoOrSra(geoAccession)
+      service.importProject(geoAccession)
 
       expect(alertSvc.success).toHaveBeenCalledWith(stringMatching('Success'), stringMatching(geoAccession), true);
       expect(router.navigate).toHaveBeenCalledWith(['/projects/detail'], objectContaining({queryParams: {uuid: 'project-uuid'}}));
@@ -127,7 +127,7 @@ describe('GeoService', () => {
           filename: filename
         }));
 
-        service.importProjectUsingGeoOrSra(geoAccession)
+        service.importProject(geoAccession)
 
         expect(loaderSvc.display).toHaveBeenCalledWith(true, stringMatching(importProjectError));
         expect(saveFileSvc.saveFile).toHaveBeenCalledWith(any(Blob), filename);
@@ -145,7 +145,7 @@ describe('GeoService', () => {
         brokerSvc.importProjectUsingGeo.and.returnValue(throwError({message: importProjectError}));
         brokerSvc.downloadSpreadsheetUsingGeo.and.returnValue(throwError({message: downloadError}));
 
-        service.importProjectUsingGeoOrSra(geoAccession)
+        service.importProject(geoAccession)
 
         expect(loaderSvc.display).toHaveBeenCalledWith(true, stringMatching(importProjectError));
         expect(alertSvc.error).toHaveBeenCalledWith(any(String), stringMatching(downloadError));

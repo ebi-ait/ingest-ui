@@ -23,7 +23,7 @@ export class GeoService {
               private router: Router) {
   }
 
-  importProjectUsingGeoOrSra(accession) {
+  importProject(accession) {
     this.loading.next(true)
     this.getProjectsWithGeoOrInsdc(accession)
       .subscribe(projects => {
