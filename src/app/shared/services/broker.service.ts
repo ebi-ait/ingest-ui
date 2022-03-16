@@ -1,6 +1,7 @@
 import {HttpClient, HttpErrorResponse, HttpResponse, HttpStatusCode} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable, throwError} from 'rxjs';
+import {Schema} from '@shared/models/schema';
+import {Observable, throwError, of} from 'rxjs';
 import {catchError, map, tap, timeout} from 'rxjs/operators';
 import {environment} from '@environments/environment';
 import {
@@ -16,6 +17,22 @@ export class BrokerService {
   DOWNLOAD_SPREADSHEET_TIMEOUT = 10 * 60 * 1000; // 10 mins
 
   constructor(private http: HttpClient) {
+  }
+
+  getConcreteTypes(domainEntity: string): Observable<string[]> {
+    if (domainEntity === 'process') {
+      // Fix to remove deprecated schemas that can't be marked as deprecated
+      return of(['process']);
+    }
+
+    const params = {
+      high_level_entity: 'type',
+      domain_entity: domainEntity,
+      latest: ''
+    }
+    return this.http.get<Schema[]>(`${this.API_URL}/schemas/query`, {params: params}).pipe(
+      map(schemas => schemas.map(schema => schema.concreteEntity))
+    );
   }
 
   uploadSpreadsheet(formData): Observable<UploadResults> {

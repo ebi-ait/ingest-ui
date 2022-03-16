@@ -1,4 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {BrokerService} from '@shared/services/broker.service';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-metadata-new',
@@ -7,17 +9,17 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 
 export class MetadataCreationComponent implements OnInit {
-  @Input() resourceType: string; //biomaterials/protocols/processes
+  @Input() domainEntity: string; //biomaterial/protocol/process
   @Input() projectId: string;
   @Input() submissionId: string;
-  concreteTypes: string[];
+  concreteTypes$: Observable<string[]>;
 
   ngOnInit(): void {
-    if (this.resourceType === 'processes') {
-      this.concreteTypes = ['process'];
-    } else {
-      //ToDo: generate list of applicable concrete types
-    }
+    this.concreteTypes$ = this.brokerService.getConcreteTypes(this.domainEntity)
+  }
+
+  constructor(private brokerService: BrokerService) {
+
   }
 
   //ToDo: Click new link to get drop down of concrete types (Skip if list only has one entry)
