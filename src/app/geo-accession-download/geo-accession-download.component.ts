@@ -30,7 +30,7 @@ export class GeoAccessionDownloadComponent {
     }
 
     this.loaderService.display(true, 'This may take a moment. Please wait...')
-    this.brokerService.downloadSpreadsheetUsingGeo(geo_accession)
+    this.brokerService.downloadSpreadsheetUsingGeoOrInsdc(geo_accession)
       .subscribe(response => {
           const filename = response['filename'];
           const blob = new Blob([response['data']]);

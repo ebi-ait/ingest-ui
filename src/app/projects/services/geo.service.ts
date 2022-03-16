@@ -29,7 +29,7 @@ export class GeoService {
       .subscribe(projects => {
           this.showExistingProjectsAlert(projects, 'accession');
           if (projects.length == 0) {
-            this.onUniqueGeoAccession(accession);
+            this.onUniqueAccession(accession);
           }
           this.loading.next(false)
         },
@@ -56,20 +56,20 @@ export class GeoService {
     return this.ingestService.getProjectsUsingCriteria(query);
   }
 
-  private onUniqueGeoAccession(geoAccession) {
+  private onUniqueAccession(accession) {
     this.loaderService.display(true, 'This may take a moment. Please wait...');
-    this.brokerService.importProjectUsingGeo(geoAccession).pipe(
+    this.brokerService.importProjectUsingGeo(accession).pipe(
       catchError(err => {
         this.loaderService.display(true, `Unable to import the project due to error: [${err.message}]. You can still get a spreadsheet to import the project later.
            We are now generating the spreadsheet, please wait this may take a moment...`);
-        return this.brokerService.downloadSpreadsheetUsingGeo(geoAccession);
+        return this.brokerService.downloadSpreadsheetUsingGeoOrInsdc(accession);
       })
     ).subscribe(response => {
         const projectUuid = response['project_uuid'];
         if (projectUuid) {
-          this.onSuccessfulProjectImportFromGeo(geoAccession, projectUuid);
+          this.onSuccessfulProjectImport(accession, projectUuid);
         } else {
-          this.onSuccessfulSpreadsheetDownloadFromGeo(response, geoAccession);
+          this.onSuccessfulSpreadsheetDownload(response, accession);
         }
         this.loaderService.hide();
       },
@@ -90,21 +90,21 @@ export class GeoService {
     });
   }
 
-  private onSuccessfulSpreadsheetDownloadFromGeo(response, geoAccession) {
+  private onSuccessfulSpreadsheetDownload(response, accession) {
     const filename = response['filename'];
     const blob = new Blob([response['data']]);
     this.saveFileService.saveFile(blob, filename);
     this.alertService.success(
       'Success',
-      `You've successfully downloaded the spreadsheet for GEO accession: ${geoAccession}`,
+      `You've successfully downloaded the spreadsheet for accession ${accession}`,
       true
     );
   }
 
-  private onSuccessfulProjectImportFromGeo(geoAccession, projectUuid) {
+  private onSuccessfulProjectImport(accession, projectUuid) {
     this.alertService.success(
       'Success',
-      `The project metadata with accession ${geoAccession} has been successfully created.
+      `The project metadata with accession ${accession} has been successfully created.
                You can download the GEO spreadsheet from Experiment Information tab.`,
       true
     );

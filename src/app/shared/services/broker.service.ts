@@ -87,9 +87,9 @@ export class BrokerService {
       )
   }
 
-  downloadSpreadsheetUsingGeo(geoAccession: string): Observable<any> {
+  downloadSpreadsheetUsingGeoOrInsdc(accession: string): Observable<any> {
     const params = {
-      'accession': geoAccession,
+      'accession': accession,
     };
     return this.http
       .post(`${this.API_URL}/import-geo`, null,
