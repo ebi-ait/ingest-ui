@@ -297,9 +297,9 @@ export class IngestService {
       }));
   }
 
-  public addSubmissionMetadata(submissionId, resourceType, metadata) {
+  public addSubmissionMetadata<T>(submissionId, resourceType, metadata): Observable<T> {
     const url = `${this.API_URL}/submissionEnvelopes/${submissionId}/${resourceType}`
-    return this.post(url, metadata)
+    return this.post<T>(url, metadata)
   }
 
   public getSubmissionSummary(submissionId): Observable<SubmissionSummary> {
