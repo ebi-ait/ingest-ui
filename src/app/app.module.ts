@@ -31,7 +31,7 @@ import {GlobalNavigationComponent} from './global-navigation/global-navigation.c
 import {HttpErrorInterceptor} from './http-interceptors/http-error-interceptor';
 import {LoginComponent} from './login/login.component';
 import {MaterialModule} from './material.module';
-import {MetadataDetailsDialogComponent} from './metadata-details-dialog/metadata-details-dialog.component';
+import {MetadataDetailsDialogComponent} from './submission/components/metadata-details-dialog/metadata-details-dialog.component';
 import {MetadataSchemaFormModule} from './metadata-schema-form/metadata-schema-form.module';
 import {MyProjectsComponent} from './my-projects/my-projects.component';
 import {ProjectSummaryComponent} from './project-summary/project-summary.component';
