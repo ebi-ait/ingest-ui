@@ -1,1 +1,12 @@
-<a href="javascript:void(0)" (click)="clickNew()">Add new {{domainEntityTitle}}</a>
+<a *ngIf="concreteTypes.length === 1" href="javascript:void(0)" (click)="clickNew()">{{label}}</a>
+<ng-container *ngIf="concreteTypes.length > 1">
+  <div>
+    <mat-form-field>
+      <mat-label>{{label}}</mat-label>
+      <mat-select (selectionChange)="chooseType($event.value)" [(value)]="selected">
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let type of concreteTypes" [value]="type.schemaUrl">{{type.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</ng-container>

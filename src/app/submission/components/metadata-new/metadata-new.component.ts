@@ -6,6 +6,11 @@ import {LoaderService} from '@shared/services/loader.service';
 import {SchemaService} from '@shared/services/schema.service';
 import {Observable} from 'rxjs';
 
+interface ConcreteType {
+  name: string;
+  schemaUrl: string;
+}
+
 @Component({
   selector: 'app-metadata-new',
   templateUrl: './metadata-new.component.html',
@@ -16,14 +21,22 @@ export class MetadataCreationComponent implements OnInit {
   @Input() domainEntity: string; //biomaterial/protocol/process
   @Input() projectId: string;
   @Input() submissionId: string;
-  concreteTypes$: Observable<{}>;
-  concreteTypes: {};
-  domainEntityTitle: string
+  concreteTypes: ConcreteType[] = [];
+  selected: string;
+  label: string
 
   ngOnInit(): void {
     this.domainEntity = this.domainEntity.toLowerCase();
-    this.domainEntityTitle = this.domainEntity.charAt(0).toUpperCase() + this.domainEntity.slice(1);
-    this.concreteTypes$ = this.brokerService.getConcreteTypes(this.domainEntity)
+    this.label = `Add new ${this.domainEntity.charAt(0).toUpperCase()}${this.domainEntity.slice(1)}`;
+    this.brokerService.getConcreteTypes(this.domainEntity).subscribe(concreteTypes => {
+      Object.entries(concreteTypes).forEach(([key, value]) => {
+        this.concreteTypes.push({
+          name: key,
+          schemaUrl: value as string
+        });
+      });
+    });
+
   }
 
   constructor(
@@ -36,27 +49,22 @@ export class MetadataCreationComponent implements OnInit {
   }
 
   clickNew() {
-    this.concreteTypes$.subscribe(types => {
-      this.concreteTypes = types;
-    });
-    if (Object.keys(this.concreteTypes).length === 1) {
-      this.chooseType(Object.keys(this.concreteTypes)[0])
-    } else {
-      //ToDo: Click new link to get drop down of concrete types
+    if (this.concreteTypes.length === 1) {
+      this.chooseType(this.concreteTypes[0].schemaUrl)
     }
   }
 
-  chooseType(concreteType: string) {
+  chooseType(schemaUrl: string) {
     this.loaderService.display(true);
-    const schemaUrl = this.concreteTypes[concreteType]
     this.schemaService.getDereferencedSchema(schemaUrl)
-      .subscribe(data => {
+      .subscribe(schema => {
+        this.selected = undefined;
         this.loaderService.display(false);
-        //ToDo: Change MetadataDetailsDialogComponent to allow blank input
-        //ToDo: onSave Post to SubmissionEnvelope
-        //ToDo: onSave link new metadata to project
+        //ToDo: Change MetadataDetailsDialogComponent to allow blank input (config.data that does not contain metadata)
+        //ToDo: Specify POST action and post URL to onSave MetadataDetailsDialogComponent (Allowing us to post to SubmissionEnvelope)
+        //ToDo: After successful POST link new metadata to project
         this.dialog.open(MetadataDetailsDialogComponent, {
-          data: {metadata: {content: {}}, schema: data},
+          data: {schema: schema},
           width: '60%',
           disableClose: true
         });
