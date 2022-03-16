@@ -1,10 +1,12 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Project} from "@shared/models/project";
 import {AlertService} from "@shared/services/alert.service";
+import {BrokerService} from "@shared/services/broker.service";
 import {IngestService} from "@shared/services/ingest.service";
 import {LoaderService} from "@shared/services/loader.service";
+import {SaveFileService} from "@shared/services/save-file.service";
 import {Observable} from "rxjs";
-import {FormGroup, FormControl} from '@angular/forms';
+import {FormGroup, FormControl, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-submit-to-scea',
@@ -17,8 +19,6 @@ export class SubmitToSCEAComponent implements OnInit {
   @Input() project$: Observable<Project>;
   @Input() submissionEnvelopeId;
   @Input() submissionEnvelope$;
-  @Input() submitLink: string;
-  @Input() convertLinkSCEA: string;
   @Input() isSubmitted: boolean;
   @Input() submissionUrl: string;
   @Input() isLinkingDone: boolean;
@@ -35,18 +35,19 @@ export class SubmitToSCEAComponent implements OnInit {
   test: string;
 
   sceaForm = new FormGroup({
-    project_uuid: new FormControl(''),
-    accession_num: new FormControl(''),
-    curator: new FormControl(''),
-    experiment_type: new FormControl(''),
-    factor_values: new FormControl(''),
-    public_release_date: new FormControl(''),
-    hca_release_date: new FormControl(''),
-    study_accession: new FormControl(''),
+    project_uuid: new FormControl('', Validators.required),
+    accession_num: new FormControl('', Validators.required),
+    curator: new FormControl('', Validators.required),
+    experiment_type: new FormControl('', Validators.required),
+    factor_values: new FormControl('', Validators.required),
+    public_release_date: new FormControl('', Validators.required),
+    hca_release_date: new FormControl('', Validators.required),
+    study_accession: new FormControl('', Validators.required),
   });
 
-  constructor(private ingestService: IngestService,
+  constructor(private brokerService: BrokerService,
               private loaderService: LoaderService,
+              private saveFileService: SaveFileService,
               private alertService: AlertService) {
   }
 
@@ -57,7 +58,6 @@ export class SubmitToSCEAComponent implements OnInit {
   }
 
   onFilledForm() {
-
     this.project_uuid = this.sceaForm.get('project_uuid').value;
     this.accession_num = this.sceaForm.get('accession_num').value;
     this.curator = this.sceaForm.get('curator').value;
@@ -66,19 +66,24 @@ export class SubmitToSCEAComponent implements OnInit {
     this.public_release_date = this.sceaForm.get('public_release_date').value;
     this.hca_release_date = this.sceaForm.get('hca_release_date').value;
     this.study_accession = this.sceaForm.get('study_accession').value;
-
   }
 
   requestConvertToSCEA() {
-    this.ingestService.put(this.convertLinkSCEA, undefined)
+    console.log('requestConvertToSCEA');
+    this.onFilledForm();
+    this.brokerService.convertToSCEA('')
       .subscribe(
-        res => {
+        response => {
           setTimeout(() => {
-              this.alertService.clear();
-              this.loaderService.display(false);
-              this.alertService.success('', 'Your dataset should start converting shortly.');
-            },
-            3000);
+            this.alertService.clear();
+            this.loaderService.display(false);
+            this.alertService.success('', 'Your dataset should start converting shortly.');
+          }, 3000);
+
+          const filename = response['filename'];
+          const blob = new Blob([response['data']]);
+          this.saveFileService.saveFile(blob, filename);
+          this.loaderService.hide();
         },
         err => {
           this.loaderService.display(false);

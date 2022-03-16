@@ -51,7 +51,7 @@
 <p>If your dataset is suitable, please fill in the hca2scea command-line arguments below, and click Submit to convert your dataset to
   SCEA MAGE-TAB files.</p>
 <br/>
-<form [formGroup]="sceaForm" (ngSubmit)="onFilledForm()">
+<form [formGroup]="sceaForm">
   <label for="ex3">Project UUID   </label>
   <input class="form-control" id="ex3" type="text" placeholder="141f5880-9e23-4103-a625-dc4c36ca9220" formControlName="project_uuid">
   <br/>

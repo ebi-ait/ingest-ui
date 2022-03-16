@@ -1,4 +1,4 @@
-import {HttpClient, HttpErrorResponse, HttpResponse, HttpStatusCode} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpParams, HttpResponse, HttpStatusCode} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, throwError} from 'rxjs';
 import {catchError, map, tap, timeout} from 'rxjs/operators';
@@ -123,6 +123,23 @@ export class BrokerService {
       'data': response.body,
       'filename': filename
     };
+  }
+
+  convertToSCEA(value: string): Observable<any> {
+    let params = {
+      'accession': value,
+    };
+    return this.http
+      .post(`${this.API_URL}/convert_to_scea`, null,
+        {params, responseType: 'blob', observe: 'response'})
+      .pipe(
+        catchError(this.parseErrorBlob),
+        map(response => {
+          if (response.status == HttpStatusCode.Ok) {
+            return this.getFileDataFromResponse(response);
+          }
+        })
+      );
   }
 
 }
