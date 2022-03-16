@@ -2,7 +2,6 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Project} from "@shared/models/project";
 import {AlertService} from "@shared/services/alert.service";
 import {BrokerService} from "@shared/services/broker.service";
-import {IngestService} from "@shared/services/ingest.service";
 import {LoaderService} from "@shared/services/loader.service";
 import {SaveFileService} from "@shared/services/save-file.service";
 import {Observable} from "rxjs";
@@ -33,6 +32,7 @@ export class SubmitToSCEAComponent implements OnInit {
   hca_release_date: string;
   study_accession: string;
   test: string;
+  spreadsheet: object;
 
   sceaForm = new FormGroup({
     project_uuid: new FormControl('', Validators.required),
@@ -68,9 +68,15 @@ export class SubmitToSCEAComponent implements OnInit {
     this.study_accession = this.sceaForm.get('study_accession').value;
   }
 
+  getSpreadsheet() {
+    const uuid = this.submissionEnvelope['uuid']['uuid'];
+    this.spreadsheet = this.brokerService.generateSpreadsheetFromSubmission(uuid);
+  }
+
   requestConvertToSCEA() {
     console.log('requestConvertToSCEA');
     this.onFilledForm();
+    this.getSpreadsheet();
     this.brokerService.convertToSCEA('')
       .subscribe(
         response => {
