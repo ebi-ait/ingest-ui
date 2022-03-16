@@ -25,14 +25,43 @@ export class BrokerService {
       return of(['process']);
     }
 
-    const params = {
-      high_level_entity: 'type',
-      domain_entity: domainEntity,
-      latest: ''
+    // const params = {
+    //   high_level_entity: 'type',
+    //   domain_entity: domainEntity,
+    //   latest: ''
+    // }
+    // return this.http.get<Schema[]>(`${this.API_URL}/schemas/query`, {params: params}).pipe(
+    //   map(schemas => schemas.map(schema => schema.concreteEntity))
+    // );
+    // The following hardcoded version is in-place until the above real version can be tested against https://github.com/ebi-ait/ingest-broker/pull/38
+    if (domainEntity === 'biomaterial'){
+      return of([
+        'specimen_from_organism',
+        'organoid',
+        'imaged_specimen',
+        'donor_organism',
+        'cell_suspension',
+        'cell_line'
+      ]);
     }
-    return this.http.get<Schema[]>(`${this.API_URL}/schemas/query`, {params: params}).pipe(
-      map(schemas => schemas.map(schema => schema.concreteEntity))
-    );
+    if (domainEntity === 'protocol') {
+      return of([
+        'sequencing_protocol',
+        'library_preparation_protocol',
+        'imaging_protocol',
+        'imaging_preparation_protocol',
+        'ipsc_induction_protocol',
+        'enrichment_protocol',
+        'dissociation_protocol',
+        'differentiation_protocol',
+        'collection_protocol',
+        'aggregate_generation_protocol',
+        'biomaterial_collection_protocol',
+        'analysis_protocol',
+        'protocol'
+      ]);
+    }
+    return of([]);
   }
 
   uploadSpreadsheet(formData): Observable<UploadResults> {
