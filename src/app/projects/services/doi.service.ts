@@ -73,12 +73,14 @@ export class DoiService {
   }
 
   private getProjectsWithDOI(doi: string): Observable<Project[]> {
-    const criteria = {
-      'field': 'content.publications.doi',
-      'operator': 'IS',
-      'value': doi
-    };
-    return this.ingestService.getProjectsUsingCriteria(criteria);
+    const query = [
+      {
+        'field': 'content.publications.doi',
+        'operator': 'IS',
+        'value': doi
+      }
+    ];
+    return this.ingestService.getProjectsUsingCriteria(query);
   }
 
   private doesDoiExist(doi: string): Observable<boolean> {

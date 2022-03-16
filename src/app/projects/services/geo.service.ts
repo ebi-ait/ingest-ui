@@ -1,14 +1,14 @@
-import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {IngestService} from "@shared/services/ingest.service";
-import {Observable, Subject} from "rxjs";
-import {Project} from "@shared/models/project";
-import {catchError} from "rxjs/operators";
-import {LoaderService} from "@shared/services/loader.service";
-import {BrokerService} from "@shared/services/broker.service";
-import {AlertService} from "@shared/services/alert.service";
-import {SaveFileService} from "@shared/services/save-file.service";
+import {Injectable} from '@angular/core';
 import {Router} from "@angular/router";
+import {Project} from "@shared/models/project";
+import {AlertService} from "@shared/services/alert.service";
+import {BrokerService} from "@shared/services/broker.service";
+import {IngestService} from "@shared/services/ingest.service";
+import {LoaderService} from "@shared/services/loader.service";
+import {SaveFileService} from "@shared/services/save-file.service";
+import {Observable, Subject} from "rxjs";
+import {catchError} from "rxjs/operators";
 
 @Injectable()
 export class GeoService {
@@ -23,13 +23,13 @@ export class GeoService {
               private router: Router) {
   }
 
-  importProjectUsingGeo(geoAccession) {
+  importProjectUsingGeoOrSra(accession) {
     this.loading.next(true)
-    this.getProjectsWithGeo(geoAccession)
+    this.getProjectsWithGeoOrInsdc(accession)
       .subscribe(projects => {
-          this.showExistingProjectsAlert(projects, 'geo accession');
+          this.showExistingProjectsAlert(projects, 'accession');
           if (projects.length == 0) {
-            this.onUniqueGeoAccession(geoAccession);
+            this.onUniqueGeoAccession(accession);
           }
           this.loading.next(false)
         },
@@ -40,13 +40,20 @@ export class GeoService {
       );
   }
 
-  private getProjectsWithGeo(geoAccession: string): Observable<Project[]> {
-    const criteria = {
-      'field': 'content.geo_series_accessions',
-      'operator': 'IN',
-      'value': [geoAccession]
-    };
-    return this.ingestService.getProjectsUsingCriteria(criteria);
+  private getProjectsWithGeoOrInsdc(accession: string): Observable<Project[]> {
+    const query = [
+      {
+        'field': 'content.geo_series_accessions',
+        'operator': 'IN',
+        'value': [accession]
+      },
+      {
+        'field': 'content.insdc_study_accessions',
+        'operator': 'IN',
+        'value': [accession]
+      },
+    ]
+    return this.ingestService.getProjectsUsingCriteria(query);
   }
 
   private onUniqueGeoAccession(geoAccession) {
@@ -97,7 +104,7 @@ export class GeoService {
   private onSuccessfulProjectImportFromGeo(geoAccession, projectUuid) {
     this.alertService.success(
       'Success',
-      `The project metadata with GEO accession ${geoAccession} has been successfully created.
+      `The project metadata with accession ${geoAccession} has been successfully created.
                You can download the GEO spreadsheet from Experiment Information tab.`,
       true
     );

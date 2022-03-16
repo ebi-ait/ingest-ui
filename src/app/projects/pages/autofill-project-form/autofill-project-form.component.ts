@@ -40,7 +40,7 @@ export class AutofillProjectFormComponent implements OnInit {
     ]));
     this.geoAccessionCtrl = new FormControl('', Validators.compose([
       Validators.required,
-      Validators.pattern(/^GSE.*$/i)
+      Validators.pattern(/^(GSE|SRP|ERP).*$/i)
     ]));
     this.projectInCache$ = from(this.projectCacheService.getProject());
 
@@ -85,7 +85,7 @@ export class AutofillProjectFormComponent implements OnInit {
 
     const geoAccession = this.geoAccessionCtrl.value;
     if (this.hasGeo && geoAccession) {
-      this.geoService.importProjectUsingGeo(geoAccession);
+      this.geoService.importProjectUsingGeoOrSra(geoAccession);
     }
   }
 
