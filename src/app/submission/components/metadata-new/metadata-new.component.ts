@@ -1,5 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {MetadataDetailsDialogComponent} from '@app/metadata-details-dialog/metadata-details-dialog.component';
 import {BrokerService} from '@shared/services/broker.service';
+import {LoaderService} from '@shared/services/loader.service';
+import {SchemaService} from '@shared/services/schema.service';
 import {Observable} from 'rxjs';
 
 @Component({
@@ -12,21 +16,53 @@ export class MetadataCreationComponent implements OnInit {
   @Input() domainEntity: string; //biomaterial/protocol/process
   @Input() projectId: string;
   @Input() submissionId: string;
-  concreteTypes$: Observable<string[]>;
+  concreteTypes$: Observable<{}>;
+  concreteTypes: {};
+  domainEntityTitle: string
 
   ngOnInit(): void {
+    this.domainEntity = this.domainEntity.toLowerCase();
+    this.domainEntityTitle = this.domainEntity.charAt(0).toUpperCase() + this.domainEntity.slice(1);
     this.concreteTypes$ = this.brokerService.getConcreteTypes(this.domainEntity)
   }
 
-  constructor(private brokerService: BrokerService) {
+  constructor(
+    private brokerService: BrokerService,
+    private schemaService: SchemaService,
+    private loaderService: LoaderService,
+    public dialog: MatDialog
+  ) {
 
   }
 
-  //ToDo: Click new link to get drop down of concrete types (Skip if list only has one entry)
-  //ToDo: Choose Concrete type
-  //ToDo: Get latest schema for specified concrete type
-  //ToDo: Pass schema to metadata-details-dialog component for creating new metadata
-  //ToDo: onSave Post to SubmissionEnvelope
-  //ToDo: onSave link new metadata to project
+  clickNew() {
+    this.concreteTypes$.subscribe(types => {
+      this.concreteTypes = types;
+    });
+    if (this.domainEntity === 'process') {
+      //ToDo: (Skip if list only has one entry)
+      this.chooseType('process')
+    } else {
+      //ToDo: Click new link to get drop down of concrete types
+    }
+  }
+
+  chooseType(concreteType: string) {
+    this.loaderService.display(true);
+    const schemaUrl = this.concreteTypes[concreteType]
+    this.schemaService.getDereferencedSchema(schemaUrl)
+      .subscribe(data => {
+        this.loaderService.display(false);
+        //ToDo: Change MetadataDetailsDialogComponent to allow blank input
+        //ToDo: onSave Post to SubmissionEnvelope
+        //ToDo: onSave link new metadata to project
+        this.dialog.open(MetadataDetailsDialogComponent, {
+          data: {metadata: {content: {}}, schema: data},
+          width: '60%',
+          disableClose: true
+        });
+      });
+  }
+
   //ToDo: Unit Tests
 }
