@@ -1,9 +1,8 @@
 import {Component, Input} from '@angular/core';
 import {GeoService} from "@projects/services/geo.service";
+import {AlertService} from "@shared/services/alert.service";
 import {LoaderService} from "@shared/services/loader.service";
 import {SaveFileService} from "@shared/services/save-file.service";
-import {BrokerService} from "@shared/services/broker.service";
-import {AlertService} from "@shared/services/alert.service";
 
 @Component({
   selector: 'app-accession-download',
@@ -18,7 +17,6 @@ export class AccessionDownloadComponent {
   constructor(
     private loaderService: LoaderService,
     private saveFileService: SaveFileService,
-    private brokerService: BrokerService,
     private alertService: AlertService,
     private geoService: GeoService
   ) { }
