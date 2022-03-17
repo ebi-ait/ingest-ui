@@ -18,6 +18,6 @@ export interface MetadataDocument extends HalDoc {
   isUpdate: boolean;
 }
 
-export interface Uuid {
+interface Uuid {
   uuid: string;
 }
