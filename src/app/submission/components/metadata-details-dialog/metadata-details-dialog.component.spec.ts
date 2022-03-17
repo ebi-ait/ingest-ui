@@ -1,65 +1,101 @@
 import SpyObj = jasmine.SpyObj;
 import { MatDialogRef} from "@angular/material/dialog";
-import { MetadataDetailsDialogComponent } from './metadata-details-dialog.component';
 import {IngestService} from '@shared/services/ingest.service';
-import {LoaderService} from '@shared/services/loader.service';
 import {AlertService} from '@shared/services/alert.service';
-import {SchemaService} from '@shared/services/schema.service';
+import { MetadataDetailsDialogComponent } from './metadata-details-dialog.component';
 
 
 describe('MetadataDetailsDialogComponent', () => {
-  let metadataDetailsDialogComponent: MetadataDetailsDialogComponent;
-  let dialogRef: SpyObj<MatDialogRef<MetadataDetailsDialogComponent>>;
+  let component: MetadataDetailsDialogComponent;
   let ingestSvc: SpyObj<IngestService>;
-  let loaderSvc: SpyObj<LoaderService>;
   let alertSvc: SpyObj<AlertService>;
-  let schemaSvc: SpyObj<SchemaService>;
-  let dialogData: any;
+  let dialogRef: SpyObj<MatDialogRef<MetadataDetailsDialogComponent>>;
+  let mockDialogData: SpyObj<Object>;
 
   beforeEach(() => {
-    dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
-    loaderSvc = jasmine.createSpyObj('LoaderService', ['display', 'hide']); // todo: loader svc doesn't get called in the component, can we remove from component?
-    alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error', 'success']);
     ingestSvc = jasmine.createSpyObj('IngestService', ['patch', 'put']); // todo: change names of methods if needed
-    schemaSvc = jasmine.createSpyObj('SchemaService', ['getUrlOfLatestSchema']); // todo: schema svc doesn't get called in the component either, can we remove from component?
-    dialogData = {}
-
-    // todo need to fix the constructor arguments here. what do I put for the route parameter?
-    metadataDetailsDialogComponent = new MetadataDetailsDialogComponent(null, ingestSvc, schemaSvc, loaderSvc, alertSvc, dialogRef, dialogData);
+    alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error', 'success']);
+    dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
   });
 
-  it('should create', () => {
-    expect(metadataDetailsDialogComponent).toBeTruthy();
+  describe('DialogData Empty', () => {
+    beforeEach(() => {
+      component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, {});
+    });
+
+    it('should create', () => {
+      expect(component).toBeTruthy();
+    });
+
+    //ToDo: Add test that checks that error is thrown
+
+    it('Dialog box close should be called when cancel is clicked', () => {
+      // when
+      component.onCancel();
+
+      //then
+      expect(dialogRef.close).toHaveBeenCalledTimes(1);
+    });
   });
 
+  describe('DialogData Edit Mode', () => {
+    beforeEach(() => {
+      const defaultMockDialogData = {
+        metadata: {
+          content: {},
+          validationErrors: [],
+          uuid: { uuid: '' },
+          _links: { self: { href:'' } }
+        },
+        schema: {
+          '$id': 'https://schemaService/baseType/domainEntity/version/concreteType'
+        }
+      }
+      mockDialogData = jasmine.createSpyObj('Object',[], defaultMockDialogData);
+      component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
+    });
 
-  it('component works with only schema key specified ', () => {
-    // when
-    dialogData = {
-      'schema': 'mock value'
-    }
-    metadataDetailsDialogComponent.ngOnInit();
+    it('should create', () => {
+      expect(component).toBeTruthy();
+    });
 
-    // then
-    expect(metadataDetailsDialogComponent.metadata).toBeFalsy();
-    expect(metadataDetailsDialogComponent.content).toBeFalsy();
-    expect(metadataDetailsDialogComponent.type).toBeFalsy();
-    expect(metadataDetailsDialogComponent.id).toBeFalsy();
-    expect(metadataDetailsDialogComponent.schemaUrl).toBeFalsy();
-    expect(metadataDetailsDialogComponent.schema).toBeTruthy();
+    it('shoulc init correctly', () => {
+      //when
+      component.ngOnInit();
+
+      // then
+      expect(component.content).toBeTruthy();
+      expect(component.type).toBeTruthy();
+      expect(component.schemaUrl).toBeTruthy();
+      expect(component.schema).toBeTruthy();
+    });
   });
 
-  // todo: reword  the expectation here, I think?
-  it('dialog box closes when cancel is clicked', () => {
-    // when
-    metadataDetailsDialogComponent.onCancel();
+  describe('DialogData Create Mode', () => {
+    beforeEach(() => {
+      const defaultMockDialogData = {
+        schema: {
+          '$id': 'https://schemaService/baseType/domainEntity/version/concreteType'
+        },
+        postUrl: ''
+      }
+      mockDialogData = jasmine.createSpyObj('Object',[], defaultMockDialogData);
+      component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
+    });
 
-    //then
-    expect(dialogRef.close).toHaveBeenCalledTimes(1);
+    it('should create', () => {
+      expect(component).toBeTruthy();
+    });
+
+    it('shoulc init correctly', () => {
+      //when
+      component.ngOnInit();
+
+      // then
+      expect(component.content).toBeFalsy();
+      expect(component.type).toBeTruthy();
+      expect(component.schemaUrl).toBeTruthy();
+      expect(component.schema).toBeTruthy();
+    });
   });
-
-  it('form gets saved, when save is clicked', () => {
-    //todo
-  });
-
 });

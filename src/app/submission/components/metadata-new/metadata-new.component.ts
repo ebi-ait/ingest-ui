@@ -1,10 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {MetadataDetailsDialogComponent} from '../metadata-details-dialog/metadata-details-dialog.component';
+import {IngestService} from '@shared/services/ingest.service';
 import {BrokerService} from '@shared/services/broker.service';
 import {LoaderService} from '@shared/services/loader.service';
 import {SchemaService} from '@shared/services/schema.service';
-import {Observable} from 'rxjs';
+import {MetadataDetailsDialogComponent} from '../metadata-details-dialog/metadata-details-dialog.component';
 
 interface ConcreteType {
   name: string;
@@ -40,6 +40,7 @@ export class MetadataCreationComponent implements OnInit {
   }
 
   constructor(
+    private ingestService: IngestService,
     private brokerService: BrokerService,
     private schemaService: SchemaService,
     private loaderService: LoaderService,
@@ -56,6 +57,7 @@ export class MetadataCreationComponent implements OnInit {
 
   chooseType(schemaUrl: string) {
     this.loaderService.display(true);
+    const postUrl = this.ingestService.getSubmissionNewMetadataUrl(this.submissionId, this.domainEntity)
     this.schemaService.getDereferencedSchema(schemaUrl)
       .subscribe(schema => {
         this.selected = undefined;
@@ -64,7 +66,7 @@ export class MetadataCreationComponent implements OnInit {
         //ToDo: Specify POST action and post URL to onSave MetadataDetailsDialogComponent (Allowing us to post to SubmissionEnvelope)
         //ToDo: After successful POST link new metadata to project
         this.dialog.open(MetadataDetailsDialogComponent, {
-          data: {schema: schema},
+          data: {schema: schema, postUrl: postUrl},
           width: '60%',
           disableClose: true
         });
