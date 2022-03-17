@@ -75,7 +75,7 @@ export class MetadataDetailsDialogComponent implements OnInit {
 
   }
 
-  onNoClick(): void {
+  onCancel(): void {
     this.dialogRef.close();
   }
 
