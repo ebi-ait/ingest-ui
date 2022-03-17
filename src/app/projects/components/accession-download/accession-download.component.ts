@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
-import {GeoService} from "@projects/services/geo.service";
 import {AlertService} from "@shared/services/alert.service";
+import {BrokerService} from "@shared/services/broker.service";
 import {LoaderService} from "@shared/services/loader.service";
 import {SaveFileService} from "@shared/services/save-file.service";
 
@@ -18,7 +18,7 @@ export class AccessionDownloadComponent {
     private loaderService: LoaderService,
     private saveFileService: SaveFileService,
     private alertService: AlertService,
-    private geoService: GeoService
+    private brokerService: BrokerService
   ) { }
 
 
@@ -31,7 +31,7 @@ export class AccessionDownloadComponent {
     }
 
     this.loaderService.display(true, 'This may take a moment. Please wait...')
-    this.geoService.downloadSpreadsheet(accession)
+    this.brokerService.downloadSpreadsheetUsingAccession(accession)
       .subscribe(response => {
           const filename = response['filename'];
           const blob = new Blob([response['data']]);

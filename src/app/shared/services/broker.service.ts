@@ -74,7 +74,7 @@ export class BrokerService {
     };
   }
 
-  importProjectUsingGeo(accession: string): Observable<{ project_uuid: string }> {
+  importProjectUsingAccession(accession: string): Observable<{ project_uuid: string }> {
     const params = {
       'accession': accession,
     };
@@ -87,7 +87,7 @@ export class BrokerService {
       )
   }
 
-  downloadSpreadsheetUsingGeoOrInsdc(accession: string): Observable<any> {
+  downloadSpreadsheetUsingAccession(accession: string): Observable<any> {
     const params = {
       'accession': accession,
     };

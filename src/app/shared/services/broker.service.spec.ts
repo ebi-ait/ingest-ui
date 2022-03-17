@@ -93,7 +93,7 @@ describe('Broker Service', () => {
     it(`should get response`, async () => {
       const blob = new Blob([],
         {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-      service.downloadSpreadsheetUsingGeo(geoAccession)
+      service.downloadSpreadsheetUsingAccession(geoAccession)
         .subscribe(res => {
           expect(res.data).toEqual(blob);
         });
@@ -119,7 +119,7 @@ describe('Broker Service', () => {
         status: 400,
         statusText: 'bad request'
       });
-      service.downloadSpreadsheetUsingGeo(geoAccession)
+      service.downloadSpreadsheetUsingAccession(geoAccession)
         .subscribe(
           next => {
           },
@@ -138,7 +138,7 @@ describe('Broker Service', () => {
       const expectedError = {'message': 'error-message'}
       const errorResponse: HttpErrorResponse = new HttpErrorResponse({status: 400, statusText: 'bad request'});
       let actualResult, actualError;
-      service.importProjectUsingGeo(geoAccession)
+      service.importProjectUsingAccession(geoAccession)
         .subscribe(
           res => actualResult = res,
           err => actualError = err

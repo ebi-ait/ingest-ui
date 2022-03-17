@@ -15,12 +15,12 @@ describe('GeoAccessionComponent', () => {
   let saveFileSvc: SpyObj<SaveFileService>;
 
   beforeEach(() => {
-    brokerSvc = jasmine.createSpyObj('BrokerService', ['downloadSpreadsheetUsingGeo']);
+    brokerSvc = jasmine.createSpyObj('BrokerService', ['downloadSpreadsheetUsingAccession']);
     loaderSvc = jasmine.createSpyObj('LoaderService', ['display', 'hide']);
     alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error']);
     saveFileSvc = jasmine.createSpyObj('SaveFileService', ['saveFile']);
 
-    geoComponent = new AccessionDownloadComponent(loaderSvc, saveFileSvc, brokerSvc,  alertSvc,);
+    geoComponent = new AccessionDownloadComponent(loaderSvc, saveFileSvc,  alertSvc, brokerSvc);
     geoComponent.accession = 'GSE001';
   });
 
@@ -38,7 +38,7 @@ describe('GeoAccessionComponent', () => {
       'filename': 'filename.xls'
     };
 
-    brokerSvc.downloadSpreadsheetUsingGeo.and.returnValue(of(mock_return));
+    brokerSvc.downloadSpreadsheetUsingAccession.and.returnValue(of(mock_return));
 
     //when
     geoComponent.downloadSpreadsheet();
@@ -51,7 +51,7 @@ describe('GeoAccessionComponent', () => {
 
 
   it('show error alert on failure', () => {
-    brokerSvc.downloadSpreadsheetUsingGeo.and.returnValue(throwError({status: HttpStatusCode.InternalServerError}));
+    brokerSvc.downloadSpreadsheetUsingAccession.and.returnValue(throwError({status: HttpStatusCode.InternalServerError}));
 
     //when
     geoComponent.downloadSpreadsheet();

@@ -58,11 +58,11 @@ export class GeoService {
 
   private onUniqueAccession(accession) {
     this.loaderService.display(true, 'This may take a moment. Please wait...');
-    this.brokerService.importProjectUsingGeo(accession).pipe(
+    this.brokerService.importProjectUsingAccession(accession).pipe(
       catchError(err => {
         this.loaderService.display(true, `Unable to import the project due to error: [${err.message}]. You can still get a spreadsheet to import the project later.
            We are now generating the spreadsheet, please wait this may take a moment...`);
-        return this.brokerService.downloadSpreadsheetUsingGeoOrInsdc(accession);
+        return this.brokerService.downloadSpreadsheetUsingAccession(accession);
       })
     ).subscribe(response => {
         const projectUuid = response['project_uuid'];
