@@ -1,7 +1,6 @@
-import {HttpClient, HttpErrorResponse, HttpStatusCode} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {Injectable} from '@angular/core';
 import {Router} from "@angular/router";
-import {environment} from "@environments/environment";
 import {Project} from "@shared/models/project";
 import {AlertService} from "@shared/services/alert.service";
 import {BrokerService} from "@shared/services/broker.service";
@@ -9,12 +8,10 @@ import {IngestService} from "@shared/services/ingest.service";
 import {LoaderService} from "@shared/services/loader.service";
 import {SaveFileService} from "@shared/services/save-file.service";
 import {Observable, Subject} from "rxjs";
-import {catchError, map} from "rxjs/operators";
+import {catchError} from "rxjs/operators";
 
 @Injectable()
 export class GeoService {
-  API_URL: string = environment.BROKER_API_URL;
-
   loading: Subject<boolean> = new Subject<boolean>();
 
   constructor(private http: HttpClient,
@@ -43,35 +40,6 @@ export class GeoService {
       );
   }
 
-  downloadSpreadsheet(accession: string): Observable<any> {
-    const params = {
-      'accession': accession,
-    };
-    return this.http
-      .post(`${this.API_URL}/import-geo`, null,
-        {params, responseType: 'blob', observe: 'response'})
-      .pipe(
-        catchError(this.parseErrorBlob),
-        map(response => {
-          if (response.status == HttpStatusCode.Ok) {
-            return this.brokerService.getFileDataFromResponse(response);
-          }
-        })
-      );
-  }
-
-  private parseErrorBlob(err: HttpErrorResponse): Observable<any> {
-    const reader: FileReader = new FileReader();
-    reader.readAsText(err.error);
-    const obs = new Observable((observer: any) => {
-      reader.onloadend = (e) => {
-        observer.error(JSON.parse(reader.result as string));
-        observer.complete();
-      }
-    });
-    return obs;
-  }
-
   private getProjectsWithGeoOrInsdc(accession: string): Observable<Project[]> {
     const query = [
       {
@@ -94,7 +62,7 @@ export class GeoService {
       catchError(err => {
         this.loaderService.display(true, `Unable to import the project due to error: [${err.message}]. You can still get a spreadsheet to import the project later.
            We are now generating the spreadsheet, please wait this may take a moment...`);
-        return this.downloadSpreadsheet(accession);
+        return this.brokerService.downloadSpreadsheetUsingGeoOrInsdc(accession);
       })
     ).subscribe(response => {
         const projectUuid = response['project_uuid'];

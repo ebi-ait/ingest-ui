@@ -87,7 +87,36 @@ export class BrokerService {
       )
   }
 
-  getFileDataFromResponse(response: HttpResponse<Blob>) {
+  downloadSpreadsheetUsingGeoOrInsdc(accession: string): Observable<any> {
+    const params = {
+      'accession': accession,
+    };
+    return this.http
+      .post(`${this.API_URL}/import-geo`, null,
+        {params, responseType: 'blob', observe: 'response'})
+      .pipe(
+        catchError(this.parseErrorBlob),
+        map(response => {
+          if (response.status == HttpStatusCode.Ok) {
+            return this.getFileDataFromResponse(response);
+          }
+        })
+      );
+  }
+
+  parseErrorBlob(err: HttpErrorResponse): Observable<any> {
+    const reader: FileReader = new FileReader();
+    reader.readAsText(err.error);
+    const obs = new Observable((observer: any) => {
+      reader.onloadend = (e) => {
+        observer.error(JSON.parse(reader.result as string));
+        observer.complete();
+      }
+    });
+    return obs;
+  }
+
+  private getFileDataFromResponse(response: HttpResponse<Blob>) {
     const contentDisposition = response.headers.get('content-disposition');
     const filename = contentDisposition.split(';')[1].split('filename')[1].split('=')[1].trim();
     return {
