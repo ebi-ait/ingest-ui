@@ -27,7 +27,14 @@
           <details class="vf-details vf-box vf-box--outline" [attr.open]="getProjectGeoAccession()">
             <summary class="vf-details--summary">Download Spreadsheet Using GEO Accession</summary>
             <div class="vf-u-margin__top--xxl">
-              <app-geo-accession-download [geoAccession]="getProjectGeoAccession()"></app-geo-accession-download>
+              <app-accession-download [accession]="getProjectGeoAccession()" accessionType="GEO"></app-accession-download>
+            </div>
+          </details>
+
+          <details class="vf-details vf-box vf-box--outline" [attr.open]="getProjectInsdcAccession()">
+            <summary class="vf-details--summary">Download Spreadsheet Using INSDC Study Accession</summary>
+            <div class="vf-u-margin__top--xxl">
+              <app-accession-download [accession]="getProjectInsdcAccession()" accessionType="INSDC"></app-accession-download>
             </div>
           </details>
 

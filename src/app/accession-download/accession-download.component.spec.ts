@@ -1,5 +1,5 @@
 import SpyObj = jasmine.SpyObj;
-import { GeoAccessionDownloadComponent } from './geo-accession-download.component';
+import { AccessionDownloadComponent } from './accession-download.component';
 import {BrokerService} from '@shared/services/broker.service';
 import {LoaderService} from '@shared/services/loader.service';
 import {AlertService} from '@shared/services/alert.service';
@@ -8,7 +8,7 @@ import {HttpResponse, HttpStatusCode} from "@angular/common/http";
 import {of, throwError} from "rxjs";
 
 describe('GeoAccessionComponent', () => {
-  let geoComponent: GeoAccessionDownloadComponent;
+  let geoComponent: AccessionDownloadComponent;
   let brokerSvc: SpyObj<BrokerService>;
   let loaderSvc: SpyObj<LoaderService>;
   let alertSvc: SpyObj<AlertService>;
@@ -20,8 +20,8 @@ describe('GeoAccessionComponent', () => {
     alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error']);
     saveFileSvc = jasmine.createSpyObj('SaveFileService', ['saveFile']);
 
-    geoComponent = new GeoAccessionDownloadComponent(loaderSvc, saveFileSvc, brokerSvc,  alertSvc,);
-    geoComponent.geoAccession = 'GSE001';
+    geoComponent = new AccessionDownloadComponent(loaderSvc, saveFileSvc, brokerSvc,  alertSvc,);
+    geoComponent.accession = 'GSE001';
   });
 
   it('should create', () => {
@@ -41,7 +41,7 @@ describe('GeoAccessionComponent', () => {
     brokerSvc.downloadSpreadsheetUsingGeo.and.returnValue(of(mock_return));
 
     //when
-    geoComponent.downloadSpreadsheetUsingGeo();
+    geoComponent.downloadSpreadsheet();
 
     //then
     expect(loaderSvc.display).toHaveBeenCalledTimes(1);
@@ -54,7 +54,7 @@ describe('GeoAccessionComponent', () => {
     brokerSvc.downloadSpreadsheetUsingGeo.and.returnValue(throwError({status: HttpStatusCode.InternalServerError}));
 
     //when
-    geoComponent.downloadSpreadsheetUsingGeo();
+    geoComponent.downloadSpreadsheet();
 
     //then
     expect(alertSvc.error).toHaveBeenCalledTimes(1);
