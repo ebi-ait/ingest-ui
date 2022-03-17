@@ -5,6 +5,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatTabsModule} from '@angular/material/tabs';
+import {TemplateQuestionnaireModule} from "@app/template-questionnaire/template-questionnaire.module";
 import {MetadataSchemaFormModule} from '@metadata-schema-form/metadata-schema-form.module';
 import {AccessionDownloadComponent} from "@projects/components/accession-download/accession-download.component";
 import {ContactNameFieldComponent} from "@projects/components/contact-name-field/contact-name-field.component";
@@ -63,6 +64,7 @@ import {ProjectCacheService} from './services/project-cache.service';
     ProjectsRoutingModule,
     ReactiveFormsModule,
     SharedModule,
+    TemplateQuestionnaireModule,
     MatSliderModule,
   ],
   exports: [
