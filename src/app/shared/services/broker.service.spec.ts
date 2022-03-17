@@ -97,7 +97,7 @@ describe('Broker Service', () => {
         .subscribe(res => {
           expect(res.data).toEqual(blob);
         });
-      const req = httpTestingController.expectOne(`${api_url}/import-geo?accession=${geoAccession}`);
+      const req = httpTestingController.expectOne(`${api_url}/spreadsheet-from-accession?accession=${geoAccession}`);
 
       req.flush(blob, {
         headers: {'Content-Disposition': 'attachment; filename=myfile.xls'},
@@ -128,7 +128,7 @@ describe('Broker Service', () => {
             done();
           }
         );
-      const req = httpTestingController.expectOne(`${api_url}/import-geo?accession=${geoAccession}`);
+      const req = httpTestingController.expectOne(`${api_url}/spreadsheet-from-accession?accession=${geoAccession}`);
       req.flush(blob, errorResponse);
       expect(req.request.method).toEqual('POST');
       expect(req.request.body).toBeNull();
@@ -144,7 +144,7 @@ describe('Broker Service', () => {
           err => actualError = err
         );
 
-      const req = httpTestingController.expectOne(`${api_url}/import-geo-project?accession=${geoAccession}`);
+      const req = httpTestingController.expectOne(`${api_url}/import-accession?accession=${geoAccession}`);
       req.flush(expectedError, errorResponse);
       expect(req.request.method).toEqual('POST');
       expect(req.request.body).toBeNull();

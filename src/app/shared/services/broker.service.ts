@@ -79,7 +79,7 @@ export class BrokerService {
       'accession': accession,
     };
     return this.http
-      .post<{ project_uuid: string }>(`${this.API_URL}/import-geo-project`, null, {params})
+      .post<{ project_uuid: string }>(`${this.API_URL}/import-accession`, null, {params})
       .pipe(
         catchError((errorResponse: HttpErrorResponse) => {
           return throwError(errorResponse.error);
@@ -92,7 +92,7 @@ export class BrokerService {
       'accession': accession,
     };
     return this.http
-      .post(`${this.API_URL}/import-geo`, null,
+      .post(`${this.API_URL}/spreadsheet-from-accession`, null,
         {params, responseType: 'blob', observe: 'response'})
       .pipe(
         catchError(this.parseErrorBlob),
