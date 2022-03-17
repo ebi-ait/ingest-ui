@@ -8,6 +8,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MetadataSchemaFormModule} from '@metadata-schema-form/metadata-schema-form.module';
 import {AccessionDownloadComponent} from "@projects/components/accession-download/accession-download.component";
 import {ContactNameFieldComponent} from "@projects/components/contact-name-field/contact-name-field.component";
+import {ProjectSummaryComponent} from "@projects/components/project-summary/project-summary.component";
 import {ProjectComponent} from "@projects/pages/project/project.component";
 import {GeoService} from "@projects/services/geo.service";
 import {SharedModule} from '@shared/shared.module';
@@ -48,7 +49,8 @@ import {ProjectCacheService} from './services/project-cache.service';
     NumberDropdownComponent,
     ProjectFiltersComponent,
     ContactNameFieldComponent,
-    ProjectComponent
+    ProjectComponent,
+    ProjectSummaryComponent
   ],
   imports: [
     CommonModule,
