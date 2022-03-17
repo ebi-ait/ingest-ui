@@ -35,7 +35,6 @@ import {MetadataSchemaFormModule} from './metadata-schema-form/metadata-schema-f
 import {MyProjectsComponent} from './my-projects/my-projects.component';
 import {ProjectSummaryComponent} from './project-summary/project-summary.component';
 
-import {ProjectComponent} from './project/project.component';
 import {AllProjectsComponent} from './projects/pages/all-projects/all-projects.component';
 import {ProjectsModule} from './projects/projects.module';
 import {RegistrationComponent} from './registration/registration.component';
@@ -63,7 +62,6 @@ const BROWSER_LOCALE = navigator.language;
     AppComponent,
     SubmissionListComponent,
     GlobalNavigationComponent,
-    ProjectComponent,
     ProjectListComponent,
     AllProjectsComponent,
     LoginComponent,

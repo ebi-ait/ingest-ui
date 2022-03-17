@@ -4,7 +4,6 @@ import {AllProjectsComponent} from './projects/pages/all-projects/all-projects.c
 import {ErrorComponent} from './error/error.component';
 import {LoginComponent} from './login/login.component';
 import {MyProjectsComponent} from './my-projects/my-projects.component';
-import {ProjectComponent} from './project/project.component';
 import {RegistrationComponent} from './registration/registration.component';
 import {UserIsLoggedInGuard} from './shared/guards/user-is-logged-in.guard';
 import {UserIsWranglerGuard} from './shared/guards/user-is-wrangler.guard';
@@ -38,9 +37,6 @@ export const ROUTES: Routes = [
   },
 
   {path: 'submissions/list', component: SubmissionListComponent,  canActivate: [UserIsLoggedInGuard, UserIsWranglerGuard]},
-
-  {path: 'projects/detail/:id', component: ProjectComponent, canActivate: [UserIsLoggedInGuard, WranglerOrOwnerGuard]},
-  {path: 'projects/detail', component: ProjectComponent, canActivate: [UserIsLoggedInGuard, WranglerOrOwnerGuard]},
 
   {path: 'template', component: TemplateQuestionnaireFormComponent},
 

@@ -1,5 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
+import {ProjectComponent} from "@projects/pages/project/project.component";
+import {UserIsLoggedInGuard} from "@shared/guards/user-is-logged-in.guard";
 import {UserIsWranglerGuard} from '@shared/guards/user-is-wrangler.guard';
 import {WranglerOrOwnerGuard} from '@shared/guards/wrangler-or-owner.guard';
 import {AllProjectsComponent} from './pages/all-projects/all-projects.component';
@@ -12,6 +14,8 @@ const routes: Routes = [
   { path: 'register', component: CreateProjectComponent },
   { path: ':uuid/edit', component: EditProjectComponent, canActivate: [ WranglerOrOwnerGuard ] },
   { path: 'all', component: AllProjectsComponent, canActivate: [UserIsWranglerGuard] },
+  {path: 'detail/:id', component: ProjectComponent, canActivate: [UserIsLoggedInGuard, WranglerOrOwnerGuard]},
+  {path: 'detail', component: ProjectComponent, canActivate: [UserIsLoggedInGuard, WranglerOrOwnerGuard]},
 ];
 
 @NgModule({
