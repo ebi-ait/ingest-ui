@@ -105,7 +105,7 @@ export class GeoService {
     this.alertService.success(
       'Success',
       `The project metadata with accession ${accession} has been successfully created.
-               You can download the GEO spreadsheet from Experiment Information tab.`,
+               You can download the spreadsheet from Experiment Information tab.`,
       true
     );
     this.router.navigate(['/projects/detail'], {queryParams: {uuid: projectUuid}});
