@@ -297,15 +297,6 @@ export class IngestService {
       }));
   }
 
-  public getSubmissionNewMetadataUrl(submissionId, resourceType): string {
-    return `${this.API_URL}/submissionEnvelopes/${submissionId}/${resourceType}`
-  }
-
-  public addSubmissionMetadata<T>(submissionId, resourceType, metadata): Observable<T> {
-    const url = this.getSubmissionNewMetadataUrl(submissionId, resourceType)
-    return this.post<T>(url, metadata)
-  }
-
   public getSubmissionSummary(submissionId): Observable<SubmissionSummary> {
     return this.http.get<SubmissionSummary>(`${this.API_URL}/submissionEnvelopes/${submissionId}/summary`);
   }
