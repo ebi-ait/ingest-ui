@@ -6,8 +6,14 @@ import {MetadataFormLayout, MetadataFormTab} from '@metadata-schema-form/models/
 import {MetadataDocument} from '@shared/models/metadata-document';
 import {AlertService} from '@shared/services/alert.service';
 import {IngestService} from '@shared/services/ingest.service';
-import isEqual from 'lodash/isEqual';
+import {isEqual} from 'lodash';
 import {Observable} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
+
+enum SaveAction{
+  PATCH,
+  POST
+}
 
 @Component({
   selector: 'app-metadata-details',
@@ -21,8 +27,10 @@ export class MetadataDetailsDialogComponent implements OnInit {
   schemaUrl: string;
   formTabKey: any;
   saveLink: string;
+  saveAction: SaveAction;
 
-  type: string;
+  domainEntity: string;
+  version: string;
   concreteType: string;
   errorMessage: string;
   validationErrors: any[];
@@ -56,28 +64,38 @@ export class MetadataDetailsDialogComponent implements OnInit {
     } else if (this.dialogData.hasOwnProperty('postUrl')) {
       this.newModeInit(this.dialogData['postUrl']);
     } else {
-      //throw error
+      //ToDo: throw error
     }
   }
 
   private editModeInit(metadata: MetadataDocument){
     this.content = metadata.content;
     this.validationErrors = metadata.validationErrors;
-    this.dialogTitle = `Edit ${this.type} - ${metadata['uuid']['uuid']}`;
-    this.saveLink = metadata._links['self']['href']
+    this.dialogTitle = `Edit ${this.domainEntity} - ${metadata['uuid']['uuid']}`;
+    this.saveLink = metadata._links['self']['href'];
+    this.saveAction = SaveAction.PATCH;
   }
 
   private newModeInit(saveLink: string) {
-    this.content = {}
-    this.validationErrors = []
-    this.dialogTitle = `New ${this.type} - ${this.concreteType}`;
-    this.saveLink = saveLink
+    this.content = {
+      describedBy: this.schemaUrl,
+      schema_type: this.domainEntity,
+    };
+    this.validationErrors = [];
+    this.dialogTitle = `New ${this.domainEntity} - ${this.concreteType}`;
+    this.saveLink = saveLink;
+    this.saveAction = SaveAction.POST;
   }
 
   private setSchemaUrlDependencies() {
     const slicedUrl = this.schemaUrl.split('/').reverse();
-    this.type = slicedUrl[2];
     this.concreteType = slicedUrl[0];
+    this.version = slicedUrl[1];
+    if (slicedUrl[3] === 'type'){
+      this.domainEntity = slicedUrl[2];
+    } else {
+      this.domainEntity = slicedUrl[3];
+    }
 
     const layout: MetadataFormLayout = {
       tabs: []
@@ -101,13 +119,19 @@ export class MetadataDetailsDialogComponent implements OnInit {
       this.errorMessage = 'There are no changes done.';
       return
     }
-    let saveFunc;
-    if (this.content){
-      saveFunc = this.SaveExisting;
-    } else {
-      saveFunc =  this.CreateNew;
+    let response: Observable<MetadataDocument>;
+    const patch = {'content': newContent};
+    if (this.saveAction == SaveAction.POST){
+      response = this.ingestService.post<MetadataDocument>(this.saveLink, patch);
+      // ToDo: Link New MetadataToProject by getting project
+      // response = this.ingestService.post<MetadataDocument>(this.saveLink, patch).pipe(
+      //   map((newDocument: MetadataDocument) => newDocument._links.self.href),
+      //   switchMap(selfLink => this.ingestService.addMetadataToProject(this.projectId, selfLink))
+      // );
+    } else if (this.saveAction == SaveAction.PATCH) {
+      response = this.ingestService.patch<MetadataDocument>(this.saveLink, patch);
     }
-    saveFunc(newContent).subscribe(response => {
+    response.subscribe(() => {
       this.content = newContent;
       this.alertService.clear();
       this.alertService.success('Success',
@@ -117,17 +141,8 @@ export class MetadataDetailsDialogComponent implements OnInit {
       console.error(err);
       this.alertService.clear();
       this.alertService.error('Error',
-        `${this.type} has not been successful due to ${err.toString()}`);
+        `${this.dialogTitle} has not been successful due to ${err.toString()}`);
       this.dialogRef.close();
     });
-  }
-
-  private SaveExisting(newContent): Observable<MetadataDocument> {
-    const patch = {'content': newContent};
-    return this.ingestService.patch<MetadataDocument>(this.saveLink, patch);
-  }
-
-  private CreateNew(newContent): Observable<MetadataDocument> {
-    return this.ingestService.post<MetadataDocument>(this.saveLink, newContent);
   }
 }

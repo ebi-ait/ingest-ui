@@ -65,7 +65,7 @@ describe('MetadataDetailsDialogComponent', () => {
 
       // then
       expect(component.content).toBeTruthy();
-      expect(component.type).toBeTruthy();
+      expect(component.domainEntity).toBeTruthy();
       expect(component.schemaUrl).toBeTruthy();
       expect(component.schema).toBeTruthy();
     });
@@ -93,7 +93,7 @@ describe('MetadataDetailsDialogComponent', () => {
 
       // then
       expect(component.content).toBeFalsy();
-      expect(component.type).toBeTruthy();
+      expect(component.domainEntity).toBeTruthy();
       expect(component.schemaUrl).toBeTruthy();
       expect(component.schema).toBeTruthy();
     });

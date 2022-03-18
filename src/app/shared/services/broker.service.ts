@@ -26,47 +26,18 @@ export class BrokerService {
         'process': 'https://schema.humancellatlas.org/type/process/9.2.0/process'
       });
     }
-    // const params = {
-    //   high_level_entity: 'type',
-    //   domain_entity: domainEntity,
-    //   latest: ''
-    // }
-    // return this.http.get<MetadataSchema[]>(`${this.API_URL}/schemas/query`, {params: params}).pipe(
-    //   map(schemas => {
-    //     let concreteUrl = {};
-    //     schemas.forEach(schema => concreteUrl[schema.concreteEntity] = schema._links['json-schema'].href);
-    //     return concreteUrl;
-    //   })
-    // );
-    // The following hardcoded version is in-place until the above real version can be tested against https://github.com/ebi-ait/ingest-broker/pull/38
-    if (domainEntity === 'biomaterial'){
-      return of({
-        'specimen_from_organism': 'https://schema.humancellatlas.org/type/biomaterial/10.4.0/specimen_from_organism',
-        'organoid': 'https://schema.humancellatlas.org/type/biomaterial/11.3.0/organoid',
-        'imaged_specimen': 'https://schema.humancellatlas.org/type/biomaterial/3.3.0/imaged_specimen',
-        'donor_organism': 'https://schema.humancellatlas.org/type/biomaterial/15.5.0/donor_organism',
-        'cell_suspension': 'https://schema.humancellatlas.org/type/biomaterial/13.3.0/cell_suspension',
-        'cell_line': 'https://schema.humancellatlas.org/type/biomaterial/15.0.0/cell_line'
-      });
+    const params = {
+      high_level_entity: 'type',
+      domain_entity: domainEntity,
+      latest: ''
     }
-    if (domainEntity === 'protocol') {
-      return of({
-        'sequencing_protocol': 'https://schema.humancellatlas.org/type/protocol/sequencing/10.1.0/sequencing_protocol',
-        'library_preparation_protocol': 'https://schema.humancellatlas.org/type/protocol/sequencing/6.3.1/library_preparation_protocol',
-        'imaging_protocol': 'https://schema.humancellatlas.org/type/protocol/imaging/11.4.0/imaging_protocol',
-        'imaging_preparation_protocol': 'https://schema.humancellatlas.org/type/protocol/imaging/2.2.0/imaging_preparation_protocol',
-        'ipsc_induction_protocol': 'https://schema.humancellatlas.org/type/protocol/biomaterial_collection/3.2.0/ipsc_induction_protocol',
-        'enrichment_protocol': 'https://schema.humancellatlas.org/type/protocol/biomaterial_collection/3.1.0/enrichment_protocol',
-        'dissociation_protocol': 'https://schema.humancellatlas.org/type/protocol/biomaterial_collection/6.2.0/dissociation_protocol',
-        'differentiation_protocol': 'https://schema.humancellatlas.org/type/protocol/biomaterial_collection/2.2.0/differentiation_protocol',
-        'collection_protocol': 'https://schema.humancellatlas.org/type/protocol/biomaterial_collection/9.2.0/collection_protocol',
-        'aggregate_generation_protocol': 'https://schema.humancellatlas.org/type/protocol/biomaterial_collection/2.1.0/aggregate_generation_protocol',
-        'biomaterial_collection_protocol': 'https://schema.humancellatlas.org/type/protocol/biomaterial/5.1.0/biomaterial_collection_protocol',
-        'analysis_protocol': 'https://schema.humancellatlas.org/type/protocol/analysis/9.2.0/analysis_protocol',
-        'protocol': 'https://schema.humancellatlas.org/type/protocol/7.1.0/protocol'
-      });
-    }
-    return of({});
+    return this.http.get<MetadataSchema[]>(`${this.API_URL}/schemas/query`, {params: params}).pipe(
+      map(schemas => {
+        let concreteUrls = {};
+        schemas.forEach(schema => concreteUrls[schema.concreteEntity] = schema._links['json-schema'].href);
+        return concreteUrls;
+      })
+    );
   }
 
   uploadSpreadsheet(formData): Observable<UploadResults> {
@@ -106,7 +77,7 @@ export class BrokerService {
   }
 
   getDereferencedSchema(schemaUrl: string) {
-    const url = `${this.API_URL}/schemas?url=${schemaUrl}&json&deref`;
+    const url = `${this.API_URL}/schemas/json?url=${schemaUrl}&deref`;
     return this.http.get(url);
   }
 

@@ -76,7 +76,7 @@
       <ng-template matTabContent>
         <app-metadata-new [projectId]="projectId"
                           [domainEntity]="'biomaterial'"
-                          [submissionId]="submissionEnvelopeId"></app-metadata-new>
+                          [postUrl]="url.concat('/biomaterials')"></app-metadata-new>
         <app-metadata-list [dataSource]="biomaterialsDataSource"
                            [projectId]="projectId"
                            [config]="{displayLinking: true}"
@@ -87,7 +87,7 @@
       <ng-template matTabContent>
         <app-metadata-new [projectId]="projectId"
                           [domainEntity]="'process'"
-                          [submissionId]="submissionEnvelopeId"></app-metadata-new>
+                          [postUrl]="url.concat('/processes')"></app-metadata-new>
         <app-metadata-list [dataSource]="processesDataSource"
                            [projectId]="projectId"
                            [expectedCount]="manifest ? manifest['expectedProcesses'] : null"></app-metadata-list>
@@ -97,7 +97,7 @@
       <ng-template matTabContent>
         <app-metadata-new [projectId]="projectId"
                           [domainEntity]="'protocol'"
-                          [submissionId]="submissionEnvelopeId"></app-metadata-new>
+                          [postUrl]="url.concat('/protocols')"></app-metadata-new>
         <app-metadata-list [dataSource]="protocolsDataSource"
                            [projectId]="projectId"
                            [config]="{displayLinking: true}"

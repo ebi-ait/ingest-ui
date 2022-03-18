@@ -195,6 +195,18 @@ export class IngestService {
     );
   }
 
+  public addMetadataToProject(projectId: string, metadataUri: string): Observable<Object>  {
+    return this.http.post(
+      metadataUri,
+      `${this.API_URL}/project/${projectId}`,
+      {
+        headers: {
+          'Content-Type': 'text/uri-list',
+        }
+      }
+    );
+  }
+
   public deleteInputBiomaterialFromProcess(processId: string, biomaterialId: string): Observable<Object> {
     return this.http.delete(
       `${this.API_URL}/biomaterials/${biomaterialId}/inputToProcesses/${processId}`

@@ -20,7 +20,7 @@ interface ConcreteType {
 export class MetadataCreationComponent implements OnInit {
   @Input() domainEntity: string; //biomaterial/protocol/process
   @Input() projectId: string;
-  @Input() submissionId: string;
+  @Input() postUrl: string;
   concreteTypes: ConcreteType[] = [];
   selected: string;
   label: string
@@ -57,21 +57,15 @@ export class MetadataCreationComponent implements OnInit {
 
   chooseType(schemaUrl: string) {
     this.loaderService.display(true);
-    const postUrl = this.ingestService.getSubmissionNewMetadataUrl(this.submissionId, this.domainEntity)
     this.schemaService.getDereferencedSchema(schemaUrl)
       .subscribe(schema => {
         this.selected = undefined;
         this.loaderService.display(false);
-        //ToDo: Change MetadataDetailsDialogComponent to allow blank input (config.data that does not contain metadata)
-        //ToDo: Specify POST action and post URL to onSave MetadataDetailsDialogComponent (Allowing us to post to SubmissionEnvelope)
-        //ToDo: After successful POST link new metadata to project
         this.dialog.open(MetadataDetailsDialogComponent, {
-          data: {schema: schema, postUrl: postUrl},
+          data: {schema: schema, postUrl: this.postUrl},
           width: '60%',
           disableClose: true
         });
       });
   }
-
-  //ToDo: Unit Tests
 }
