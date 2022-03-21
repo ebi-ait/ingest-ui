@@ -24,15 +24,15 @@ export class SubmitToSCEAComponent implements OnInit {
   @Input() manifest: object;
   releaseDate: string;
   project_uuid: string;
-  accession_num: string;
-  curator: string;
+  accession_num: number;
+  curator: string[];
   experiment_type: string;
-  factor_values: string;
+  factor_values: string[];
   public_release_date: string;
-  hca_release_date: string;
+  hca_update_date: string;
   study_accession: string;
   test: string;
-  spreadsheet: object;
+  spreadsheet: any;
   output_dir: string;
   zip_format: string;
 
@@ -43,7 +43,7 @@ export class SubmitToSCEAComponent implements OnInit {
     experiment_type: new FormControl('', Validators.required),
     factor_values: new FormControl('', Validators.required),
     public_release_date: new FormControl('', Validators.required),
-    hca_release_date: new FormControl('', Validators.required),
+    hca_update_date: new FormControl('', Validators.required),
     study_accession: new FormControl('', Validators.required),
   });
 
@@ -57,6 +57,8 @@ export class SubmitToSCEAComponent implements OnInit {
     this.project$ && this.project$.subscribe(project => {
       this.releaseDate = project.releaseDate;
     });
+    const uuid = this.submissionEnvelope$['uuid']['uuid'];
+    this.spreadsheet = this.brokerService.generateSpreadsheetFromSubmission(uuid);
   }
 
   onFilledForm() {
@@ -66,23 +68,17 @@ export class SubmitToSCEAComponent implements OnInit {
     this.experiment_type = this.sceaForm.get('experiment_type').value;
     this.factor_values = this.sceaForm.get('factor_values').value;
     this.public_release_date = this.sceaForm.get('public_release_date').value;
-    this.hca_release_date = this.sceaForm.get('hca_release_date').value;
+    this.hca_update_date = this.sceaForm.get('hca_update_date').value;
     this.study_accession = this.sceaForm.get('study_accession').value;
     this.output_dir = 'hca2scea_output';
     this.zip_format = 'yes';
   }
 
-  getSpreadsheet() {
-    const uuid = this.submissionEnvelope['uuid']['uuid'];
-    this.spreadsheet = this.brokerService.generateSpreadsheetFromSubmission(uuid);
-  }
-
   requestConvertToSCEA() {
     console.log('requestConvertToSCEA');
     this.onFilledForm();
-    this.getSpreadsheet();
     this.brokerService.convertToSCEA(this.spreadsheet,this.project_uuid,this.accession_num,this.curator,
-      this.experiment_type,this.factor_values,this.public_release_date,this.hca_release_date,this.study_accession,
+      this.experiment_type,this.factor_values,this.public_release_date,this.hca_update_date,this.study_accession,
       this.output_dir,this.zip_format)
       .subscribe(
         response => {

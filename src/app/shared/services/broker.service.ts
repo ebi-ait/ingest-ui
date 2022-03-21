@@ -125,25 +125,23 @@ export class BrokerService {
     };
   }
 
-  convertToSCEA(spreadsheet: object, project_uuid: string, accession_num: number, curators: string[],
-                experiment_type: string, experimental_factors: string[], public_release_date: string,
+  convertToSCEA(spreadsheet: any, project_uuid: string, accession_num: number, curators: any,
+                experiment_type: string, experimental_factors: any, public_release_date: string,
                 hca_update_date: string, study: string, output_dir: string, zip_format: string): Observable<any> {
-    let params = {
-      'spreadsheet': spreadsheet,
-      'project_uuid': project_uuid,
-      'accession_number': accession_num,
-      'curators': curators,
-      'experiment_type': experiment_type,
-      'experimental_factors': experimental_factors,
-      'public_release_date': public_release_date,
-      'hca_update_update': hca_update_date,
-      'study': study,
-      'output_dir': output_dir,
-      'zip_format': zip_format
-    };
-    return this.http
-      .post(`${this.API_URL}/convert_to_scea`, null,
-        {params, responseType: 'blob', observe: 'response'})
+    let params = new HttpParams();
+    params = params.set('spreadsheet', spreadsheet);
+    params = params.set('project_uuid', project_uuid);
+    params = params.set('accession_number', accession_num);
+    params = params.set('curators', curators);
+    params = params.set('experiment_type', experiment_type);
+    params = params.set('experimental_factors', experimental_factors);
+    params = params.set('public_release_date', public_release_date);
+    params = params.set('hca_update_date', hca_update_date);
+    params = params.set('output_dir', output_dir);
+    params = params.set('zip_format', zip_format);
+
+    return this.http.post(`${this.API_URL}/submit_to_scea`, null,
+      {params:params, responseType: 'blob', observe: 'response'})
       .pipe(
         catchError(this.parseErrorBlob),
         map(response => {
@@ -153,5 +151,4 @@ export class BrokerService {
         })
       );
   }
-
 }

@@ -76,7 +76,7 @@
   <label for="ex3">Study Accession   </label>
   <input class="form-control" id="ex3" type="text" placeholder="SRP259912"  formControlName="study_accession">
   <br/>
-  <button class="vf-button vf-button--sm vf-button--primary" type="submit" *ngIf="submitLink" [disabled]="!sceaForm.valid" (click)="requestConvertToSCEA()">
+  <button class="vf-button vf-button--sm vf-button--primary" type="submit" [disabled]="!sceaForm.valid" (click)="requestConvertToSCEA()">
   Convert To SCEA
 </button>
 </form>
