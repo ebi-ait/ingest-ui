@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {GeoService} from "@projects/services/geo.service";
 import {MetadataDataSource} from '@shared/data-sources/metadata-data-source';
 import {ListResult} from '@shared/models/hateoas';
 import {MetadataDocument} from '@shared/models/metadata-document';
@@ -74,6 +75,7 @@ export class ProjectComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private loaderService: LoaderService,
+    private geoService: GeoService
   ) {
   }
 
@@ -276,6 +278,10 @@ export class ProjectComponent implements OnInit {
 
   getProjectInsdcAccession() {
     const content: { insdc_study_accessions?: string[] } = this.project?.content;
-    return content?.insdc_study_accessions?.[0];
+    const accession = content?.insdc_study_accessions?.[0];
+
+    if (this.geoService.isValidAccession(accession)) {
+      return accession
+    }
   }
 }

@@ -110,4 +110,8 @@ export class GeoService {
     );
     this.router.navigate(['/projects/detail'], {queryParams: {uuid: projectUuid}});
   }
+
+  isValidAccession(accession) {
+    return /^(GSE|SRP|ERP).*$/.test(accession)
+  }
 }
