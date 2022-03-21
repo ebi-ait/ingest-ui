@@ -127,7 +127,7 @@ export class BrokerService {
 
   convertToSCEA(spreadsheet: object, project_uuid: string, accession_num: number, curators: string[],
                 experiment_type: string, experimental_factors: string[], public_release_date: string,
-                hca_update_date: string, study: string): Observable<any> {
+                hca_update_date: string, study: string, output_dir: string, zip_format: string): Observable<any> {
     let params = {
       'spreadsheet': spreadsheet,
       'project_uuid': project_uuid,
@@ -137,7 +137,9 @@ export class BrokerService {
       'experimental_factors': experimental_factors,
       'public_release_date': public_release_date,
       'hca_update_update': hca_update_date,
-      'study': study
+      'study': study,
+      'output_dir': output_dir,
+      'zip_format': zip_format
     };
     return this.http
       .post(`${this.API_URL}/convert_to_scea`, null,

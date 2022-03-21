@@ -33,6 +33,8 @@ export class SubmitToSCEAComponent implements OnInit {
   study_accession: string;
   test: string;
   spreadsheet: object;
+  output_dir: string;
+  zip_format: string;
 
   sceaForm = new FormGroup({
     project_uuid: new FormControl('', Validators.required),
@@ -66,6 +68,8 @@ export class SubmitToSCEAComponent implements OnInit {
     this.public_release_date = this.sceaForm.get('public_release_date').value;
     this.hca_release_date = this.sceaForm.get('hca_release_date').value;
     this.study_accession = this.sceaForm.get('study_accession').value;
+    this.output_dir = 'hca2scea_output';
+    this.zip_format = 'yes';
   }
 
   getSpreadsheet() {
@@ -77,7 +81,9 @@ export class SubmitToSCEAComponent implements OnInit {
     console.log('requestConvertToSCEA');
     this.onFilledForm();
     this.getSpreadsheet();
-    this.brokerService.convertToSCEA('')
+    this.brokerService.convertToSCEA(this.spreadsheet,this.project_uuid,this.accession_num,this.curator,
+      this.experiment_type,this.factor_values,this.public_release_date,this.hca_release_date,this.study_accession,
+      this.output_dir,this.zip_format)
       .subscribe(
         response => {
           setTimeout(() => {
