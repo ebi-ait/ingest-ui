@@ -27,14 +27,36 @@ describe('MetadataDetailsDialogComponent', () => {
       expect(component).toBeTruthy();
     });
 
-    //ToDo: Add test that checks that error is thrown
-
     it('Dialog box close should be called when cancel is clicked', () => {
       // when
       component.onCancel();
 
       //then
       expect(dialogRef.close).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('DialogData Error', () => {
+    beforeEach(() => {
+      const defaultMockDialogData = {
+        schema: {
+          '$id': 'https://schemaService/baseType/domainEntity/version/concreteType'
+        }
+      }
+      mockDialogData = jasmine.createSpyObj('Object',[], defaultMockDialogData);
+      component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
+    });
+
+    it('should create', () => {
+      expect(component).toBeTruthy();
+    });
+
+    it('should throw error on init', () => {
+      //when
+      component.ngOnInit();
+
+      // then
+      expect(alertSvc.error).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -59,7 +81,7 @@ describe('MetadataDetailsDialogComponent', () => {
       expect(component).toBeTruthy();
     });
 
-    it('shoulc init correctly', () => {
+    it('should init correctly', () => {
       //when
       component.ngOnInit();
 
@@ -87,7 +109,7 @@ describe('MetadataDetailsDialogComponent', () => {
       expect(component).toBeTruthy();
     });
 
-    it('shoulc init correctly', () => {
+    it('should init correctly', () => {
       //when
       component.ngOnInit();
 
