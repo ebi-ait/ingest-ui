@@ -8,7 +8,7 @@ import {AlertService} from '@shared/services/alert.service';
 import {IngestService} from '@shared/services/ingest.service';
 import {isEqual} from 'lodash';
 import {Observable} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {switchMap, tap} from 'rxjs/operators';
 
 enum SaveAction{
   PATCH,
@@ -123,14 +123,11 @@ export class MetadataDetailsDialogComponent implements OnInit {
       this.errorMessage = 'There are no changes done.';
       return
     }
-    let response: Observable<MetadataDocument>;
+    let response: Observable<any>;
     const patch = {'content': newContent};
     if (this.saveAction == SaveAction.POST){
-      //todo: why do we need ts-ignore for post and not for patch?
-      // @ts-ignore
       response = this.ingestService.post<MetadataDocument>(this.saveLink, patch).pipe(
-        map((newDocument: MetadataDocument) => newDocument._links.self.href),
-        switchMap(selfLink => this.ingestService.addMetadataToProject(this.projectId, selfLink))
+        switchMap(newDocument => this.ingestService.linkProjectToMetadata<Object>(newDocument._links.self.href, this.projectId))
       );
     } else if (this.saveAction == SaveAction.PATCH) {
       response = this.ingestService.patch<MetadataDocument>(this.saveLink, patch);

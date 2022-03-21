@@ -6,7 +6,7 @@ import {environment} from '@environments/environment';
 import {FetchSubmissionDataOptions} from '@shared/models/fetch-submission-data-options';
 import {isUndefined, omit, omitBy, values} from 'lodash';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, switchMapTo} from 'rxjs/operators';
 import {INVALID_FILE_TYPES_AND_CODES, METADATA_VALIDATION_STATES} from '../constants';
 import {ArchiveEntity} from '../models/archiveEntity';
 import {ArchiveSubmission} from '../models/archiveSubmission';
@@ -195,15 +195,17 @@ export class IngestService {
     );
   }
 
-  public addMetadataToProject(projectId: string, metadataUri: string): Observable<Object>  {
-    return this.http.post(
-      metadataUri,
-      `${this.API_URL}/project/${projectId}`,
-      {
-        headers: {
-          'Content-Type': 'text/uri-list',
-        }
+  public linkProjectToMetadata<T>(metadataUri: string, projectId: string): Observable<T> {
+    const project = `${metadataUri}/project`;
+    const projects = `${metadataUri}/projects`;
+    const projectUri = `${this.API_URL}/projects/${projectId}`;
+    const options = {
+      headers: {
+        'Content-Type': 'text/uri-list',
       }
+    };
+    return this.http.put<T>(project, projectUri, options).pipe(
+      switchMapTo(this.http.put<T>(projects, projectUri, options)),
     );
   }
 
