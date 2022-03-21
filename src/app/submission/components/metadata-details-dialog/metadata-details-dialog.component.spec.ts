@@ -37,42 +37,93 @@ describe('MetadataDetailsDialogComponent', () => {
   });
 
   describe('DialogData Error', () => {
-    beforeEach(() => {
-      const defaultMockDialogData = {
-        schema: {
-          '$id': 'https://schemaService/baseType/domainEntity/version/concreteType'
-        }
-      }
-      mockDialogData = jasmine.createSpyObj('Object',[], defaultMockDialogData);
-      component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
+    const schema = {
+      '$id': 'https://schemaService/type/domainEntity/version/concreteType'
+    };
+    const postUrl = 'iAmNotAUrl';
+    const projectId = 'iAmNotAProject';
+
+    [{
+      schema: schema,
+    }, {
+      schema: schema,
+      projectId: projectId
+    }, {
+      schema: schema,
+      postUrl: postUrl,
+    }].forEach(test => {
+      it('should throw error on init', () => {
+        mockDialogData = jasmine.createSpyObj('Object', [], test);
+        component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
+        expect(component).toBeTruthy();
+
+        //when
+        component.ngOnInit();
+
+        // then
+        expect(alertSvc.error).toHaveBeenCalledTimes(1);
+      });
+
     });
+  });
 
-    it('should create', () => {
-      expect(component).toBeTruthy();
-    });
+  describe('DialogData Schema Detection',() => {
+    const schema_url_1 = 'https://schemaService/type/domainEntity/version/concreteType';
+    const schema_url_2 = 'https://schemaService/type/domainEntity/itsatrap/version/concreteType';
+    const postUrl = 'iAmNotAUrl';
+    const projectId = 'iAmNotAProject';
+    const metadata = {
+      content: {},
+      validationErrors: [],
+      uuid: { uuid: '' },
+      _links: { self: { href:'' } }
+    };
+    [{
+      schema: {'$id': schema_url_1},
+      metadata: metadata
+    },{
+      schema: {'$id': schema_url_2},
+      metadata: metadata
+    },{
+      schema: {'$id': schema_url_1},
+      postUrl: postUrl,
+      projectId: projectId
+    },{
+      schema: {'$id': schema_url_2},
+      postUrl: postUrl,
+      projectId: projectId
+    }].forEach(test => {
+      it('should detect the correct domainEntity', () => {
+        mockDialogData = jasmine.createSpyObj('Object',[], test);
+        component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
 
-    it('should throw error on init', () => {
-      //when
-      component.ngOnInit();
+        //when
+        component.ngOnInit();
 
-      // then
-      expect(alertSvc.error).toHaveBeenCalledTimes(1);
+        //then
+        expect(component.domainEntity).toBe('domainEntity')
+      });
     });
   });
 
   describe('DialogData Edit Mode', () => {
+    const schema_url = 'https://schemaService/type/domainEntity/version/concreteType';
+    const schema = {
+      '$id': schema_url
+    };
+    const patchUrl = 'patch.url'
+    const metadata = {
+      content: {},
+      validationErrors: [],
+      uuid: { uuid: '' },
+      _links: { self: { href: patchUrl } }
+    };
+
     beforeEach(() => {
       const defaultMockDialogData = {
-        metadata: {
-          content: {},
-          validationErrors: [],
-          uuid: { uuid: '' },
-          _links: { self: { href:'' } }
-        },
-        schema: {
-          '$id': 'https://schemaService/baseType/domainEntity/version/concreteType'
-        }
-      }
+        schema: schema,
+        metadata: metadata
+      };
       mockDialogData = jasmine.createSpyObj('Object',[], defaultMockDialogData);
       component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
     });
@@ -86,20 +137,30 @@ describe('MetadataDetailsDialogComponent', () => {
       component.ngOnInit();
 
       // then
-      expect(component.content).toBeTruthy();
-      expect(component.domainEntity).toBeTruthy();
-      expect(component.schemaUrl).toBeTruthy();
-      expect(component.schema).toBeTruthy();
+      // then
+      expect(component.content).toEqual(metadata.content);
+      expect(component.schema).toEqual(schema);
+      expect(component.schemaUrl).toEqual(schema_url);
+      expect(component.saveLink).toEqual(patchUrl);
+      expect(component.saveAction).toEqual(0);
+      expect(component.domainEntity).toEqual('domainEntity');
+      expect(component.concreteType).toEqual('concreteType');
     });
   });
 
   describe('DialogData Create Mode', () => {
+    const schema_url = 'https://schemaService/type/domainEntity/version/concreteType';
+    const schema = {
+      '$id': schema_url
+    };
+    const postUrl = 'iAmNotAUrl';
+    const projectId = 'iAmNotAProject';
+
     beforeEach(() => {
       const defaultMockDialogData = {
-        schema: {
-          '$id': 'https://schemaService/baseType/domainEntity/version/concreteType'
-        },
-        postUrl: ''
+        schema: schema,
+        postUrl: postUrl,
+        projectId: projectId
       }
       mockDialogData = jasmine.createSpyObj('Object',[], defaultMockDialogData);
       component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
@@ -110,14 +171,23 @@ describe('MetadataDetailsDialogComponent', () => {
     });
 
     it('should init correctly', () => {
+      const new_content = {
+        describedBy: schema_url,
+        schema_type: 'domainEntity',
+      };
+
       //when
       component.ngOnInit();
 
       // then
-      expect(component.content).toBeTruthy();
-      expect(component.domainEntity).toBeTruthy();
-      expect(component.schemaUrl).toBeTruthy();
-      expect(component.schema).toBeTruthy();
+      expect(component.content).toEqual(new_content);
+      expect(component.schema).toEqual(schema);
+      expect(component.schemaUrl).toEqual(schema_url);
+      expect(component.saveLink).toEqual(postUrl);
+      expect(component.saveAction).toEqual(1);
+      expect(component.projectId).toEqual(projectId);
+      expect(component.domainEntity).toEqual('domainEntity');
+      expect(component.concreteType).toEqual('concreteType');
     });
   });
 });

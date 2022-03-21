@@ -62,11 +62,10 @@ export class MetadataDetailsDialogComponent implements OnInit {
     this.setSchemaUrlDependencies();
     if (this.dialogData.hasOwnProperty('metadata')) {
       this.editModeInit(this.dialogData['metadata']);
-    } else if (this.dialogData.hasOwnProperty('postUrl')) {
-      this.newModeInit(this.dialogData['postUrl']);
-      this.projectId = this.dialogData?.projectId
+    } else if (this.dialogData.hasOwnProperty('postUrl') && this.dialogData.hasOwnProperty('projectId')) {
+      this.newModeInit(this.dialogData.postUrl, this.dialogData.projectId);
     } else {
-      const err = `${this.dialogTitle} has not been successful as neither metadata nor postUrl keys were found`;
+      const err = `${this.dialogTitle} has not been successful since either metadata or postUrl and projectId are required.`;
       console.error(err);
       this.alertService.error('Error', err);
     }
@@ -80,7 +79,8 @@ export class MetadataDetailsDialogComponent implements OnInit {
     this.saveAction = SaveAction.PATCH;
   }
 
-  private newModeInit(saveLink: string) {
+  private newModeInit(saveLink: string, projectId: string) {
+    this.projectId = projectId
     this.content = {
       describedBy: this.schemaUrl,
       schema_type: this.domainEntity,
