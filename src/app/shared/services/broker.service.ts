@@ -74,12 +74,12 @@ export class BrokerService {
     };
   }
 
-  importProjectUsingGeo(accession: string): Observable<{ project_uuid: string }> {
+  importProjectUsingAccession(accession: string): Observable<{ project_uuid: string }> {
     const params = {
       'accession': accession,
     };
     return this.http
-      .post<{ project_uuid: string }>(`${this.API_URL}/import-geo-project`, null, {params})
+      .post<{ project_uuid: string }>(`${this.API_URL}/import-accession`, null, {params})
       .pipe(
         catchError((errorResponse: HttpErrorResponse) => {
           return throwError(errorResponse.error);
@@ -87,12 +87,12 @@ export class BrokerService {
       )
   }
 
-  downloadSpreadsheetUsingGeo(geoAccession: string): Observable<any> {
+  downloadSpreadsheetUsingAccession(accession: string): Observable<any> {
     const params = {
-      'accession': geoAccession,
+      'accession': accession,
     };
     return this.http
-      .post(`${this.API_URL}/import-geo`, null,
+      .post(`${this.API_URL}/spreadsheet-from-accession`, null,
         {params, responseType: 'blob', observe: 'response'})
       .pipe(
         catchError(this.parseErrorBlob),

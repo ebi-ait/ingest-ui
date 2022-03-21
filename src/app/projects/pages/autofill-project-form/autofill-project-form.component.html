@@ -25,27 +25,27 @@
 
   <div class="vf-u-padding__top--xxl vf-u-padding__bottom--xxl">
     <app-select-radio
-      [id]="'geo-radio-option'"
-      [label]="'Do you have a GEO accession?'"
+      [id]="'accession-radio-option'"
+      [label]="'Do you have an accession?'"
       [options]="['Yes', 'No']"
-      (valueChanged)="onGEOAccessionExistence($event)"
-      [value]="hasGeo? 'Yes': 'No'">
+      (valueChanged)="onAccessionExistence($event)"
+      [value]="hasAccession? 'Yes': 'No'">
     </app-select-radio>
 
     <app-vf-input
-      *ngIf="hasGeo"
+      *ngIf="hasAccession"
       dataType="string"
-      [error]="showError(geoAccessionCtrl, 'The GEO accession must be valid. E.g. GSE123456')"
-      [formControl]="geoAccessionCtrl"
-      [helperText]="'Get started by entering a GEO accession to your project information'"
+      [error]="showError(accessionCtrl, 'The accession must be valid. E.g. GSE123456 or SRP348406')"
+      [formControl]="accessionCtrl"
+      [helperText]="'Get started by entering a GEO, SRA, or ENA study accession to your project information'"
       [isRequired]="false"
-      [label]="'GEO Accession'">
+      [label]="'Accession'">
     </app-vf-input>
   </div>
   <button
     (click)="submitForm()"
     class="next-button vf-button {{ loading ? 'vf-button--tertiary' : 'vf-button--primary' }} vf-u-margin__left--xxl"
-    [disabled]="loading || (!hasDoi && !hasGeo)">
+    [disabled]="loading || (!hasDoi && !hasAccession)">
     {{ loading ? '...' : 'Next' }}
   </button>
 

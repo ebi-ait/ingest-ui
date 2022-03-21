@@ -1,0 +1,8 @@
+<p *ngIf="accession">Download spreadsheet using {{accessionType}} accession {{accession}}</p>
+<p *ngIf="!accession">Set {{accessionType}} accession(s) to download a pre-populated HCA metadata spreadsheet</p>
+<div *ngIf="accession" class="vf-u-margin__top--xxl">
+  <button type="button" class="vf-button vf-button--sm vf-button--primary" (click)="downloadSpreadsheet()">
+    Download spreadsheet
+  </button>
+  <br/>
+</div>

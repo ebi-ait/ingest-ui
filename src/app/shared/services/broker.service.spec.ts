@@ -93,11 +93,11 @@ describe('Broker Service', () => {
     it(`should get response`, async () => {
       const blob = new Blob([],
         {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-      service.downloadSpreadsheetUsingGeo(geoAccession)
+      service.downloadSpreadsheetUsingAccession(geoAccession)
         .subscribe(res => {
           expect(res.data).toEqual(blob);
         });
-      const req = httpTestingController.expectOne(`${api_url}/import-geo?accession=${geoAccession}`);
+      const req = httpTestingController.expectOne(`${api_url}/spreadsheet-from-accession?accession=${geoAccession}`);
 
       req.flush(blob, {
         headers: {'Content-Disposition': 'attachment; filename=myfile.xls'},
@@ -119,7 +119,7 @@ describe('Broker Service', () => {
         status: 400,
         statusText: 'bad request'
       });
-      service.downloadSpreadsheetUsingGeo(geoAccession)
+      service.downloadSpreadsheetUsingAccession(geoAccession)
         .subscribe(
           next => {
           },
@@ -128,7 +128,7 @@ describe('Broker Service', () => {
             done();
           }
         );
-      const req = httpTestingController.expectOne(`${api_url}/import-geo?accession=${geoAccession}`);
+      const req = httpTestingController.expectOne(`${api_url}/spreadsheet-from-accession?accession=${geoAccession}`);
       req.flush(blob, errorResponse);
       expect(req.request.method).toEqual('POST');
       expect(req.request.body).toBeNull();
@@ -138,13 +138,13 @@ describe('Broker Service', () => {
       const expectedError = {'message': 'error-message'}
       const errorResponse: HttpErrorResponse = new HttpErrorResponse({status: 400, statusText: 'bad request'});
       let actualResult, actualError;
-      service.importProjectUsingGeo(geoAccession)
+      service.importProjectUsingAccession(geoAccession)
         .subscribe(
           res => actualResult = res,
           err => actualError = err
         );
 
-      const req = httpTestingController.expectOne(`${api_url}/import-geo-project?accession=${geoAccession}`);
+      const req = httpTestingController.expectOne(`${api_url}/import-accession?accession=${geoAccession}`);
       req.flush(expectedError, errorResponse);
       expect(req.request.method).toEqual('POST');
       expect(req.request.body).toBeNull();

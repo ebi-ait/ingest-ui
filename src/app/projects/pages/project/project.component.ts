@@ -273,4 +273,9 @@ export class ProjectComponent implements OnInit {
     const content: { geo_series_accessions?: string[] } = this.project?.content;
     return content?.geo_series_accessions?.[0];
   }
+
+  getProjectInsdcAccession() {
+    const content: { insdc_study_accessions?: string[] } = this.project?.content;
+    return content?.insdc_study_accessions?.[0];
+  }
 }
