@@ -13,7 +13,7 @@ describe('MetadataDetailsDialogComponent', () => {
   let mockDialogData: SpyObj<Object>;
 
   beforeEach(() => {
-    ingestSvc = jasmine.createSpyObj('IngestService', ['patch', 'put']); // todo: change names of methods if needed
+    ingestSvc = jasmine.createSpyObj('IngestService', ['patch', 'post']);
     alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error', 'success']);
     dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
   });

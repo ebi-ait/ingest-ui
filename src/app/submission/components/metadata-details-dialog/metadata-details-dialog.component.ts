@@ -34,6 +34,7 @@ export class MetadataDetailsDialogComponent implements OnInit {
   concreteType: string;
   errorMessage: string;
   validationErrors: any[];
+  projectId: string;
 
   dialogTitle: string;
 
@@ -63,8 +64,11 @@ export class MetadataDetailsDialogComponent implements OnInit {
       this.editModeInit(this.dialogData['metadata']);
     } else if (this.dialogData.hasOwnProperty('postUrl')) {
       this.newModeInit(this.dialogData['postUrl']);
+      this.projectId = this.dialogData?.projectId
     } else {
-      //ToDo: throw error
+      const err = `${this.dialogTitle} has not been successful as neither metadata nor postUrl keys were found`;
+      console.error(err);
+      this.alertService.error('Error', err);
     }
   }
 
@@ -122,12 +126,12 @@ export class MetadataDetailsDialogComponent implements OnInit {
     let response: Observable<MetadataDocument>;
     const patch = {'content': newContent};
     if (this.saveAction == SaveAction.POST){
-      response = this.ingestService.post<MetadataDocument>(this.saveLink, patch);
-      // ToDo: Link New MetadataToProject by getting project
-      // response = this.ingestService.post<MetadataDocument>(this.saveLink, patch).pipe(
-      //   map((newDocument: MetadataDocument) => newDocument._links.self.href),
-      //   switchMap(selfLink => this.ingestService.addMetadataToProject(this.projectId, selfLink))
-      // );
+      //todo: why do we need ts-ignore for post and not for patch?
+      // @ts-ignore
+      response = this.ingestService.post<MetadataDocument>(this.saveLink, patch).pipe(
+        map((newDocument: MetadataDocument) => newDocument._links.self.href),
+        switchMap(selfLink => this.ingestService.addMetadataToProject(this.projectId, selfLink))
+      );
     } else if (this.saveAction == SaveAction.PATCH) {
       response = this.ingestService.patch<MetadataDocument>(this.saveLink, patch);
     }

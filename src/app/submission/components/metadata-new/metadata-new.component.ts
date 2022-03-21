@@ -62,7 +62,7 @@ export class MetadataCreationComponent implements OnInit {
         this.selected = undefined;
         this.loaderService.display(false);
         this.dialog.open(MetadataDetailsDialogComponent, {
-          data: {schema: schema, postUrl: this.postUrl},
+          data: {schema: schema, postUrl: this.postUrl, projectId: this.projectId},
           width: '60%',
           disableClose: true
         });

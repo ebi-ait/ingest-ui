@@ -325,7 +325,7 @@ export class IngestService {
     return this.http.patch<T>(ingestLink, patchData);
   }
 
-  public post(ingestLink, postData): Observable<Object>
+  public post(ingestLink, postData): Observable<Object>;
   public post<T>(ingestLink, postData): Observable<T>;
   public post<T>(ingestLink, postData): Observable<T> {
     return this.http.post<T>(ingestLink, postData);
