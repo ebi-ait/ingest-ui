@@ -114,7 +114,7 @@ describe('MetadataDetailsDialogComponent', () => {
       component.ngOnInit();
 
       // then
-      expect(component.content).toBeFalsy();
+      expect(component.content).toBeTruthy();
       expect(component.domainEntity).toBeTruthy();
       expect(component.schemaUrl).toBeTruthy();
       expect(component.schema).toBeTruthy();
