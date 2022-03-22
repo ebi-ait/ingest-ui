@@ -14,9 +14,10 @@ describe('MetadataDetailsDialogComponent', () => {
   let mockDialogData: SpyObj<Object>;
 
   beforeEach(() => {
-    ingestSvc = jasmine.createSpyObj('IngestService', ['patch', 'post']);
+    ingestSvc = jasmine.createSpyObj('IngestService', ['patch', 'post', 'linkProjectToMetadata']);
     alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error', 'success']);
     dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+    ingestSvc.linkProjectToMetadata.and.returnValue(of({}));
   });
 
   describe('DialogData Empty', () => {
@@ -190,7 +191,7 @@ describe('MetadataDetailsDialogComponent', () => {
           newData: 'iAmNewData'
         }
       }));
-      ingestSvc.post.and.returnValue(of({}))
+      ingestSvc.post.and.returnValue(of({_links: { self: { href: 'url' } }}))
     });
 
     it('should create', () => {
@@ -223,7 +224,8 @@ describe('MetadataDetailsDialogComponent', () => {
       component.onSave()
 
       // then
-      expect(ingestSvc.post).toHaveBeenCalledTimes(1)
+      expect(ingestSvc.post).toHaveBeenCalledTimes(1);
+      expect(ingestSvc.linkProjectToMetadata).toHaveBeenCalledTimes(1)
     })
   });
 });
