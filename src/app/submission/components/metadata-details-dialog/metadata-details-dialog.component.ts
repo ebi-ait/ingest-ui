@@ -49,6 +49,7 @@ export class MetadataDetailsDialogComponent implements OnInit {
     showResetButton: false,
     submitButtonLabel: 'Save'
   };
+  saving: boolean = false;
 
   constructor(private ingestService: IngestService,
               private alertService: AlertService,
@@ -118,6 +119,8 @@ export class MetadataDetailsDialogComponent implements OnInit {
   }
 
   onSave() {
+    this.config.viewMode = true;
+    this.saving = true;
     const newContent = this.metadataFormComponent.getFormData()['value'];
     if (isEqual(this.content, newContent)) {
       this.errorMessage = 'There are no changes done.';

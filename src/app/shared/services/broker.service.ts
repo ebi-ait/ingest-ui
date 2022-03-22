@@ -20,12 +20,6 @@ export class BrokerService {
   }
 
   getConcreteTypes(domainEntity: string): Observable<{}> {
-    if (domainEntity === 'process') {
-      // Fix to remove deprecated schemas that can't be marked as deprecated
-      return of({
-        'process': 'https://schema.humancellatlas.org/type/process/9.2.0/process'
-      });
-    }
     const params = {
       high_level_entity: 'type',
       domain_entity: domainEntity,
@@ -34,7 +28,12 @@ export class BrokerService {
     return this.http.get<MetadataSchema[]>(`${this.API_URL}/schemas/query`, {params: params}).pipe(
       map(schemas => {
         let concreteUrls = {};
-        schemas.forEach(schema => concreteUrls[schema.concreteEntity] = schema._links['json-schema'].href);
+        schemas.forEach(schema => {
+          // Fix to remove deprecated schemas that can't be marked as deprecated
+          if (domainEntity !== 'process' || schema.concreteEntity === domainEntity) {
+            concreteUrls[schema.concreteEntity] = schema._links['json-schema'].href;
+          }
+        });
         return concreteUrls;
       })
     );

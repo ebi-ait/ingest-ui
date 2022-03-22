@@ -1,4 +1,4 @@
-<a *ngIf="concreteTypes.length === 1" href="javascript:void(0)" (click)="clickNew()">{{label}}</a>
+<a *ngIf="concreteTypes.length === 1" href="javascript:void(0)" (click)="chooseType(concreteTypes[0].schemaUrl)">{{label}}</a>
 <ng-container *ngIf="concreteTypes.length > 1">
   <div>
     <mat-form-field>
