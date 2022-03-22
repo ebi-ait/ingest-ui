@@ -66,9 +66,9 @@ export class MetadataDetailsDialogComponent implements OnInit {
     } else if (this.dialogData.hasOwnProperty('postUrl') && this.dialogData.hasOwnProperty('projectId')) {
       this.newModeInit(this.dialogData.postUrl, this.dialogData.projectId);
     } else {
-      const err = `${this.dialogTitle} has not been successful since either metadata or postUrl and projectId are required.`;
-      console.error(err);
-      this.alertService.error('Error', err);
+      console.error(`${this.dialogTitle} has not been successful since either metadata or postUrl and projectId are required.`);
+      this.alertService.error('Error: Could not start form', 'This is probably our fault rather than yours, please contact your wrangler or developer.');
+      this.dialogRef.close()
     }
   }
 

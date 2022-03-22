@@ -63,6 +63,7 @@ describe('MetadataDetailsDialogComponent', () => {
 
         // then
         expect(alertSvc.error).toHaveBeenCalledTimes(1);
+        expect(dialogRef.close).toHaveBeenCalledTimes(1);
       });
 
     });
