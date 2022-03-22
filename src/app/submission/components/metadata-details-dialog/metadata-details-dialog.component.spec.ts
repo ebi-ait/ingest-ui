@@ -1,9 +1,10 @@
 import SpyObj = jasmine.SpyObj;
-import { MatDialogRef} from "@angular/material/dialog";
-import {IngestService} from '@shared/services/ingest.service';
+import {MatDialogRef} from "@angular/material/dialog";
+import {MetadataFormComponent} from "@metadata-schema-form/metadata-form/metadata-form.component";
 import {AlertService} from '@shared/services/alert.service';
-import { MetadataDetailsDialogComponent } from './metadata-details-dialog.component';
-
+import {IngestService} from '@shared/services/ingest.service';
+import {MetadataDetailsDialogComponent} from './metadata-details-dialog.component';
+import {of} from 'rxjs';
 
 describe('MetadataDetailsDialogComponent', () => {
   let component: MetadataDetailsDialogComponent;
@@ -125,7 +126,15 @@ describe('MetadataDetailsDialogComponent', () => {
         metadata: metadata
       };
       mockDialogData = jasmine.createSpyObj('Object',[], defaultMockDialogData);
+      let mockMetadataFormComponent = jasmine.createSpyObj('MetadataFormComponent', ['getFormData']);
       component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
+      component.metadataFormComponent = mockMetadataFormComponent;
+      mockMetadataFormComponent.getFormData.and.returnValue(of({
+        value: {
+          newData: 'iAmNewData'
+        }
+      }));
+      ingestSvc.patch.and.returnValue(of({}))
     });
 
     it('should create', () => {
@@ -137,7 +146,6 @@ describe('MetadataDetailsDialogComponent', () => {
       component.ngOnInit();
 
       // then
-      // then
       expect(component.content).toEqual(metadata.content);
       expect(component.schema).toEqual(schema);
       expect(component.schemaUrl).toEqual(schema_url);
@@ -146,6 +154,15 @@ describe('MetadataDetailsDialogComponent', () => {
       expect(component.domainEntity).toEqual('domainEntity');
       expect(component.concreteType).toEqual('concreteType');
     });
+
+    it('should send http patch when saved ', () => {
+      // when
+      component.ngOnInit();
+      component.onSave();
+
+      // then
+      expect(ingestSvc.patch).toHaveBeenCalledTimes(1)
+    })
   });
 
   describe('DialogData Create Mode', () => {
@@ -164,6 +181,16 @@ describe('MetadataDetailsDialogComponent', () => {
       }
       mockDialogData = jasmine.createSpyObj('Object',[], defaultMockDialogData);
       component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
+      mockDialogData = jasmine.createSpyObj('Object',[], defaultMockDialogData);
+      let mockMetadataFormComponent = jasmine.createSpyObj('MetadataFormComponent', ['getFormData']);
+      component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
+      component.metadataFormComponent = mockMetadataFormComponent;
+      mockMetadataFormComponent.getFormData.and.returnValue(of({
+        value: {
+          newData: 'iAmNewData'
+        }
+      }));
+      ingestSvc.post.and.returnValue(of({}))
     });
 
     it('should create', () => {
@@ -189,5 +216,14 @@ describe('MetadataDetailsDialogComponent', () => {
       expect(component.domainEntity).toEqual('domainEntity');
       expect(component.concreteType).toEqual('concreteType');
     });
+
+    it('should send http post when saved ', () => {
+      // when
+      component.ngOnInit();
+      component.onSave()
+
+      // then
+      expect(ingestSvc.post).toHaveBeenCalledTimes(1)
+    })
   });
 });
