@@ -30,8 +30,7 @@ import {GlobalNavigationComponent} from './global-navigation/global-navigation.c
 import {HttpErrorInterceptor} from './http-interceptors/http-error-interceptor';
 import {LoginComponent} from './login/login.component';
 import {MaterialModule} from './material.module';
-import {MetadataDetailsDialogComponent} from './metadata-details-dialog/metadata-details-dialog.component';
-import {MetadataSchemaFormModule} from './metadata-schema-form/metadata-schema-form.module';
+import {MetadataSchemaFormModule} from '@metadata-schema-form/metadata-schema-form.module';
 import {MyProjectsComponent} from './my-projects/my-projects.component';
 
 import {AllProjectsComponent} from './projects/pages/all-projects/all-projects.component';
@@ -72,7 +71,6 @@ const BROWSER_LOCALE = navigator.language;
     WelcomeComponent,
     ErrorComponent,
     GlobalFooterComponent,
-    MetadataDetailsDialogComponent,
   ],
   imports: [
     AaiSecurity,

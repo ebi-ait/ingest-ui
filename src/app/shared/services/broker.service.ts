@@ -1,6 +1,7 @@
 import {HttpClient, HttpErrorResponse, HttpResponse, HttpStatusCode} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable, throwError} from 'rxjs';
+import {MetadataSchema} from '@shared/models/metadata-schema';
+import {Observable, throwError, of} from 'rxjs';
 import {catchError, map, tap, timeout} from 'rxjs/operators';
 import {environment} from '@environments/environment';
 import {
@@ -16,6 +17,26 @@ export class BrokerService {
   DOWNLOAD_SPREADSHEET_TIMEOUT = 10 * 60 * 1000; // 10 mins
 
   constructor(private http: HttpClient) {
+  }
+
+  getConcreteTypes(domainEntity: string): Observable<{}> {
+    const params = {
+      high_level_entity: 'type',
+      domain_entity: domainEntity,
+      latest: ''
+    }
+    return this.http.get<MetadataSchema[]>(`${this.API_URL}/schemas/query`, {params: params}).pipe(
+      map(schemas => {
+        let concreteUrls = {};
+        schemas.forEach(schema => {
+          // Fix to remove deprecated schemas that can't be marked as deprecated
+          if (domainEntity !== 'process' || schema.concreteEntity === domainEntity) {
+            concreteUrls[schema.concreteEntity] = schema._links['json-schema'].href;
+          }
+        });
+        return concreteUrls;
+      })
+    );
   }
 
   uploadSpreadsheet(formData): Observable<UploadResults> {
@@ -55,7 +76,7 @@ export class BrokerService {
   }
 
   getDereferencedSchema(schemaUrl: string) {
-    const url = `${this.API_URL}/schemas?url=${schemaUrl}&json&deref`;
+    const url = `${this.API_URL}/schemas/json?url=${schemaUrl}&deref`;
     return this.http.get(url);
   }
 

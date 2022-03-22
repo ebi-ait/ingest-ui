@@ -1,6 +1,6 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {MetadataDetailsDialogComponent} from '@app/metadata-details-dialog/metadata-details-dialog.component';
+import {MetadataDetailsDialogComponent} from '@submission/components/metadata-details-dialog/metadata-details-dialog.component';
 import {INVALID_FILE_TYPES, METADATA_VALIDATION_STATES} from '@shared/constants';
 import {FlattenService} from '@shared/services/flatten.service';
 import {IngestService} from '@shared/services/ingest.service';

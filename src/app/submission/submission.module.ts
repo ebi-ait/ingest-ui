@@ -2,6 +2,7 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatDialogModule} from '@angular/material/dialog';
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatIconModule} from "@angular/material/icon";
 import {MatMenuModule} from "@angular/material/menu";
@@ -15,6 +16,8 @@ import {EntityValidationSummaryComponent} from "./components/entity-validation-s
 import {FilesComponent} from "./components/files/files.component";
 import {MetadataListComponent} from "./components/metadata-list/metadata-list.component";
 import {MetadataPickerComponent} from "./components/metadata-picker/metadata-picker.component";
+import {MetadataCreationComponent} from './components/metadata-new/metadata-new.component';
+import {MetadataDetailsDialogComponent} from './components/metadata-details-dialog/metadata-details-dialog.component';
 import {ProcessDetailsComponent} from "./components/process-details/process-details.component";
 import {ProcessNodeDetailsComponent} from './components/process-node-details/process-node-details.component';
 import {SpreadsheetTabDetailsComponent} from './components/spreadsheet-tab-details/spreadsheet-tab-details.component';
@@ -32,6 +35,8 @@ import {SubmissionRoutingModule} from "./submission-routing.module";
     ValidationSummaryComponent,
     SubmitComponent,
     MetadataListComponent,
+    MetadataCreationComponent,
+    MetadataDetailsDialogComponent,
     FilesComponent,
     EntityValidationSummaryComponent,
     MetadataPickerComponent,
@@ -54,6 +59,7 @@ import {SubmissionRoutingModule} from "./submission-routing.module";
     SubmissionRoutingModule,
     SharedModule,
     MetadataSchemaFormModule,
+    MatDialogModule,
   ]
 })
 export class SubmissionModule {

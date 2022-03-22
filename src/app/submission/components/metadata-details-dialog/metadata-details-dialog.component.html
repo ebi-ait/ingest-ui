@@ -1,6 +1,6 @@
-<h2 mat-dialog-title> Edit {{dialogData['metadata']['type']}} - {{dialogData['metadata']['uuid']['uuid']}}</h2>
+<h2 mat-dialog-title>{{dialogTitle}}</h2>
 <br/>
-<ng-container *ngFor="let error of metadata['validationErrors']">
+<ng-container *ngFor="let error of validationErrors">
   <span class="vf-u-text-color--red" title="{{error['message']}}">{{error['absoluteDataPath']}}
     : {{error['message']}}</span><br>
 </ng-container>
@@ -38,6 +38,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-button (click)="onSave()">Save</button>
+  <button mat-button (click)="onCancel()" [disabled]="saving">Cancel</button>
+  <button mat-button (click)="onSave()" [disabled]="saving">Save</button>
 </mat-dialog-actions>
