@@ -11,13 +11,24 @@ describe('MetadataDetailsDialogComponent', () => {
   let ingestSvc: SpyObj<IngestService>;
   let alertSvc: SpyObj<AlertService>;
   let dialogRef: SpyObj<MatDialogRef<MetadataDetailsDialogComponent>>;
+  let mockMetadataFormComponent: SpyObj<MetadataFormComponent>;
   let mockDialogData: SpyObj<Object>;
 
   beforeEach(() => {
     ingestSvc = jasmine.createSpyObj('IngestService', ['patch', 'post', 'linkProjectToMetadata']);
     alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error', 'success']);
     dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
-    ingestSvc.linkProjectToMetadata.and.returnValue(of({}));
+    mockMetadataFormComponent = jasmine.createSpyObj('MetadataFormComponent', ['getFormData'])
+    ingestSvc.patch.and.returnValue(of({}))
+    ingestSvc.post.and.returnValue(of({_links: { self: { href: '' } }}))
+    ingestSvc.linkProjectToMetadata.and.returnValue(of({}))
+    mockMetadataFormComponent.getFormData.and.returnValue({
+      value: {
+        newData: 'iAmNewData'
+      },
+      valid: true,
+      validationSkipped: false
+    });
   });
 
   describe('DialogData Empty', () => {
@@ -128,15 +139,8 @@ describe('MetadataDetailsDialogComponent', () => {
         metadata: metadata
       };
       mockDialogData = jasmine.createSpyObj('Object',[], defaultMockDialogData);
-      let mockMetadataFormComponent = jasmine.createSpyObj('MetadataFormComponent', ['getFormData']);
       component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
       component.metadataFormComponent = mockMetadataFormComponent;
-      mockMetadataFormComponent.getFormData.and.returnValue(of({
-        value: {
-          newData: 'iAmNewData'
-        }
-      }));
-      ingestSvc.patch.and.returnValue(of({}))
     });
 
     it('should create', () => {
@@ -183,15 +187,7 @@ describe('MetadataDetailsDialogComponent', () => {
       }
       mockDialogData = jasmine.createSpyObj('Object',[], defaultMockDialogData);
       component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
-      let mockMetadataFormComponent = jasmine.createSpyObj('MetadataFormComponent', ['getFormData']);
-      component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
       component.metadataFormComponent = mockMetadataFormComponent;
-      mockMetadataFormComponent.getFormData.and.returnValue(of({
-        value: {
-          newData: 'iAmNewData'
-        }
-      }));
-      ingestSvc.post.and.returnValue(of({_links: { self: { href: 'url' } }}))
     });
 
     it('should create', () => {
@@ -218,7 +214,7 @@ describe('MetadataDetailsDialogComponent', () => {
       expect(component.concreteType).toEqual('concreteType');
     });
 
-    it('should send http post when saved ', () => {
+    it('should send http post and linkProjectToMetadata when saved ', () => {
       // when
       component.ngOnInit();
       component.onSave()
