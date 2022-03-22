@@ -76,7 +76,6 @@ const BROWSER_LOCALE = navigator.language;
     WelcomeComponent,
     ErrorComponent,
     GlobalFooterComponent,
-    GeoAccessionDownloadComponent,
   ],
   imports: [
     AaiSecurity,
