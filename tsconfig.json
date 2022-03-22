@@ -25,6 +25,7 @@
       "@app/*": ["src/app/*"],
       "@shared/*": ["src/app/shared/*"],
       "@projects/*": ["src/app/projects/*"],
+      "@submission/*": ["src/app/submission/*"],
       "@metadata-schema-form/*": ["src/app/metadata-schema-form/*"]
     }
   }

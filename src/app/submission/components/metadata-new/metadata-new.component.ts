@@ -4,7 +4,8 @@ import {IngestService} from '@shared/services/ingest.service';
 import {BrokerService} from '@shared/services/broker.service';
 import {LoaderService} from '@shared/services/loader.service';
 import {SchemaService} from '@shared/services/schema.service';
-import {MetadataDetailsDialogComponent} from '../metadata-details-dialog/metadata-details-dialog.component';
+import {MetadataDetailsDialogComponent} from '@submission/components/metadata-details-dialog/metadata-details-dialog.component';
+import {map, switchMap} from 'rxjs/operators';
 
 interface ConcreteType {
   name: string;
@@ -36,7 +37,6 @@ export class MetadataCreationComponent implements OnInit {
         });
       });
     });
-
   }
 
   constructor(
