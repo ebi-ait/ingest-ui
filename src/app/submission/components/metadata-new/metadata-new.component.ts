@@ -29,13 +29,14 @@ export class MetadataCreationComponent implements OnInit {
   ngOnInit(): void {
     this.domainEntity = this.domainEntity.toLowerCase();
     this.label = `Add new ${this.domainEntity.charAt(0).toUpperCase()}${this.domainEntity.slice(1)}`;
-    this.brokerService.getConcreteTypes(this.domainEntity).subscribe(concreteTypes => {
-      Object.entries(concreteTypes).forEach(([key, value]) => {
-        this.concreteTypes.push({
-          name: key,
-          schemaUrl: value as string
-        });
-      });
+    this.brokerService.getConcreteTypes(this.domainEntity).pipe(
+      map(concreteTypes => Object.entries(concreteTypes)),
+      map(concreteTypes => concreteTypes.map(([key, value]) => ({
+        name: key,
+        schemaUrl: value as string
+      })))
+    ).subscribe(concreteTypes => {
+      this.concreteTypes = concreteTypes
     });
   }
 
