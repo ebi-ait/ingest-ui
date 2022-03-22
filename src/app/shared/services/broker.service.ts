@@ -125,22 +125,14 @@ export class BrokerService {
     };
   }
 
-  convertToSCEA(spreadsheet: any, project_uuid: string, accession_num: number, curators: any,
-                experiment_type: string, experimental_factors: any, public_release_date: string,
-                hca_update_date: string, study: string, output_dir: string, zip_format: string): Observable<any> {
-    let params = new HttpParams();
-    params = params.set('spreadsheet', spreadsheet);
-    params = params.set('project_uuid', project_uuid);
-    params = params.set('accession_number', accession_num);
-    params = params.set('curators', curators);
-    params = params.set('experiment_type', experiment_type);
-    params = params.set('experimental_factors', experimental_factors);
-    params = params.set('public_release_date', public_release_date);
-    params = params.set('hca_update_date', hca_update_date);
-    params = params.set('output_dir', output_dir);
-    params = params.set('zip_format', zip_format);
+  convertToSCEA(params_object: any): Observable<any> {
 
-    return this.http.post(`${this.API_URL}/submit_to_scea`, null,
+    let params = new HttpParams({ fromObject:
+    {
+      params_object
+      }});
+
+    return this.http.post(`${this.API_URL}/convert_to_scea`, null,
       {params:params, responseType: 'blob', observe: 'response'})
       .pipe(
         catchError(this.parseErrorBlob),

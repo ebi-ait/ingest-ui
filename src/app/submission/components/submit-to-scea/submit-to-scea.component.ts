@@ -16,25 +16,8 @@ import {FormGroup, FormControl, Validators} from '@angular/forms';
 export class SubmitToSCEAComponent implements OnInit {
 
   @Input() project$: Observable<Project>;
-  @Input() submissionEnvelopeId;
   @Input() submissionEnvelope$;
-  @Input() isSubmitted: boolean;
-  @Input() submissionUrl: string;
-  @Input() isLinkingDone: boolean;
-  @Input() manifest: object;
   releaseDate: string;
-  project_uuid: string;
-  accession_num: number;
-  curator: string[];
-  experiment_type: string;
-  factor_values: string[];
-  public_release_date: string;
-  hca_update_date: string;
-  study_accession: string;
-  test: string;
-  spreadsheet: any;
-  output_dir: string;
-  zip_format: string;
 
   sceaForm = new FormGroup({
     project_uuid: new FormControl('', Validators.required),
@@ -62,32 +45,26 @@ export class SubmitToSCEAComponent implements OnInit {
   }
 
   onFilledForm() {
-    this.project_uuid = this.sceaForm.get('project_uuid').value;
-    this.accession_num = this.sceaForm.get('accession_num').value;
-    this.curator = this.sceaForm.get('curator').value;
-    this.experiment_type = this.sceaForm.get('experiment_type').value;
-    this.factor_values = this.sceaForm.get('factor_values').value;
-    this.public_release_date = this.sceaForm.get('public_release_date').value;
-    this.hca_update_date = this.sceaForm.get('hca_update_date').value;
-    this.study_accession = this.sceaForm.get('study_accession').value;
-    this.output_dir = 'hca2scea_output';
-    this.zip_format = 'yes';
+    this.params_object = {
+      spreadsheet: this.spreadsheet,
+      project_uuid: this.sceaForm.get('project_uuid').value,
+      accession_number: this.sceaForm.get('accession_num').value,
+      curators: this.sceaForm.get('curator').value,
+      experiment_type: this.sceaForm.get('experiment_type').value,
+      experimental_factors: this.sceaForm.get('factor_values').value,
+      public_release_date: this.sceaForm.get('public_release_date').value,
+      hca_update_date: this.sceaForm.get('hca_update_date').value,
+      output_dir: 'hca2scea_output',
+      zip_format: 'yes'
+    };
   }
 
   requestConvertToSCEA() {
     console.log('requestConvertToSCEA');
     this.onFilledForm();
-    this.brokerService.convertToSCEA(this.spreadsheet,this.project_uuid,this.accession_num,this.curator,
-      this.experiment_type,this.factor_values,this.public_release_date,this.hca_update_date,this.study_accession,
-      this.output_dir,this.zip_format)
+    this.brokerService.convertToSCEA(this.params_object)
       .subscribe(
         response => {
-          setTimeout(() => {
-            this.alertService.clear();
-            this.loaderService.display(false);
-            this.alertService.success('', 'Your dataset should start converting shortly.');
-          }, 3000);
-
           const filename = response['filename'];
           const blob = new Blob([response['data']]);
           this.saveFileService.saveFile(blob, filename);
@@ -95,7 +72,7 @@ export class SubmitToSCEAComponent implements OnInit {
         },
         err => {
           this.loaderService.display(false);
-          this.alertService.error('', 'An error occurred on the request to export your SCEA submission.');
+          this.alertService.error('', 'An error occurred on the request to convert your HCA dataset to SCEA format.');
           console.log(err);
 
         }
