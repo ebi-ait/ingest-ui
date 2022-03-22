@@ -19,7 +19,7 @@ interface ConcreteType {
 })
 
 export class MetadataCreationComponent implements OnInit {
-  @Input() domainEntity: string; //biomaterial/protocol/process
+  @Input() domainEntity: string;
   @Input() projectId: string;
   @Input() postUrl: string;
   concreteTypes: ConcreteType[] = [];
