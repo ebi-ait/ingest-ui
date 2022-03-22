@@ -181,7 +181,6 @@ describe('MetadataDetailsDialogComponent', () => {
       }
       mockDialogData = jasmine.createSpyObj('Object',[], defaultMockDialogData);
       component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
-      mockDialogData = jasmine.createSpyObj('Object',[], defaultMockDialogData);
       let mockMetadataFormComponent = jasmine.createSpyObj('MetadataFormComponent', ['getFormData']);
       component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
       component.metadataFormComponent = mockMetadataFormComponent;
