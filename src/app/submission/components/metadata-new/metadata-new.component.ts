@@ -50,12 +50,6 @@ export class MetadataCreationComponent implements OnInit {
 
   }
 
-  clickNew() {
-    if (this.concreteTypes.length === 1) {
-      this.chooseType(this.concreteTypes[0].schemaUrl)
-    }
-  }
-
   chooseType(schemaUrl: string) {
     this.loaderService.display(true);
     this.schemaService.getDereferencedSchema(schemaUrl)
