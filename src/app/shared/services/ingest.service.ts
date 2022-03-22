@@ -368,9 +368,7 @@ export class IngestService {
     return this.http.get(`${this.API_URL}/projects/filter`, {params: params}).pipe((map(data => data as ListResult<Project>)));
   }
 
-  getProjectsUsingCriteria(criteria: object): Observable<Project[]>{
-    const query = [];
-    query.push(criteria);
+  getProjectsUsingCriteria(query: Criteria[]): Observable<Project[]>{
     return this.queryProjects(query).pipe(
       map(data => data?._embedded?.projects || []),
     );

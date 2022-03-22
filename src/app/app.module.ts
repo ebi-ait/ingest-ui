@@ -23,7 +23,6 @@ import {AppComponent} from './app.component';
 
 import {ROUTES} from './app.routes';
 import {ErrorComponent} from './error/error.component';
-import {GeoAccessionDownloadComponent} from './geo-accession-download/geo-accession-download.component';
 
 import {GlobalFooterComponent} from './global-footer/global-footer.component';
 import {GlobalHeaderComponent} from './global-header/global-header.component';
@@ -33,9 +32,7 @@ import {LoginComponent} from './login/login.component';
 import {MaterialModule} from './material.module';
 import {MetadataSchemaFormModule} from '@metadata-schema-form/metadata-schema-form.module';
 import {MyProjectsComponent} from './my-projects/my-projects.component';
-import {ProjectSummaryComponent} from './project-summary/project-summary.component';
 
-import {ProjectComponent} from './project/project.component';
 import {AllProjectsComponent} from './projects/pages/all-projects/all-projects.component';
 import {ProjectsModule} from './projects/projects.module';
 import {RegistrationComponent} from './registration/registration.component';
@@ -63,11 +60,9 @@ const BROWSER_LOCALE = navigator.language;
     AppComponent,
     SubmissionListComponent,
     GlobalNavigationComponent,
-    ProjectComponent,
     ProjectListComponent,
     AllProjectsComponent,
     LoginComponent,
-    ProjectSummaryComponent,
     AlertComponent,
     AaiCallbackComponent,
     MyProjectsComponent,

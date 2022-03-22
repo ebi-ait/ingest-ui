@@ -17,11 +17,11 @@ import {GeoService} from "@projects/services/geo.service";
 })
 export class AutofillProjectFormComponent implements OnInit {
   publicationDoiCtrl: FormControl;
-  geoAccessionCtrl: FormControl;
+  accessionCtrl: FormControl;
   projectInCache$: Observable<Project>;
   loading = false;
   hasDoi: boolean;
-  hasGeo: boolean;
+  hasAccession: boolean;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -38,9 +38,9 @@ export class AutofillProjectFormComponent implements OnInit {
       Validators.required,
       Validators.pattern(/^10.\d{4,9}\/[-._;()\/:A-Z0-9]+$/i)
     ]));
-    this.geoAccessionCtrl = new FormControl('', Validators.compose([
+    this.accessionCtrl = new FormControl('', Validators.compose([
       Validators.required,
-      Validators.pattern(/^GSE.*$/i)
+      Validators.pattern(/^(GSE|SRP|ERP).*$/i)
     ]));
     this.projectInCache$ = from(this.projectCacheService.getProject());
 
@@ -72,9 +72,9 @@ export class AutofillProjectFormComponent implements OnInit {
   submitForm() {
     this.alertService.clear();
 
-    if (this.publicationDoiCtrl.invalid && this.geoAccessionCtrl.invalid) {
+    if (this.publicationDoiCtrl.invalid && this.accessionCtrl.invalid) {
       this.publicationDoiCtrl.markAsTouched();
-      this.geoAccessionCtrl.markAsTouched();
+      this.accessionCtrl.markAsTouched();
       return;
     }
 
@@ -83,20 +83,20 @@ export class AutofillProjectFormComponent implements OnInit {
       this.doiService.importProjectUsingDoi(doi);
     }
 
-    const geoAccession = this.geoAccessionCtrl.value;
-    if (this.hasGeo && geoAccession) {
-      this.geoService.importProjectUsingGeo(geoAccession);
+    const accession = this.accessionCtrl.value;
+    if (this.hasAccession && accession) {
+      this.geoService.importProject(accession);
     }
   }
 
   onDoiExistence($event: string) {
     this.hasDoi = $event == 'Yes' ? true : false;
-    this.hasGeo = this.hasDoi && (this.hasGeo != undefined || this.hasGeo) ? false : this.hasGeo;
+    this.hasAccession = this.hasDoi && (this.hasAccession != undefined || this.hasAccession) ? false : this.hasAccession;
   }
 
-  onGEOAccessionExistence($event: string) {
-    this.hasGeo = $event == 'Yes' ? true : false;
-    this.hasDoi = this.hasGeo && (this.hasDoi != undefined || this.hasDoi) ? false : this.hasDoi;
+  onAccessionExistence($event: string) {
+    this.hasAccession = $event == 'Yes' ? true : false;
+    this.hasDoi = this.hasAccession && (this.hasDoi != undefined || this.hasDoi) ? false : this.hasDoi;
   }
 
   restoreProject() {
