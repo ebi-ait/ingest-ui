@@ -14,6 +14,12 @@ describe('MetadataDetailsDialogComponent', () => {
   let mockMetadataFormComponent: SpyObj<MetadataFormComponent>;
   let mockDialogData: SpyObj<Object>;
 
+  function newComponentFromDialogData(dialogData: Object): MetadataDetailsDialogComponent {
+    mockDialogData = jasmine.createSpyObj('Object', [], dialogData);
+    return new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
+  }
+
+
   beforeEach(() => {
     ingestSvc = jasmine.createSpyObj('IngestService', ['patch', 'post', 'linkProjectToMetadata']);
     alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error', 'success']);
@@ -64,10 +70,9 @@ describe('MetadataDetailsDialogComponent', () => {
     }, {
       schema: schema,
       postUrl: postUrl,
-    }].forEach(test => {
+    }].forEach(testDialogData => {
       it('should throw error on init', () => {
-        mockDialogData = jasmine.createSpyObj('Object', [], test);
-        component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
+        component = newComponentFromDialogData(testDialogData);
         expect(component).toBeTruthy();
 
         //when
@@ -106,10 +111,9 @@ describe('MetadataDetailsDialogComponent', () => {
       schema: {'$id': schema_url_2},
       postUrl: postUrl,
       projectId: projectId
-    }].forEach(test => {
+    }].forEach(testDialogData => {
       it('should detect the correct domainEntity', () => {
-        mockDialogData = jasmine.createSpyObj('Object',[], test);
-        component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
+        component = newComponentFromDialogData(testDialogData);
 
         //when
         component.ngOnInit();
@@ -134,12 +138,11 @@ describe('MetadataDetailsDialogComponent', () => {
     };
 
     beforeEach(() => {
-      const defaultMockDialogData = {
+      const testDialogData = {
         schema: schema,
         metadata: metadata
       };
-      mockDialogData = jasmine.createSpyObj('Object',[], defaultMockDialogData);
-      component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
+      component = newComponentFromDialogData(testDialogData);
       component.metadataFormComponent = mockMetadataFormComponent;
     });
 
@@ -180,13 +183,12 @@ describe('MetadataDetailsDialogComponent', () => {
     const projectId = 'iAmNotAProject';
 
     beforeEach(() => {
-      const defaultMockDialogData = {
+      const testDialogData = {
         schema: schema,
         postUrl: postUrl,
         projectId: projectId
       }
-      mockDialogData = jasmine.createSpyObj('Object',[], defaultMockDialogData);
-      component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
+      component = newComponentFromDialogData(testDialogData);
       component.metadataFormComponent = mockMetadataFormComponent;
     });
 
