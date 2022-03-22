@@ -119,13 +119,13 @@ export class MetadataDetailsDialogComponent implements OnInit {
   }
 
   onSave() {
-    this.config.viewMode = true;
-    this.saving = true;
     const newContent = this.metadataFormComponent.getFormData()['value'];
     if (isEqual(this.content, newContent)) {
       this.errorMessage = 'There are no changes done.';
       return
     }
+    this.config.viewMode = true;
+    this.saving = true;
     let response: Observable<any>;
     const patch = {'content': newContent};
     if (this.saveAction == SaveAction.POST){
