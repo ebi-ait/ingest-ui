@@ -164,7 +164,8 @@
 
 
     <!--uuid-->
-    <ngx-datatable-column prop="uuid.uuid" name="uuid" *ngIf="metadataType !== 'bundleManifests'">
+    <ngx-datatable-column *ngIf="rows.length > 0 && getMetadataType(rows[0]) !== 'bundleManifests'" name="uuid"
+                          prop="uuid.uuid">
       <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row"
                    let-column="column">
         <span title="{{value}}">{{value}}</span>
