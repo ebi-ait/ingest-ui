@@ -18,6 +18,8 @@ export class SubmitToSCEAComponent implements OnInit {
   @Input() project$: Observable<Project>;
   @Input() submissionEnvelope$;
   releaseDate: string;
+  params_object: any;
+  spreadsheet: any;
 
   sceaForm = new FormGroup({
     project_uuid: new FormControl('', Validators.required),
