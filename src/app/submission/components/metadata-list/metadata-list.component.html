@@ -120,6 +120,15 @@
       </ng-template>
     </ngx-datatable-column>
 
+    <!--delete-->
+    <ngx-datatable-column [width]="'130'" name="delete" prop="_links.self.href">
+      <ng-template let-row="row" let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
+        <a (click)="delete(rowIndex)" href="javascript:void(0)">
+          <mat-icon [ngStyle]="{'color': 'lightgrey'}">delete</mat-icon>
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
+
     <!--State Column-->
     <ngx-datatable-column *ngIf="config && config.displayState" prop="validationState" name="state" [width]="'130'">
       <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">

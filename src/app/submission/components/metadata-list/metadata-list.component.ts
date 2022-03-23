@@ -1,11 +1,13 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {MetadataDetailsDialogComponent} from '@submission/components/metadata-details-dialog/metadata-details-dialog.component';
 import {INVALID_FILE_TYPES, METADATA_VALIDATION_STATES} from '@shared/constants';
+import {MetadataDocument} from '@shared/models/metadata-document';
+import {AlertService} from '@shared/services/alert.service';
 import {FlattenService} from '@shared/services/flatten.service';
 import {IngestService} from '@shared/services/ingest.service';
 import {LoaderService} from '@shared/services/loader.service';
 import {SchemaService} from '@shared/services/schema.service';
+import {MetadataDetailsDialogComponent} from '@submission/components/metadata-details-dialog/metadata-details-dialog.component';
 
 @Component({
   selector: 'app-metadata-list',
@@ -52,6 +54,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
               private flattenService: FlattenService,
               private schemaService: SchemaService,
               private loaderService: LoaderService,
+              private alertService: AlertService,
               public dialog: MatDialog) {
     this.validationStates = Object.values(METADATA_VALIDATION_STATES);
   }
@@ -213,6 +216,25 @@ export class MetadataListComponent implements OnInit, OnDestroy {
           disableClose: true
         });
       });
+  }
+
+  delete(rowIndex: number): void {
+    const metadata: MetadataDocument = this.metadataList[rowIndex];
+    this.loaderService.display(true);
+    this.ingestService.deleteMetadata(metadata._links.self.href).subscribe(() => {
+      this.alertService.clear();
+      this.alertService.success(
+        'Success',
+        `Entity ${metadata.uuid.uuid} has been successfully deleted.`
+      );
+      this.loaderService.display(false);
+    }, error => {
+      const error_message = `It was not possible to delete entity: ${metadata.uuid.uuid}.`;
+      console.error(error_message, error);
+      this.alertService.clear();
+      this.alertService.error('Error', error_message);
+      this.loaderService.display(false);
+    });
   }
 
   toggleExpandRow(row: object, rowIndex: number) {
