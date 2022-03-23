@@ -132,7 +132,7 @@ export class BrokerService {
       params_object
       }});
 
-    return this.http.post(`${this.API_URL}/convert_to_scea`, null,
+    return this.http.post(`${this.API_URL}/get-scea-files`, null,
       {params:params, responseType: 'blob', observe: 'response'})
       .pipe(
         catchError(this.parseErrorBlob),
