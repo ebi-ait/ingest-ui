@@ -8,7 +8,7 @@ import {AlertService} from '@shared/services/alert.service';
 import {IngestService} from '@shared/services/ingest.service';
 import {isEqual} from 'lodash';
 import {Observable} from 'rxjs';
-import {switchMap, tap} from 'rxjs/operators';
+import {switchMap} from 'rxjs/operators';
 
 enum SaveAction{
   PATCH,
@@ -138,14 +138,14 @@ export class MetadataDetailsDialogComponent implements OnInit {
     response.subscribe(() => {
       this.content = newContent;
       this.alertService.clear();
-      this.alertService.success('Success',
-        `${this.dialogTitle} has been successful`);
+      const msg = `${this.dialogTitle} has been saved successfully.`;
+      this.alertService.success('Success', msg);
       this.dialogRef.close();
     }, err => {
       console.error(err);
       this.alertService.clear();
       this.alertService.error('Error',
-        `${this.dialogTitle} has not been successful due to ${err.toString()}`);
+        `${this.dialogTitle} has not been successfully saved due to ${err.toString()}`);
       this.dialogRef.close();
     });
   }
