@@ -1,126 +1,91 @@
 import SpyObj = jasmine.SpyObj;
-import {MatDialogRef} from "@angular/material/dialog";
-import {MetadataFormComponent} from "@metadata-schema-form/metadata-form/metadata-form.component";
+import {MatDialogRef} from '@angular/material/dialog';
+import {MetadataFormComponent} from '@metadata-schema-form/metadata-form/metadata-form.component';
 import {AlertService} from '@shared/services/alert.service';
-import {IngestService} from '@shared/services/ingest.service';
 import {MetadataDetailsDialogComponent} from './metadata-details-dialog.component';
-import {of} from 'rxjs';
 
 describe('MetadataDetailsDialogComponent', () => {
   let component: MetadataDetailsDialogComponent;
-  let ingestSvc: SpyObj<IngestService>;
   let alertSvc: SpyObj<AlertService>;
   let dialogRef: SpyObj<MatDialogRef<MetadataDetailsDialogComponent>>;
   let mockMetadataFormComponent: SpyObj<MetadataFormComponent>;
   let mockDialogData: SpyObj<Object>;
 
-  function newComponentFromDialogData(dialogData: Object): MetadataDetailsDialogComponent {
-    mockDialogData = jasmine.createSpyObj('Object', [], dialogData);
-    return new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, mockDialogData);
+  function newComponentFromDialogData(dialogData: Object) {
+    if (Object.keys(dialogData).length > 0) {
+      mockDialogData = jasmine.createSpyObj('Object', [], dialogData);
+      component = new MetadataDetailsDialogComponent(alertSvc, dialogRef, mockDialogData);
+    } else {
+      component = new MetadataDetailsDialogComponent(alertSvc, dialogRef, {});
+    }
+    component.metadataFormComponent = mockMetadataFormComponent;
+    spyOn(component.metadataSaved, 'emit');
   }
 
-
   beforeEach(() => {
-    ingestSvc = jasmine.createSpyObj('IngestService', ['patch', 'post', 'linkProjectToMetadata']);
     alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error', 'success']);
     dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
-    mockMetadataFormComponent = jasmine.createSpyObj('MetadataFormComponent', ['getFormData'])
-    ingestSvc.patch.and.returnValue(of({}))
-    ingestSvc.post.and.returnValue(of({_links: { self: { href: '' } }}))
-    ingestSvc.linkProjectToMetadata.and.returnValue(of({}))
-    mockMetadataFormComponent.getFormData.and.returnValue({
-      value: {
-        newData: 'iAmNewData'
-      },
-      valid: true,
-      validationSkipped: false
-    });
+    mockMetadataFormComponent = jasmine.createSpyObj('MetadataFormComponent', ['getFormData']);
   });
 
   describe('DialogData Empty', () => {
     beforeEach(() => {
-      component = new MetadataDetailsDialogComponent(ingestSvc, alertSvc, dialogRef, {});
+      newComponentFromDialogData({});
     });
 
     it('should create', () => {
       expect(component).toBeTruthy();
     });
 
-    it('Dialog box close should be called when cancel is clicked', () => {
+    it('should log error and close when no schema is passed', () => {
       // when
-      component.onCancel();
+      component.ngOnInit();
 
       //then
       expect(dialogRef.close).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('DialogData Error', () => {
-    const schema = {
-      '$id': 'https://schemaService/type/domainEntity/version/concreteType'
-    };
-    const postUrl = 'iAmNotAUrl';
-    const projectId = 'iAmNotAProject';
-
-    [{
-      schema: schema,
-    }, {
-      schema: schema,
-      projectId: projectId
-    }, {
-      schema: schema,
-      postUrl: postUrl,
-    }].forEach(testDialogData => {
-      it('should throw error on init', () => {
-        component = newComponentFromDialogData(testDialogData);
-        expect(component).toBeTruthy();
-
-        //when
-        component.ngOnInit();
-
-        // then
-        expect(alertSvc.error).toHaveBeenCalledTimes(1);
-        expect(dialogRef.close).toHaveBeenCalledTimes(1);
-      });
-
+      expect(alertSvc.error).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('DialogData Schema Detection',() => {
     const schema_url_1 = 'https://schemaService/type/domainEntity/version/concreteType';
     const schema_url_2 = 'https://schemaService/type/domainEntity/itsatrap/version/concreteType';
-    const postUrl = 'iAmNotAUrl';
-    const projectId = 'iAmNotAProject';
-    const metadata = {
-      content: {},
-      validationErrors: [],
-      uuid: { uuid: '' },
-      _links: { self: { href:'' } }
-    };
+
+    function defaultMetadata(schema_url: string) {
+      return {
+        content: {
+          describedBy: schema_url,
+          schema_type: 'domainEntity',
+        },
+        validationErrors: [],
+        uuid: {uuid: ''},
+        _links: {self: {href: ''}}
+      };
+    }
+
     [{
       schema: {'$id': schema_url_1},
-      metadata: metadata
-    },{
+      metadata: defaultMetadata(schema_url_1)
+    }, {
       schema: {'$id': schema_url_2},
-      metadata: metadata
-    },{
+      metadata: defaultMetadata(schema_url_2)
+    }, {
       schema: {'$id': schema_url_1},
-      postUrl: postUrl,
-      projectId: projectId
-    },{
+    }, {
       schema: {'$id': schema_url_2},
-      postUrl: postUrl,
-      projectId: projectId
     }].forEach(testDialogData => {
-      it('should detect the correct domainEntity', () => {
-        component = newComponentFromDialogData(testDialogData);
+      beforeEach(() => {
+        newComponentFromDialogData(testDialogData);
+      });
 
+      it('should detect the correct domainEntity', () => {
         //when
         component.ngOnInit();
 
         //then
-        expect(component.domainEntity).toBe('domainEntity')
+        expect(component.domainEntity).toBe('domainEntity');
       });
+
     });
   });
 
@@ -129,21 +94,21 @@ describe('MetadataDetailsDialogComponent', () => {
     const schema = {
       '$id': schema_url
     };
-    const patchUrl = 'patch.url'
+    const content = {
+      describedBy: schema_url,
+      schema_type: 'domainEntity',
+    };
     const metadata = {
-      content: {},
+      content: content,
       validationErrors: [],
-      uuid: { uuid: '' },
-      _links: { self: { href: patchUrl } }
+      uuid: {uuid: ''},
     };
 
     beforeEach(() => {
-      const testDialogData = {
+      newComponentFromDialogData({
         schema: schema,
         metadata: metadata
-      };
-      component = newComponentFromDialogData(testDialogData);
-      component.metadataFormComponent = mockMetadataFormComponent;
+      });
     });
 
     it('should create', () => {
@@ -155,23 +120,52 @@ describe('MetadataDetailsDialogComponent', () => {
       component.ngOnInit();
 
       // then
-      expect(component.content).toEqual(metadata.content);
+      expect(component.content).toEqual(content);
       expect(component.schema).toEqual(schema);
       expect(component.schemaUrl).toEqual(schema_url);
-      expect(component.saveLink).toEqual(patchUrl);
-      expect(component.saveAction).toEqual(0);
       expect(component.domainEntity).toEqual('domainEntity');
       expect(component.concreteType).toEqual('concreteType');
     });
 
-    it('should send http patch when saved ', () => {
+    it('should not emmit save with no changed content', () => {
+      mockMetadataFormComponent.getFormData.and.returnValue({
+        value: content,
+        valid: true,
+        validationSkipped: false
+      });
+
       // when
       component.ngOnInit();
       component.onSave();
 
-      // then
-      expect(ingestSvc.patch).toHaveBeenCalledTimes(1)
-    })
+      //then
+      expect(component.errorMessage).toEqual('There are no changes done.');
+      expect(component.config.viewMode).toEqual(false);
+      expect(component.metadataSaved.emit).toHaveBeenCalledTimes(0);
+      expect(dialogRef.close).toHaveBeenCalledTimes(0);
+    });
+
+    it('should emmit save if content has changed', () => {
+      let expected_content = {
+        describedBy: schema_url,
+        schema_type: 'domainEntity',
+        new_key: 'newData'
+      };
+      mockMetadataFormComponent.getFormData.and.returnValue({
+        value: expected_content,
+        valid: true,
+        validationSkipped: false
+      });
+
+      // when
+      component.ngOnInit();
+      component.onSave();
+
+      //then
+      expect(component.config.viewMode).toEqual(true);
+      expect(component.metadataSaved.emit).toHaveBeenCalledOnceWith(expected_content);
+      expect(dialogRef.close).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('DialogData Create Mode', () => {
@@ -179,17 +173,15 @@ describe('MetadataDetailsDialogComponent', () => {
     const schema = {
       '$id': schema_url
     };
-    const postUrl = 'iAmNotAUrl';
-    const projectId = 'iAmNotAProject';
+    const content = {
+      describedBy: schema_url,
+      schema_type: 'domainEntity',
+    };
 
     beforeEach(() => {
-      const testDialogData = {
+      newComponentFromDialogData({
         schema: schema,
-        postUrl: postUrl,
-        projectId: projectId
-      }
-      component = newComponentFromDialogData(testDialogData);
-      component.metadataFormComponent = mockMetadataFormComponent;
+      });
     });
 
     it('should create', () => {
@@ -197,33 +189,56 @@ describe('MetadataDetailsDialogComponent', () => {
     });
 
     it('should init correctly', () => {
-      const new_content = {
-        describedBy: schema_url,
-        schema_type: 'domainEntity',
-      };
-
       //when
       component.ngOnInit();
 
       // then
-      expect(component.content).toEqual(new_content);
+      expect(component.content).toEqual(content);
       expect(component.schema).toEqual(schema);
       expect(component.schemaUrl).toEqual(schema_url);
-      expect(component.saveLink).toEqual(postUrl);
-      expect(component.saveAction).toEqual(1);
-      expect(component.projectId).toEqual(projectId);
       expect(component.domainEntity).toEqual('domainEntity');
       expect(component.concreteType).toEqual('concreteType');
     });
 
-    it('should send http post and linkProjectToMetadata when saved ', () => {
+
+    it('should not emmit save with no changed content', () => {
+      mockMetadataFormComponent.getFormData.and.returnValue({
+        value: content,
+        valid: true,
+        validationSkipped: false
+      });
+
       // when
       component.ngOnInit();
-      component.onSave()
+      component.onSave();
 
-      // then
-      expect(ingestSvc.post).toHaveBeenCalledTimes(1);
-      expect(ingestSvc.linkProjectToMetadata).toHaveBeenCalledTimes(1)
-    })
+      //then
+      expect(component.errorMessage).toEqual('There are no changes done.');
+      expect(component.config.viewMode).toEqual(false);
+      expect(component.metadataSaved.emit).toHaveBeenCalledTimes(0);
+      expect(dialogRef.close).toHaveBeenCalledTimes(0);
+    });
+
+    it('should emmit save if content has changed', () => {
+      let expected_content = {
+        describedBy: schema_url,
+        schema_type: 'domainEntity',
+        new_key: 'newData'
+      };
+      mockMetadataFormComponent.getFormData.and.returnValue({
+        value: expected_content,
+        valid: true,
+        validationSkipped: false
+      });
+
+      // when
+      component.ngOnInit();
+      component.onSave();
+
+      //then
+      expect(component.config.viewMode).toEqual(true);
+      expect(component.metadataSaved.emit).toHaveBeenCalledOnceWith(expected_content);
+      expect(dialogRef.close).toHaveBeenCalledTimes(1);
+    });
   });
 });

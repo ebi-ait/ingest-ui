@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {INVALID_FILE_TYPES, METADATA_VALIDATION_STATES} from '@shared/constants';
 import {MetadataDocument} from '@shared/models/metadata-document';
@@ -44,6 +44,12 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   @Input() projectId: string;
+
+  @Output()
+  metadataRemoved = new EventEmitter<any>();
+
+  @Output()
+  metadataUpdated = new EventEmitter<MetadataDocument>();
 
   rows: any[];
   expandAll: boolean;
@@ -214,8 +220,26 @@ export class MetadataListComponent implements OnInit, OnDestroy {
           data: {metadata: metadata, schema: data},
           width: '60%',
           disableClose: true
-        });
+        }).componentInstance.metadataSaved.subscribe(changedMetadata => this.saveMetadataEdits(rowIndex, changedMetadata));
       });
+  }
+
+  saveMetadataEdits(rowIndex, changedMetadata) {
+    const originalDoc: MetadataDocument = this.metadataList[rowIndex];
+    const patch = {'content': changedMetadata};
+
+    this.ingestService.patch<MetadataDocument>(originalDoc._links.self.href, patch).subscribe(updatedDoc => {
+      this.metadataList[rowIndex] = updatedDoc;
+      this.alertService.clear();
+      const msg = `${updatedDoc.type} ${updatedDoc.uuid.uuid} has been updated.`;
+      this.alertService.success('Success', msg);
+      this.metadataUpdated.emit(updatedDoc);
+    }, err => {
+      console.error(err);
+      this.alertService.clear();
+      this.alertService.error('Error',
+        `${originalDoc.type} ${originalDoc.uuid.uuid} has not been updated due to ${err.toString()}`);
+    });
   }
 
   delete(rowIndex: number): void {
@@ -225,11 +249,12 @@ export class MetadataListComponent implements OnInit, OnDestroy {
       this.alertService.clear();
       this.alertService.success(
         'Success',
-        `Entity ${metadata.uuid.uuid} has been successfully deleted.`
+        `${metadata.type} ${metadata.uuid.uuid} has been successfully deleted.`
       );
       this.loaderService.display(false);
+      this.metadataRemoved.emit(metadata);
     }, error => {
-      const error_message = `It was not possible to delete entity: ${metadata.uuid.uuid}.`;
+      const error_message = `It was not possible to delete ${metadata.type}: ${metadata.uuid.uuid}.`;
       console.error(error_message, error);
       this.alertService.clear();
       this.alertService.error('Error', error_message);
