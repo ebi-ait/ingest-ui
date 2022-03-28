@@ -69,7 +69,7 @@ export class MetadataCreationComponent implements OnInit {
       });
   }
 
-  private saveNewMetadata(newMetadata: any) {
+  saveNewMetadata(newMetadata: any) {
     const post = {'content': newMetadata};
     this.ingestService.post<MetadataDocument>(this.postUrl, post).pipe(
       tap(newDocument => this.ingestService.linkProjectToMetadata<Object>(newDocument._links.self.href, this.projectId))
