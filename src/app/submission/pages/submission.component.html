@@ -81,6 +81,7 @@
         <app-metadata-list [dataSource]="biomaterialsDataSource"
                            [projectId]="projectId"
                            [config]="{displayLinking: true}"
+                           (metadataRemoved)="removeFromManifest('expectedBiomaterials')"
                            [expectedCount]="manifest ? manifest['expectedBiomaterials'] : null"></app-metadata-list>
       </ng-template>
     </mat-tab>
@@ -92,9 +93,8 @@
                           [postUrl]="url.concat('/processes')"></app-metadata-new>
         <app-metadata-list [dataSource]="processesDataSource"
                            [projectId]="projectId"
-                           (
                            [expectedCount]="manifest ? manifest['expectedProcesses'] : null"
-        ></app-metadata-list>
+                           (metadataRemoved)="removeFromManifest('expectedProcesses')"></app-metadata-list>
       </ng-template>
     </mat-tab>
     <mat-tab label="Protocols">
@@ -106,6 +106,7 @@
         <app-metadata-list [dataSource]="protocolsDataSource"
                            [projectId]="projectId"
                            [config]="{displayLinking: true}"
+                           (metadataRemoved)="removeFromManifest('expectedProtocols')"
                            [expectedCount]="manifest ? manifest['expectedProtocols'] : null"></app-metadata-list>
       </ng-template>
     </mat-tab>
