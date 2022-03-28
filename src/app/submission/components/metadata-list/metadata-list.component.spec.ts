@@ -46,6 +46,8 @@ describe('MetadataListComponent', () => {
     };
     mockDoc = {
       content: mockContent,
+      type: 'Test Type',
+      uuid: {uuid: 'uuid'},
       _links: {self: {href: 'metadataUri'}}
     };
     mockData = {
@@ -87,24 +89,22 @@ describe('MetadataListComponent', () => {
   });
 
   it('should save edits ', () => {
-    const input = {
+    const new_content = {
+      describedBy: 'schemaUrl',
       newKey: 'newData'
     };
-    const expected_content = {
-      type: 'Test Type',
-      uuid: {uuid: 'uuid'}
-    };
-    ingestSvc.patch.and.returnValue(of(expected_content));
+    mockDoc['content'] = new_content;
+    ingestSvc.patch.and.returnValue(of(mockDoc));
 
     //when
-    component.saveMetadataEdits(0, input);
+    component.saveMetadataEdits(0, new_content);
 
     //then
-    expect(ingestSvc.patch).toHaveBeenCalledOnceWith('metadataUri', {'content': input});
-    expect(component.metadataList[0]).toEqual(expected_content);
+    expect(ingestSvc.patch).toHaveBeenCalledOnceWith('metadataUri', {'content': new_content});
+    expect(component.metadataList[0]).toEqual(mockDoc);
     expect(alertSvc.clear).toHaveBeenCalledTimes(1);
     expect(alertSvc.success).toHaveBeenCalledTimes(1);
-    expect(component.metadataUpdated.emit).toHaveBeenCalledTimes(1);
+    expect(component.metadataUpdated.emit).toHaveBeenCalledOnceWith(mockDoc);
   });
 
   it('should delete with delete ', () => {
