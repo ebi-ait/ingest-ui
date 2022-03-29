@@ -1,5 +1,5 @@
 import SpyObj = jasmine.SpyObj;
-import {EventEmitter} from '@angular/core';
+import {EventEmitter, Output} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {AlertService} from '@shared/services/alert.service';
@@ -10,6 +10,11 @@ import {SchemaService} from '@shared/services/schema.service';
 import {MetadataDetailsDialogComponent} from '@submission/components/metadata-details-dialog/metadata-details-dialog.component';
 import {MetadataListComponent} from '@submission/components/metadata-list/metadata-list.component';
 import {of} from 'rxjs';
+
+export class FakeMetadataDetailsDialogComponent implements Partial<MetadataDetailsDialogComponent> {
+  @Output()
+  metadataSaved = new EventEmitter<any>();
+}
 
 describe('MetadataListComponent', () => {
   let component: MetadataListComponent;
@@ -22,25 +27,40 @@ describe('MetadataListComponent', () => {
   let alertSvc: SpyObj<AlertService>;
   let dialogSvc: SpyObj<MatDialog>;
   let dialogRefSvc: SpyObj<MatDialogRef<MetadataDetailsDialogComponent>>;
-  let detailsDialogSvc: SpyObj<MetadataDetailsDialogComponent>;
+  let fakeDialogComponent: FakeMetadataDetailsDialogComponent;
   let dataSourceSvc: SpyObj<any>;
-  let eventEmitterSvc: SpyObj<EventEmitter<any>>;
 
   let mockContent: any;
   let mockDoc: any;
   let mockData: any;
 
   beforeEach(() => {
+    fakeDialogComponent = new FakeMetadataDetailsDialogComponent();
     ingestSvc = jasmine.createSpyObj('IngestService', ['patch', 'post', 'deleteMetadata']);
     flattenSvc = jasmine.createSpyObj('FlattenService', ['flatten']);
     schemaSvc = jasmine.createSpyObj('SchemaService', ['getUrlOfLatestSchema', 'getDereferencedSchema']);
     loaderSvc = jasmine.createSpyObj('LoaderService', ['display']);
     alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error', 'success']);
     dialogSvc = jasmine.createSpyObj('MatDialog', ['open']);
-    dialogRefSvc = jasmine.createSpyObj('MatDialogRef', [], {'componentInstance': detailsDialogSvc});
-    detailsDialogSvc = jasmine.createSpyObj('MetadataDetailsDialogComponent', [], {'metadataSaved': eventEmitterSvc});
-    eventEmitterSvc = jasmine.createSpyObj('EventEmitter', ['subscribe', 'emit']);
+    dialogRefSvc = jasmine.createSpyObj('MatDialogRef', [], {'componentInstance': fakeDialogComponent});
     dataSourceSvc = jasmine.createSpyObj(['connect', 'disconnect', 'fetch', 'sortBy', 'filterByState'], {'resourceType': ''});
+
+    TestBed.configureTestingModule({
+      declarations: [MetadataListComponent],
+      providers: [
+        {provide: IngestService, useValue: ingestSvc},
+        {provide: FlattenService, useValue: flattenSvc},
+        {provide: SchemaService, useValue: schemaSvc},
+        {provide: LoaderService, useValue: loaderSvc},
+        {provide: AlertService, useValue: alertSvc},
+        {provide: MatDialog, useValue: dialogSvc},
+        {provide: MatDialogRef, useValue: dialogRefSvc},
+        {provide: MetadataDetailsDialogComponent, useValue: fakeDialogComponent},
+      ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(MetadataListComponent);
+    component = fixture.componentInstance;
+
     mockContent = {
       describedBy: 'schemaUrl'
     };
@@ -55,37 +75,29 @@ describe('MetadataListComponent', () => {
     };
     schemaSvc.getDereferencedSchema.and.returnValue(of({}));
     dialogSvc.open.and.returnValue(dialogRefSvc);
+    //Object.getOwnPropertyDescriptor(dialogRefSvc, 'componentInstance').get().and.returnValue(fakeDialogComponent)
     dataSourceSvc.connect.and.returnValue(of(mockData));
-
-    TestBed.configureTestingModule({
-      declarations: [MetadataListComponent],
-      providers: [
-        {provide: IngestService, useValue: ingestSvc},
-        {provide: FlattenService, useValue: flattenSvc},
-        {provide: SchemaService, useValue: schemaSvc},
-        {provide: LoaderService, useValue: loaderSvc},
-        {provide: AlertService, useValue: alertSvc},
-        {provide: MatDialog, useValue: dialogSvc},
-        {provide: MatDialogRef, useValue: dialogRefSvc},
-        {provide: MetadataDetailsDialogComponent, useValue: detailsDialogSvc},
-        {provide: EventEmitter, useValue: eventEmitterSvc}
-      ],
-    }).compileComponents();
-    fixture = TestBed.createComponent(MetadataListComponent);
-    component = fixture.componentInstance;
     component.dataSource = dataSourceSvc;
-    spyOn(component.metadataUpdated, 'emit');
-    spyOn(component.metadataRemoved, 'emit');
+
     fixture.detectChanges();
   });
 
   it('should open dialog ', () => {
+    //Given
+    spyOn(component, 'saveMetadataEdits');
+    const new_content = {
+      describedBy: 'schemaUrl',
+      newKey: 'newData'
+    };
+
     //when
     component.openDialog(0);
+    fakeDialogComponent.metadataSaved.emit(new_content);
 
     //then
     expect(schemaSvc.getDereferencedSchema).toHaveBeenCalledOnceWith('schemaUrl');
     expect(dialogSvc.open).toHaveBeenCalledTimes(1);
+    expect(component.saveMetadataEdits).toHaveBeenCalledOnceWith(0, new_content);
   });
 
   it('should save edits ', () => {
@@ -104,7 +116,6 @@ describe('MetadataListComponent', () => {
     expect(component.metadataList[0]).toEqual(mockDoc);
     expect(alertSvc.clear).toHaveBeenCalledTimes(1);
     expect(alertSvc.success).toHaveBeenCalledTimes(1);
-    expect(component.metadataUpdated.emit).toHaveBeenCalledOnceWith(mockDoc);
   });
 
   it('should delete with delete ', () => {
@@ -118,6 +129,5 @@ describe('MetadataListComponent', () => {
     expect(alertSvc.clear).toHaveBeenCalledTimes(1);
     expect(alertSvc.success).toHaveBeenCalledTimes(1);
     expect(loaderSvc.display).toHaveBeenCalledTimes(2);
-    expect(component.metadataRemoved.emit).toHaveBeenCalledOnceWith(mockDoc);
   });
 });

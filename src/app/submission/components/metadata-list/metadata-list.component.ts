@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {INVALID_FILE_TYPES, METADATA_VALIDATION_STATES} from '@shared/constants';
 import {MetadataDocument} from '@shared/models/metadata-document';
@@ -44,12 +44,6 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   @Input() projectId: string;
-
-  @Output()
-  metadataRemoved = new EventEmitter<any>();
-
-  @Output()
-  metadataUpdated = new EventEmitter<MetadataDocument>();
 
   rows: any[];
   expandAll: boolean;
@@ -233,7 +227,6 @@ export class MetadataListComponent implements OnInit, OnDestroy {
       this.alertService.clear();
       const msg = `${updatedDoc.type} ${updatedDoc.uuid.uuid} has been updated.`;
       this.alertService.success('Success', msg);
-      this.metadataUpdated.emit(updatedDoc);
     }, err => {
       console.error(err);
       this.alertService.clear();
@@ -252,7 +245,6 @@ export class MetadataListComponent implements OnInit, OnDestroy {
         `${metadata.type} ${metadata.uuid.uuid} has been successfully deleted.`
       );
       this.loaderService.display(false);
-      this.metadataRemoved.emit(metadata);
     }, error => {
       const error_message = `It was not possible to delete ${metadata.type}: ${metadata.uuid.uuid}.`;
       console.error(error_message, error);

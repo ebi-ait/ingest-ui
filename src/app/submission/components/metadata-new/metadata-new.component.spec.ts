@@ -1,5 +1,5 @@
 import SpyObj = jasmine.SpyObj;
-import {EventEmitter} from '@angular/core';
+import {EventEmitter, Output} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {MetadataDocument} from '@shared/models/metadata-document';
@@ -12,6 +12,11 @@ import {MetadataDetailsDialogComponent} from '@submission/components/metadata-de
 import {MetadataCreationComponent} from '@submission/components/metadata-new/metadata-new.component';
 import {of} from 'rxjs';
 
+export class FakeMetadataDetailsDialogComponent implements Partial<MetadataDetailsDialogComponent> {
+  @Output()
+  metadataSaved = new EventEmitter<any>();
+}
+
 describe('MetadataCreationComponent', () => {
   let component: MetadataCreationComponent;
   let fixture: ComponentFixture<MetadataCreationComponent>;
@@ -23,26 +28,18 @@ describe('MetadataCreationComponent', () => {
   let alertSvc: SpyObj<AlertService>;
   let dialogSvc: SpyObj<MatDialog>;
   let dialogRefSvc: SpyObj<MatDialogRef<MetadataDetailsDialogComponent>>;
-  let detailsDialogSvc: SpyObj<MetadataDetailsDialogComponent>;
-  let eventEmitterSvc: SpyObj<EventEmitter<any>>;
-
+  let fakeDialogComponent: FakeMetadataDetailsDialogComponent;
   let brokerConcreteTypes: any;
 
   beforeEach(() => {
+    fakeDialogComponent = new FakeMetadataDetailsDialogComponent();
     ingestSvc = jasmine.createSpyObj('IngestService', ['post', 'linkProjectToMetadata']);
     brokerSvc = jasmine.createSpyObj('BrokerService', ['getConcreteTypes']);
     schemaSvc = jasmine.createSpyObj('SchemaService', ['getDereferencedSchema']);
     loaderSvc = jasmine.createSpyObj('LoaderService', ['display']);
     alertSvc = jasmine.createSpyObj('AlertService', ['clear', 'error', 'success']);
     dialogSvc = jasmine.createSpyObj('MatDialog', ['open']);
-    dialogRefSvc = jasmine.createSpyObj('MatDialogRef', [], {'componentInstance': detailsDialogSvc});
-    detailsDialogSvc = jasmine.createSpyObj('MetadataDetailsDialogComponent', [], {'metadataSaved': eventEmitterSvc});
-    eventEmitterSvc = jasmine.createSpyObj('EventEmitter', ['subscribe', 'emit']);
-    brokerConcreteTypes = {'domain': 'url/to/domain'};
-
-    brokerSvc.getConcreteTypes.and.returnValue(of(brokerConcreteTypes));
-    schemaSvc.getDereferencedSchema.and.returnValue(of({}));
-    dialogSvc.open.and.returnValue(dialogRefSvc);
+    dialogRefSvc = jasmine.createSpyObj('MatDialogRef', [], {'componentInstance': fakeDialogComponent});
 
     TestBed.configureTestingModule({
       declarations: [MetadataCreationComponent],
@@ -53,9 +50,7 @@ describe('MetadataCreationComponent', () => {
         {provide: LoaderService, useValue: loaderSvc},
         {provide: AlertService, useValue: alertSvc},
         {provide: MatDialog, useValue: dialogSvc},
-        {provide: MatDialogRef, useValue: dialogRefSvc},
-        {provide: MetadataDetailsDialogComponent, useValue: detailsDialogSvc},
-        {provide: EventEmitter, useValue: eventEmitterSvc}
+        {provide: MatDialogRef, useValue: dialogRefSvc}
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(MetadataCreationComponent);
@@ -64,6 +59,11 @@ describe('MetadataCreationComponent', () => {
     component.projectId = 'projectId';
     component.postUrl = 'postUrl';
     spyOn(component.metadataAdded, 'emit');
+    brokerConcreteTypes = {'domain': 'url/to/domain'};
+    brokerSvc.getConcreteTypes.and.returnValue(of(brokerConcreteTypes));
+    schemaSvc.getDereferencedSchema.and.returnValue(of({}));
+    dialogSvc.open.and.returnValue(dialogRefSvc);
+    //Object.getOwnPropertyDescriptor(dialogRefSvc, 'componentInstance').get().and.returnValue(fakeDialogComponent)
     fixture.detectChanges();
   });
 
@@ -84,12 +84,18 @@ describe('MetadataCreationComponent', () => {
   });
 
   it('should open dialog on chooseType', () => {
+    //given
+    spyOn(component, 'saveNewMetadata');
+
     //when
+    component.ngOnInit();
     component.chooseType('url/to/domain');
+    fakeDialogComponent.metadataSaved.emit({});
 
     //then
     expect(schemaSvc.getDereferencedSchema).toHaveBeenCalledOnceWith('url/to/domain');
     expect(dialogSvc.open).toHaveBeenCalledTimes(1);
+    expect(component.saveNewMetadata).toHaveBeenCalledOnceWith({});
   });
 
   it('should save additions ', () => {
@@ -115,6 +121,7 @@ describe('MetadataCreationComponent', () => {
     ingestSvc.linkProjectToMetadata.and.returnValue(of({}));
 
     //when
+    component.ngOnInit();
     component.saveNewMetadata(new_content);
 
     //then
