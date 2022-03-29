@@ -122,7 +122,7 @@ describe('MetadataListComponent', () => {
     ingestSvc.deleteMetadata.and.returnValue(of({}));
 
     //when
-    component.delete(0);
+    component.deleteMetadata(mockDoc);
 
     //then
     expect(ingestSvc.deleteMetadata).toHaveBeenCalledOnceWith('metadataUri');

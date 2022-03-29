@@ -123,7 +123,7 @@
     <!--delete-->
     <ngx-datatable-column [width]="'130'" name="delete" prop="_links.self.href">
       <ng-template let-row="row" let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
-        <a (click)="delete(rowIndex)" href="javascript:void(0)">
+        <a (click)="askDelete(rowIndex)" href="javascript:void(0)">
           <mat-icon [ngStyle]="{'color': 'lightgrey'}">delete</mat-icon>
         </a>
       </ng-template>

@@ -235,8 +235,14 @@ export class MetadataListComponent implements OnInit, OnDestroy {
     });
   }
 
-  delete(rowIndex: number): void {
+  askDelete(rowIndex: number): void {
     const metadata: MetadataDocument = this.metadataList[rowIndex];
+    if (confirm(`Are you sure you wish to delete ${metadata.type} ${metadata.uuid.uuid}?`)) {
+      this.deleteMetadata(metadata);
+    }
+  }
+
+  deleteMetadata(metadata: MetadataDocument): void {
     this.loaderService.display(true);
     this.ingestService.deleteMetadata(metadata._links.self.href).subscribe(() => {
       this.alertService.clear();
