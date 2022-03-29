@@ -127,7 +127,7 @@ describe('MetadataDetailsDialogComponent', () => {
       expect(component.concreteType).toEqual('concreteType');
     });
 
-    it('should not emmit save with no changed content', () => {
+    it('should not emit save with no changed content', () => {
       mockMetadataFormComponent.getFormData.and.returnValue({
         value: content,
         valid: true,
@@ -201,7 +201,7 @@ describe('MetadataDetailsDialogComponent', () => {
     });
 
 
-    it('should not emmit save with no changed content', () => {
+    it('should not emit save with no changed content', () => {
       mockMetadataFormComponent.getFormData.and.returnValue({
         value: content,
         valid: true,

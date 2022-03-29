@@ -50,7 +50,7 @@ export class MetadataDetailsDialogComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.dialogData.hasOwnProperty('schema')) {
-      this.alertService.error('Error: No schema to start form!', 'This is probably our fault rather than yours, please contact your wrangler or developer.');
+      this.alertService.error('Error: No schema to start from!', 'This is probably our fault rather than yours, please contact your wrangler or developer.');
       console.error(`Could not create form since schema is a required field!`, this.dialogData);
       this.dialogRef.close();
       return;
