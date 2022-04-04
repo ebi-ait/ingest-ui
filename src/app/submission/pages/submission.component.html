@@ -76,7 +76,6 @@
       <ng-template matTabContent>
         <app-metadata-new [projectId]="projectId"
                           domainEntity="biomaterial"
-                          (metadataAdded)="addToManifest('expectedBiomaterials')"
                           [postUrl]="url.concat('/biomaterials')"></app-metadata-new>
         <app-metadata-list [dataSource]="biomaterialsDataSource"
                            [projectId]="projectId"
@@ -88,7 +87,6 @@
       <ng-template matTabContent>
         <app-metadata-new [projectId]="projectId"
                           domainEntity="process"
-                          (metadataAdded)="addToManifest('expectedProcesses')"
                           [postUrl]="url.concat('/processes')"></app-metadata-new>
         <app-metadata-list [dataSource]="processesDataSource"
                            [projectId]="projectId"
@@ -99,7 +97,6 @@
       <ng-template matTabContent>
         <app-metadata-new [projectId]="projectId"
                           domainEntity="protocol"
-                          (metadataAdded)="addToManifest('expectedProtocols')"
                           [postUrl]="url.concat('/protocols')"></app-metadata-new>
         <app-metadata-list [dataSource]="protocolsDataSource"
                            [projectId]="projectId"

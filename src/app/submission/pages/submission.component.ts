@@ -445,7 +445,4 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     )
   }
 
-  addToManifest(key: string) {
-    this.manifest[key] = (this.manifest.hasOwnProperty(key) ? this.manifest[key] : 0) + 1;
-  }
 }
