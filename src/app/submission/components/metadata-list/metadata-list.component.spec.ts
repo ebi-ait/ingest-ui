@@ -75,7 +75,6 @@ describe('MetadataListComponent', () => {
     };
     schemaSvc.getDereferencedSchema.and.returnValue(of({}));
     dialogSvc.open.and.returnValue(dialogRefSvc);
-    //Object.getOwnPropertyDescriptor(dialogRefSvc, 'componentInstance').get().and.returnValue(fakeDialogComponent)
     dataSourceSvc.connect.and.returnValue(of(mockData));
     component.dataSource = dataSourceSvc;
 

@@ -145,7 +145,7 @@ describe('MetadataDetailsDialogComponent', () => {
       expect(dialogRef.close).toHaveBeenCalledTimes(0);
     });
 
-    it('should emmit save if content has changed', () => {
+    it('should emit save if content has changed', () => {
       let expected_content = {
         describedBy: schema_url,
         schema_type: 'domainEntity',
@@ -219,7 +219,7 @@ describe('MetadataDetailsDialogComponent', () => {
       expect(dialogRef.close).toHaveBeenCalledTimes(0);
     });
 
-    it('should emmit save if content has changed', () => {
+    it('should emit save if content has changed', () => {
       let expected_content = {
         describedBy: schema_url,
         schema_type: 'domainEntity',
