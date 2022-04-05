@@ -120,6 +120,15 @@
       </ng-template>
     </ngx-datatable-column>
 
+    <!--delete-->
+    <ngx-datatable-column [width]="'130'" name="delete" prop="_links.self.href">
+      <ng-template let-row="row" let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
+        <a (click)="askDelete(rowIndex)" href="javascript:void(0)">
+          <mat-icon [ngStyle]="{'color': 'lightgrey'}">delete</mat-icon>
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
+
     <!--State Column-->
     <ngx-datatable-column *ngIf="config && config.displayState" prop="validationState" name="state" [width]="'130'">
       <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
@@ -155,7 +164,8 @@
 
 
     <!--uuid-->
-    <ngx-datatable-column prop="uuid.uuid" name="uuid" *ngIf="metadataType !== 'bundleManifests'">
+    <ngx-datatable-column *ngIf="rows.length > 0 && getMetadataType(rows[0]) !== 'bundleManifests'" name="uuid"
+                          prop="uuid.uuid">
       <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row"
                    let-column="column">
         <span title="{{value}}">{{value}}</span>

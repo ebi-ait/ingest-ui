@@ -1,7 +1,7 @@
 import {HttpErrorResponse} from '@angular/common/http';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {SUBMISSION_STATES, SUBMITTED_STATES} from "@shared/constants";
+import {SUBMISSION_STATES, SUBMITTED_STATES} from '@shared/constants';
 import {MetadataDataSource} from '@shared/data-sources/metadata-data-source';
 import {PaginatedDataSource} from '@shared/data-sources/paginated-data-source';
 import {SimpleDataSource} from '@shared/data-sources/simple-data-source';
@@ -15,10 +15,9 @@ import {AlertService} from '@shared/services/alert.service';
 import {BrokerService} from '@shared/services/broker.service';
 import {IngestService} from '@shared/services/ingest.service';
 import {LoaderService} from '@shared/services/loader.service';
-import Utils from "@shared/utils";
-import {Observable, TimeoutError, of, BehaviorSubject} from 'rxjs';
-import {catchError, map, mergeMap, switchMap, tap} from 'rxjs/operators';
-import {SaveFileService} from "@shared/services/save-file.service";
+import Utils from '@shared/utils';
+import {BehaviorSubject, Observable, of} from 'rxjs';
+import {catchError, map, mergeMap, switchMap} from 'rxjs/operators';
 
 
 enum SubmissionTab {
@@ -437,7 +436,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     const url = `${this.submissionEnvelope['_links']['self']['href']}/graphValidationRequestedEvent`
     this.ingestService.put(url, {}).subscribe(
       (submissionEnvelope) => {
-        setTimeout(() => this.graphValidationButtonDisabled = false, SUBMISSION_POLL_INTERVAL * 4 / 3)
+        setTimeout(() => this.graphValidationButtonDisabled = false, SUBMISSION_POLL_INTERVAL * 4 / 3);
       },
       err => {
         this.alertService.error('An error occurred while triggering validation', err.message);
@@ -445,6 +444,5 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       }
     )
   }
-
 
 }

@@ -38,6 +38,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()" [disabled]="saving">Cancel</button>
-  <button mat-button (click)="onSave()" [disabled]="saving">Save</button>
+  <button (click)="onCancel()" [disabled]="config.viewMode" mat-button>Cancel</button>
+  <button (click)="onSave()" [disabled]="config.viewMode" mat-button>Save</button>
 </mat-dialog-actions>

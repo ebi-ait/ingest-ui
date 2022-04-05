@@ -209,6 +209,10 @@ export class IngestService {
     );
   }
 
+  public deleteMetadata(metadataUri: string): Observable<any> {
+    return this.http.delete(metadataUri);
+  }
+
   public deleteInputBiomaterialFromProcess(processId: string, biomaterialId: string): Observable<Object> {
     return this.http.delete(
       `${this.API_URL}/biomaterials/${biomaterialId}/inputToProcesses/${processId}`

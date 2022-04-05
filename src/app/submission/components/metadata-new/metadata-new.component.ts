@@ -1,11 +1,13 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {IngestService} from '@shared/services/ingest.service';
+import {MetadataDocument} from '@shared/models/metadata-document';
+import {AlertService} from '@shared/services/alert.service';
 import {BrokerService} from '@shared/services/broker.service';
+import {IngestService} from '@shared/services/ingest.service';
 import {LoaderService} from '@shared/services/loader.service';
 import {SchemaService} from '@shared/services/schema.service';
 import {MetadataDetailsDialogComponent} from '@submission/components/metadata-details-dialog/metadata-details-dialog.component';
-import {map, switchMap} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 
 interface ConcreteType {
   name: string;
@@ -22,9 +24,11 @@ export class MetadataCreationComponent implements OnInit {
   @Input() domainEntity: string;
   @Input() projectId: string;
   @Input() postUrl: string;
+  @Output() metadataAdded = new EventEmitter<MetadataDocument>();
+
   concreteTypes: ConcreteType[] = [];
   selected: string;
-  label: string
+  label: string;
 
   ngOnInit(): void {
     this.domainEntity = this.domainEntity.toLowerCase();
@@ -45,6 +49,7 @@ export class MetadataCreationComponent implements OnInit {
     private brokerService: BrokerService,
     private schemaService: SchemaService,
     private loaderService: LoaderService,
+    private alertService: AlertService,
     public dialog: MatDialog
   ) {
 
@@ -57,10 +62,25 @@ export class MetadataCreationComponent implements OnInit {
         this.selected = undefined;
         this.loaderService.display(false);
         this.dialog.open(MetadataDetailsDialogComponent, {
-          data: {schema: schema, postUrl: this.postUrl, projectId: this.projectId},
+          data: {schema: schema},
           width: '60%',
           disableClose: true
-        });
+        }).componentInstance.metadataSaved.subscribe(newMetadata => this.saveNewMetadata(newMetadata));
       });
+  }
+
+  saveNewMetadata(newMetadata: any) {
+    const post = {'content': newMetadata};
+    this.ingestService.post<MetadataDocument>(this.postUrl, post).pipe(
+      tap(newDocument => this.ingestService.linkProjectToMetadata<Object>(newDocument._links.self.href, this.projectId))
+    ).subscribe(newDocument => {
+      this.alertService.clear();
+      this.alertService.success('Success', `New ${this.domainEntity} has been created.`);
+      this.metadataAdded.emit(newDocument);
+    }, err => {
+      console.error(err);
+      this.alertService.clear();
+      this.alertService.error('Error', `New ${this.domainEntity} has not been created due to ${err.toString()}`);
+    });
   }
 }
