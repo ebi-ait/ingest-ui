@@ -326,7 +326,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
         },
         err => {
           this.alertService.clear();
-          this.alertService.error(messageOnError, err.error.message, true, true);
+          this.alertService.error(messageOnError, err.error?.exceptionMessage || err.error?.message || err.message, true, true);
           console.log('error deleting submission', err);
           this.loaderService.display(false);
           this.router.navigate(['/projects/detail'], {queryParams: {uuid: this.projectUuid}});
