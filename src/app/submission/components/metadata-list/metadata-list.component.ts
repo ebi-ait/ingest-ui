@@ -231,7 +231,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
       console.error(err);
       this.alertService.clear();
       this.alertService.error('Error',
-        `${originalDoc.type} ${originalDoc.uuid.uuid} has not been updated due to ${err.toString()}`);
+        `${originalDoc.type} ${originalDoc.uuid.uuid} has not been updated. ${err.error?.exceptionMessage || ''}`);
     });
   }
 
@@ -252,7 +252,8 @@ export class MetadataListComponent implements OnInit, OnDestroy {
       );
       this.loaderService.display(false);
     }, error => {
-      const error_message = `It was not possible to delete ${metadata.type}: ${metadata.uuid.uuid}.`;
+      console.log(error)
+      const error_message = `It was not possible to delete ${metadata.type}: ${metadata.uuid.uuid}. ${error.error?.exceptionMessage || ''}`;
       console.error(error_message, error);
       this.alertService.clear();
       this.alertService.error('Error', error_message);
