@@ -33,7 +33,7 @@ describe('MetadataCreationComponent', () => {
 
   beforeEach(() => {
     fakeDialogComponent = new FakeMetadataDetailsDialogComponent();
-    ingestSvc = jasmine.createSpyObj('IngestService', ['post', 'linkProjectToMetadata']);
+    ingestSvc = jasmine.createSpyObj('IngestService', ['post']);
     brokerSvc = jasmine.createSpyObj('BrokerService', ['getConcreteTypes']);
     schemaSvc = jasmine.createSpyObj('SchemaService', ['getDereferencedSchema']);
     loaderSvc = jasmine.createSpyObj('LoaderService', ['display']);
@@ -118,7 +118,6 @@ describe('MetadataCreationComponent', () => {
       isUpdate: false
     };
     ingestSvc.post.and.returnValue(of(mockDoc));
-    ingestSvc.linkProjectToMetadata.and.returnValue(of({}));
 
     //when
     component.ngOnInit();
@@ -126,7 +125,6 @@ describe('MetadataCreationComponent', () => {
 
     //then
     expect(ingestSvc.post).toHaveBeenCalledOnceWith('postUrl', {'content': new_content});
-    expect(ingestSvc.linkProjectToMetadata).toHaveBeenCalledOnceWith('metadataUri', 'projectId');
     expect(alertSvc.clear).toHaveBeenCalledTimes(1);
     expect(alertSvc.success).toHaveBeenCalledTimes(1);
     expect(component.metadataAdded.emit).toHaveBeenCalledOnceWith(mockDoc);

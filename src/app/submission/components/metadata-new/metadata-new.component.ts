@@ -7,7 +7,7 @@ import {IngestService} from '@shared/services/ingest.service';
 import {LoaderService} from '@shared/services/loader.service';
 import {SchemaService} from '@shared/services/schema.service';
 import {MetadataDetailsDialogComponent} from '@submission/components/metadata-details-dialog/metadata-details-dialog.component';
-import {map, tap} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 
 interface ConcreteType {
   name: string;
@@ -71,9 +71,7 @@ export class MetadataCreationComponent implements OnInit {
 
   saveNewMetadata(newMetadata: any) {
     const post = {'content': newMetadata};
-    this.ingestService.post<MetadataDocument>(this.postUrl, post).pipe(
-      tap(newDocument => this.ingestService.linkProjectToMetadata<Object>(newDocument._links.self.href, this.projectId))
-    ).subscribe(newDocument => {
+    this.ingestService.post<MetadataDocument>(this.postUrl, post).subscribe(newDocument => {
       this.alertService.clear();
       this.alertService.success('Success', `New ${this.domainEntity} has been created.`);
       this.metadataAdded.emit(newDocument);
