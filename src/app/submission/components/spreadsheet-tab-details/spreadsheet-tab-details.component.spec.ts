@@ -41,6 +41,8 @@ describe('SpreadsheetTabDetailsComponent', () => {
     }).compileComponents();
 
     submission = {
+      content: {},
+      editable: true,
       errors: undefined,
       open: false,
       stagingDetails: undefined,
