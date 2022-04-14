@@ -217,7 +217,7 @@ export class ProjectMetadataFormComponent implements OnInit, OnDestroy {
       },
       error => {
         this.loaderService.display(false);
-        this.alertService.error('Error', error.message);
+        this.alertService.error('Error', error.error?.exceptionMessage || error.message);
       });
   }
 

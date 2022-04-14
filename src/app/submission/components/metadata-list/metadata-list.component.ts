@@ -24,6 +24,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   @Input() metadataList;
   @Input() expectedCount;
   @Input() dataSource: any;
+  @Input() isEditable = true;
 
   private _config = {
     displayContent: true,
@@ -203,6 +204,10 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   openDialog(rowIndex: number): void {
+    if (!this.isEditable) {
+      return;
+    }
+
     const metadata = this.metadataList[rowIndex];
     console.log('data', metadata);
     this.loaderService.display(true);
@@ -231,11 +236,15 @@ export class MetadataListComponent implements OnInit, OnDestroy {
       console.error(err);
       this.alertService.clear();
       this.alertService.error('Error',
-        `${originalDoc.type} ${originalDoc.uuid.uuid} has not been updated due to ${err.toString()}`);
+        `${originalDoc.type} ${originalDoc.uuid.uuid} has not been updated. ${err.error?.exceptionMessage || ''}`);
     });
   }
 
   askDelete(rowIndex: number): void {
+    if (!this.isEditable) {
+      return;
+    }
+
     const metadata: MetadataDocument = this.metadataList[rowIndex];
     if (confirm(`Are you sure you wish to delete ${metadata.type} ${metadata.uuid.uuid}?`)) {
       this.deleteMetadata(metadata);
@@ -252,7 +261,8 @@ export class MetadataListComponent implements OnInit, OnDestroy {
       );
       this.loaderService.display(false);
     }, error => {
-      const error_message = `It was not possible to delete ${metadata.type}: ${metadata.uuid.uuid}.`;
+      console.log(error)
+      const error_message = `It was not possible to delete ${metadata.type}: ${metadata.uuid.uuid}. ${error.error?.exceptionMessage || ''}`;
       console.error(error_message, error);
       this.alertService.clear();
       this.alertService.error('Error', error_message);

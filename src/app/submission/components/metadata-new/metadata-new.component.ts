@@ -80,7 +80,7 @@ export class MetadataCreationComponent implements OnInit {
     }, err => {
       console.error(err);
       this.alertService.clear();
-      this.alertService.error('Error', `New ${this.domainEntity} has not been created due to ${err.toString()}`);
+      this.alertService.error('Error', `New ${this.domainEntity} has not been created. ${err.error?.exceptionMessage || err.error?.message || err.message}`);
     });
   }
 }

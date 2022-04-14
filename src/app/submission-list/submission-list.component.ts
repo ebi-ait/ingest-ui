@@ -147,7 +147,7 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
         },
         err => {
           this.alertService.clear();
-          this.alertService.error(messageOnError, err.error.message);
+          this.alertService.error(messageOnError, err.error?.exceptionMessage || err.error?.message || err.message);
           console.error('error deleting submission', err);
           this.loaderService.display(false);
         });
