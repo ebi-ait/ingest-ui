@@ -114,18 +114,38 @@
     <!--edit-->
     <ngx-datatable-column prop="_links.self.href" name="edit" [width]="'130'">
       <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-        <a href="javascript:void(0)" (click)="openDialog(rowIndex)">
-          <mat-icon [ngStyle]="{'color': 'lightgrey'}">edit</mat-icon>
-        </a>
+        <span [matTooltip]="isEditable? 'Edit metadata' : 'You cannot edit right now'">
+          <button
+            (click)="openDialog(rowIndex)"
+            mat-icon-button
+            [disabled]="!isEditable"
+            disableRipple
+            style="margin-top: -10px; padding: 0;"
+          >
+            <mat-icon
+              [ngStyle]="{'color': 'lightgrey'}"
+            >edit</mat-icon>
+          </button>
+        </span>
       </ng-template>
     </ngx-datatable-column>
 
     <!--delete-->
     <ngx-datatable-column [width]="'130'" name="delete" prop="_links.self.href">
       <ng-template let-row="row" let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
-        <a (click)="askDelete(rowIndex)" href="javascript:void(0)">
-          <mat-icon [ngStyle]="{'color': 'lightgrey'}">delete</mat-icon>
-        </a>
+        <span [matTooltip]="isEditable? 'Delete metadata' : 'You cannot delete right now'">
+          <button
+            (click)="askDelete(rowIndex)"
+            mat-icon-button
+            [disabled]="!isEditable"
+            disableRipple
+            style="margin-top: -10px; padding: 0;"
+          >
+            <mat-icon
+              [ngStyle]="{'color': 'lightgrey'}"
+            >delete</mat-icon>
+          </button>
+        </span>
       </ng-template>
     </ngx-datatable-column>
 

@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {SubmissionEnvelope} from "@shared/models/submissionEnvelope";
 
 @Component({
   selector: 'app-files',
@@ -6,7 +7,7 @@ import {Component, Input, OnInit} from '@angular/core';
   styleUrls: ['./files.component.css']
 })
 export class FilesComponent implements OnInit {
-  @Input() submissionEnvelope;
+  @Input() submissionEnvelope: SubmissionEnvelope;
   @Input() dataSource;
   @Input() files$;
   @Input() manifest;

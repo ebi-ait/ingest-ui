@@ -38,7 +38,7 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   submissionEnvelopeId: string;
   submissionEnvelopeUuid: string;
   submissionEnvelope$: Observable<any>;
-  submissionEnvelope;
+  submissionEnvelope: SubmissionEnvelope;
   submissionState: string;
   isValid: boolean;
   isLinkingDone: boolean;

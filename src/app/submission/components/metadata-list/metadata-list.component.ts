@@ -24,6 +24,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   @Input() metadataList;
   @Input() expectedCount;
   @Input() dataSource: any;
+  @Input() isEditable = true;
 
   private _config = {
     displayContent: true,
@@ -203,6 +204,10 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   openDialog(rowIndex: number): void {
+    if (!this.isEditable) {
+      return;
+    }
+
     const metadata = this.metadataList[rowIndex];
     console.log('data', metadata);
     this.loaderService.display(true);
@@ -236,6 +241,10 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   askDelete(rowIndex: number): void {
+    if (!this.isEditable) {
+      return;
+    }
+
     const metadata: MetadataDocument = this.metadataList[rowIndex];
     if (confirm(`Are you sure you wish to delete ${metadata.type} ${metadata.uuid.uuid}?`)) {
       this.deleteMetadata(metadata);
