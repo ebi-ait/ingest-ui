@@ -8,7 +8,6 @@ import {SubmissionEnvelope} from "@shared/models/submissionEnvelope";
 })
 export class FilesComponent implements OnInit {
   @Input() submissionEnvelope: SubmissionEnvelope;
-  @Input() isEditable = true;
   @Input() dataSource;
   @Input() files$;
   @Input() manifest;

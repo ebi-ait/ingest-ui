@@ -75,7 +75,7 @@
     <mat-tab label="Biomaterials">
       <ng-template matTabContent>
         <app-metadata-new
-          *ngIf="isEditable()"
+          *ngIf="submissionEnvelope.editable"
           [projectId]="projectId"
           domainEntity="biomaterial"
           [postUrl]="url.concat('/biomaterials')"
@@ -85,14 +85,14 @@
           [projectId]="projectId"
           [config]="{displayLinking: true}"
           [expectedCount]="manifest ? manifest['expectedBiomaterials'] : null"
-          [isEditable]="isEditable()"
+          [isEditable]="submissionEnvelope.editable"
         ></app-metadata-list>
       </ng-template>
     </mat-tab>
     <mat-tab label="Processes">
       <ng-template matTabContent>
         <app-metadata-new
-          *ngIf="isEditable()"
+          *ngIf="submissionEnvelope.editable"
           [projectId]="projectId"
           domainEntity="process"
           [postUrl]="url.concat('/processes')"
@@ -100,14 +100,14 @@
         <app-metadata-list [dataSource]="processesDataSource"
                            [projectId]="projectId"
                            [expectedCount]="manifest ? manifest['expectedProcesses'] : null"
-                           [isEditable]="isEditable()"
+                           [isEditable]="submissionEnvelope.editable"
         ></app-metadata-list>
       </ng-template>
     </mat-tab>
     <mat-tab label="Protocols">
       <ng-template matTabContent>
         <app-metadata-new
-          *ngIf="isEditable()"
+          *ngIf="submissionEnvelope.editable"
           [projectId]="projectId"
           domainEntity="protocol"
           [postUrl]="url.concat('/protocols')"
@@ -117,7 +117,7 @@
           [projectId]="projectId"
           [config]="{displayLinking: true}"
           [expectedCount]="manifest ? manifest['expectedProtocols'] : null"
-          [isEditable]="isEditable()"
+          [isEditable]="submissionEnvelope.editable"
         ></app-metadata-list>
       </ng-template>
     </mat-tab>
@@ -126,9 +126,7 @@
         <app-files
           [dataSource]="filesDataSource"
           [submissionEnvelope]="submissionEnvelope"
-          [manifest]="manifest"
-          [isEditable]="isEditable()"
-        >
+          [manifest]="manifest">
         </app-files>
       </ng-template>
     </mat-tab>
@@ -154,7 +152,7 @@
         <app-metadata-list
           [dataSource]="bundleManifestsDataSource"
           [config]="{displayAll: true, hideWhenEmptyRows: true}"
-          [isEditable]="isEditable()"
+          [isEditable]="submissionEnvelope.editable"
         >
         </app-metadata-list>
       </ng-template>
