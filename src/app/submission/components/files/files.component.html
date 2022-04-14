@@ -7,7 +7,7 @@
             [dataSource]="dataSource"
             [config]="{displayLinking: true}"
             [expectedCount]="manifest ? manifest['expectedFiles']: null"
-            [isEditable]="isEditable"
+            [isEditable]="submissionEnvelope.editable"
           >
           </app-metadata-list>
         </div>

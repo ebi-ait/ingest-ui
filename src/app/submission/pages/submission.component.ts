@@ -445,8 +445,4 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     )
   }
 
-  isEditable(): boolean {
-    return this.submissionEnvelope.editable && this.submissionState !== SUBMISSION_STATES.Validating
-  }
-
 }
