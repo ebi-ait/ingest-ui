@@ -74,9 +74,12 @@
   <mat-tab-group *ngIf="submissionEnvelopeId" [(selectedIndex)]="selectedIndex">
     <mat-tab label="Biomaterials">
       <ng-template matTabContent>
-        <app-metadata-new [projectId]="projectId"
-                          domainEntity="biomaterial"
-                          [postUrl]="url.concat('/biomaterials')"></app-metadata-new>
+        <app-metadata-new
+          *ngIf="submissionEnvelope.editable"
+          [projectId]="projectId"
+          domainEntity="biomaterial"
+          [postUrl]="url.concat('/biomaterials')"
+        ></app-metadata-new>
         <app-metadata-list
           [dataSource]="biomaterialsDataSource"
           [projectId]="projectId"
@@ -88,9 +91,12 @@
     </mat-tab>
     <mat-tab label="Processes">
       <ng-template matTabContent>
-        <app-metadata-new [projectId]="projectId"
-                          domainEntity="process"
-                          [postUrl]="url.concat('/processes')"></app-metadata-new>
+        <app-metadata-new
+          *ngIf="submissionEnvelope.editable"
+          [projectId]="projectId"
+          domainEntity="process"
+          [postUrl]="url.concat('/processes')"
+        ></app-metadata-new>
         <app-metadata-list [dataSource]="processesDataSource"
                            [projectId]="projectId"
                            [expectedCount]="manifest ? manifest['expectedProcesses'] : null"
@@ -100,9 +106,12 @@
     </mat-tab>
     <mat-tab label="Protocols">
       <ng-template matTabContent>
-        <app-metadata-new [projectId]="projectId"
-                          domainEntity="protocol"
-                          [postUrl]="url.concat('/protocols')"></app-metadata-new>
+        <app-metadata-new
+          *ngIf="submissionEnvelope.editable"
+          [projectId]="projectId"
+          domainEntity="protocol"
+          [postUrl]="url.concat('/protocols')"
+        ></app-metadata-new>
         <app-metadata-list
           [dataSource]="protocolsDataSource"
           [projectId]="projectId"
