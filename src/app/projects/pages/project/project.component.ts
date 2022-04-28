@@ -124,7 +124,7 @@ export class ProjectComponent implements OnInit {
     this.getProjectAuditLogs(projectData);
   }
 
-  getProjectSubmissions(project:Project) {
+  getProjectSubmissions(project: Project) {
     this.ingestService.get(project['_links']['submissionEnvelopes']['href']).subscribe(
       submissionData => {
         this.submissionEnvelopes = submissionData['_embedded'] ? submissionData['_embedded']['submissionEnvelopes'] : [];
@@ -219,6 +219,43 @@ export class ProjectComponent implements OnInit {
     return this.userIsWrangler && !project.hasOpenSubmission;
   }
 
+  projectTabChange(tabKey: string) {
+    this.selectedProjectTabKey = tabKey;
+  }
+
+  mainTabChange($event) {
+    this.selectedMainTabKey = this.tabConfig[$event.index].key;
+    this.router.navigate(
+      [],
+      {
+        relativeTo: this.route,
+        queryParams: {tab: this.selectedMainTabKey},
+        queryParamsHandling: 'merge'
+      });
+  }
+
+  lookupTabIndex(tabKey: string): number {
+    if (tabKey) {
+      return this.tabConfig.findIndex(tab => tab.key === tabKey);
+    } else {
+      return 0;
+    }
+  }
+
+  getProjectGeoAccession() {
+    const content: { geo_series_accessions?: string[] } = this.project?.content;
+    return content?.geo_series_accessions?.[0];
+  }
+
+  getProjectInsdcAccession() {
+    const content: { insdc_study_accessions?: string[] } = this.project?.content;
+    const accession = content?.insdc_study_accessions?.[0];
+
+    if (this.geoService.isValidAccession(accession)) {
+      return accession
+    }
+  }
+
   private initProject() {
     this.route.queryParamMap.subscribe(queryParams => {
       this.projectUuid = queryParams.get('uuid');
@@ -238,21 +275,6 @@ export class ProjectComponent implements OnInit {
     if (!this.projectId && !this.projectUuid) {
       this.router.navigate([`/projects`]);
     }
-  }
-
-  projectTabChange(tabKey: string) {
-    this.selectedProjectTabKey = tabKey;
-  }
-
-  mainTabChange($event) {
-    this.selectedMainTabKey = this.tabConfig[$event.index].key;
-    this.router.navigate(
-      [],
-      {
-        relativeTo: this.route,
-        queryParams: {tab: this.selectedMainTabKey},
-        queryParamsHandling: 'merge'
-      });
   }
 
   private fetchProjectEntities(projectData, entityType: string, params?): Observable<PagedData<any>> {
@@ -277,27 +299,5 @@ export class ProjectComponent implements OnInit {
         entityType
       );
     });
-  }
-
-  lookupTabIndex(tabKey: string): number {
-    if (tabKey) {
-      return this.tabConfig.findIndex(tab => tab.key === tabKey);
-    } else {
-      return 0;
-    }
-  }
-
-  getProjectGeoAccession() {
-    const content: { geo_series_accessions?: string[] } = this.project?.content;
-    return content?.geo_series_accessions?.[0];
-  }
-
-  getProjectInsdcAccession() {
-    const content: { insdc_study_accessions?: string[] } = this.project?.content;
-    const accession = content?.insdc_study_accessions?.[0];
-
-    if (this.geoService.isValidAccession(accession)) {
-      return accession
-    }
   }
 }
