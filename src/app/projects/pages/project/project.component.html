@@ -131,6 +131,36 @@
           <app-data-table [dataSource]="filesDataSource" [flatten]="true"></app-data-table>
         </div>
       </mat-tab>
+      <mat-tab [label]="tabConfig[5].label">
+        <div class="vf-u-margin__top--xxl" *ngIf="auditLogs && auditLogs.length > 0">
+          <table class="vf-table vf-table--striped vf-table--loose" style="width: 100%">
+            <thead class="vf-table__header">
+            <tr class="vf-table__row">
+              <th class="vf-table__heading" scope="col"> Event </th>
+              <th class="vf-table__heading" scope="col"> User </th>
+              <th class="vf-table__heading" scope="col"> Date</th>
+            </tr>
+            </thead>
+
+            <tbody class="vf-table__body">
+            <tr class="vf-table__row" *ngFor="let auditLog of auditLogs">
+              <td
+                *ngFor="let key of ['event', 'user', 'date']"
+                class="vf-table__cell"
+              >
+                {{auditLog[key]}}
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="vf-u-margin__top--xxl" *ngIf="!auditLogs || !auditLogs?.length">
+          <p style="text-align: center">
+            There is no history.
+          </p>
+        </div>
+
+      </mat-tab>
     </ng-container>
     <ng-container *ngIf="!userIsWrangler">
       <mat-tab [label]="tabConfig[2].label">
