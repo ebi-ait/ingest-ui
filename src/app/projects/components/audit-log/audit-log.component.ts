@@ -16,8 +16,8 @@ export class AuditLogComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  formatAsLongDate(project: Project): string {
-    return formatDate(project.updateDate, 'longDate', 'en-GB');
+  formatAsLongDate(date: string): string {
+    return formatDate(date, 'longDate', 'en-GB');
   }
 
 }
