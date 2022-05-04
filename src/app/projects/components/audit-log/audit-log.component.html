@@ -10,7 +10,7 @@
     <tbody class="vf-table__body">
     <tr class="vf-table__row" *ngFor="let auditLog of auditLogs">
       <td class="vf-table__cell">
-        {{auditLog['event']}}
+        {{getAuditEvent(auditLog)}}
       </td>
       <td class="vf-table__cell">
         {{formatAuditDate(auditLog['date'])}}
