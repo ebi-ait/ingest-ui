@@ -12,8 +12,8 @@ export class AuditLogComponent {
   @Input()
   auditLogs: AuditLog[];
 
-  formatAsLongDate(date: string): string {
-    return formatDate(date, 'longDate', 'en-GB');
+  formatAuditDate(date: string): string {
+    return formatDate(date, 'medium', 'en-GB');
   }
 
 }
