@@ -1,0 +1,26 @@
+.guide-content {
+  margin-top: 5rem;
+}
+
+ul.side-navigation {
+  list-style: none;
+  margin: 0 4rem 0 0;
+  padding: 0;
+
+  li {
+    font-weight: 400;
+    padding: .8rem  .7rem;
+    text-decoration: none;
+    border-bottom: 1px #D0D0CE solid;
+
+    &.active {
+      background: #D1E3F6;
+      font-weight: 600;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+  }
+}

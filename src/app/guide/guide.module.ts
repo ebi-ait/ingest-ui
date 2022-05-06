@@ -1,19 +1,20 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RequirementsComponent } from './pages/requirements/requirements.component';
-import { StepByStepComponent } from './pages/step-by-step/step-by-step.component';
-import { AfterSubmissionComponent } from './pages/after-submission/after-submission.component';
-
+import {CommonModule} from '@angular/common';
+import {NgModule} from '@angular/core';
+import {MatExpansionModule} from "@angular/material/expansion";
+import {GuideRoutingModule} from "@app/guide/guide-routing.module";
+import {MaterialModule} from "@app/material.module";
+import {DataSubmissionGuideComponent} from './pages/data-submission-guide/data-submission-guide.component';
 
 
 @NgModule({
   declarations: [
-    RequirementsComponent,
-    StepByStepComponent,
-    AfterSubmissionComponent
+    DataSubmissionGuideComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    GuideRoutingModule,
+    MaterialModule,
+    MatExpansionModule
   ]
 })
 export class GuideModule { }

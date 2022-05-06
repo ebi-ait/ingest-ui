@@ -1,0 +1,10 @@
+<h1>Data submission guide</h1>
+
+<div class="vf-grid vf-grid__col-3 guide-content">
+  <ul class="side-navigation">
+    <li *ngFor="let route of routes" [class.active]="activeMarkdown[1] === getRouteTitle(route)">
+      <a [routerLink]="['/guide', route]">{{getRouteTitle(route)}}</a>
+    </li>
+  </ul>
+  <div class="vf-grid__col--span-2" [innerHTML]="activeHtmlContent"></div>
+</div>
