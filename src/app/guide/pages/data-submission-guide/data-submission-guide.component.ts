@@ -27,7 +27,6 @@ const MARKDOWN_FILES_AND_ROUTES = {
 export class DataSubmissionGuideComponent implements OnInit {
   activeMarkdown: { markdownFile: string, title: string };
   activeHtmlContent: any;
-  activeHeading: string;
   activeDynamicToc: {title: string, id: string}[];
   routes = Object.values(ROUTES);
 
@@ -44,8 +43,6 @@ export class DataSubmissionGuideComponent implements OnInit {
 
         this.activeMarkdown = route ?
           MARKDOWN_FILES_AND_ROUTES[route] || default_markdown : default_markdown;
-
-        this.activeHeading = this.activeMarkdown.title;
 
         this.loadMarkdown()
           .then(() => this.generateToc())
