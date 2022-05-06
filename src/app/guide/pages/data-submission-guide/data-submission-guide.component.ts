@@ -14,9 +14,9 @@ enum ROUTES {
 }
 
 const MARKDOWN_FILES_AND_ROUTES = {
-  [ROUTES.DataRequirements]: { markdownFile: BASE_MARKDOWN_DIR + 'data-requirements.md', title: 'Data requirements' },
-  [ROUTES.StepByStep]: { markdownFile: BASE_MARKDOWN_DIR + 'step-by-step.md', title: 'Step by step' },
-  [ROUTES.AfterSubmission]: { markdownFile: BASE_MARKDOWN_DIR + 'after-submission.md', title: 'After submission' }
+  [ROUTES.DataRequirements]: {markdownFile: BASE_MARKDOWN_DIR + 'data-requirements.md', title: 'Data requirements'},
+  [ROUTES.StepByStep]: {markdownFile: BASE_MARKDOWN_DIR + 'step-by-step.md', title: 'Step by step'},
+  [ROUTES.AfterSubmission]: {markdownFile: BASE_MARKDOWN_DIR + 'after-submission.md', title: 'After submission'}
 }
 
 @Component({
@@ -27,15 +27,17 @@ const MARKDOWN_FILES_AND_ROUTES = {
 export class DataSubmissionGuideComponent implements OnInit {
   activeMarkdown: { markdownFile: string, title: string };
   activeHtmlContent: any;
-  activeDynamicToc: {title: string, id: string}[];
+  activeDynamicToc: { title: string, id: string }[];
   routes = Object.values(ROUTES);
 
-  constructor( private route: ActivatedRoute, private router: Router, private alertsService: AlertService, private sanitized: DomSanitizer) { }
+  constructor(private route: ActivatedRoute, private router: Router,
+              private alertsService: AlertService, private sanitized: DomSanitizer) {
+  }
 
   ngOnInit(): void {
     this.route.params.pipe(
       switchMap(params =>
-        this.route.fragment.pipe(map( fragment  => ({ params, fragment }))))
+        this.route.fragment.pipe(map(fragment => ({params, fragment}))))
     )
       .subscribe(({params, fragment}) => {
         const route = params['page'];
@@ -48,17 +50,26 @@ export class DataSubmissionGuideComponent implements OnInit {
           .then(() => this.generateToc())
           .catch(err => {
             console.error(err);
-            this.alertsService.error('Something went wrong loading the content', 'Please try refreshing the page.');
+            this.alertsService.error('Something went wrong loading the content',
+              'Please try refreshing the page.');
           })
           .then(() => {
-            if(fragment) {
+            if (fragment) {
               requestAnimationFrame(() => {
                 // Use requestAnimationFrame to execute this after the next paint
                 document.getElementById(fragment).scrollIntoView();
               })
             }
           })
-    });
+      });
+  }
+
+  getRouteTitle(route: string): string {
+    return MARKDOWN_FILES_AND_ROUTES[route].title;
+  }
+
+  isActiveRoute(route: string): boolean {
+    return this.activeMarkdown.title === MARKDOWN_FILES_AND_ROUTES[route].title;
   }
 
   private async loadMarkdown(): Promise<void> {
@@ -70,17 +81,9 @@ export class DataSubmissionGuideComponent implements OnInit {
     this.activeHtmlContent = this.sanitized.bypassSecurityTrustHtml(md.makeHtml(markdownFile));
   }
 
-  getRouteTitle(route: string): string {
-    return MARKDOWN_FILES_AND_ROUTES[route].title;
-  }
-
-  isActiveRoute(route: string): boolean {
-    return this.activeMarkdown.title === MARKDOWN_FILES_AND_ROUTES[route].title;
-  }
-
-  generateToc(): void {
+  private generateToc(): void {
     const doc = document.createElement('html');
-    doc.innerHTML = `<html><body>${this.activeHtmlContent}</body></html>`
+    doc.innerHTML = `<body>${this.activeHtmlContent}</body>`
 
     const headings = []
 
