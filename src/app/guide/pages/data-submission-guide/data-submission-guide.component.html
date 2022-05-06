@@ -3,8 +3,9 @@
 <div class="vf-grid vf-grid__col-3 guide">
   <ul class="side-navigation">
     <li *ngFor="let route of routes" [class.active]="isActiveRoute(route)" class="side-navigation__item">
-      <a [routerLink]="['/guide', route]">{{getRouteTitle(route)}}</a>
-      <mat-icon *ngIf="!isActiveRoute(route)">expand_more</mat-icon>
+      <a [routerLink]="['/guide', route]">{{getRouteTitle(route)}}
+        <mat-icon *ngIf="!isActiveRoute(route)">expand_more</mat-icon>
+      </a>
       <ul *ngIf="isActiveRoute(route)" class="side-navigation__sub-navigation">
         <li *ngFor="let subHeading of activeDynamicToc" class="side-navigation__sub-navigation__item">
           <a [routerLink]="['/guide', route]" [fragment]="subHeading.id">{{subHeading.title}}</a>
