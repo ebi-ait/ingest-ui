@@ -1,10 +1,19 @@
 <h1>Data submission guide</h1>
 
-<div class="vf-grid vf-grid__col-3 guide-content">
+<div class="vf-grid vf-grid__col-3 guide">
   <ul class="side-navigation">
-    <li *ngFor="let route of routes" [class.active]="activeMarkdown[1] === getRouteTitle(route)">
+    <li *ngFor="let route of routes" [class.active]="isActiveRoute(route)" class="side-navigation__item">
       <a [routerLink]="['/guide', route]">{{getRouteTitle(route)}}</a>
+      <mat-icon *ngIf="!isActiveRoute(route)">expand_more</mat-icon>
+      <ul *ngIf="isActiveRoute(route)" class="side-navigation__sub-navigation">
+        <li *ngFor="let subHeading of activeDynamicToc" class="side-navigation__sub-navigation__item">
+          <a [routerLink]="['/guide', route]" [fragment]="subHeading.id">{{subHeading.title}}</a>
+        </li>
+      </ul>
     </li>
   </ul>
-  <div class="vf-grid__col--span-2" [innerHTML]="activeHtmlContent"></div>
+  <div class="vf-grid__col--span-2 guide-content">
+    <h1>{{activeHeading}}</h1>
+    <div [innerHTML]="activeHtmlContent"></div>
+  </div>
 </div>
