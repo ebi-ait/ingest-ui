@@ -1,10 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {DomSanitizer} from "@angular/platform-browser";
-import {AlertService} from "@shared/services/alert.service";
-import {forkJoin, Observable, of, merge} from "rxjs";
-import {map, switchMap} from "rxjs/operators";
-import { Converter } from 'showdown';
 import {ActivatedRoute, Router} from '@angular/router';
+import {AlertService} from "@shared/services/alert.service";
+import {map, switchMap} from "rxjs/operators";
+import {Converter} from 'showdown';
 
 const BASE_MARKDOWN_DIR = '/assets/guide-markdown/'
 
@@ -57,7 +56,7 @@ export class DataSubmissionGuideComponent implements OnInit {
           .then(() => {
             if(fragment) {
               requestAnimationFrame(() => {
-                // Use set requestAnimationFrame to execute this after the next paint
+                // Use requestAnimationFrame to execute this after the next paint
                 document.getElementById(fragment).scrollIntoView();
               })
             }
