@@ -34,7 +34,10 @@ export class AdminAreaComponent implements OnInit {
 
   releaseControl: FormControl;
   releaseMetadata: Metadata;
-  releaseOptions: string[]
+  releaseOptions: string[];
+
+  wranglingLabelsControl: FormControl;
+  wranglingLabelsMetadata: Metadata;
 
   constructor() {
   }
@@ -66,5 +69,9 @@ export class AdminAreaComponent implements OnInit {
     this.releaseMetadata = this.metadataForm.get(releaseSchemaKey);
     this.releaseControl = this.metadataForm.getControl(releaseSchemaKey) as FormControl;
     this.releaseOptions = Utils.generateNumbers1toN(MAX_DCP_RELEASE_NUMBER).map(String)
+
+    const wranglingLabelsKey = 'project.wranglingLabels';
+    this.wranglingLabelsMetadata = this.metadataForm.get(wranglingLabelsKey);
+    this.wranglingLabelsControl = this.metadataForm.getControl(wranglingLabelsKey) as FormControl;
   }
 }

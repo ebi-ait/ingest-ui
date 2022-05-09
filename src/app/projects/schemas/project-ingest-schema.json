@@ -242,6 +242,20 @@
       "user_friendly": "Release number",
       "example": "11"
     },
+    "wranglingLabels": {
+      "guidelines": "Wrangling labels",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "enum": [
+        "Needs update",
+        "SCEA",
+        "CellxGene",
+        "Archive"
+      ],
+      "user_friendly": "Wrangling labels"
+    },
     "isInCatalogue": {
       "type": "boolean",
       "user_friendly": "Include this project in the Human Cell Atlas Project Catalogue by EMBL-EBI",
