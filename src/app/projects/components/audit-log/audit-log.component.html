@@ -1,0 +1,26 @@
+<div class="vf-u-margin__top--xxl" *ngIf="auditLogs && auditLogs.length > 0">
+  <table class="vf-table vf-table--striped vf-table--loose" style="width: 100%">
+    <thead class="vf-table__header">
+    <tr class="vf-table__row">
+      <th class="vf-table__heading" scope="col"> Event </th>
+      <th class="vf-table__heading" scope="col"> Date</th>
+    </tr>
+    </thead>
+
+    <tbody class="vf-table__body">
+    <tr class="vf-table__row" *ngFor="let auditLog of auditLogs">
+      <td class="vf-table__cell">
+        {{getAuditEvent(auditLog)}}
+      </td>
+      <td class="vf-table__cell">
+        {{formatAuditDate(auditLog['date'])}}
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div class="vf-u-margin__top--xxl" *ngIf="!auditLogs || !auditLogs?.length">
+  <p style="text-align: center">
+    There is no history.
+  </p>
+</div>
