@@ -1,6 +1,6 @@
 # Stage 1 (build)
 # base image
-FROM quay.io/ebi-ait/ingest-base-images:node_12.16.3-alpine as build-step
+FROM quay.io/ebi-ait/ingest-base-images:node_16.15.0-alpine as build-step
 
 # set working directory
 RUN mkdir /app
