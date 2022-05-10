@@ -120,6 +120,13 @@
         <mat-option *ngFor="let release of getDCPReleaseNumbers()" [value]="release">{{release}}</mat-option>
       </mat-select>
     </mat-form-field>
+
+  <mat-form-field>
+      <mat-select placeholder="Labels" formControlName="wranglingLabels">
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let label of wranglingLabels" [value]="label">{{label}}</mat-option>
+      </mat-select>
+    </mat-form-field>
   </ng-container>
 </form>
 

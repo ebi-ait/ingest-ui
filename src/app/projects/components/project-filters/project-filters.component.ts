@@ -48,6 +48,7 @@ export class ProjectFiltersComponent implements OnInit {
     identifyingOrganism: [],
     organOntology: [],
     dataAccess: [''],
+    wranglingLabels: [],
 
     // UI controls that are not part of the output of this component
     controlsForm: this.fb.group({
@@ -59,6 +60,7 @@ export class ProjectFiltersComponent implements OnInit {
   wranglers$: Observable<Account[]>;
   organs$: Observable<any[]>;
   wranglingStates = ingestSchema['properties']['wranglingState']['enum'];
+  wranglingLabels = ingestSchema['properties']['wranglingLabels']['enum'];
   dataAccessTypes = Object.entries(DataAccessTypes);
   searchTypes = Object.entries(SearchTypes);
 
