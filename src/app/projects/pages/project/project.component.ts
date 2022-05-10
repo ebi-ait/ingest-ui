@@ -69,7 +69,7 @@ export class ProjectComponent implements OnInit {
     },
     {
       key: 'audit-log',
-      label: '5. History'
+      label: '6. History'
     }
 
   ];
