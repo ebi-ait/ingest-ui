@@ -122,9 +122,9 @@
     </mat-form-field>
 
   <mat-form-field>
-      <mat-select placeholder="Labels" formControlName="wranglingLabels">
+      <mat-select placeholder="Labels" formControlName="labels">
         <mat-option>None</mat-option>
-        <mat-option *ngFor="let label of wranglingLabels" [value]="label">{{label}}</mat-option>
+        <mat-option *ngFor="let label of labels" [value]="label">{{label}}</mat-option>
       </mat-select>
     </mat-form-field>
   </ng-container>

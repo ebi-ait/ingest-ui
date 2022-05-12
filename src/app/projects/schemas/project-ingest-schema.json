@@ -242,8 +242,8 @@
       "user_friendly": "Release number",
       "example": "11"
     },
-    "wranglingLabels": {
-      "guidelines": "Wrangling labels",
+    "labels": {
+      "guidelines": "Project labels",
       "type": "array",
       "items": {
         "type": "string"
@@ -254,7 +254,7 @@
         "CellxGene",
         "Archive"
       ],
-      "user_friendly": "Wrangling labels"
+      "user_friendly": "Project labels"
     },
     "isInCatalogue": {
       "type": "boolean",

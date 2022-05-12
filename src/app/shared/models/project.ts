@@ -12,7 +12,7 @@ export interface Project extends MetadataDocument {
   dataAccess?: object;
   technology?: object;
   identifyingOrganisms?: object;
-  wranglingLabels?: object;
+  labels?: object;
 }
 
 export const enum ProjectColumn {
@@ -24,5 +24,5 @@ export const enum ProjectColumn {
   primaryWrangler,
   wranglingState,
   dcpReleaseNumber,
-  wranglingLabels
+  labels
 }
