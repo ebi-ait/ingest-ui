@@ -79,7 +79,7 @@ describe('ProjectFiltersComponent', () => {
   it('should emit from filters when a value in the form changes', fakeAsync(() => {
     const FIELDS = ['search', 'searchType', 'wranglingState', 'primaryWrangler', 'wranglingPriority',
       'hasOfficialHcaPublication', 'minCellCount', 'maxCellCount', 'identifyingOrganism', 'organOntology',
-      'dataAccess', 'dcpReleaseNumber', 'labels'];
+      'dataAccess', 'dcpReleaseNumber', 'projectLabels'];
     spyOn(component.filtersChange, 'emit');
 
     FIELDS.forEach(field => {

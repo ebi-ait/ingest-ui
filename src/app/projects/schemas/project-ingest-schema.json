@@ -242,7 +242,7 @@
       "user_friendly": "Release number",
       "example": "11"
     },
-    "labels": {
+    "projectLabels": {
       "guidelines": "Project labels",
       "type": "array",
       "items": {

@@ -122,9 +122,9 @@
     </mat-form-field>
 
   <mat-form-field>
-      <mat-select placeholder="Labels" formControlName="labels">
+      <mat-select placeholder="Labels" formControlName="projectLabels">
         <mat-option>None</mat-option>
-        <mat-option *ngFor="let label of labels" [value]="label">{{label}}</mat-option>
+        <mat-option *ngFor="let label of projectLabels" [value]="label">{{label}}</mat-option>
       </mat-select>
     </mat-form-field>
   </ng-container>

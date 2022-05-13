@@ -71,7 +71,7 @@ export class ProjectListComponent implements OnInit {
       // ToDo: Include Wrangler and User Account objects in ingest-core Project object.
       [ProjectColumn.wranglingState]: project?.wranglingState,
       [ProjectColumn.dcpReleaseNumber]: project?.dcpReleaseNumber,
-      [ProjectColumn.labels]: project?.labels
+      [ProjectColumn.labels]: project?.projectLabels
     });
   }
 

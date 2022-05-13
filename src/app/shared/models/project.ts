@@ -12,7 +12,7 @@ export interface Project extends MetadataDocument {
   dataAccess?: object;
   technology?: object;
   identifyingOrganisms?: object;
-  labels?: object;
+  projectLabels?: object;
 }
 
 export const enum ProjectColumn {
