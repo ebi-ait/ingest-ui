@@ -34,7 +34,10 @@ export class AdminAreaComponent implements OnInit {
 
   releaseControl: FormControl;
   releaseMetadata: Metadata;
-  releaseOptions: string[]
+  releaseOptions: string[];
+
+  projectLabelsControl: FormControl;
+  projectLabelsMetadata: Metadata;
 
   constructor() {
   }
@@ -66,5 +69,9 @@ export class AdminAreaComponent implements OnInit {
     this.releaseMetadata = this.metadataForm.get(releaseSchemaKey);
     this.releaseControl = this.metadataForm.getControl(releaseSchemaKey) as FormControl;
     this.releaseOptions = Utils.generateNumbers1toN(MAX_DCP_RELEASE_NUMBER).map(String)
+
+    const projectLabelsKey = 'project.projectLabels';
+    this.projectLabelsMetadata = this.metadataForm.get(projectLabelsKey);
+    this.projectLabelsControl = this.metadataForm.getControl(projectLabelsKey) as FormControl;
   }
 }
