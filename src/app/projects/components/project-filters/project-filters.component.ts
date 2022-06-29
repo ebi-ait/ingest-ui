@@ -43,6 +43,7 @@ export class ProjectFiltersComponent implements OnInit {
     wranglingPriority: [],
     dcpReleaseNumber: [],
     hasOfficialHcaPublication: [],
+    hcaCatalogue: [],
     minCellCount: [{value: 0, disabled: true}],
     maxCellCount: [{value: this.maxCellCount, disabled: true}],
     identifyingOrganism: [],
