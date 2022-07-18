@@ -7,7 +7,11 @@ This is the UI app for monitoring and tracking submissions to the DCP.
 
 ## Setting up
 1. Install `nvm` to install node.https://github.com/nvm-sh/nvm
-2. Clone this repo
+2. Install node
+```shell
+nvm install 12.16.3
+```
+3. Clone this repo
 4. `yarn install`
 5. `ng serve -c=dev` (quickly check if UI is working, this will point to Ingest API in dev)
 
@@ -19,8 +23,8 @@ npm cache verify
 
 ```
 
-Currently working with the ff versions:
-
+Currently, working with the ff versions:
+see package.json for engine version limits.
 ```
 $ node --version
 v12.16.2
