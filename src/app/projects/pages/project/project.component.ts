@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {AuditLog} from "@projects/models/audit-log";
 import {GeoService} from "@projects/services/geo.service";
 import {MetadataDataSource} from '@shared/data-sources/metadata-data-source';
 import {ListResult} from '@shared/models/hateoas';
@@ -23,6 +24,7 @@ import {map} from 'rxjs/operators';
 
 export class ProjectComponent implements OnInit {
   submissionEnvelopes: SubmissionEnvelope[];
+  auditLogs: AuditLog[];
 
   profile: object;
 
@@ -64,7 +66,12 @@ export class ProjectComponent implements OnInit {
     {
       key: 'data',
       label: '5. View Data'
+    },
+    {
+      key: 'audit-log',
+      label: '6. History'
     }
+
   ];
 
   tabConfig = this.sharedTabConfig;
@@ -113,14 +120,23 @@ export class ProjectComponent implements OnInit {
   setProjectData(projectData: Project) {
     this.project = projectData;
     this.initDataSources(projectData);
-    const submissionsUrl = projectData['_links']['submissionEnvelopes']['href'];
-    this.ingestService.get(submissionsUrl).subscribe(
+    this.getProjectSubmissions(projectData);
+    this.getProjectAuditLogs(projectData);
+  }
+
+  getProjectSubmissions(project: Project) {
+    this.ingestService.get(project['_links']['submissionEnvelopes']['href']).subscribe(
       submissionData => {
-        const submissions = submissionData['_embedded'] ? submissionData['_embedded']['submissionEnvelopes'] : [];
-        this.submissionEnvelopes = submissions;
+        this.submissionEnvelopes = submissionData['_embedded'] ? submissionData['_embedded']['submissionEnvelopes'] : [];
       }
     );
+  }
 
+  getProjectAuditLogs(project: Project) {
+    this.ingestService.get<AuditLog[]>(project['_links']['auditLogs']['href']).subscribe(
+      auditLogs => {
+        this.auditLogs = auditLogs ? auditLogs : [];
+      });
   }
 
   getProjectName() {
@@ -161,7 +177,7 @@ export class ProjectComponent implements OnInit {
         },
         err => {
           this.alertService.clear();
-          this.alertService.error(messageOnError, err.error.message);
+          this.alertService.error(messageOnError, err.error?.exceptionMessage || err.error?.message || err.message);
           console.error('error deleting submission', err);
           this.loaderService.display(false);
         });
@@ -188,7 +204,7 @@ export class ProjectComponent implements OnInit {
         },
         err => {
           this.alertService.clear();
-          this.alertService.error(messageOnError, err.error.message);
+          this.alertService.error(messageOnError, err.error?.exceptionMessage || err.error?.message || err.message);
           console.error('error deleting project', err);
           this.loaderService.display(false);
         });
@@ -201,6 +217,43 @@ export class ProjectComponent implements OnInit {
 
   canSubmit(project: Project) {
     return this.userIsWrangler && !project.hasOpenSubmission;
+  }
+
+  projectTabChange(tabKey: string) {
+    this.selectedProjectTabKey = tabKey;
+  }
+
+  mainTabChange($event) {
+    this.selectedMainTabKey = this.tabConfig[$event.index].key;
+    this.router.navigate(
+      [],
+      {
+        relativeTo: this.route,
+        queryParams: {tab: this.selectedMainTabKey},
+        queryParamsHandling: 'merge'
+      });
+  }
+
+  lookupTabIndex(tabKey: string): number {
+    if (tabKey) {
+      return this.tabConfig.findIndex(tab => tab.key === tabKey);
+    } else {
+      return 0;
+    }
+  }
+
+  getProjectGeoAccession() {
+    const content: { geo_series_accessions?: string[] } = this.project?.content;
+    return content?.geo_series_accessions?.[0];
+  }
+
+  getProjectInsdcAccession() {
+    const content: { insdc_study_accessions?: string[] } = this.project?.content;
+    const accession = content?.insdc_study_accessions?.[0];
+
+    if (this.geoService.isValidAccession(accession)) {
+      return accession
+    }
   }
 
   private initProject() {
@@ -222,21 +275,6 @@ export class ProjectComponent implements OnInit {
     if (!this.projectId && !this.projectUuid) {
       this.router.navigate([`/projects`]);
     }
-  }
-
-  projectTabChange(tabKey: string) {
-    this.selectedProjectTabKey = tabKey;
-  }
-
-  mainTabChange($event) {
-    this.selectedMainTabKey = this.tabConfig[$event.index].key;
-    this.router.navigate(
-      [],
-      {
-        relativeTo: this.route,
-        queryParams: {tab: this.selectedMainTabKey},
-        queryParamsHandling: 'merge'
-      });
   }
 
   private fetchProjectEntities(projectData, entityType: string, params?): Observable<PagedData<any>> {
@@ -261,27 +299,5 @@ export class ProjectComponent implements OnInit {
         entityType
       );
     });
-  }
-
-  lookupTabIndex(tabKey: string): number {
-    if (tabKey) {
-      return this.tabConfig.findIndex(tab => tab.key === tabKey);
-    } else {
-      return 0;
-    }
-  }
-
-  getProjectGeoAccession() {
-    const content: { geo_series_accessions?: string[] } = this.project?.content;
-    return content?.geo_series_accessions?.[0];
-  }
-
-  getProjectInsdcAccession() {
-    const content: { insdc_study_accessions?: string[] } = this.project?.content;
-    const accession = content?.insdc_study_accessions?.[0];
-
-    if (this.geoService.isValidAccession(accession)) {
-      return accession
-    }
   }
 }

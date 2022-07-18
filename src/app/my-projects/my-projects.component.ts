@@ -50,7 +50,8 @@ export class MyProjectsComponent implements OnInit, OnDestroy {
             ProjectColumn.lastUpdated,
             ProjectColumn.primaryWrangler,
             ProjectColumn.wranglingState,
-            ProjectColumn.dcpReleaseNumber
+            ProjectColumn.dcpReleaseNumber,
+            ProjectColumn.labels
           ];
         } else {
           this.introduction = 'These are your projects created for the Human Cell Atlas.';

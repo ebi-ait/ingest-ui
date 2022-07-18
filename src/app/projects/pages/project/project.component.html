@@ -131,6 +131,9 @@
           <app-data-table [dataSource]="filesDataSource" [flatten]="true"></app-data-table>
         </div>
       </mat-tab>
+      <mat-tab [label]="tabConfig[5].label">
+        <app-audit-log [auditLogs]="auditLogs"></app-audit-log>
+      </mat-tab>
     </ng-container>
     <ng-container *ngIf="!userIsWrangler">
       <mat-tab [label]="tabConfig[2].label">

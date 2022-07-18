@@ -1,13 +1,10 @@
 import {HttpClient, HttpErrorResponse, HttpResponse, HttpStatusCode} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {MetadataSchema} from '@shared/models/metadata-schema';
-import {Observable, throwError, of} from 'rxjs';
-import {catchError, map, tap, timeout} from 'rxjs/operators';
+import {TemplateGenerationRequestParam, TemplateGenerationResponse} from '@app/template-questionnaire/template-generator.service';
 import {environment} from '@environments/environment';
-import {
-  TemplateGenerationRequestParam,
-  TemplateGenerationResponse
-} from '@app/template-questionnaire/template-generator.service';
+import {MetadataSchema} from '@shared/models/metadata-schema';
+import {Observable, throwError} from 'rxjs';
+import {catchError, map, tap, timeout} from 'rxjs/operators';
 import {UploadResults} from '../models/uploadResults';
 
 @Injectable()
@@ -29,8 +26,12 @@ export class BrokerService {
       map(schemas => {
         let concreteUrls = {};
         schemas.forEach(schema => {
-          // Fix to remove deprecated schemas that can't be marked as deprecated
-          if (domainEntity !== 'process' || schema.concreteEntity === domainEntity) {
+          if (
+            // Fix to remove deprecated schemas that can't be marked as deprecated
+            domainEntity === 'biomaterial' ||
+            (domainEntity === 'process' && schema.concreteEntity === 'process') ||
+            (domainEntity === 'protocol' && schema.concreteEntity !== 'protocol')
+          ) {
             concreteUrls[schema.concreteEntity] = schema._links['json-schema'].href;
           }
         });

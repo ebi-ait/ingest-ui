@@ -43,11 +43,13 @@ export class ProjectFiltersComponent implements OnInit {
     wranglingPriority: [],
     dcpReleaseNumber: [],
     hasOfficialHcaPublication: [],
+    hcaCatalogue: [],
     minCellCount: [{value: 0, disabled: true}],
     maxCellCount: [{value: this.maxCellCount, disabled: true}],
     identifyingOrganism: [],
     organOntology: [],
     dataAccess: [''],
+    projectLabels: [],
 
     // UI controls that are not part of the output of this component
     controlsForm: this.fb.group({
@@ -59,6 +61,7 @@ export class ProjectFiltersComponent implements OnInit {
   wranglers$: Observable<Account[]>;
   organs$: Observable<any[]>;
   wranglingStates = ingestSchema['properties']['wranglingState']['enum'];
+  projectLabels = ingestSchema['properties']['projectLabels']['enum'];
   dataAccessTypes = Object.entries(DataAccessTypes);
   searchTypes = Object.entries(SearchTypes);
 

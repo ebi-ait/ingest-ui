@@ -31,6 +31,7 @@ import {EditProjectComponent} from './pages/edit-project/edit-project.component'
 import {ProjectsRoutingModule} from './projects-routing.module';
 import {DoiService} from './services/doi.service';
 import {ProjectCacheService} from './services/project-cache.service';
+import { AuditLogComponent } from './components/audit-log/audit-log.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import {ProjectCacheService} from './services/project-cache.service';
     ProjectFiltersComponent,
     ContactNameFieldComponent,
     ProjectComponent,
-    ProjectSummaryComponent
+    ProjectSummaryComponent,
+    AuditLogComponent
   ],
   imports: [
     CommonModule,

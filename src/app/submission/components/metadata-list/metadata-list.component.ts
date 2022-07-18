@@ -1,11 +1,13 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {MetadataDetailsDialogComponent} from '@submission/components/metadata-details-dialog/metadata-details-dialog.component';
 import {INVALID_FILE_TYPES, METADATA_VALIDATION_STATES} from '@shared/constants';
+import {MetadataDocument} from '@shared/models/metadata-document';
+import {AlertService} from '@shared/services/alert.service';
 import {FlattenService} from '@shared/services/flatten.service';
 import {IngestService} from '@shared/services/ingest.service';
 import {LoaderService} from '@shared/services/loader.service';
 import {SchemaService} from '@shared/services/schema.service';
+import {MetadataDetailsDialogComponent} from '@submission/components/metadata-details-dialog/metadata-details-dialog.component';
 
 @Component({
   selector: 'app-metadata-list',
@@ -22,6 +24,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   @Input() metadataList;
   @Input() expectedCount;
   @Input() dataSource: any;
+  @Input() isEditable = true;
 
   private _config = {
     displayContent: true,
@@ -52,6 +55,7 @@ export class MetadataListComponent implements OnInit, OnDestroy {
               private flattenService: FlattenService,
               private schemaService: SchemaService,
               private loaderService: LoaderService,
+              private alertService: AlertService,
               public dialog: MatDialog) {
     this.validationStates = Object.values(METADATA_VALIDATION_STATES);
   }
@@ -200,6 +204,10 @@ export class MetadataListComponent implements OnInit, OnDestroy {
   }
 
   openDialog(rowIndex: number): void {
+    if (!this.isEditable) {
+      return;
+    }
+
     const metadata = this.metadataList[rowIndex];
     console.log('data', metadata);
     this.loaderService.display(true);
@@ -211,8 +219,55 @@ export class MetadataListComponent implements OnInit, OnDestroy {
           data: {metadata: metadata, schema: data},
           width: '60%',
           disableClose: true
-        });
+        }).componentInstance.metadataSaved.subscribe(changedMetadata => this.saveMetadataEdits(rowIndex, changedMetadata));
       });
+  }
+
+  saveMetadataEdits(rowIndex, changedMetadata) {
+    const originalDoc: MetadataDocument = this.metadataList[rowIndex];
+    const patch = {'content': changedMetadata};
+
+    this.ingestService.patch<MetadataDocument>(originalDoc._links.self.href, patch).subscribe(updatedDoc => {
+      this.metadataList[rowIndex] = updatedDoc;
+      this.alertService.clear();
+      const msg = `${updatedDoc.type} ${updatedDoc.uuid.uuid} has been updated.`;
+      this.alertService.success('Success', msg);
+    }, err => {
+      console.error(err);
+      this.alertService.clear();
+      this.alertService.error('Error',
+        `${originalDoc.type} ${originalDoc.uuid.uuid} has not been updated. ${err.error?.exceptionMessage || ''}`);
+    });
+  }
+
+  askDelete(rowIndex: number): void {
+    if (!this.isEditable) {
+      return;
+    }
+
+    const metadata: MetadataDocument = this.metadataList[rowIndex];
+    if (confirm(`Are you sure you wish to delete ${metadata.type} ${metadata.uuid.uuid}?`)) {
+      this.deleteMetadata(metadata);
+    }
+  }
+
+  deleteMetadata(metadata: MetadataDocument): void {
+    this.loaderService.display(true);
+    this.ingestService.deleteMetadata(metadata._links.self.href).subscribe(() => {
+      this.alertService.clear();
+      this.alertService.success(
+        'Success',
+        `${metadata.type} ${metadata.uuid.uuid} has been successfully deleted.`
+      );
+      this.loaderService.display(false);
+    }, error => {
+      console.log(error)
+      const error_message = `It was not possible to delete ${metadata.type}: ${metadata.uuid.uuid}. ${error.error?.exceptionMessage || ''}`;
+      console.error(error_message, error);
+      this.alertService.clear();
+      this.alertService.error('Error', error_message);
+      this.loaderService.display(false);
+    });
   }
 
   toggleExpandRow(row: object, rowIndex: number) {

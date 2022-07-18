@@ -3,9 +3,12 @@
     <div class="card-body" >
       <div class="row">
         <div class="col-lg-12">
-          <app-metadata-list [dataSource]="dataSource"
-                             [config]="{displayLinking: true}"
-                             [expectedCount]="manifest ? manifest['expectedFiles']: null">
+          <app-metadata-list
+            [dataSource]="dataSource"
+            [config]="{displayLinking: true}"
+            [expectedCount]="manifest ? manifest['expectedFiles']: null"
+            [isEditable]="submissionEnvelope.editable"
+          >
           </app-metadata-list>
         </div>
       </div>

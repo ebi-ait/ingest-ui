@@ -9,5 +9,9 @@ export interface SubmissionEnvelope extends HalDoc{
   open: boolean;
   errors: any;
   lastSpreadsheetGenerationJob?: object;
-  contentLastUpdated?: string
+  contentLastUpdated?: string;
+  editable: boolean;
+  _links: any;
+  content: any;
+  [x: string]: any; // Added so we dont have to add all of the props now
 }
