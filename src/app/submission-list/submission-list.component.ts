@@ -28,7 +28,6 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
   dataSource: PaginatedDataSource<SubmissionEnvelope>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  upload = false;
 
   constructor(private ingestService: IngestService,
               private router: Router,
@@ -152,10 +151,6 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
           this.loaderService.display(false);
         });
     }
-  }
-
-  onSwitchUpload() {
-    this.upload = !this.upload;
   }
 
   onPageChange({ pageIndex, pageSize }) {
