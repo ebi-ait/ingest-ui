@@ -11,3 +11,8 @@ Test:
   script:
     - yarn lint
     - yarn test --watch false --browsers=ChromeHeadlessCI
+  artifacts:
+    name: "tests"
+    reports:
+      junit:
+        - $CI_PROJECT_DIR/tests/junit-test-results.xml

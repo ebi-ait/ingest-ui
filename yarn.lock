@@ -6460,6 +6460,14 @@ karma-jasmine@~4.0.0:
   dependencies:
     jasmine-core "^3.6.0"
 
+karma-junit-reporter@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/karma-junit-reporter/-/karma-junit-reporter-2.0.1.tgz#d34eef7f0b2fd064e0896954e8851a90cf14c8f3"
+  integrity sha512-VtcGfE0JE4OE1wn0LK8xxDKaTP7slN8DO3I+4xg6gAi1IoAHAXOJ1V9G/y45Xg6sxdxPOR3THCFtDlAfBo9Afw==
+  dependencies:
+    path-is-absolute "^1.0.0"
+    xmlbuilder "12.0.0"
+
 karma-source-map-support@1.4.0:
   version "1.4.0"
   resolved "https://registry.npmjs.org/karma-source-map-support/-/karma-source-map-support-1.4.0.tgz"
