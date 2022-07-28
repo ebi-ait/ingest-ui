@@ -9,7 +9,7 @@ This is the UI app for monitoring and tracking submissions to the DCP.
 1. Install `nvm` to install node.https://github.com/nvm-sh/nvm
 1. `nvm install` To get the node version listed at: `/.nvmrc`
 1. Clone this repo, or remove your **node_modules** folder: `rm -rf node_modules`
-1`yarn install`
+1. `yarn install`
 1. `ng serve -c=dev` (quickly check if UI is working, this will point to Ingest API in dev)
 
 ## Development server
