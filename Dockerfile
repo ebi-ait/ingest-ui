@@ -1,6 +1,6 @@
 # Stage 1 (build)
 # base image
-FROM quay.io/ebi-ait/ingest-base-images:node_12.16.3-alpine as build-step
+FROM quay.io/ebi-ait/ingest-base-images:node_14.15.5-alpine as build-step
 
 # set working directory
 RUN mkdir /app
@@ -25,7 +25,7 @@ COPY ./src /app/src
 RUN ng build -c=env
 
 # Stage 2 (serve)
-FROM quay.io/ebi-ait/ingest-base-images:nginx_1.19.3-alpine
+FROM quay.io/ebi-ait/ingest-base-images:nginx_1.22.0-alpine
 
 COPY --from=build-step /app/dist /usr/share/nginx/html
 COPY ./docker-assets/nginx.conf /etc/nginx/conf.d/default.conf
