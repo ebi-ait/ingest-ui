@@ -92,3 +92,6 @@ crashlytics-build.properties
 fabric.properties
 
 /ingest-ui.iml
+
+# karma unit test output file
+/tests
