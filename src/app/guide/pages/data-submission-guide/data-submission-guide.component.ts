@@ -9,14 +9,10 @@ const BASE_MARKDOWN_DIR = '/assets/guide-markdown/'
 
 enum ROUTES {
   DataRequirements = 'data-requirements',
-  StepByStep = 'step-by-step',
-  AfterSubmission = 'after-submission'
 }
 
 const MARKDOWN_FILES_AND_ROUTES = {
   [ROUTES.DataRequirements]: {markdownFile: BASE_MARKDOWN_DIR + 'data-requirements.md', title: 'Data requirements'},
-  [ROUTES.StepByStep]: {markdownFile: BASE_MARKDOWN_DIR + 'step-by-step.md', title: 'Step by step'},
-  [ROUTES.AfterSubmission]: {markdownFile: BASE_MARKDOWN_DIR + 'after-submission.md', title: 'After submission'}
 }
 
 @Component({

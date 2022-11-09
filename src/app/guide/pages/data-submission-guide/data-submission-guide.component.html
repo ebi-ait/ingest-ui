@@ -8,13 +8,14 @@
       </a>
       <ul *ngIf="isActiveRoute(route)" class="side-navigation__sub-navigation">
         <li *ngFor="let subHeading of activeDynamicToc" class="side-navigation__sub-navigation__item">
-          <a [routerLink]="['/guide', route]" [fragment]="subHeading.id">{{subHeading.title}}</a>
+          <a [routerLink]="['/guide', route]"
+             [fragment]="subHeading.id">{{subHeading.title | titlecase}}</a>
         </li>
       </ul>
     </li>
   </ul>
   <div class="vf-grid__col--span-2 guide-content">
-    <h1>{{activeMarkdown.title}}</h1>
+    <h1>{{activeMarkdown.title | titlecase}}</h1>
     <div [innerHTML]="activeHtmlContent"></div>
   </div>
 </div>
