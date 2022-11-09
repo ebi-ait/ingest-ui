@@ -13,10 +13,7 @@ Data considered for inclusion in the HCA Data Coordination Platform should meet 
 * **Data consent type:** Open access, Controlled access
 * **Publication status:** Pre-print, Published, Not published
 
-![](./table-01.png)
-
 Please [contact us](mailto:wrangler-team@data.humancellatlas.org?subject=Non%20Human%20Contribution%20to%20Human%20Cell%20Atlas) if you are considering contributing data from species other than Human and Mouse, or you wish to discuss our suitability criteria.
-
 
 # Data consent type: Open or Controlled access
 
