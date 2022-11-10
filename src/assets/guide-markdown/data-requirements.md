@@ -10,20 +10,20 @@ Data considered for inclusion in the HCA Data Coordination Platform should meet 
     * Spatial transcriptomics (10x Visium, Nanostring, etc)
     * Other supporting assay types (ATAC-seq, ChIP-seq. bulk RNA-seq, etc)
 * **Health status:** Normal health, diseased
-* **Data consent type:** Open access, Controlled access
+* **Data access type:** Open access, Controlled access
 * **Publication status:** Pre-print, Published, Not published
 
 Please [contact us](mailto:wrangler-team@data.humancellatlas.org?subject=Non%20Human%20Contribution%20to%20Human%20Cell%20Atlas) if you are considering contributing data from species other than Human and Mouse, or you wish to discuss our suitability criteria.
 
 # Open and Controlled access
 
-Depending on the data consent documents supporting the study and the respective data, datasets eligible for the Human Cell Atlas would either be
+Depending on the data access documents supporting the study and the respective data, datasets eligible for the Human Cell Atlas would either be
 
-* **Open access** (where the raw data is consented for open access by the scientific community and can be made publicly, e.g. in a public archive)
+* **Open access** (where the raw data is available for open access by the scientific community and can be made publicly, e.g. in a public archive)
 or
-* **Controlled access** (where the raw data is consented for controlled, or managed access. This type of access usually has to be granted by a nominated DAC (Data Access Committee)
+* **Controlled access** (where  data with perssonally identifiable information. E.g raw sequences, is uder controlled access. This type of access usually has to be granted by a nominated DAC (Data Access Committee)
 
-The Human Cell Atlas Data Coordination Platform accepts datasets featuring both consent types, with an important note on the data and metadata files required for each type:
+The Human Cell Atlas Data Coordination Platform accepts datasets featuring both data access types, with an important note on the data and metadata files required for each type:
 
 ## Open access accepted data and metadata:
 
@@ -62,8 +62,8 @@ The data is referenced in a publication reviewed by the HCA publication committe
 To contribute data to the Human Cell Atlas Data Coordination Platform, follow this checklist:
 
 1. Make sure your dataset conforms to the suitability criteria
-2. Get informed about the consent type for your dataset (Open access, Controlled access, or a mix of both)
-3. Prepare the data files and metadata for your dataset, based on the requirements for your data consent type
+2. Get informed about the data access type for your dataset (Open access, Controlled access, or a mix of both).  E.g. Data from living donors is always Controlled access.
+3. Prepare the data files and metadata for your dataset, based on the requirements for your data access type
 4. Fill in the questionnaire
 5. Contact HCA Data Coordination Platform [data wrangling team](mailto:wrangler-team@data.humancellatlas.org?subject=get%20started%20with%20data%20contribution) to get you started 
 
