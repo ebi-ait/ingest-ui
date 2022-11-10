@@ -6,9 +6,6 @@
   <nav class="vf-navigation vf-navigation--global">
     <ul class="vf-navigation__list | vf-list--inline">
       <li class="vf-navigation__item">
-        <a class="vf-navigation__link" routerLink="/guide">Data Submission Guide</a>
-      </li>
-      <li class="vf-navigation__item">
         <a *ngIf="userAccount$ | async" class="vf-navigation__link">
           <img *ngIf="(userProfile$ | async)?.picture" class="rounded-circle profile-image"
                src="{{(userProfile$ | async)?.picture}}" alt="User Profile Image" />

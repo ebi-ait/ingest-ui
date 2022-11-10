@@ -44,7 +44,6 @@
     "oidc-client": "^1.11.5",
     "pluralize": "^8.0.0",
     "rxjs": "^6.5.5",
-    "showdown": "^2.1.0",
     "snyk": "^1.667.0",
     "ts-enum-util": "^4.0.2",
     "tslib": "^2.0.0",
