@@ -3,7 +3,7 @@ The Human Cell Atlas Data Coordination Platform supports scientists in their atl
 
 Data considered for inclusion in the HCA Data Coordination Platform should meet at least one option per category below:
 
-* **Organism:** Human, Mouse, Donkey, Other*
+* **Organism:** Human, Mouse, Other*
 * **Sample type:** Primary tissue, Organoids, Cell lines
 * **Technology:**
     * scRNA-seq (10x, Smart-seq2, etc)
