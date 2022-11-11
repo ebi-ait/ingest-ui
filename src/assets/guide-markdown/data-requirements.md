@@ -50,7 +50,7 @@ The data is referenced by the HCA Bionetwork scientific groups as suitable for i
 
 ## Data directly contributed to the HCA Data Coordination Platform
 
-There is a pre-print or official publication referencing data that meets the criteria for published data (see suitability criteria above), or a supporting justification as to why it should be included in the HCAdsfsdf
+There is a pre-print or official publication referencing data that meets the criteria for published data (see suitability criteria above), or a supporting justification as to why it should be included in the HCA.
 The data owner contributes the data to the Human Cell Atlas Data Coordination Platform, with support of the HCA DCP data wranglers.
 
 ## Data from official Human Cell Atlas publications
