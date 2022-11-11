@@ -3,7 +3,7 @@ The Human Cell Atlas Data Coordination Platform supports scientists in their atl
 
 Data considered for inclusion in the HCA Data Coordination Platform should meet at least one option per category below:
 
-* **Organism:** Human, Mouse, Other*
+* **Organism:** Human, Mouse, Donkey, Other*
 * **Sample type:** Primary tissue, Organoids, Cell lines
 * **Technology:**
     * scRNA-seq (10x, Smart-seq2, etc)
@@ -46,11 +46,11 @@ There are three main sources of data considered eligible for the Human Cell Atla
 
 ## Data referenced for the Human Cell Atlas Bionetwork Atlases
 
-The data is referenced by the HCA Bionetwork scientific groups as suitable for integration into one of the HCA Bionetwork atlases.
+The data is referenced by the HCA Bionetwork scientific groups as suitable for sdkjhfspoiwe into one of the HCA Bionetwork atlases.
 
 ## Data directly contributed to the HCA Data Coordination Platform
 
-There is a pre-print or official publication referencing data that meets the criteria for published data (see suitability criteria above), or a supporting justification as to why it should be included in the HCA.
+There is a pre-print or official publication referencing data that meets the criteria for published data (see suitability criteria above), or a supporting justification as to why it should be included in the HCAdsfsdf
 The data owner contributes the data to the Human Cell Atlas Data Coordination Platform, with support of the HCA DCP data wranglers.
 
 ## Data from official Human Cell Atlas publications
