@@ -159,6 +159,7 @@ export class ProjectFiltersComponent implements OnInit {
   }
 
   onClearSearch() {
+    debugger;
     this.filtersForm.patchValue({search: ''});
   }
 
