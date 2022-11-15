@@ -2,6 +2,8 @@ import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormBuilder} from '@angular/forms';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {Account} from '@app/core/account';
+import {MAX_DCP_RELEASE_NUMBER, WRANGLING_PRIORITIES} from "@projects/constants";
+import Utils from "@projects/utils";
 import {IngestService} from '@shared/services/ingest.service';
 import {OntologyService} from '@shared/services/ontology.service';
 import {isEqual, isNil} from 'lodash';
@@ -9,8 +11,6 @@ import {Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import {ProjectFilters} from '../../models/project-filters';
 import ingestSchema from '../../schemas/project-ingest-schema.json';
-import {MAX_DCP_RELEASE_NUMBER, WRANGLING_PRIORITIES} from "@projects/constants";
-import Utils from "@projects/utils";
 
 // The maximum 32 bit integer value
 const MAX_INT_VALUE = (2 ** 31) - 1;

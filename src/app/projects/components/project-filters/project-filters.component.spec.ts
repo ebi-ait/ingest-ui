@@ -2,6 +2,7 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ComponentFixture, fakeAsync, TestBed, tick, waitForAsync} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import {By} from "@angular/platform-browser";
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {MaterialModule} from '@app/material.module';
 import {IngestService} from '@shared/services/ingest.service';
@@ -66,6 +67,19 @@ describe('ProjectFiltersComponent', () => {
     expect(component.onClearSearch)
       .toHaveBeenCalled();
   });
+
+  it('should not call onClearSearch when pressing enter (dcp-852)',(async() => {
+    fixture.detectChanges();
+    spyOn(component, 'onClearSearch');
+    const searchField = fixture.debugElement.query(By.css('.search-bar input'));
+    const serachFieldElement: HTMLInputElement = searchField.nativeElement;
+    serachFieldElement.value = 'sample'
+    serachFieldElement.dispatchEvent(new Event('keydown.enter'));
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(component.onClearSearch)
+      .toHaveBeenCalled();
+  }));
 
   it('#onClearSearch() should clear search text', () => {
     component.onClearSearch();
