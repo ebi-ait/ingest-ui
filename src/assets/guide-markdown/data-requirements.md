@@ -46,16 +46,16 @@ There are three main sources of data considered eligible for the Human Cell Atla
 
 1. **Data referenced for the Human Cell Atlas Bionetwork Atlases**
 
-  The data is referenced by the HCA Bionetwork scientific groups as suitable for integration into one of the HCA Bionetwork atlases.
+    The data is referenced by the HCA Bionetwork scientific groups as suitable for integration into one of the HCA Bionetwork atlases.
 
 2. **Data directly contributed to the HCA Data Coordination Platform**
 
-  There is a pre-print or official publication referencing data that meets the criteria for published data (see suitability criteria above), or a supporting justification as to why it should be included in the HCA.
-  The data owner contributes the data to the Human Cell Atlas Data Coordination Platform, with support of the HCA DCP data wranglers.
+    There is a pre-print or official publication referencing data that meets the criteria for published data (see suitability criteria above), or a supporting justification as to why it should be included in the HCA.
+    The data owner contributes the data to the Human Cell Atlas Data Coordination Platform, with support of the HCA DCP data wranglers.
 
 3. **Data from official Human Cell Atlas publications**
 
-  The data is referenced in a publication reviewed by the HCA publication committee and is added to the official HCA publications list.
+    The data is referenced in a publication reviewed by the HCA publication committee and is added to the official HCA publications list.
 
 # Contribution checklist
 
