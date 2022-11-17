@@ -25,35 +25,35 @@ or
 
 The Human Cell Atlas Data Coordination Platform accepts datasets featuring both data access types, with an important note on the data and metadata files required for each type:
 
-## Open access accepted data and metadata:
+## Open access datasets - accepted data and metadata:
 
-Raw sequencing files (fastq, bam)
+* Raw sequencing files (fastq, bam)
 
-Donor and sample metadata
+* Donor and sample metadata
 
-Analysis files (raw/normalised matrices; cell type annotations; spatial embeddings)
+* Analysis files (raw/normalised matrices; cell type annotations; spatial embeddings)
 
 
-## Controlled access accepted data and metadata:
+## Controlled access datasets - accepted data and metadata:
 
-Sample metadata (no donor-identifiable metadata)
+* Sample metadata (no donor-identifiable metadata)
 
-Analysis files (raw/normalised matrices; cell type annotations; spatial embeddings)
+* Analysis files (raw/normalised matrices; cell type annotations; spatial embeddings)
 
-# Data eligibility
+# Data sources
 
 There are three main sources of data considered eligible for the Human Cell Atlas:
 
-## Data referenced for the Human Cell Atlas Bionetwork Atlases
+* **Data referenced for the Human Cell Atlas Bionetwork Atlases**
 
 The data is referenced by the HCA Bionetwork scientific groups as suitable for integration into one of the HCA Bionetwork atlases.
 
-## Data directly contributed to the HCA Data Coordination Platform
+* **Data directly contributed to the HCA Data Coordination Platform**
 
 There is a pre-print or official publication referencing data that meets the criteria for published data (see suitability criteria above), or a supporting justification as to why it should be included in the HCA.
 The data owner contributes the data to the Human Cell Atlas Data Coordination Platform, with support of the HCA DCP data wranglers.
 
-## Data from official Human Cell Atlas publications
+* **Data from official Human Cell Atlas publications**
 
 The data is referenced in a publication reviewed by the HCA publication committee and is added to the official HCA publications list.
 
@@ -61,9 +61,11 @@ The data is referenced in a publication reviewed by the HCA publication committe
 
 To contribute data to the Human Cell Atlas Data Coordination Platform, follow this checklist:
 
-1. Make sure your dataset conforms to the suitability criteria
+1. Make sure your dataset conforms to the suitability criteria above.
 2. Get informed about the data access type for your dataset (Open access, Controlled access, or a mix of both).  E.g. Data from living donors is always Controlled access.
-3. Prepare the data files and metadata for your dataset, based on the requirements for your data access type
-4. Fill in the questionnaire
-5. Contact HCA Data Coordination Platform [data wrangling team](mailto:wrangler-team@data.humancellatlas.org?subject=get%20started%20with%20data%20contribution) to get you started 
+3. Prepare the data files and metadata for your dataset, based on the requirements for your data access type.
+4. Fill in the [HCA dataset questionnaire](https://docs.google.com/forms/d/e/1FAIpQLSdjPk2Z6xYozds53ycvXo57PvFsyqOF6XMpSWCVNTpQYalZzQ/viewform) to inform us of dataset details.
+5. Contact HCA Data Coordination Platform [data wrangling team](mailto:wrangler-team@data.humancellatlas.org?subject=get%20started%20with%20data%20contribution) to get you started.
+
+
 
