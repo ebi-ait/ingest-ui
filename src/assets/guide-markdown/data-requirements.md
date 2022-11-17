@@ -44,7 +44,7 @@ The Human Cell Atlas Data Coordination Platform accepts datasets featuring both 
 
 There are three main sources of data considered eligible for the Human Cell Atlas:
 
-* **Data referenced for the Human Cell Atlas Bionetwork Atlases**
+1. **Data referenced for the Human Cell Atlas Bionetwork Atlases**
 
 The data is referenced by the HCA Bionetwork scientific groups as suitable for integration into one of the HCA Bionetwork atlases.
 
