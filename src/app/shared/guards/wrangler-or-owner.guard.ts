@@ -30,7 +30,6 @@ export class WranglerOrOwnerGuard implements CanActivate {
     } else if (route.url.map(url => url.path).includes('submissions') && (params.hasOwnProperty('project'))) {
       getProject = this.ingestService.getProjectByUuid(params.project);
     }
-
     return ( getProject ?
       this.authService.isWranglerOrOwner(this.ingestService.getUserAccount(), getProject) :
       this.authService.isWrangler(this.ingestService.getUserAccount())
@@ -42,11 +41,12 @@ export class WranglerOrOwnerGuard implements CanActivate {
 
   private accessDenied(url: string): UrlTree {
     this.alertService.error('Access Denied', `You cannot access the resource: ${url}`, true, true);
-    return this.router.parseUrl('/home');
+    return this.router.parseUrl(`/login?redirect=${encodeURIComponent(url)}`);
   }
 
-  private unexpectedError(url: string, errorMessage: string): UrlTree {
-    this.alertService.error('Error checking access', `You cannot access the resource: ${url} due to error ${errorMessage}`, true, true);
+  private unexpectedError(url: string, error: string|any): UrlTree {
+    let errorMessage :String = error?.error?.message || error;
+    this.alertService.error('Error checking access', `You cannot access the resource: ${url} due to error: ${errorMessage}`, true, true);
     return this.router.parseUrl('/home');
   }
 }
