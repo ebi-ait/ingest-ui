@@ -72,7 +72,6 @@ describe('WranglerOrOwnerGuard', () => {
         {provide: IngestService, useFactory: () => ingestService},
         {provide: AlertService, useValue: alertService},
         {provide: AuthService, useValue: authService},
-        // Router,
         {provide: RouterStateSnapshot, useValue: state},
       ],
       imports: [RouterTestingModule]
@@ -84,15 +83,23 @@ describe('WranglerOrOwnerGuard', () => {
     spyOn(routerSpy, 'parseUrl').and.callThrough();
   }
 
+  function prepareRouterStateMock() {
+    return {
+      url: `/projects/detail?uuid=${testUuid}`
+    } as RouterStateSnapshot;
+  }
+
+  function prepareAlertServiceMock() {
+    return jasmine.createSpyObj('AlertService', ['error']);
+  }
+
   beforeEach(() => {
     prepareIngestMock();
     prepareAuthMock();
 
-    alertService = jasmine.createSpyObj('AlertService', ['error']);
+    alertService = prepareAlertServiceMock();
 
-    state = {
-      url: `/projects/detail?uuid=${testUuid}`
-    } as RouterStateSnapshot;
+    state = prepareRouterStateMock();
 
     prepareTestBed();
 
