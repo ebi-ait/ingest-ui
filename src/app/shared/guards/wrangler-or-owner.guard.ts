@@ -29,6 +29,8 @@ export class WranglerOrOwnerGuard implements CanActivate {
       getProject = this.ingestService.getProject(params.id);
     } else if (route.url.map(url => url.path).includes('submissions') && (params.hasOwnProperty('project'))) {
       getProject = this.ingestService.getProjectByUuid(params.project);
+    } else if (route.url.map(url => url.path).includes('submissions') && (params.hasOwnProperty('uuid'))) {
+      getProject = this.ingestService.getSubmissionProjectByUuid(params.uuid)
     }
     return ( getProject ?
       this.authService.isWranglerOrOwner(this.ingestService.getUserAccount(), getProject) :

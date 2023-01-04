@@ -10,12 +10,12 @@ import {CreateProjectComponent} from './pages/create-project/create-project.comp
 import {EditProjectComponent} from './pages/edit-project/edit-project.component';
 
 const routes: Routes = [
-  { path: 'register/autofill', component: AutofillProjectFormComponent },
-  { path: 'register', component: CreateProjectComponent },
-  { path: ':uuid/edit', component: EditProjectComponent, canActivate: [ WranglerOrOwnerGuard ] },
-  { path: 'all', component: AllProjectsComponent, canActivate: [UserIsWranglerGuard] },
-  {path: 'detail/:id', component: ProjectComponent, canActivate: [UserIsLoggedInGuard, WranglerOrOwnerGuard]},
-  {path: 'detail', component: ProjectComponent, canActivate: [UserIsLoggedInGuard, WranglerOrOwnerGuard]},
+  { path: 'projects/register/autofill', component: AutofillProjectFormComponent },
+  { path: 'projects/register', component: CreateProjectComponent },
+  { path: 'projects/:uuid/edit', component: EditProjectComponent, canActivate: [ WranglerOrOwnerGuard ] },
+  { path: 'projects/all', component: AllProjectsComponent, canActivate: [UserIsWranglerGuard] },
+  { path: 'projects/detail/:id', component: ProjectComponent, canActivate: [UserIsLoggedInGuard, WranglerOrOwnerGuard]},
+  { path: 'projects/detail', component: ProjectComponent, canActivate: [UserIsLoggedInGuard, WranglerOrOwnerGuard]},
 ];
 
 @NgModule({

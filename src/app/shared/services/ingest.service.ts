@@ -6,7 +6,7 @@ import {environment} from '@environments/environment';
 import {FetchSubmissionDataOptions} from '@shared/models/fetch-submission-data-options';
 import {isUndefined, omit, omitBy, values} from 'lodash';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, mergeMap} from 'rxjs/operators';
 import {INVALID_FILE_TYPES_AND_CODES, METADATA_VALIDATION_STATES} from '../constants';
 import {ArchiveEntity} from '../models/archiveEntity';
 import {ArchiveSubmission} from '../models/archiveSubmission';
@@ -247,7 +247,14 @@ export class IngestService {
       .get<ListResult<Project>>(`${this.API_URL}/submissionEnvelopes/${submissionId}/relatedProjects`)
       .pipe(map(data => data._embedded && data._embedded.projects ? data._embedded.projects[0] : null));
   }
-
+  public getSubmissionProjectByUuid(submissionUuid): Observable<Project> {
+    return this.http
+      .get<ListResult<SubmissionEnvelope>>(`${this.API_URL}/submissionEnvelopes/search/findByUuidUuid`, {params: {uuid: submissionUuid}})
+      .pipe(mergeMap(submission => {
+        const submissionId = submission._links.self.href.split('/').slice(-1)[0];
+        return this.getSubmissionProject(submissionId);
+      }));
+  }
   public fetchSubmissionData(options: FetchSubmissionDataOptions): Observable<PagedData<MetadataDocument>> {
     let url = `${this.API_URL}/submissionEnvelopes/${options.submissionId}/${options.entityType}`;
     const submission_url = `${this.API_URL}/submissionEnvelopes/${options.submissionId}`;

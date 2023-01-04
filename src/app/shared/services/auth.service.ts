@@ -27,7 +27,8 @@ export class AuthService {
             this.isWrangler(account$),
             this.isOwner(account$, project$)
         ]).pipe(
-            map(([isWrangler, isOwner]) => isWrangler || isOwner)
+            map(([isWrangler, isOwner]) => isWrangler || isOwner),
+            catchError(err => of(false))
         );
     }
 }
