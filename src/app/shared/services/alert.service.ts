@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {NavigationStart, Router} from '@angular/router';
+import {NavigationStart, Router, UrlTree} from '@angular/router';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {Alert, AlertType} from '../models/alert';
 
@@ -46,7 +46,7 @@ export class AlertService {
   alert(type: AlertType, title: string, message: string, keepAfterRouteChange = false, dismissible = true, groupName?: string) {
     this.keepAfterRouteChange = keepAfterRouteChange;
     const curValues = this.subject.getValue();
-    const alerts = [ ...curValues, <Alert>{type, title, message, dismissible, groupName, id: curValues.length }]
+    const alerts = [...curValues, <Alert>{type, title, message, dismissible, groupName, id: curValues.length}]
     this.subject.next(alerts);
   }
 

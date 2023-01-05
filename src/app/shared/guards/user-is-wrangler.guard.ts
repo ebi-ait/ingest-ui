@@ -16,11 +16,16 @@ export class UserIsWranglerGuard implements CanActivate {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> {
-    return this.ingestService.getUserAccount().pipe(map((account: Account) => account.isWrangler() || this.accessDenied(state.url)));
+    return this.ingestService.getUserAccount()
+      .pipe(
+        map((account: Account) => account.isWrangler() || this.accessDenied(state.url)),
+        // catchError(err => of(false))
+      );
   }
 
   private accessDenied(url: string): UrlTree {
     this.alertService.error('Access Denied', `You cannot access the resource: ${url}`, true, true);
     return this.router.parseUrl('/home');
   }
+
 }
