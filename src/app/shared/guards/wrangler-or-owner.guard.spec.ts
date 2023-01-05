@@ -1,6 +1,12 @@
-import {HttpClientTestingModule} from "@angular/common/http/testing";
-import {ComponentFixture, fakeAsync, TestBed, tick} from "@angular/core/testing";
-import {ActivatedRoute, convertToParamMap, RouterStateSnapshot, UrlTree} from '@angular/router';
+import {ComponentFixture, TestBed} from "@angular/core/testing";
+import {ActivatedRoute, Router, RouterStateSnapshot} from '@angular/router';
+import {RouterTestingModule} from "@angular/router/testing";
+import {of, throwError} from "rxjs";
+import {AlertService} from '../services/alert.service';
+import {AuthService} from '../services/auth.service';
+import {IngestService} from '../services/ingest.service';
+
+import {WranglerOrOwnerGuard} from './wrangler-or-owner.guard';
 
 function fakeRouterState(url: string): RouterStateSnapshot {
   return {
@@ -8,14 +14,6 @@ function fakeRouterState(url: string): RouterStateSnapshot {
   } as RouterStateSnapshot;
 }
 
-import {Router} from '@angular/router';
-import {RouterTestingModule} from "@angular/router/testing";
-import {Observable, of, throwError} from "rxjs";
-
-import {WranglerOrOwnerGuard} from './wrangler-or-owner.guard';
-import {AlertService} from '../services/alert.service';
-import {AuthService} from '../services/auth.service';
-import {IngestService} from '../services/ingest.service';
 import SpyObj = jasmine.SpyObj;
 
 describe('WranglerOrOwnerGuard', () => {
