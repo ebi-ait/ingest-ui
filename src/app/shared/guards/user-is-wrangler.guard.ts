@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {Observable, of} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
 import {AaiSecurity} from '../../aai/aai.module';
 import {Account} from '../../core/account';
 import {AlertService} from '../services/alert.service';
@@ -16,11 +16,16 @@ export class UserIsWranglerGuard implements CanActivate {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> {
-    return this.ingestService.getUserAccount().pipe(map((account: Account) => account.isWrangler() || this.accessDenied(state.url)));
+    return this.ingestService.getUserAccount()
+      .pipe(
+        map((account: Account) => account.isWrangler() || this.accessDenied(state.url)),
+        // catchError(err => of(false))
+      );
   }
 
   private accessDenied(url: string): UrlTree {
     this.alertService.error('Access Denied', `You cannot access the resource: ${url}`, true, true);
     return this.router.parseUrl('/home');
   }
+
 }

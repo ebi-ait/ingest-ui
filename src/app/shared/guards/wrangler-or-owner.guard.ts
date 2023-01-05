@@ -47,7 +47,7 @@ export class WranglerOrOwnerGuard implements CanActivate {
   }
 
   private unexpectedError(url: string, error: string|any): UrlTree {
-    let errorMessage :String = error?.error?.message || error;
+    let errorMessage: String = error?.error?.message || error;
     this.alertService.error('Error checking access', `You cannot access the resource: ${url} due to error: ${errorMessage}`, true, true);
     return this.router.parseUrl('/home');
   }
