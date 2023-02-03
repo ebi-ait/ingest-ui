@@ -256,6 +256,19 @@
       ],
       "user_friendly": "Project labels"
     },
+    "projectNetworks": {
+      "guidelines": "Project Networks",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "enum": [
+        "Blood Network",
+        "Skin Network",
+        "Brain Network"
+      ],
+      "user_friendly": "Project networks"
+    },
     "isInCatalogue": {
       "type": "boolean",
       "user_friendly": "Include this project in the Human Cell Atlas Project Catalogue by EMBL-EBI",
