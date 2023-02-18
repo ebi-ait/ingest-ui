@@ -134,6 +134,13 @@
     </mat-form-field>
 
     <mat-form-field>
+      <mat-select placeholder="Networks" formControlName="projectNetworks">
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let network of projectNetworks" [value]="network">{{network}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
       <mat-select formControlName="hcaCatalogue" placeholder="HCA Catalogue">
         <mat-option>None</mat-option>
         <mat-option [value]="true">Yes</mat-option>

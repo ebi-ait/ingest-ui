@@ -50,7 +50,7 @@ export class ProjectFiltersComponent implements OnInit {
     organOntology: [],
     dataAccess: [''],
     projectLabels: [],
-    projectNetworks: []
+    projectNetworks: [],
 
     // UI controls that are not part of the output of this component
     controlsForm: this.fb.group({

@@ -263,9 +263,22 @@
         "type": "string"
       },
       "enum": [
-        "Blood Network",
-        "Skin Network",
-        "Brain Network"
+        "Adipose",
+        "Breast",
+        "Eye",
+        "Gut",
+        "Heart",
+        "Immune",
+        "Kidney",
+        "Liver",
+        "Lung",
+        "Musculoskeletal",
+        "Nervous system",
+        "Oral and craniofacial",
+        "Organoid",
+        "Pancreas",
+        "Reproduction",
+        "Skin"
       ],
       "user_friendly": "Project networks"
     },
