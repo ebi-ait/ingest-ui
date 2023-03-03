@@ -256,6 +256,32 @@
       ],
       "user_friendly": "Project labels"
     },
+    "projectNetworks": {
+      "guidelines": "Project Networks",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "enum": [
+        "Adipose",
+        "Breast",
+        "Eye",
+        "Gut",
+        "Heart",
+        "Immune",
+        "Kidney",
+        "Liver",
+        "Lung",
+        "Musculoskeletal",
+        "Nervous system",
+        "Oral and craniofacial",
+        "Organoid",
+        "Pancreas",
+        "Reproduction",
+        "Skin"
+      ],
+      "user_friendly": "Project networks"
+    },
     "isInCatalogue": {
       "type": "boolean",
       "user_friendly": "Include this project in the Human Cell Atlas Project Catalogue by EMBL-EBI",

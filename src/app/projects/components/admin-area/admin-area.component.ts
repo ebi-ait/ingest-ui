@@ -37,7 +37,9 @@ export class AdminAreaComponent implements OnInit {
   releaseOptions: string[];
 
   projectLabelsControl: FormControl;
+  projectNetworksControl: FormControl;
   projectLabelsMetadata: Metadata;
+  projectNetworksMetadata: Metadata;
 
   constructor() {
   }
@@ -73,5 +75,9 @@ export class AdminAreaComponent implements OnInit {
     const projectLabelsKey = 'project.projectLabels';
     this.projectLabelsMetadata = this.metadataForm.get(projectLabelsKey);
     this.projectLabelsControl = this.metadataForm.getControl(projectLabelsKey) as FormControl;
+
+    const projectNetworksKey = 'project.projectNetworks';
+    this.projectNetworksMetadata = this.metadataForm.get(projectNetworksKey);
+    this.projectNetworksControl = this.metadataForm.getControl(projectNetworksKey) as FormControl;
   }
 }

@@ -26,7 +26,8 @@ export class AllProjectsComponent implements OnInit, OnDestroy {
     ProjectColumn.primaryWrangler,
     ProjectColumn.wranglingState,
     ProjectColumn.dcpReleaseNumber,
-    ProjectColumn.labels
+    ProjectColumn.labels,
+    ProjectColumn.networks
   ];
 
 
