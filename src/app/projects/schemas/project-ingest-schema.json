@@ -257,7 +257,7 @@
       "user_friendly": "Project labels"
     },
     "projectNetworks": {
-      "guidelines": "Project Networks",
+      "guidelines": "Project networks",
       "type": "array",
       "items": {
         "type": "string"
@@ -278,7 +278,8 @@
         "Organoid",
         "Pancreas",
         "Reproduction",
-        "Skin"
+        "Skin",
+        "Blood"
       ],
       "user_friendly": "Project networks"
     },
