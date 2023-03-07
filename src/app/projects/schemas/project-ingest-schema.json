@@ -264,6 +264,7 @@
       },
       "enum": [
         "Adipose",
+        "Blood",
         "Breast",
         "Eye",
         "Gut",
@@ -278,8 +279,7 @@
         "Organoid",
         "Pancreas",
         "Reproduction",
-        "Skin",
-        "Blood"
+        "Skin"
       ],
       "user_friendly": "Project networks"
     },
