@@ -257,13 +257,14 @@
       "user_friendly": "Project labels"
     },
     "projectNetworks": {
-      "guidelines": "Project Networks",
+      "guidelines": "Project networks",
       "type": "array",
       "items": {
         "type": "string"
       },
       "enum": [
         "Adipose",
+        "Blood",
         "Breast",
         "Eye",
         "Gut",
