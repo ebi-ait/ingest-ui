@@ -53,9 +53,7 @@ export class OntologyListInputComponent extends OntologyBaseComponent implements
   }
 
   onSearchValueChanged(value: string | Ontology): Observable<Ontology[]> {
-    const searchText = typeof value === 'string' ? value.toLowerCase() :
-      value.ontology_label ? value.ontology_label.toLowerCase() : '';
-
+    const searchText = this.formatValue(value);
     return this.ols.lookup(this.metadata.schema.items as JsonSchema, searchText);
   }
 

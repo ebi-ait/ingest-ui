@@ -4,7 +4,7 @@ HCA OLS URL : https://ontology.staging.archive.data.humancellatlas.org/ (staging
 
 Example Project Role (Contributor Role) schema:
 
-```
+```json
 {
 	"$schema": "http://json-schema.org/draft-07/schema#",
 	"$id": "https://schema.dev.data.humancellatlas.org/module/ontology/1.0.0/contributor_role_ontology",
@@ -67,7 +67,7 @@ Given a `ontology.classes`  has value `EFO:0002012` :
 1. Find IRI of `EFO:0002012`
 https://ontology.staging.archive.data.humancellatlas.org/api/select?q=EFO_0002012
 
-```
+```json
 {
 	"responseHeader": {
 		"status": 0,
@@ -112,7 +112,7 @@ https://ontology.staging.archive.data.humancellatlas.org/api/select?q=EFO_000201
 
 https://ontology.staging.archive.data.humancellatlas.org/api/select?groupField=iri&start=0&ontology=efo&q=*&rows=30&allChildrenOf=http://www.ebi.ac.uk/efo/EFO_0002012
 
-```
+```json
 {
 	"responseHeader": {
 		"status": 0,

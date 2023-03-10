@@ -52,10 +52,13 @@ export class OntologyBaseComponent extends BaseInputComponent implements OnInit 
   }
 
   onSearchValueChanged(value: string | Ontology): Observable<Ontology[]> {
-    const searchText = typeof value === 'string' ? value.toLowerCase() :
-      value.ontology_label ? value.ontology_label.toLowerCase() : '';
+    const searchText = this.formatValue(value);
     this.control.markAllAsTouched();
     return this.ols.lookup(this.metadata.schema, searchText);
   }
 
+  protected formatValue(value: string | Ontology) : string {
+    return typeof value === 'string' ? value.toLowerCase() :
+      value.ontology_label ? value.ontology_label.toLowerCase() : '';
+  }
 }
