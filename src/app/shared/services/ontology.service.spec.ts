@@ -1,25 +1,24 @@
-import {HttpClient} from '@angular/common/http';
+import {XhrFactory} from "@angular/common";
+import {
+  HttpClient,
+  HttpClientModule,
+  HttpErrorResponse,
+  HttpParams,
+  HttpXhrBackend,
+} from '@angular/common/http';
+import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
+import {TestBed} from "@angular/core/testing";
+import {Ontology} from "@shared/models/ontology";
 import {of} from 'rxjs';
 import {JsonSchema} from '@metadata-schema-form/models/json-schema';
 import {JsonSchemaProperty} from '@metadata-schema-form/models/json-schema-property';
 import {Metadata} from '@metadata-schema-form/models/metadata';
-import {OlsHttpResponse} from '../models/ols';
+import {OlsHttpResponse, OlsRequestParamsDefaults, OlsResponse} from '../models/ols';
 import {OntologyService} from './ontology.service';
 
-
-describe('createSearchParams', () => {
-  let service: OntologyService;
-  let http: jasmine.SpyObj<HttpClient>;
-
-  let schema: JsonSchema;
-  let metadata: Metadata;
-  let olsResponse: OlsHttpResponse;
-
-  beforeEach(() => {
-    http = jasmine.createSpyObj(['get']);
-    service = new OntologyService(http);
-
-    schema = {
+describe('OntologyService', () => {
+  function createTestSchema(): JsonSchema {
+    return {
       '$schema': 'http://json-schema.org/draft-07/schema#',
       '$id': 'https://schema.dev.data.humancellatlas.org/module/ontology/1.0.0/contributor_role_ontology',
       'description': 'A term that describes the role of a contributor in the project.',
@@ -45,7 +44,7 @@ describe('createSearchParams', () => {
               'obo:efo'
             ],
             'classes': [
-              'EFO:0002012'
+              'BFO:0000023'
             ],
             'relations': [
               'rdfs:subClassOf'
@@ -64,14 +63,10 @@ describe('createSearchParams', () => {
         }
       }
     };
+  }
 
-    metadata = new Metadata({
-      schema: schema as JsonSchemaProperty,
-      key: 'project_role',
-      isRequired: false
-    });
-
-    const response = {
+  function creatOlsResponse() :OlsResponse{
+    return {
       'numFound': 1,
       'start': 0,
       'docs': [
@@ -87,50 +82,184 @@ describe('createSearchParams', () => {
         }
       ]
     };
-    olsResponse = {highlighting: [], response: response, responseHeader: undefined};
+  }
+
+  function createOlsHttpResponse(olsResponse: OlsResponse):OlsHttpResponse {
+    return {highlighting: [], response: olsResponse, responseHeader: {status:0, QTime:1, params:undefined}};
+  }
+
+  describe('createSearchParams', () => {
+    let service: OntologyService;
+    let http: jasmine.SpyObj<HttpClient>;
+
+    let schema: JsonSchema;
+    let metadata: Metadata;
+    let olsHttpResponse: OlsHttpResponse;
+
+    beforeEach(() => {
+      http = jasmine.createSpyObj(['get']);
+      service = new OntologyService(http);
+
+      schema = createTestSchema();
+
+      metadata = new Metadata({
+        schema: schema as JsonSchemaProperty,
+        key: 'project_role',
+        isRequired: false
+      });
+
+      const olsResponse: OlsResponse = creatOlsResponse();
+      olsHttpResponse = createOlsHttpResponse(olsResponse);
+
+    });
+
+    it('should return correct search params when given a schema', (done) => {
+      // given
+      http.get.and.returnValue(of(olsHttpResponse));
+
+      // when
+      const output = service.createSearchParams(schema, 'text');
+
+      // then
+
+      output.subscribe(data => {
+        expect(data).toEqual({
+          ...OlsRequestParamsDefaults,
+          ontology: 'efo',
+          allChildrenOf: 'http://www.ebi.ac.uk/efo/EFO_0009736',
+          q: 'text',
+        });
+      });
+
+      done();
+    });
+
+    it('should return correct search params when schema is undefined', (done) => {
+      // given
+
+      // when
+      const output = service.createSearchParams(undefined, undefined);
+
+      // then
+      output.subscribe(data => {
+        expect(data).toEqual({
+          ...OlsRequestParamsDefaults,
+          q: '*',
+        });
+      });
+
+      done();
+    });
+
+    it('should work when ols returns 2 results', (done) => {
+      // given
+      const olsResponseWith2Docs = {
+        highlighting: [], responseHeader: undefined,
+        "response": {
+          "numFound": 2,
+          "start": 0,
+          "docs": [
+            {
+              "id": "efo:class:http://purl.obolibrary.org/obo/BFO_0000023",
+              "iri": "http://purl.obolibrary.org/obo/BFO_0000023",
+              "short_form": "BFO_0000023",
+              "obo_id": "BFO:0000023",
+              "label": "role",
+              "ontology_name": "efo",
+              "ontology_prefix": "EFO",
+              "type": "class"
+            },
+            {
+              "id": "hcao:class:http://purl.obolibrary.org/obo/BFO_0000023",
+              "iri": "http://purl.obolibrary.org/obo/BFO_0000023",
+              "short_form": "BFO_0000023",
+              "obo_id": "BFO:0000023",
+              "label": "role",
+              "ontology_name": "hcao",
+              "ontology_prefix": "HCAO",
+              "type": "class"
+            }
+          ]
+        },
+      }
+      http.get.and.returnValue(of(olsResponseWith2Docs));
+      service.createSearchParams(schema, 'text')
+        .subscribe(searchParams => {
+
+          done();
+        })
+    })
 
   });
 
-  it('should return correct search params when given a schema', (done) => {
-    // given
-    http.get.and.returnValue(of(olsResponse));
+  describe('ontology lookup -  Live http calls', () => {
+    class BrowserXhr implements XhrFactory {
+      build(): any { return <any>(new XMLHttpRequest());}
+    }
 
-    // when
-    const output = service.createSearchParams(schema, 'text');
+    let httpClient: HttpClient = new HttpClient(new HttpXhrBackend(new BrowserXhr()));
+    let ontologyService: OntologyService;
 
-    // then
-
-    output.subscribe(data => {
-      expect(data).toEqual({
-        groupField: 'iri',
-        start: 0,
-        ontology: ['efo'],
-        allChildrenOf: ['http://www.ebi.ac.uk/efo/EFO_0009736'],
-        q: 'text',
-        rows: 30
-      });
+    beforeEach(() => {
+      ontologyService = new OntologyService(httpClient);
     });
 
-    done();
+    it('should lookup', done => {
+      let schema = createTestSchema();
+      ontologyService.lookup(schema, '')
+        .subscribe((ontologies: Ontology[]) => {
+          expect(ontologies.length).toBeGreaterThan(0);
+          expect(ontologies.length).toBeLessThanOrEqual(OlsRequestParamsDefaults.rows);
+          done();
+        }, function (error: HttpErrorResponse) {
+          done.fail(`error: ${error.message}`);
+        })
+    });
+    it('should select', done => {
+      let schema = createTestSchema();
+      ontologyService.select({q: '*', ontology: 'efo'})
+        .subscribe((olsHttpResponse: OlsHttpResponse) => {
+          expect(olsHttpResponse.responseHeader.status).toBe(0);
+          expect(olsHttpResponse.response.numFound).toBeGreaterThan(0);
+          done();
+        }, function (error: HttpErrorResponse) {
+          done.fail(`error: ${error.message}`);
+        })
+    });
   });
 
-  it('should return correct search params when schema is undefined', (done) => {
-    // given
+  describe('OntologyService using TestBed', () => {
+    let service: OntologyService;
+    let httpMock: HttpTestingController;
 
-    // when
-    const output = service.createSearchParams(undefined, undefined);
-
-    // then
-    output.subscribe(data => {
-      expect(data).toEqual({
-        groupField: 'iri',
-        start: 0,
-        q: '*',
-        rows: 30
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        imports: [HttpClientTestingModule],
+        providers: [
+          OntologyService
+        ]
       });
+      service = TestBed.inject(OntologyService);
+      httpMock = TestBed.inject(HttpTestingController);
     });
-
-    done();
+    afterEach(() => {
+      httpMock.verify();
+    });
+    it('should be created', () => {
+      expect(service).toBeTruthy();
+    });
+    it('be able to retrieve data from the API via GET', () => {
+      const olsResponse: OlsResponse = creatOlsResponse();
+      const olsHttpResponse = createOlsHttpResponse(olsResponse);
+      olsHttpResponse.response.numFound = 3;
+      service.select({}).subscribe(data => {
+        expect(data).toEqual(olsHttpResponse);
+      });
+      const request = httpMock.expectOne(`${service.API_URL}/api/select`);
+      expect(request.request.method).toBe('GET');
+      expect(request.request.params).toEqual(new HttpParams({fromObject: {}}));
+      request.flush(olsHttpResponse);
+    });
   });
 
 

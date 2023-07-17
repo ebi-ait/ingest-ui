@@ -42,3 +42,20 @@ export interface OlsParams {
   'hl.fl': string[];
   wt: string;
 }
+
+export interface OlsRequestParams {
+  q: string;
+  ontology?: string;
+  groupField?: string;
+  start?: number;
+  rows?: number;
+  allChildrenOf?: string;
+}
+
+ export const OlsRequestParamsDefaults : Pick<OlsRequestParams, 'rows'|'start'|'groupField'> = {
+  start: 0,
+  groupField: 'iri',
+  rows: 30, // TODO (copying  from previous location) max result we have for project role and technology is 27,
+            // increasing the rows for now to let the users see all the options
+ };
+
