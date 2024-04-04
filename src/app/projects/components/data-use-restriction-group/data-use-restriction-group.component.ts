@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { MetadataForm } from '@metadata-schema-form/models/metadata-form';
 import { MetadataFormHelper } from '@metadata-schema-form/models/metadata-form-helper';
 import {first} from "rxjs/operators";
@@ -28,21 +28,16 @@ export class DataUseRestrictionGroupComponent implements OnInit {
       duos_id: this.metadataForm.getControl('project.content.duos_id')
     });
 
-    // Check initial value of data_use_restriction and enable/disable duos_id accordingly
-    const dataUseRestrictionValue = this.form.get('data_use_restriction').value;
-    const duosControl = this.form.get('duos_id');
-    console.log("1-dataUseRestrictionValue = " + dataUseRestrictionValue);
+    // Set default value for `data_use_restriction` immediately after form creation
+    let dataUseRestrictionControl = this.metadataForm.getControl('project.content.data_use_restriction');
 
-    if (dataUseRestrictionValue && duosControl) {
-      dataUseRestrictionValue.valueChanges.pipe(first()).subscribe(value => {
-        console.log("2-dataUseRestrictionValue = " + value);
-        if (value === 'GRU' || value === 'GRU-NCU') {
-          console.log("1-enable");
-          duosControl.enable();
-        } else {
-          duosControl.disable();
-        }
-      });
+    if (!dataUseRestrictionControl) {
+      // Control doesn't exist yet, so we add it
+      this.metadataForm.formGroup.addControl('project.content.data_use_restriction', new FormControl('-'));
+      dataUseRestrictionControl = this.metadataForm.getControl('project.content.data_use_restriction');
+    } else {
+      // Control exists, we just set its initial value
+      dataUseRestrictionControl.setValue('null');
     }
   }
 
@@ -52,7 +47,6 @@ export class DataUseRestrictionGroupComponent implements OnInit {
       dataUseControl.valueChanges.subscribe(value => {
         const duosControl = this.form.get('duos_id');
         if (value === 'GRU' || value === 'GRU-NCU') {
-          console.log("2-enable");
           duosControl.enable();
         } else {
           duosControl.disable();
