@@ -13,6 +13,7 @@ export class DataUseRestrictionGroupComponent implements OnInit {
   metadataForm: MetadataForm;
   form: FormGroup;
   formHelper: MetadataFormHelper;
+  duosIdCtrl: FormControl;
 
   constructor(private fb: FormBuilder) {}
 
@@ -25,7 +26,6 @@ export class DataUseRestrictionGroupComponent implements OnInit {
   initializeForms(): void {
     this.form = this.fb.group({
       data_use_restriction: this.metadataForm.getControl('project.content.data_use_restriction'),
-      duos_id: this.metadataForm.getControl('project.content.duos_id')
     });
 
     // Set default value for `data_use_restriction` immediately after form creation
@@ -39,19 +39,34 @@ export class DataUseRestrictionGroupComponent implements OnInit {
       // Control exists, we just set its initial value
       dataUseRestrictionControl.setValue('null');
     }
+
+    this.duosIdCtrl = new FormControl('', Validators.compose([
+      Validators.required,
+      Validators.pattern(/^DUOS-\d{6}$/)
+    ]));
   }
 
   subscribeToDataUseRestrictionChanges(): void {
-    const dataUseControl = this.form.get('data_use_restriction');
-    if (dataUseControl) {
-      dataUseControl.valueChanges.subscribe(value => {
-        const duosControl = this.form.get('duos_id');
-        if (value === 'GRU' || value === 'GRU-NCU') {
-          duosControl.enable();
-        } else {
-          duosControl.disable();
-        }
-      });
+    this.form.get('data_use_restriction').valueChanges.subscribe(value => {
+      const duosControl = this.form.get('duos_id');
+      if (value === 'GRU' || value === 'GRU-NCU') {
+        duosControl.enable();
+      } else {
+        duosControl.disable();
+      }
+    });
+  }
+
+  showError(control: FormControl, message: string): string {
+    if (control.touched && control.errors) {
+      const errors = control.errors;
+
+      if (errors['required']) {
+        return 'This field is required';
+      }
+      if (errors['pattern']) {
+        return message;
+      }
     }
   }
 }
