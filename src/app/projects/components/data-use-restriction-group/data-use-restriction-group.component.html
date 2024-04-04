@@ -11,12 +11,12 @@
   <!-- Displayed only if 'GRU' or 'GRU-NCU' is selected -->
   <div *ngIf="form.get('data_use_restriction').value === 'GRU' || form.get('data_use_restriction').value === 'GRU-NCU'">
     <app-vf-input
-      [formControl]="duosIdCtrl"
+      formControlName="duos_id"
       [label]="'DUOS ID'"
       [dataType]="'string'"
       [helperText]="'Enter the DUOS dataset ID if the project is registered for managed access.'"
       [isRequired]="true"
-      [error]="showError(duosIdCtrl, 'The DUOS ID must be valid. E.g. DUOS-000108')">
+      [error]="showError(form.get('duos_id'), 'The DUOS ID must be valid. E.g. DUOS-000108')">
     </app-vf-input>
   </div>
 
