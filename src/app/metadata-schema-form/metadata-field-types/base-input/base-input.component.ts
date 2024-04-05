@@ -45,7 +45,9 @@ export class BaseInputComponent implements OnInit {
       disabled: this.disabled
     };
 
-    this.placeholder = this.metadata.schema.example;
+    if (!this.metadata.ignoreExample) {
+      this.placeholder = this.metadata.schema.example;
+    }
   }
 
   private getHelperText(metadata: Metadata) {

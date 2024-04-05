@@ -18,6 +18,7 @@ export class Metadata {
   childrenMetadata: Metadata[];
 
   itemMetadata: Metadata;
+  ignoreExample: boolean;
 
   constructor(options: {
     schema: JsonSchemaProperty,
@@ -29,7 +30,8 @@ export class Metadata {
     parent?: string,
     children?: string[],
     inputType?: string,
-    guidelines?: string
+    guidelines?: string,
+    ignoreExample?: boolean
   }) {
     this.schema = options.schema;
     this.key = options.key;
@@ -41,6 +43,7 @@ export class Metadata {
     this.childrenMetadata = [];
     this.inputType = options.inputType;
     this.guidelines = options.guidelines;
+    this.ignoreExample = options.ignoreExample || false;
   }
 
   isObjectList(): boolean {
