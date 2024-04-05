@@ -48,7 +48,6 @@ export class DataUseRestrictionGroupComponent implements OnInit {
     });
   }
 
-
   subscribeToDataUseRestrictionChanges(): void {
     this.form.get('data_use_restriction').valueChanges.subscribe(value => {
       const duosControl = this.form.get('duos_id');
