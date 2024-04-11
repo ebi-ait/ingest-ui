@@ -31,6 +31,7 @@ const getFullLayout = () => ({
       items: [
         'project.content.project_core.project_title',
         'project.content.project_core.project_description',
+        'project.dataAccess',
         {
           keys: [
             'project.content.data_use_restriction',
