@@ -9,7 +9,7 @@
 
   <!-- Conditional DUOS ID Input Field -->
   <!-- Displayed only if 'GRU' or 'GRU-NCU' is selected -->
-  <div *ngIf="form.get('data_use_restriction').value === 'GRU' || form.get('data_use_restriction').value === 'GRU-NCU'">
+  <div *ngIf="['GRU', 'GRU-NCU'].includes(form.get('data_use_restriction').value)">
     <app-vf-input
       formControlName="duos_id"
       [label]="duosIdLabel"
