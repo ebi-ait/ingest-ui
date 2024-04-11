@@ -90,10 +90,11 @@ describe('ProjectMetadataFormComponent', () => {
       });
 
       // Should show the ProjectIDComponent and the AccessionFieldGroupComponent
+      // DataUseRestrictionGroupComponent fields were added, increasing the index by 1
       // @ts-ignore
-      expect(projectTab.items.findIndex(item => item?.component === ProjectIdComponent)).toEqual(3);
+      expect(projectTab.items.findIndex(item => item?.component === ProjectIdComponent)).toEqual(4);
       // @ts-ignore
-      expect(projectTab.items.findIndex(item => item?.component === AccessionFieldGroupComponent)).toEqual(4);
+      expect(projectTab.items.findIndex(item => item?.component === AccessionFieldGroupComponent)).toEqual(5);
     });
 
     it('shows correct tabs and fields when not in create mode', () => {
