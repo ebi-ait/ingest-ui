@@ -1,0 +1,553 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schema.staging.data.humancellatlas.org/type/project/19.0.0/project",
+  "description": "A project entity contains information about the overall project.",
+  "additionalProperties": false,
+  "required": [
+    "describedBy",
+    "schema_type",
+    "project_core",
+    "funders",
+    "data_use_restriction"
+  ],
+  "title": "Project",
+  "name": "project",
+  "type": "object",
+  "properties": {
+    "describedBy": {
+      "description": "The URL reference to the schema.",
+      "type": "string",
+      "pattern": "^(http|https)://schema.(.*?)humancellatlas.org/type/project/(([0-9]{1,}.[0-9]{1,}.[0-9]{1,})|([a-zA-Z]*?))/project"
+    },
+    "schema_version": {
+      "description": "The version number of the schema in major.minor.patch format.",
+      "type": "string",
+      "pattern": "^[0-9]{1,}.[0-9]{1,}.[0-9]{1,}$",
+      "example": "4.6.1"
+    },
+    "schema_type": {
+      "description": "The type of the metadata schema entity.",
+      "type": "string",
+      "enum": [
+        "project"
+      ]
+    },
+    "provenance": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "$id": "https://schema.humancellatlas.org/system/1.1.0/provenance",
+      "description": "Provenance information added or generated at time of ingest.",
+      "additionalProperties": false,
+      "required": [
+        "document_id",
+        "submission_date"
+      ],
+      "title": "Provenance",
+      "name": "provenance",
+      "type": "object",
+      "properties": {
+        "describedBy": {
+          "description": "The URL reference to the schema.",
+          "type": "string",
+          "pattern": "^(http|https)://schema.(.*?)humancellatlas.org/system/(([0-9]{1,}.[0-9]{1,}.[0-9]{1,})|([a-zA-Z]*?))/provenance"
+        },
+        "schema_version": {
+          "description": "The version number of the schema in major.minor.patch format.",
+          "type": "string",
+          "pattern": "^[0-9]{1,}.[0-9]{1,}.[0-9]{1,}$",
+          "example": "4.6.1"
+        },
+        "schema_major_version": {
+          "description": "The major version number of the schema.",
+          "type": "integer",
+          "pattern": "^[0-9]{1,}$",
+          "user_friendly": "Schema major version",
+          "example": "4; 10"
+        },
+        "schema_minor_version": {
+          "description": "The minor version number of the schema.",
+          "type": "integer",
+          "pattern": "^[0-9]{1,}$",
+          "user_friendly": "Schema minor version",
+          "example": "6; 15"
+        },
+        "submission_date": {
+          "description": "When project was first submitted to database.",
+          "type": "string",
+          "format": "date-time",
+          "user_friendly": "Submission date"
+        },
+        "submitter_id": {
+          "description": "ID of individual who first submitted project.",
+          "type": "string",
+          "user_friendly": "Submitter ID"
+        },
+        "update_date": {
+          "description": "When project was last updated.",
+          "type": "string",
+          "format": "date-time",
+          "user_friendly": "Update date"
+        },
+        "updater_id": {
+          "description": "ID of individual who last updated project.",
+          "type": "string",
+          "user_friendly": "Updater ID"
+        },
+        "document_id": {
+          "description": "Identifier for document.",
+          "type": "string",
+          "pattern": ".{8}-.{4}-.{4}-.{4}-.{12}",
+          "comment": "This structure supports the current ingest API. It may change in the future.",
+          "user_friendly": "Document ID"
+        },
+        "accession": {
+          "description": "A unique accession for this entity, provided by the broker.",
+          "type": "string",
+          "user_friendly": "Accession"
+        }
+      }
+    },
+    "project_core": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "$id": "https://schema.humancellatlas.org/core/project/7.0.5/project_core",
+      "description": "Information about the project.",
+      "additionalProperties": false,
+      "required": [
+        "project_short_name",
+        "project_title",
+        "project_description"
+      ],
+      "title": "Project core",
+      "name": "project_core",
+      "type": "object",
+      "properties": {
+        "describedBy": {
+          "description": "The URL reference to the schema.",
+          "type": "string",
+          "pattern": "^(http|https)://schema.(.*?)humancellatlas.org/core/project/(([0-9]{1,}.[0-9]{1,}.[0-9]{1,})|([a-zA-Z]*?))/project_core"
+        },
+        "schema_version": {
+          "description": "The version number of the schema in major.minor.patch format.",
+          "type": "string",
+          "pattern": "^[0-9]{1,}.[0-9]{1,}.[0-9]{1,}$",
+          "example": "4.6.1"
+        },
+        "project_short_name": {
+          "description": "A short name for the project.",
+          "type": "string",
+          "example": "CoolOrganProject.",
+          "user_friendly": "Project label",
+          "guidelines": "Project label is a short label by which you refer to the project. It should have no spaces and should be fewer than 50 characters."
+        },
+        "project_title": {
+          "description": "An official title for the project.",
+          "type": "string",
+          "example": "Study of single cells in the human body.",
+          "user_friendly": "Project title",
+          "guidelines": "Project title should be fewer than 30 words, such as a title of a grant proposal or a publication."
+        },
+        "project_description": {
+          "description": "A longer description of the project which includes research goals and experimental approach.",
+          "type": "string",
+          "user_friendly": "Project description",
+          "guidelines": "Project description should be fewer than 300 words, such as an abstract from a grant application or publication."
+        }
+      }
+    },
+    "contributors": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "$id": "https://schema.staging.data.humancellatlas.org/module/project/9.0.0/contact",
+      "description": "Information about an individual who submitted or contributed to a project.",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "institution"
+      ],
+      "title": "Contact",
+      "name": "contact",
+      "type": "object",
+      "properties": {
+        "describedBy": {
+          "description": "The URL reference to the schema.",
+          "type": "string",
+          "pattern": "^(http|https)://schema.(.*?)humancellatlas.org/module/project/(([0-9]{1,}.[0-9]{1,}.[0-9]{1,})|([a-zA-Z]*?))/contact"
+        },
+        "schema_version": {
+          "description": "The version number of the schema in major.minor.patch format.",
+          "type": "string",
+          "pattern": "^[0-9]{1,}.[0-9]{1,}.[0-9]{1,}$",
+          "example": "4.6.1"
+        },
+        "name": {
+          "description": "Name of individual who has contributed to the project.",
+          "type": "string",
+          "example": "John,D,Doe; Jane,,Smith",
+          "guidelines": "Enter in the format: first name,middle name or initial,last name.",
+          "user_friendly": "Contact name"
+        },
+        "email": {
+          "description": "Email address for the individual.",
+          "type": "string",
+          "example": "dummy@email.com",
+          "format": "email",
+          "user_friendly": "Email address"
+        },
+        "phone": {
+          "description": "Phone number of the individual or their lab.",
+          "type": "string",
+          "example": "(+1) 234-555-6789",
+          "guidelines": "Include the country code.",
+          "user_friendly": "Phone number"
+        },
+        "institution": {
+          "description": "Name of primary institute where the individual works.",
+          "type": "string",
+          "user_friendly": "Institute",
+          "example": "EMBL-EBI; University of Washington"
+        },
+        "laboratory": {
+          "description": "Name of lab or department within the institute where the individual works.",
+          "type": "string",
+          "user_friendly": "Laboratory/Department",
+          "example": "Division of Vaccine Discovery; Department of Biology"
+        },
+        "address": {
+          "description": "Street address where the individual works.",
+          "type": "string",
+          "example": "0000 Main Street, Nowheretown, MA, 12091",
+          "guidelines": "Include street name and number, city, country division, and postal code.",
+          "user_friendly": "Street address"
+        },
+        "country": {
+          "description": "Country where the individual works.",
+          "type": "string",
+          "user_friendly": "Country",
+          "example": "USA"
+        },
+        "corresponding_contributor": {
+          "description": "Whether the individual is a primary point of contact for the project.",
+          "type": "boolean",
+          "user_friendly": "Corresponding contributor",
+          "example": "Should be one of: yes, or no."
+        },
+        "project_role": {
+          "description": "Primary role of the individual in the project.",
+          "type": "object",
+          "$ref": "https://schema.staging.data.humancellatlas.org/module/ontology/2.0.0/contributor_role_ontology",
+          "example": "principal investigator; computational scientist",
+          "user_friendly": "Project role"
+        },
+        "orcid_id": {
+          "description": "The individual's ORCID ID linked to previous work.",
+          "type": "string",
+          "example": "0000-1111-2222-3333",
+          "user_friendly": "ORCID ID"
+        }
+      }
+    },
+    "supplementary_links": {
+      "description": "External link(s) pointing to code, supplementary data files, or analysis files associated with the project which will not be uploaded.",
+      "type": "array",
+      "example": "https://github.com/czbiohub/tabula-muris; http://celltag.org/",
+      "items": {
+        "type": "string"
+      },
+      "user_friendly": "Supplementary link(s)"
+    },
+    "publications": {
+      "description": "Publications resulting from this project.",
+      "type": "array",
+      "items": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "$id": "https://schema.staging.data.humancellatlas.org/module/project/7.0.0/publication",
+        "description": "Information about a journal article, book, web page, or other external available documentation for a project.",
+        "additionalProperties": false,
+        "required": [
+          "authors",
+          "title",
+          "official_hca_publication"
+        ],
+        "title": "Publication",
+        "name": "publication",
+        "type": "object",
+        "properties": {
+          "describedBy": {
+            "description": "The URL reference to the schema.",
+            "type": "string",
+            "pattern": "^(http|https)://schema.(.*?)humancellatlas.org/module/project/(([0-9]{1,}.[0-9]{1,}.[0-9]{1,})|([a-zA-Z]*?))/publication"
+          },
+          "schema_version": {
+            "description": "The version number of the schema in major.minor.patch format.",
+            "type": "string",
+            "pattern": "^[0-9]{1,}.[0-9]{1,}.[0-9]{1,}$",
+            "example": "4.6.1"
+          },
+          "authors": {
+            "description": "A list of authors associated with the publication.",
+            "type": "array",
+            "example": "Doe JD",
+            "items": {
+              "type": "string"
+            },
+            "user_friendly": "Authors",
+            "guidelines": "List each author in 'surname initials' format."
+          },
+          "title": {
+            "description": "The title of the publication.",
+            "type": "string",
+            "user_friendly": "Publication title",
+            "example": "Study of single cells in the human body."
+          },
+          "doi": {
+            "description": "The publication digital object identifier (doi) of the publication.",
+            "type": "string",
+            "example": "10.1016/j.cell.2016.07.054",
+            "user_friendly": "Publication DOI"
+          },
+          "pmid": {
+            "description": "The PubMed ID of the publication.",
+            "type": "integer",
+            "example": "27565351",
+            "user_friendly": "Publication PMID"
+          },
+          "url": {
+            "description": "A URL for the publication.",
+            "type": "string",
+            "user_friendly": "Publication URL",
+            "example": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5667944/"
+          },
+          "official_hca_publication": {
+            "description": "Has the publication been accepted as an official HCA publication, according to the process described in https://www.humancellatlas.org/publications/ ?",
+            "type": "boolean",
+            "user_friendly": "Official HCA Publication",
+            "guidelines": "Should be one of: yes, or no.",
+            "example": "yes; no"
+          }
+        }
+      },
+      "user_friendly": "Publications"
+    },
+    "hca_bionetworks": {
+      "description": "HCA Bionetworks and Atlases the project is associated with",
+      "type": "array",
+      "items": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "$id": "https://schema.staging.data.humancellatlas.org/module/project/1.0.1/hca_bionetwork",
+        "description": "Information about whether the project is part of a HCA Bionetwork or HCA Atlas.",
+        "additionalProperties": false,
+        "title": "HCA Bionetwork",
+        "name": "hca_bionetwork",
+        "type": "object",
+        "properties": {
+          "describedBy": {
+            "description": "The URL reference to the schema.",
+            "type": "string",
+            "pattern": "^(http|https)://schema.(.*?)humancellatlas.org/module/project/(([0-9]{1,}.[0-9]{1,}.[0-9]{1,})|([a-zA-Z]*?))/contact"
+          },
+          "schema_version": {
+            "description": "The version number of the schema in major.minor.patch format.",
+            "type": "string",
+            "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+            "example": "4.6.1"
+          },
+          "name": {
+            "description": "HCA Bionetwork the project is a part of (e.g. Kidney). ",
+            "type": "string",
+            "enum": [
+              "Adipose",
+              "Breast",
+              "Development",
+              "Eye",
+              "Genetic Diversity",
+              "Gut",
+              "Heart",
+              "Immune",
+              "Kidney",
+              "Liver",
+              "Lung",
+              "Musculoskeletal",
+              "Nervous System",
+              "Oral & Craniofacial",
+              "Organoid",
+              "Pancreas",
+              "Reproduction",
+              "Skin"
+            ],
+            "user_friendly": "Official HCA Bionetwork",
+            "guidelines": "Should be one of the networks from https://www.humancellatlas.org/biological-networks/",
+            "example": "Kidney; Lung"
+          },
+          "hca_tissue_atlas": {
+            "description": "A field describing if the project is part of a HCA Tissue Atlas (e.g. Brain Alzheimer Atlas). ",
+            "type": "string",
+            "enum": [
+              "Blood",
+              "Retina",
+              "Lung",
+              "Kidney",
+              "Gut",
+              "Eye",
+              "Brain"
+            ],
+            "user_friendly": "HCA Tissue Atlas",
+            "guidelines": "For example: Blood Atlas",
+            "example": "Blood Atlas"
+          },
+          "hca_tissue_atlas_version": {
+            "description": "A field describing which version of the HCA Tissue Atlas is associated with the project (e.g. v1.0; v2.0)",
+            "type": "string",
+            "pattern": "^v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+            "user_friendly": "Official HCA Tissue Atlas Version",
+            "guidelines": "For example: v1.0; v2.0",
+            "example": "v1.0; v2.0"
+          },
+          "atlas_project": {
+            "description": "A field describing if this project is the HCA Tissue Atlas project which integrates data from other datasets.",
+            "type": "boolean",
+            "user_friendly": "Project Tissue Atlas Status",
+            "guidelines": "Enter ‘Yes’ if this project is one of the HCA Tissue Atlases and it integrates data from all other datasets. Enter ‘No’, if this project's data is being integrated.",
+            "example": "Yes; No"
+          }
+        }
+      },
+      "user_friendly": "HCA Bionetwork(s)"
+    },
+    "insdc_project_accessions": {
+      "description": "An International Nucleotide Sequence Database Collaboration (INSDC) project accession.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[D|E|S]RP[0-9]+$"
+      },
+      "example": "SRP000000",
+      "user_friendly": "INSDC project accession",
+      "guidelines": "Enter accession if project has been archived. Accession can be from the DDBJ, NCBI, or EMBL-EBI and must start with DRP, SRP, or ERP, respectively."
+    },
+    "ega_accessions": {
+      "description": "A list of accessions referring to EGA (European Genome-Phenome Archive) datasets or studies.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^EGA[DS][0-9]{11}$"
+      },
+      "example": "EGAS00000000001; EGAD00000000002",
+      "guidelines": "Enter any EGA study or dataset accessions that relate to the project. Should start with EGAD or EGAS, study accession preferred.",
+      "user_friendly": "EGA Study/Dataset Accession(s)"
+    },
+    "dbgap_accessions": {
+      "description": "A list of database of Genotypes and Phenotypes (dbGaP) study accessions.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^phs[0-9]{6}(\\.v[0-9])?(\\.p[0-9])?$"
+      },
+      "example": "phs001997.v1.p1; phs001836",
+      "guidelines": "Enter any dbGaP study accessions that relate to this project. Should start with phs, can contain the specific version information.",
+      "user_friendly": "dbGaP Study Accession(s)"
+    },
+    "geo_series_accessions": {
+      "description": "A Gene Expression Omnibus (GEO) series accession.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^GSE.*$"
+      },
+      "example": "GSE00000",
+      "user_friendly": "GEO series accession",
+      "guidelines": "Enter accession if project has been archived. Accession must start with GSE."
+    },
+    "array_express_accessions": {
+      "description": "An ArrayExpress accession.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^E-....-.*$"
+      },
+      "example": "E-AAAA-00",
+      "user_friendly": "ArrayExpress accession",
+      "guidelines": "Enter accession if project has been archived. Accession must start with E-."
+    },
+    "insdc_study_accessions": {
+      "description": "An International Nucleotide Sequence Database Collaboration (INSDC) study accession.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^PRJ[E|N|D][a-zA-Z][0-9]+$"
+      },
+      "example": "PRJNA000000",
+      "user_friendly": "INSDC study accession",
+      "guidelines": "Enter accession if study has been archived. Accession can be from the DDBJ, NCBI, or EMBL-EBI and must start with PRJD, PRJN, or PRJE, respectively."
+    },
+    "biostudies_accessions": {
+      "description": "A BioStudies study accession.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^S-[A-Z]{4}[0-9]+$"
+      },
+      "example": "S-EXMP1; S-HCAS33",
+      "user_friendly": "BioStudies accession",
+      "guidelines": "Enter accession if study has been archived."
+    },
+    "funders": {
+      "description": "Funding source(s) supporting the project.",
+      "type": "array",
+      "items": {
+        "$ref": "https://schema.staging.data.humancellatlas.org/module/project/2.0.0/funder"
+      },
+      "user_friendly": "Funding source(s)"
+    },
+    "estimated_cell_count": {
+      "description": "An estimated number of cells in this project",
+      "type": "integer",
+      "example": "10000; 2100000",
+      "user_friendly": "Estimated cell count"
+    },
+    "data_use_restriction": {
+      "description": "Data use restrictions that apply to the project.",
+      "type": "string",
+      "enum": [
+        "NRES",
+        "GRU",
+        "GRU-NCU"
+      ],
+      "user_friendly": "Data use restriction",
+      "guidelines": "Must be one of: NRES, GRU, GRU-NCU. The use restriction codes are based on the DUO ontology where NRES corresponds to DUO:0000004, GRU corresponds to DUO:0000042, GRU-NCU corresponds to a combination of DUO:0000042 and DUO:0000046",
+      "example": "GRU"
+    },
+    "duos_id": {
+      "description": "A DUOS dataset id.",
+      "type": "string",
+      "pattern": "^DUOS-\\d{6}$",
+      "example": "DUOS-000108; DUOS-000114",
+      "user_friendly": "DUOS ID",
+      "guidelines": "Managed access projects are registered in DUOS to regulate access. If the project is managed access record the corresponding DUOS ID here."
+    }
+  },
+  "if": {
+    "properties": {
+      "data_use_restriction": {
+        "enum": [
+          "GRU",
+          "GRU-NCU"
+        ]
+      }
+    }
+  },
+  "then": {
+    "required": [
+      "duos_id"
+    ]
+  },
+  "else": {
+    "properties": {
+      "data_use_restriction": {
+        "enum": [
+          "NRES"
+        ]
+      },
+      "duos_id": {
+        "maxLength": 0
+      }
+    }
+  }
+}

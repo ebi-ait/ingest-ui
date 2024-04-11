@@ -1,6 +1,7 @@
 import {FormArray, FormControl, FormGroup} from '@angular/forms';
 import {MetadataFormService} from '../metadata-form.service';
 import * as jsonSchema from '../test-json-files/test-json-schema.json';
+import * as jsonSchemaV19 from '../test-json-files/test-json-schema-v19.json';
 import * as json from '../test-json-files/test-json.json';
 import {JsonSchema} from './json-schema';
 import {JsonSchemaProperty} from './json-schema-property';
@@ -9,10 +10,12 @@ import {MetadataFormConfig} from './metadata-form-config';
 
 describe('MetadataForm', () => {
   let testSchema: JsonSchema;
+  let testSchemaV19: JsonSchema;
   let metadataFormSvc: MetadataFormService;
 
   beforeEach(() => {
     testSchema = (jsonSchema as any).default;
+    testSchemaV19 = jsonSchemaV19;
     metadataFormSvc = new MetadataFormService();
   });
 
@@ -205,6 +208,24 @@ describe('MetadataForm', () => {
         'Franck T',
         'Abraham D'
       ]);
+    });
+
+    it('should create FormGroup object without data_use_restriction and ' +
+      'duos_id for schema version 15.0.0', () => {
+      const metadataForm = new MetadataForm('project', testSchema);
+      const formGroup = metadataForm.formGroup;
+
+      expect(formGroup.get('data_use_restriction')).toBeNull();
+      expect(formGroup.get('duos_id')).toBeNull();
+    });
+
+    it('should create FormGroup object with data_use_restriction and ' +
+      'duos_id for schema version 19.0.0', () => {
+      const metadataForm = new MetadataForm('project', testSchemaV19);
+      const formGroup = metadataForm.formGroup;
+
+      expect(formGroup.get('data_use_restriction')).not.toBeNull();
+      expect(formGroup.get('duos_id')).not.toBeNull();
     });
 
   });
