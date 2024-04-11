@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
-  FormBuilder,
+  FormBuilder, FormControl,
   FormGroup,
-  ValidatorFn,
   Validators
 } from '@angular/forms';
+import {MetadataFormService} from "@metadata-schema-form/metadata-form.service";
 import {Metadata} from "@metadata-schema-form/models/metadata";
 import { MetadataForm } from '@metadata-schema-form/models/metadata-form';
 import { MetadataFormHelper } from '@metadata-schema-form/models/metadata-form-helper'
@@ -19,51 +19,71 @@ import { MetadataFormHelper } from '@metadata-schema-form/models/metadata-form-h
 export class DataUseRestrictionGroupComponent implements OnInit {
   metadataForm: MetadataForm;
   form: FormGroup;
-  formHelper: MetadataFormHelper;
   duosIdLabel: string;
   duosIdHelperText: string;
+  dataUseRestrictionMetadata: Metadata;
+  dataUseRestrictionControl: FormControl;
+  duosIdMetadata: Metadata;
 
-  private readonly DATA_USE_RESTRICTION_FULL_KEY = 'project.content.data_use_restriction';
-  private readonly DATA_USE_RESTRICTION_FORM_KEY = 'data_use_restriction';
-  private readonly DUOS_ID_FULL_KEY = 'project.content.duos_id';
-  private readonly DUOS_ID_FORM_KEY = 'duos_id';
+  readonly dataUseRestrictionFullKey = 'project.content.data_use_restriction';
+  readonly dataUseRestrictionFormKey = 'data_use_restriction';
+  readonly duosIdFullKey = 'project.content.duos_id';
+  readonly duosIdFormKey = 'duos_id';
+
+  ignoreExample: boolean = true;
 
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.formHelper = new MetadataFormHelper();
     this.initializeForms();
     this.subscribeToDataUseRestrictionChanges();
   }
 
   initializeForms(): void {
-    const dataUseRestrictionMetadata = this.metadataForm.get(this.DATA_USE_RESTRICTION_FULL_KEY);
-    this.ignoreExampleValues(dataUseRestrictionMetadata);
+    this.setupDataUseRestrictionControl();
+    this.setupDuosIdControl();
+    this.setupForm();
+  }
 
-    const dataUseRestrictionControl = this.metadataForm.getControl(this.DATA_USE_RESTRICTION_FULL_KEY);
-    const duosIdMetadata = this.metadataForm.get(this.DUOS_ID_FULL_KEY);
-    this.duosIdLabel = duosIdMetadata.schema.user_friendly;
-    this.duosIdHelperText = duosIdMetadata.schema.guidelines;
+  private fetchMetadata(key: string): Metadata {
+    return this.metadataForm.get(key);
+  }
 
+  private setupDataUseRestrictionControl(): void {
+    this.dataUseRestrictionMetadata = this.fetchMetadata(this.dataUseRestrictionFullKey);
+    this.ignoreExampleValues(this.dataUseRestrictionMetadata, this.ignoreExample);
+    this.dataUseRestrictionControl = this.metadataForm.getControl(this.dataUseRestrictionFullKey) as FormControl;
+  }
+
+  private setupDuosIdControl(): void {
+    this.duosIdMetadata = this.fetchMetadata(this.duosIdFullKey);
+    this.duosIdLabel = this.duosIdMetadata.schema.user_friendly;
+    this.duosIdHelperText = this.duosIdMetadata.schema.guidelines;
+  }
+
+  private setupForm(): void {
     this.form = this.fb.group({
-      [this.DATA_USE_RESTRICTION_FORM_KEY]: dataUseRestrictionControl,
-
-      duos_id: [{value: '', disabled: true}, Validators.compose([
-        Validators.required,
-        Validators.pattern(/^DUOS-\d{6}$/)
-      ])]
+      [this.dataUseRestrictionFormKey]: this.dataUseRestrictionControl,
+      duos_id: this.getDuosIdControlConfig()
     });
   }
 
-  private ignoreExampleValues(dataUseRestrictionMetadata: Metadata) {
-    if (dataUseRestrictionMetadata) {
-      dataUseRestrictionMetadata.ignoreExample = true;
+  private getDuosIdControlConfig(): FormControl {
+    return new FormControl({value: '', disabled: true}, Validators.compose([
+      Validators.required,
+      Validators.pattern(/^DUOS-\d{6}$/)
+    ]));
+  }
+
+  private ignoreExampleValues(metadata: Metadata, ignore: boolean): void {
+    if (metadata) {
+      metadata.ignoreExample = ignore;
     }
   }
 
   subscribeToDataUseRestrictionChanges(): void {
-    this.form.get(this.DATA_USE_RESTRICTION_FORM_KEY).valueChanges.subscribe(value => {
-      const duosControl = this.form.get(this.DUOS_ID_FORM_KEY);
+    this.form.get(this.dataUseRestrictionFormKey).valueChanges.subscribe(value => {
+      const duosControl = this.form.get(this.duosIdFormKey);
       if (value === 'GRU' || value === 'GRU-NCU') {
         duosControl.enable();
       } else {
