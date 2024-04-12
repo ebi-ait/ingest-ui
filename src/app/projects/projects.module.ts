@@ -32,7 +32,7 @@ import {ProjectsRoutingModule} from './projects-routing.module';
 import {DoiService} from './services/doi.service';
 import {ProjectCacheService} from './services/project-cache.service';
 import { AuditLogComponent } from './components/audit-log/audit-log.component';
-
+import { DataUseRestrictionGroupComponent } from './components/data-use-restriction-group/data-use-restriction-group.component';
 @NgModule({
   declarations: [
     AutofillProjectFormComponent,
@@ -53,7 +53,8 @@ import { AuditLogComponent } from './components/audit-log/audit-log.component';
     ContactNameFieldComponent,
     ProjectComponent,
     ProjectSummaryComponent,
-    AuditLogComponent
+    AuditLogComponent,
+    DataUseRestrictionGroupComponent
   ],
   imports: [
     CommonModule,

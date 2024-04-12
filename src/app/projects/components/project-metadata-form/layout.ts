@@ -1,3 +1,6 @@
+import {
+  DataUseRestrictionGroupComponent
+} from "@projects/components/data-use-restriction-group/data-use-restriction-group.component";
 import {AccessionFieldGroupComponent} from '../accession-field-group/accession-field-group.component';
 import {AdminAreaComponent} from '../admin-area/admin-area.component';
 import {ContactFieldGroupComponent} from '../contact-field-group/contact-field-group.component';
@@ -29,6 +32,13 @@ const getFullLayout = () => ({
         'project.content.project_core.project_title',
         'project.content.project_core.project_description',
         'project.dataAccess',
+        {
+          keys: [
+            'project.content.data_use_restriction',
+            'project.content.duos_id',
+          ],
+          component: DataUseRestrictionGroupComponent
+        },
         {
           keys: [
             'project.identifyingOrganisms',

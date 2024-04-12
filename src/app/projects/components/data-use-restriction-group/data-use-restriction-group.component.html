@@ -1,0 +1,23 @@
+<form [formGroup]="form">
+
+  <!-- Data Use Restriction Dropdown -->
+  <app-metadata-field
+    [metadata]="metadataForm.get('project.content.data_use_restriction')"
+    [control]="metadataForm.getControl('project.content.data_use_restriction')"
+    [id]="'dataUseRestriction'">
+  </app-metadata-field>
+
+  <!-- Conditional DUOS ID Input Field -->
+  <!-- Displayed only if 'GRU' or 'GRU-NCU' is selected -->
+  <div *ngIf="['GRU', 'GRU-NCU'].includes(form.get('data_use_restriction').value)">
+    <app-vf-input
+      formControlName="duos_id"
+      [label]="duosIdLabel"
+      [dataType]="'string'"
+      [helperText]="duosIdHelperText"
+      [isRequired]="true"
+      [error]="showError(form.get('duos_id'), 'The DUOS ID must be valid. E.g. DUOS-000108')">
+    </app-vf-input>
+  </div>
+
+</form>
