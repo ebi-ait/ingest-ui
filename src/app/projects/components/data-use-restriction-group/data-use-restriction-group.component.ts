@@ -19,11 +19,13 @@ import { MetadataFormHelper } from '@metadata-schema-form/models/metadata-form-h
 export class DataUseRestrictionGroupComponent implements OnInit {
   metadataForm: MetadataForm;
   form: FormGroup;
-  duosIdLabel: string;
-  duosIdHelperText: string;
   dataUseRestrictionMetadata: Metadata;
   dataUseRestrictionControl: FormControl;
   duosIdMetadata: Metadata;
+  duosIdControl: FormControl;
+  duosIdLabel: string;
+  duosIdHelperText: string;
+
 
   readonly dataUseRestrictionFullKey = 'project.content.data_use_restriction';
   readonly dataUseRestrictionFormKey = 'data_use_restriction';
@@ -59,20 +61,26 @@ export class DataUseRestrictionGroupComponent implements OnInit {
     this.duosIdMetadata = this.fetchMetadata(this.duosIdFullKey);
     this.duosIdLabel = this.duosIdMetadata.schema.user_friendly;
     this.duosIdHelperText = this.duosIdMetadata.schema.guidelines;
+    this.duosIdControl = this.metadataForm.getControl(this.duosIdFullKey) as FormControl;
+
+    this.setupDuosIdValidators(this.duosIdControl);
+  }
+
+  private setupDuosIdValidators(control: FormControl): void {
+    const validators = Validators.compose([
+      Validators.required,
+      Validators.pattern(/^DUOS-\d{6}$/)
+    ]);
+
+    control.setValidators(validators);
+    control.updateValueAndValidity();
   }
 
   private setupForm(): void {
     this.form = this.fb.group({
       [this.dataUseRestrictionFormKey]: this.dataUseRestrictionControl,
-      duos_id: this.getDuosIdControlConfig()
+      [this.duosIdFormKey]: this.duosIdControl
     });
-  }
-
-  private getDuosIdControlConfig(): FormControl {
-    return new FormControl({value: '', disabled: true}, Validators.compose([
-      Validators.required,
-      Validators.pattern(/^DUOS-\d{6}$/)
-    ]));
   }
 
   private ignoreExampleValues(metadata: Metadata, ignore: boolean): void {
