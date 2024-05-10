@@ -6,4 +6,5 @@ export interface JsonSchemaProperty extends JsonSchema {
   items?: object;
   guidelines?: string;
   enum?: string[];
+  pattern?: string;
 }

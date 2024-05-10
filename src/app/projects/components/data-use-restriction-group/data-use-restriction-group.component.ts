@@ -68,7 +68,7 @@ export class DataUseRestrictionGroupComponent implements OnInit {
   private setupDuosIdValidators(control: FormControl): void {
     const validators = Validators.compose([
       Validators.required,
-      Validators.pattern(/^DUOS-\d{6}$/)
+      Validators.pattern(this.duosIdMetadata.schema.pattern)
     ]);
 
     control.setValidators(validators);
