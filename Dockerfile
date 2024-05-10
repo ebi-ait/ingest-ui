@@ -2,6 +2,9 @@
 # base image
 FROM quay.io/ebi-ait/ingest-base-images:node_14.15.5-alpine as build-step
 
+# Introduce ARG for Snyk token
+ARG SNYK_TOKEN
+
 # set working directory
 RUN mkdir /app
 WORKDIR /app
@@ -14,6 +17,9 @@ COPY ./package.json /app/package.json
 COPY ./yarn.lock /app/yarn.lock
 COPY ./.snyk /app/.snyk
 RUN yarn install --frozen-lockfile
+
+# Pass SNYK_TOKEN to environment if needed by any tools during the build
+ENV SNYK_TOKEN $SNYK_TOKEN
 
 # add app and build dependencies
 COPY ./angular.json /app/angular.json
