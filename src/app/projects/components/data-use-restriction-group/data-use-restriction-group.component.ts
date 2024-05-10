@@ -26,7 +26,6 @@ export class DataUseRestrictionGroupComponent implements OnInit {
   duosIdLabel: string;
   duosIdHelperText: string;
 
-
   readonly dataUseRestrictionFullKey = 'project.content.data_use_restriction';
   readonly dataUseRestrictionFormKey = 'data_use_restriction';
   readonly duosIdFullKey = 'project.content.duos_id';
