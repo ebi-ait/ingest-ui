@@ -12,14 +12,15 @@ WORKDIR /app
 # add `/usr/src/app/node_modules/.bin` to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
 
+# Pass SNYK_TOKEN to environment if needed by any tools during the build
+ENV SNYK_TOKEN $SNYK_TOKEN
+RUN echo "SNYK_TOKEN:  $SNYK_TOKEN"
+
 # install and cache app dependencies
 COPY ./package.json /app/package.json
 COPY ./yarn.lock /app/yarn.lock
 COPY ./.snyk /app/.snyk
 RUN yarn install --frozen-lockfile
-
-# Pass SNYK_TOKEN to environment if needed by any tools during the build
-ENV SNYK_TOKEN $SNYK_TOKEN
 
 # add app and build dependencies
 COPY ./angular.json /app/angular.json
