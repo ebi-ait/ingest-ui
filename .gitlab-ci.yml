@@ -1,6 +1,10 @@
 include:
   remote: 'https://raw.githubusercontent.com/ebi-ait/gitlab-ci-templates/master/build-release-deploy.yml'
 
+stages:
+  - test
+  - build
+
 Test:
   image: quay.io/ebi-ait/ingest-base-images:node_14.15.5-alpine
   stage: test
@@ -17,14 +21,14 @@ Test:
       junit:
         - $CI_PROJECT_DIR/tests/junit-test-results.xml
 
-  # Override the Build job for the UI project
-  Build:
-    stage: build
-    tags:
-      - dind
-    script:
-      - echo $QUAY_PASSWORD | docker login quay.io -u $QUAY_USERNAME --password-stdin
-      - docker build --pull --build-arg SNYK_TOKEN=$SNYK_TOKEN -t $IMAGE_NAME --no-cache .
-      - docker push $IMAGE_NAME
-    variables:
-      SNYK_TOKEN: $SNYK_TOKEN
+# Override the Build job for the UI project
+build:
+  stage: build
+  tags:
+    - dind
+  script:
+    - echo $QUAY_PASSWORD | docker login quay.io -u $QUAY_USERNAME --password-stdin
+    - docker build --pull --build-arg SNYK_TOKEN=$SNYK_TOKEN -t $IMAGE_NAME --no-cache .
+    - docker push $IMAGE_NAME
+  variables:
+    SNYK_TOKEN: $SNYK_TOKEN
