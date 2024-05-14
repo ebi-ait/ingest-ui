@@ -1,10 +1,6 @@
 include:
   remote: 'https://raw.githubusercontent.com/ebi-ait/gitlab-ci-templates/master/build-release-deploy.yml'
 
-stages:
-  - test
-  - build
-
 Test:
   image: quay.io/ebi-ait/ingest-base-images:node_14.15.5-alpine
   stage: test
@@ -22,7 +18,7 @@ Test:
         - $CI_PROJECT_DIR/tests/junit-test-results.xml
 
 # Override the Build job for the UI project
-build:
+Build:
   stage: build
   tags:
     - dind
