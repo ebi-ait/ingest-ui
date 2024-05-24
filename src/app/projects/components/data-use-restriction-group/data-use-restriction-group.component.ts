@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
-  FormBuilder, FormControl,
-  FormGroup,
+  FormControl,
+  ValidationErrors,
   Validators
 } from '@angular/forms';
 import {MetadataFormService} from "@metadata-schema-form/metadata-form.service";
 import {Metadata} from "@metadata-schema-form/models/metadata";
 import { MetadataForm } from '@metadata-schema-form/models/metadata-form';
-import { MetadataFormHelper } from '@metadata-schema-form/models/metadata-form-helper'
 
 @Component({
   selector: 'app-data-use-restriction-group',
@@ -18,7 +17,6 @@ import { MetadataFormHelper } from '@metadata-schema-form/models/metadata-form-h
 
 export class DataUseRestrictionGroupComponent implements OnInit {
   metadataForm: MetadataForm;
-  form: FormGroup;
   dataUseRestrictionMetadata: Metadata;
   dataUseRestrictionControl: FormControl;
   duosIdMetadata: Metadata;
@@ -27,23 +25,16 @@ export class DataUseRestrictionGroupComponent implements OnInit {
   duosIdHelperText: string;
 
   readonly dataUseRestrictionFullKey = 'project.content.data_use_restriction';
-  readonly dataUseRestrictionFormKey = 'data_use_restriction';
   readonly duosIdFullKey = 'project.content.duos_id';
-  readonly duosIdFormKey = 'duos_id';
 
   ignoreExample: boolean = true;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private metadataFormService: MetadataFormService) {}
 
   ngOnInit(): void {
-    this.initializeForms();
-    this.subscribeToDataUseRestrictionChanges();
-  }
-
-  initializeForms(): void {
     this.setupDataUseRestrictionControl();
     this.setupDuosIdControl();
-    this.setupForm();
+    this.setUpValueChangeHandlers();
   }
 
   private fetchMetadata(key: string): Metadata {
@@ -66,20 +57,17 @@ export class DataUseRestrictionGroupComponent implements OnInit {
   }
 
   private setupDuosIdValidators(control: FormControl): void {
-    const validators = Validators.compose([
+    const patternValidator = Validators.compose([
       Validators.required,
       Validators.pattern(this.duosIdMetadata.schema.pattern)
     ]);
 
+    const customValidator = requireItemValidator(this.metadataFormService);
+    const validators = Validators.compose([Validators.required, patternValidator, customValidator]);
+
     control.setValidators(validators);
     control.updateValueAndValidity();
-  }
-
-  private setupForm(): void {
-    this.form = this.fb.group({
-      [this.dataUseRestrictionFormKey]: this.dataUseRestrictionControl,
-      [this.duosIdFormKey]: this.duosIdControl
-    });
+    this.duosIdControl.disable();
   }
 
   private ignoreExampleValues(metadata: Metadata, ignore: boolean): void {
@@ -88,15 +76,18 @@ export class DataUseRestrictionGroupComponent implements OnInit {
     }
   }
 
-  subscribeToDataUseRestrictionChanges(): void {
-    this.form.get(this.dataUseRestrictionFormKey).valueChanges.subscribe(value => {
-      const duosControl = this.form.get(this.duosIdFormKey);
-      if (value === 'GRU' || value === 'GRU-NCU') {
-        duosControl.enable();
-      } else {
-        duosControl.disable();
-      }
-    });
+  private setUpValueChangeHandlers() {
+    this.metadataForm.getControl(this.dataUseRestrictionFullKey)
+      .valueChanges
+      .subscribe(val => {
+        const duosId = this.metadataFormService.cleanFormData(val);
+        if (duosId === 'GRU' || duosId === 'GRU-NCU') {
+          this.duosIdControl.enable();
+        } else {
+          this.duosIdControl.disable();
+          this.duosIdControl.reset();
+        }
+      });
   }
 
   showError(control: AbstractControl, message: string): string {
@@ -111,4 +102,14 @@ export class DataUseRestrictionGroupComponent implements OnInit {
       }
     }
   }
+
 }
+
+export const requireItemValidator = (metadataFormService: MetadataFormService) => {
+  return (input: FormControl) => {
+    const item = metadataFormService.cleanFormData(input.value);
+    if (metadataFormService.isEmpty(item)) {
+      return {required: true} as ValidationErrors;
+    }
+  };
+};

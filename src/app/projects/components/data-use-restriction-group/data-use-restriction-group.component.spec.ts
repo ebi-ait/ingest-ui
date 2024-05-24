@@ -111,20 +111,40 @@ describe('DataUseRestrictionGroupComponent', () => {
   describe('duosIdCtrl enabled/disabled based on data_use_restriction value', () => {
 
     it('should enable duosIdCtrl when data_use_restriction is GRU', () => {
-      component.form.get('data_use_restriction').setValue('GRU');
-      expect(component.form.get('duos_id').enabled).toBeTrue();
+      component.dataUseRestrictionControl.setValue('GRU');
+      expect(component.duosIdControl.enabled).toBeTrue();
     });
 
     it('should enable duosIdCtrl when data_use_restriction is GRU-NCU', () => {
-      component.form.get('data_use_restriction').setValue('GRU-NCU');
-      expect(component.form.get('duos_id').enabled).toBeTrue();
+      component.dataUseRestrictionControl.setValue('GRU-NCU');
+      expect(component.duosIdControl.enabled).toBeTrue();
     });
 
     it('should disable duosIdCtrl when data_use_restriction is NRES', () => {
-      component.form.get('data_use_restriction').setValue('NRES');
-      expect(component.form.get('duos_id').disabled).toBeTrue();
+      component.dataUseRestrictionControl.setValue('NRES');
+      expect(component.duosIdControl.disabled).toBeTrue();
     });
 
+    it('should reset duosIdControl when data_use_restriction is NRES', () => {
+      component.dataUseRestrictionControl.setValue('GRU');
+      component.duosIdControl.setValue('DUOS-123456');
+      component.dataUseRestrictionControl.setValue('NRES');
+      expect(component.duosIdControl.value).toBeNull();
+    });
+
+    it('should add duosIdControl to the metadataForm when data_use_restriction is GRU', () => {
+      component.dataUseRestrictionControl.setValue('NRES');
+      expect(component.duosIdControl.disabled).toBeTrue();
+      component.dataUseRestrictionControl.setValue('GRU');
+      expect(component.duosIdControl.enabled).toBeTrue();
+    });
+
+    it('should add duosIdControl to the metadataForm when data_use_restriction is GRU-NCU', () => {
+      component.dataUseRestrictionControl.setValue('NRES');
+      expect(component.duosIdControl.disabled).toBeTrue();
+      component.dataUseRestrictionControl.setValue('GRU-NCU');
+      expect(component.duosIdControl.enabled).toBeTrue();
+    });
   });
 
   describe('duosIdCtrl validators', () => {
@@ -132,7 +152,7 @@ describe('DataUseRestrictionGroupComponent', () => {
     let duosIdControl;
 
     beforeEach(() => {
-      duosIdControl = component.form.get('duos_id');
+      duosIdControl = component.duosIdControl;
       duosIdControl.enable(); // Make sure control is enabled for validation tests
     });
 
@@ -151,20 +171,21 @@ describe('DataUseRestrictionGroupComponent', () => {
   describe('DataUseRestrictionGroupComponent with ignoreExample', () => {
     function initializeFormControls(ignoreExample: boolean) {
       // Simulate initializing form controls based on ignoreExample
+      component.ignoreExample = ignoreExample;
+      component.ngOnInit();
+
       const exampleValue = ignoreExample ? null : 'GRU';
-      component.metadataForm.formGroup = new FormBuilder().group({
-        'data_use_restriction': [exampleValue]
-      });
+      component.dataUseRestrictionControl.setValue(exampleValue);
     }
 
     it('should default to null when ignoreExample is true', () => {
       initializeFormControls(true);
-      expect(component.metadataForm.formGroup.get('data_use_restriction').value).toBeNull();
+      expect(component.dataUseRestrictionControl.value).toBeNull();
     });
 
     it('should default to the example value when ignoreExample is false', () => {
       initializeFormControls(false);
-      expect(component.metadataForm.formGroup.get('data_use_restriction').value).toEqual('GRU');
+      expect(component.dataUseRestrictionControl.value).toEqual('GRU');
     });
 
   });
