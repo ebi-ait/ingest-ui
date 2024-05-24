@@ -1,27 +1,18 @@
+<app-metadata-field [metadata]="dataUseRestrictionMetadata"
+                    [control]="dataUseRestrictionControl"
+                    [id]="dataUseRestrictionMetadata.key">
+</app-metadata-field>
 
-
-  <!-- Data Use Restriction Dropdown -->
-<!--  <app-metadata-field-->
-<!--    [metadata]="metadataForm.get('project.content.data_use_restriction')"-->
-<!--    [control]="metadataForm.getControl('project.content.data_use_restriction')"-->
-<!--    [id]="'dataUseRestriction'">-->
-<!--  </app-metadata-field>-->
-
-  <app-metadata-field [metadata]="dataUseRestrictionMetadata"
-                      [control]="dataUseRestrictionControl"
-                      [id]="dataUseRestrictionMetadata.key">
-  </app-metadata-field>
-
-  <!-- Conditional DUOS ID Input Field -->
-  <!-- Displayed only if 'GRU' or 'GRU-NCU' is selected -->
-  <div *ngIf="['GRU', 'GRU-NCU'].includes(dataUseRestrictionControl?.value)">
-    <app-vf-input
-      [formControl]="duosIdControl"
-      [label]="duosIdLabel"
-      [dataType]="duosIdMetadata.schema.type"
-      [helperText]="duosIdHelperText"
-      [isRequired]="duosIdMetadata.isRequired"
-      [error]="showError(duosIdControl, 'The DUOS ID must be valid. E.g. DUOS-000108')">
-    </app-vf-input>
-  </div>
+<!-- Conditional DUOS ID Input Field -->
+<!-- Displayed only if 'GRU' or 'GRU-NCU' is selected -->
+<div *ngIf="['GRU', 'GRU-NCU'].includes(dataUseRestrictionControl?.value)">
+  <app-vf-input
+    [formControl]="duosIdControl"
+    [label]="duosIdLabel"
+    [dataType]="duosIdMetadata.schema.type"
+    [helperText]="duosIdHelperText"
+    [isRequired]="duosIdMetadata.isRequired"
+    [error]="showError(duosIdControl, 'The DUOS ID must be valid. E.g. DUOS-000108')">
+  </app-vf-input>
+</div>
 

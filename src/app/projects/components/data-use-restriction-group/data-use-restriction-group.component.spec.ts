@@ -13,7 +13,6 @@ describe('DataUseRestrictionGroupComponent', () => {
     TestBed.configureTestingModule({
       declarations: [DataUseRestrictionGroupComponent],
       imports: [ReactiveFormsModule],
-      providers: [FormBuilder],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
