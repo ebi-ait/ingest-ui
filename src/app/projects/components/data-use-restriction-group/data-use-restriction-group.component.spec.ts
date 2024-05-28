@@ -18,85 +18,142 @@ describe('DataUseRestrictionGroupComponent', () => {
       .compileComponents();
   }));
 
-  beforeEach(() => {
-    const schema = {
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'additionalProperties': false,
-      'description': 'A ingest project entity contains information about the ingestion of the project.',
-      'name': 'project',
-      'properties': {
-        'identifyingOrganisms': {
-          'description': 'Organism the samples were generated from',
-          'guidelines': 'You can select multiple entries',
-          'type': 'array',
-          'items': {
-            'type': 'string'
-          },
-          'enum': [
-            'Human',
-            'Mouse',
-            'Other'
-          ],
-          'user_friendly': 'Organism the samples were generated from'
+  const schemaWithFields = {
+    '$schema': 'http://json-schema.org/draft-07/schema#',
+    'additionalProperties': false,
+    'description': 'A ingest project entity contains information about the ingestion of the project.',
+    'name': 'project',
+    'properties': {
+      'identifyingOrganisms': {
+        'description': 'Organism the samples were generated from',
+        'guidelines': 'You can select multiple entries',
+        'type': 'array',
+        'items': {
+          'type': 'string'
         },
-        'content': {
-          '$id': 'https://schema.dev.data.humancellatlas.org/type/project/19.0.0/project',
-          '$schema': 'http://json-schema.org/draft-07/schema#',
-          'additionalProperties': false,
-          'description': 'A project entity contains information about the overall project.',
-          'name': 'project',
-          'type': 'object',
-          'properties': {
-            'project_core': {
-              '$schema': 'http://json-schema.org/draft-07/schema#',
-              '$id': 'http://schema.dev.data.humancellatlas.org/core/project/7.0.5/project_core',
-              'description': 'Information about the project.',
-              'additionalProperties': false,
-              'required': [
-                'project_short_name'
-              ],
-              'title': 'Project core',
-              'name': 'project_core',
-              'type': 'object',
-              'properties': {
-                'project_short_name': {
-                  'description': 'A short name for the project.',
-                  'type': 'string',
-                  'example': 'CoolOrganProject.',
-                  'user_friendly': 'Project label'
-                }
+        'enum': [
+          'Human',
+          'Mouse',
+          'Other'
+        ],
+        'user_friendly': 'Organism the samples were generated from'
+      },
+      'content': {
+        '$id': 'https://schema.dev.data.humancellatlas.org/type/project/19.0.0/project',
+        '$schema': 'http://json-schema.org/draft-07/schema#',
+        'additionalProperties': false,
+        'description': 'A project entity contains information about the overall project.',
+        'name': 'project',
+        'type': 'object',
+        'properties': {
+          'project_core': {
+            '$schema': 'http://json-schema.org/draft-07/schema#',
+            '$id': 'http://schema.dev.data.humancellatlas.org/core/project/7.0.5/project_core',
+            'description': 'Information about the project.',
+            'additionalProperties': false,
+            'required': [
+              'project_short_name'
+            ],
+            'title': 'Project core',
+            'name': 'project_core',
+            'type': 'object',
+            'properties': {
+              'project_short_name': {
+                'description': 'A short name for the project.',
+                'type': 'string',
+                'example': 'CoolOrganProject.',
+                'user_friendly': 'Project label'
               }
-            },
-            "data_use_restriction": {
-              "description": "Data use restrictions that apply to the project.",
-              "type": "string",
-              "enum": [
-                "NRES",
-                "GRU",
-                "GRU-NCU"
-              ],
-              "user_friendly": "Data use restriction",
-              "guidelines": "Must be one of: NRES, GRU, GRU-NCU. The use restriction codes are based on the DUO ontology where NRES corresponds to DUO:0000004, GRU corresponds to DUO:0000042, GRU-NCU corresponds to a combination of DUO:0000042 and DUO:0000046",
-              "example": "GRU"
-            },
-            "duos_id": {
-              "description": "A DUOS dataset id.",
-              "type": "string",
-              "pattern": "^DUOS-\\d{6}$",
-              "example": "DUOS-000108; DUOS-000114",
-              "user_friendly": "DUOS ID",
-              "guidelines": "Managed access projects are registered in DUOS to regulate access. If the project is managed access record the corresponding DUOS ID here."
+            }
+          },
+          "data_use_restriction": {
+            "description": "Data use restrictions that apply to the project.",
+            "type": "string",
+            "enum": [
+              "NRES",
+              "GRU",
+              "GRU-NCU"
+            ],
+            "user_friendly": "Data use restriction",
+            "guidelines": "Must be one of: NRES, GRU, GRU-NCU. The use restriction codes are based on the DUO ontology where NRES corresponds to DUO:0000004, GRU corresponds to DUO:0000042, GRU-NCU corresponds to a combination of DUO:0000042 and DUO:0000046",
+            "example": "GRU"
+          },
+          "duos_id": {
+            "description": "A DUOS dataset id.",
+            "type": "string",
+            "pattern": "^DUOS-\\d{6}$",
+            "example": "DUOS-000108; DUOS-000114",
+            "user_friendly": "DUOS ID",
+            "guidelines": "Managed access projects are registered in DUOS to regulate access. If the project is managed access record the corresponding DUOS ID here."
+          }
+        }
+      }
+    },
+    'required': [],
+    'title': 'Ingest Project',
+    'type': 'object',
+    '$id': ''
+  };
+
+  const schemaWithoutFields = {
+    '$schema': 'http://json-schema.org/draft-07/schema#',
+    'additionalProperties': false,
+    'description': 'A ingest project entity contains information about the ingestion of the project.',
+    'name': 'project',
+    'properties': {
+      'identifyingOrganisms': {
+        'description': 'Organism the samples were generated from',
+        'guidelines': 'You can select multiple entries',
+        'type': 'array',
+        'items': {
+          'type': 'string'
+        },
+        'enum': [
+          'Human',
+          'Mouse',
+          'Other'
+        ],
+        'user_friendly': 'Organism the samples were generated from'
+      },
+      'content': {
+        '$id': 'https://schema.dev.data.humancellatlas.org/type/project/17.1.1/project',
+        '$schema': 'http://json-schema.org/draft-07/schema#',
+        'additionalProperties': false,
+        'description': 'A project entity contains information about the overall project.',
+        'name': 'project',
+        'type': 'object',
+        'properties': {
+          'project_core': {
+            '$schema': 'http://json-schema.org/draft-07/schema#',
+            '$id': 'http://schema.dev.data.humancellatlas.org/core/project/7.0.5/project_core',
+            'description': 'Information about the project.',
+            'additionalProperties': false,
+            'required': [
+              'project_short_name'
+            ],
+            'title': 'Project core',
+            'name': 'project_core',
+            'type': 'object',
+            'properties': {
+              'project_short_name': {
+                'description': 'A short name for the project.',
+                'type': 'string',
+                'example': 'CoolOrganProject.',
+                'user_friendly': 'Project label'
+              }
             }
           }
         }
-      },
-      'required': [],
-      'title': 'Ingest Project',
-      'type': 'object',
-      '$id': ''
-    };
+      }
+    },
+    'required': [],
+    'title': 'Ingest Project',
+    'type': 'object',
+    '$id': ''
+  };
 
-    const metadataForm = new MetadataForm('project', schema);
+  beforeEach(() => {
+    const metadataForm = new MetadataForm('project', schemaWithFields);
     fixture = TestBed.createComponent(DataUseRestrictionGroupComponent);
     component = fixture.componentInstance;
     component.metadataForm = metadataForm;
@@ -187,6 +244,32 @@ describe('DataUseRestrictionGroupComponent', () => {
       expect(component.dataUseRestrictionControl.value).toEqual('GRU');
     });
 
+  });
+
+  describe('DataUseRestrictionGroupComponent with dynamic schema fields', () => {
+    beforeEach(() => {
+      fixture = TestBed.createComponent(DataUseRestrictionGroupComponent);
+      component = fixture.componentInstance;
+    });
+
+    it('should initialize controls when fields exist in the schema', () => {
+      component.metadataForm = new MetadataForm('project', schemaWithFields);
+      component.ngOnInit();
+      expect(component.dataUseRestrictionControl).toBeDefined();
+      expect(component.duosIdControl).toBeDefined();
+    });
+
+    it('should handle absence of fields in the schema gracefully', () => {
+      component.metadataForm = new MetadataForm('project', schemaWithoutFields);
+      component.ngOnInit();
+      expect(component.dataUseRestrictionControl).toBeUndefined();
+      expect(component.duosIdControl).toBeUndefined();
+    });
+
+    it('should not throw an error when fields are missing from the schema', () => {
+      component.metadataForm = new MetadataForm('project', schemaWithoutFields);
+      expect(() => component.ngOnInit()).not.toThrow();
+    });
   });
 
 });
