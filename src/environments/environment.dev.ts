@@ -5,7 +5,7 @@ export const environment = {
   SCHEMA_API_URL: 'https://schema.humancellatlas.org',
   DSS_API_URL: 'https://dss.dev.data.humancellatlas.org',
   DOMAIN_WHITELIST: 'api.ingest.dev.archive.data.humancellatlas.org,ingest.dev.archive.data.humancellatlas.org',
-  SECURED_ENDPOINTS: '\/auth\/.*,\/user\/.*,\/submissionEnvelopes$,\/projects$',
+  SECURED_ENDPOINTS: '\/auth\/.*,\/user\/.*,\/submissionEnvelopes\/?.*,\/projects$',
   // AAI
   AAI_CLIENT_ID: 'e2041c2d-9449-4468-856e-e84711cebd21',
   AAI_AUTHORITY: 'https://login.elixir-czech.org/oidc',
