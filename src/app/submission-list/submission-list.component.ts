@@ -94,14 +94,19 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
   initSubmissionProjects(submissions) {
     for (const submission of submissions) {
       const submissionId = this.getSubmissionId(submission);
+      console.log(`Initializing submission projects for submission ID: ${submissionId}`);
+
 
       if (this.submissionProjects[submissionId] === undefined) {
         this.submissionProjects[submissionId] = '';
         this.ingestService.getSubmissionProject(submissionId)
           .subscribe(data => {
+            console.log(`Received project data for submission ID: ${submissionId}`, data);
             this.submissionProjects[submissionId] = {};
             this.submissionProjects[submissionId]['name'] = this.extractProjectName(data);
             this.submissionProjects[submissionId]['id'] = this.extractProjectId(data);
+          }, error => {
+            console.error(`Error fetching project for submission ID: ${submissionId}`, error);
           });
       }
     }

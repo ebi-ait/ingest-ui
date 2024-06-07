@@ -36,6 +36,10 @@ export class OidcInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const hostName = OidcInterceptor.getHostName(request.url);
 
+    console.log(`Intercepting request to: ${request.url}`);
+    console.log(`Host name: ${hostName}`);
+    console.log(`Is URL secured: ${this.isUrlSecured(request.url)}`);
+
     if (hostName && environment.DOMAIN_WHITELIST.indexOf(hostName) > -1 && (request.method !== 'GET' || this.isUrlSecured(request.url))) {
       return this.aai.userAuthHeader().pipe(
         concatMap(authHeader => {
@@ -44,10 +48,12 @@ export class OidcInterceptor implements HttpInterceptor {
               Authorization: authHeader
             }
           });
+          console.log(`Adding Authorization header for: ${request.url}`);
           return next.handle(headerRequest);
         })
       );
     } else {
+      console.log(`No Authorization header added for: ${request.url}`);
       return next.handle(request);
     }
   }
