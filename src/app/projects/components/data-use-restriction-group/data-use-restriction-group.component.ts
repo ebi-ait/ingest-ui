@@ -32,9 +32,18 @@ export class DataUseRestrictionGroupComponent implements OnInit {
   constructor(private metadataFormService: MetadataFormService) {}
 
   ngOnInit(): void {
-    this.setupDataUseRestrictionControl();
-    this.setupDuosIdControl();
+    if (this.fieldExists(this.dataUseRestrictionFullKey)) {
+      this.setupDataUseRestrictionControl();
+    }
+
+    if (this.fieldExists(this.duosIdFullKey)) {
+      this.setupDuosIdControl();
+    }
     this.setUpValueChangeHandlers();
+  }
+
+  private fieldExists(key: string): boolean {
+    return !!this.metadataForm.get(key);
   }
 
   private fetchMetadata(key: string): Metadata {
@@ -43,31 +52,37 @@ export class DataUseRestrictionGroupComponent implements OnInit {
 
   private setupDataUseRestrictionControl(): void {
     this.dataUseRestrictionMetadata = this.fetchMetadata(this.dataUseRestrictionFullKey);
-    this.ignoreExampleValues(this.dataUseRestrictionMetadata, this.ignoreExample);
-    this.dataUseRestrictionControl = this.metadataForm.getControl(this.dataUseRestrictionFullKey) as FormControl;
+    if (this.dataUseRestrictionMetadata) {
+      this.ignoreExampleValues(this.dataUseRestrictionMetadata, this.ignoreExample);
+      this.dataUseRestrictionControl = this.metadataForm.getControl(this.dataUseRestrictionFullKey) as FormControl;
+    }
   }
 
   private setupDuosIdControl(): void {
     this.duosIdMetadata = this.fetchMetadata(this.duosIdFullKey);
-    this.duosIdLabel = this.duosIdMetadata.schema.user_friendly;
-    this.duosIdHelperText = this.duosIdMetadata.schema.guidelines;
-    this.duosIdControl = this.metadataForm.getControl(this.duosIdFullKey) as FormControl;
+    if (this.duosIdMetadata) {
+      this.duosIdLabel = this.duosIdMetadata.schema.user_friendly;
+      this.duosIdHelperText = this.duosIdMetadata.schema.guidelines;
+      this.duosIdControl = this.metadataForm.getControl(this.duosIdFullKey) as FormControl;
 
-    this.setupDuosIdValidators(this.duosIdControl);
+      this.setupDuosIdValidators(this.duosIdControl);
+    }
   }
 
   private setupDuosIdValidators(control: FormControl): void {
-    const patternValidator = Validators.compose([
-      Validators.required,
-      Validators.pattern(this.duosIdMetadata.schema.pattern)
-    ]);
+    if (control) {
+      const patternValidator = Validators.compose([
+        Validators.required,
+        Validators.pattern(this.duosIdMetadata.schema.pattern)
+      ]);
 
-    const customValidator = requireItemValidator(this.metadataFormService);
-    const validators = Validators.compose([Validators.required, patternValidator, customValidator]);
+      const customValidator = requireItemValidator(this.metadataFormService);
+      const validators = Validators.compose([Validators.required, patternValidator, customValidator]);
 
-    control.setValidators(validators);
-    control.updateValueAndValidity();
-    this.duosIdControl.disable();
+      control.setValidators(validators);
+      control.updateValueAndValidity();
+      control.disable();
+    }
   }
 
   private ignoreExampleValues(metadata: Metadata, ignore: boolean): void {
@@ -77,17 +92,19 @@ export class DataUseRestrictionGroupComponent implements OnInit {
   }
 
   private setUpValueChangeHandlers() {
-    this.metadataForm.getControl(this.dataUseRestrictionFullKey)
-      .valueChanges
-      .subscribe(val => {
-        const duosId = this.metadataFormService.cleanFormData(val);
-        if (duosId === 'GRU' || duosId === 'GRU-NCU') {
-          this.duosIdControl.enable();
-        } else {
-          this.duosIdControl.disable();
-          this.duosIdControl.reset();
-        }
-      });
+    if (this.dataUseRestrictionControl) {
+      this.dataUseRestrictionControl
+        .valueChanges
+        .subscribe(val => {
+          const duosId = this.metadataFormService.cleanFormData(val);
+          if (duosId === 'GRU' || duosId === 'GRU-NCU') {
+            this.duosIdControl?.enable();
+          } else {
+            this.duosIdControl?.disable();
+            this.duosIdControl?.reset();
+          }
+        });
+    }
   }
 
   showError(control: AbstractControl, message: string): string {

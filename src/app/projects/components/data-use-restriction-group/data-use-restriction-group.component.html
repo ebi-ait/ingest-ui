@@ -1,11 +1,13 @@
-<app-metadata-field [metadata]="dataUseRestrictionMetadata"
-                    [control]="dataUseRestrictionControl"
-                    [id]="dataUseRestrictionMetadata.key">
-</app-metadata-field>
+<div *ngIf="dataUseRestrictionControl">
+  <app-metadata-field [metadata]="dataUseRestrictionMetadata"
+                      [control]="dataUseRestrictionControl"
+                      [id]="dataUseRestrictionMetadata.key">
+  </app-metadata-field>
+</div>
 
 <!-- Conditional DUOS ID Input Field -->
 <!-- Displayed only if 'GRU' or 'GRU-NCU' is selected -->
-<div *ngIf="['GRU', 'GRU-NCU'].includes(dataUseRestrictionControl?.value)">
+<div *ngIf="duosIdControl && ['GRU', 'GRU-NCU'].includes(dataUseRestrictionControl?.value)">
   <app-vf-input
     [formControl]="duosIdControl"
     [label]="duosIdLabel"
