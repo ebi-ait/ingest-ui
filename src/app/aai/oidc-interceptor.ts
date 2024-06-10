@@ -26,10 +26,14 @@ export class OidcInterceptor implements HttpInterceptor {
 
   private isUrlSecured(url) {
     const securedUrls = environment.SECURED_ENDPOINTS.split(',');
+    console.log(`Secured URLs: ${securedUrls}`);
     const matches = securedUrls.filter(pattern => {
       const regex = new RegExp(pattern);
+      const isMatch = regex.test(url);
+      console.log(`Testing URL: ${url} against pattern: ${pattern} -> Match: ${isMatch}`);
       return regex.test(url);
     });
+    console.log(`Matches found: ${matches.length}`);
     return matches.length > 0;
   }
 
@@ -38,11 +42,16 @@ export class OidcInterceptor implements HttpInterceptor {
 
     console.log(`Intercepting request to: ${request.url}`);
     console.log(`Host name: ${hostName}`);
+    console.log(`SECURED_ENDPOINTS: ${environment.SECURED_ENDPOINTS}`);
+    console.log(`DOMAIN_WHITELIST: ${environment.DOMAIN_WHITELIST}`);
     console.log(`Is URL secured: ${this.isUrlSecured(request.url)}`);
+    const urlSecured = this.isUrlSecured(request.url);
+    console.log(`Is URL secured: ${urlSecured}`);
 
-    if (hostName && environment.DOMAIN_WHITELIST.indexOf(hostName) > -1 && (request.method !== 'GET' || this.isUrlSecured(request.url))) {
+    if (hostName && environment.DOMAIN_WHITELIST.indexOf(hostName) > -1 && (request.method !== 'GET' || urlSecured)) {
       return this.aai.userAuthHeader().pipe(
         concatMap(authHeader => {
+          console.log(`Retrieved Authorization header: ${authHeader}`);
           const headerRequest = request.clone({
             setHeaders: {
               Authorization: authHeader
