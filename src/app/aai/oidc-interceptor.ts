@@ -28,7 +28,8 @@ export class OidcInterceptor implements HttpInterceptor {
   }
 
   private isUrlSecured(url) {
-    const securedUrls = environment.SECURED_ENDPOINTS.split(',');
+    // const securedUrls = environment.SECURED_ENDPOINTS.split(',');
+    const securedUrls = this.SECURED_ENDPOINTS.split(',');
     console.log(`Secured URLs: ${securedUrls}`);
     const matches = securedUrls.filter(pattern => {
       const regex = new RegExp(pattern);
