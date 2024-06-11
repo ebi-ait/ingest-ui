@@ -10,8 +10,6 @@ import {AaiService} from './aai.service';
   providedIn: AaiSecurity,
 })
 export class OidcInterceptor implements HttpInterceptor {
-  // Hardcoded SECURED_ENDPOINTS for troubleshooting
-  private readonly SECURED_ENDPOINTS = '\/auth\/.*,\/user\/.*,\/submissionEnvelopes\/?.*,\/projects$';
 
   constructor(private aai: AaiService) {
   }
@@ -28,8 +26,7 @@ export class OidcInterceptor implements HttpInterceptor {
   }
 
   private isUrlSecured(url) {
-    // const securedUrls = environment.SECURED_ENDPOINTS.split(',');
-    const securedUrls = this.SECURED_ENDPOINTS.split(',');
+    const securedUrls = environment.SECURED_ENDPOINTS.split(',');
     console.log(`Secured URLs: ${securedUrls}`);
     const matches = securedUrls.filter(pattern => {
       const regex = new RegExp(pattern);
@@ -46,7 +43,6 @@ export class OidcInterceptor implements HttpInterceptor {
 
     console.log(`Intercepting request to: ${request.url}`);
     console.log(`Host name: ${hostName}`);
-    console.log(`Hard coded SECURED_ENDPOINTS: ${this.SECURED_ENDPOINTS}`);
     console.log('Using environment configuration:', environment);
     console.log(`Env SECURED_ENDPOINTS: ${environment.SECURED_ENDPOINTS}`);
     console.log(`DOMAIN_WHITELIST: ${environment.DOMAIN_WHITELIST}`);

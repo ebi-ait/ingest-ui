@@ -28,15 +28,6 @@ COPY ./browserslist /app/browserslist
 COPY ./tsconfig.json /app/tsconfig.json
 COPY ./src /app/src
 
-# Log environment variables and build argument before build
-RUN echo "Environment: $env" && \
-    echo "INGEST_API_URL: $INGEST_API_URL" && \
-    echo "BROKER_API_URL: $BROKER_API_URL" && \
-    echo "SCHEMA_API_URL: $SCHEMA_API_URL" && \
-    echo "DSS_API_URL: $DSS_API_URL" && \
-    echo "DOMAIN_WHITELIST: $DOMAIN_WHITELIST" && \
-    echo "SECURED_ENDPOINTS: $SECURED_ENDPOINTS"
-
 # build app
 RUN ng build -c=env
 
