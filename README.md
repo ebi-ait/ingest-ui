@@ -22,6 +22,24 @@ This is the UI app for monitoring and tracking submissions to the DCP.
 ## Deployment
 Please check `ingest-kube-deployment` repo
 
+### Environment Parameters and Security Interceptor Setup
+
+**Note:** The Ingest-UI application was designed to source environment variables from environment files (e.g., environment.dev.ts). However, during deployment, these variables were not correctly sourced due to the deployment setup involving Docker and Helm. Specifically, the `prepare_artifact.sh` script in hte Dockerfile and Helm configuration override the environment variables, leading to inconsistencies between local development and deployed environments. This issue became evident when changes to the environment.*.ts files did not reflect in the deployed application. Thus, we need to change the Helm YAML files to achieve consistency with the deployed environment for the environment variables.
+
+#### Flow Overview
+
+1. **Environment Variables**: The environment files (environment.*.ts) are updated with the necessary configurations. The `environment.env.ts` file contains placeholders for environment variables which are used in the application code.
+
+2. **OIDC Interception**: The `OidcInterceptor` uses these environment variables (e.g. SECURED_ENDPOINTS) to add security headers to HTTP requests, ensuring that API calls to secure endpoints are authorized.
+
+3. **Docker Setup**: During the Docker build process, the `prepare_artifact.sh` script runs in the second stage. This script replaces the environment placeholders in the built JavaScript files (main.*.js).
+
+4. **K8s Deployment**: The Helm [upgrade](https://github.com/ebi-ait/gitlab-ci-templates/blob/98b0b19827f5795bde45f6acaff2a61fd6dda971/build-release-deploy.yml#L113) command deploys the application to the Kubernetes cluster, sourcing configuration values from environment-specific YAML files (e.g., k8s/apps/dev.yaml). These values are [set as environment variables](https://github.com/ebi-ait/gitlab-ci-templates/blob/98b0b19827f5795bde45f6acaff2a61fd6dda971/build-release-deploy.yml#L183) in the running container.
+
+
+
+
+
 ## Code scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
