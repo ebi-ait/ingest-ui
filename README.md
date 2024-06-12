@@ -24,7 +24,7 @@ Please check `ingest-kube-deployment` repo
 
 ### Environment Parameters and Security Interceptor Setup
 
-**Note:** The Ingest-UI application was designed to source environment variables from environment files (e.g., environment.dev.ts). However, during deployment, these variables were not correctly sourced due to the deployment setup involving Docker and Helm. Specifically, the `prepare_artifact.sh` script in hte Dockerfile and Helm configuration override the environment variables, leading to inconsistencies between local development and deployed environments. This issue became evident when changes to the environment.*.ts files did not reflect in the deployed application. Thus, we need to change the Helm YAML files to achieve consistency with the deployed environment for the environment variables.
+**Note:** The Ingest-UI application was designed to source environment variables from environment files (e.g., environment.dev.ts). However, during deployment, these variables were not correctly sourced due to the deployment setup involving Docker and Helm. Specifically, the `prepare_artifact.sh` script in the Dockerfile and Helm configuration override the environment variables, leading to inconsistencies between local development and deployed environments. This issue became evident when changes to the environment.*.ts files did not reflect in the deployed application. Thus, we need to change the Helm YAML files to achieve consistency with the deployed environment for the environment variables.
 
 #### Flow Overview
 
