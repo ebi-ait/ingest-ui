@@ -10,35 +10,21 @@ Data considered for inclusion in the HCA Data Coordination Platform should meet 
     * Spatial transcriptomics (10x Visium, Nanostring, etc)
     * Other supporting assay types (ATAC-seq, ChIP-seq. bulk RNA-seq, etc)
 * **Health status:** Normal health, diseased
-* **Data access type:** Open access, Controlled access
+* **Data access type:** Open access, Managed/ Controlled access
 * **Publication status:** Pre-print, Published, Not published
 
 Please [contact us](mailto:wrangler-team@data.humancellatlas.org?subject=Non%20Human%20Contribution%20to%20Human%20Cell%20Atlas) if you are considering contributing data from species other than Human and Mouse, or you wish to discuss our suitability criteria.
 
-# Open and Controlled access
+# Open and Managed access
 
 Depending on the data access documents supporting the study and the respective data, datasets eligible for the Human Cell Atlas would either be
 
-* **Open access** (where the raw data is available for open access by the scientific community and can be made publicly, e.g. in a public archive)
-or
-* **Controlled access** (where  data with perssonally identifiable information. E.g raw sequences, is uder controlled access. This type of access usually has to be granted by a nominated DAC (Data Access Committee)
+* **Open access** 
+    * where the raw data is available for open access by the scientific community and can be made publicly, e.g. in a public archive
+    * where the data owner can take written responsibility to share and is aware that the data will be openly shared through the HCA Data Portal without access controls in place to monitor who has accessed the data and for which research purpose
+* **Managed/ Controlled access** 
+    * where data with personally identifiable information. (e.g raw sequences or rare diseases), is under managed/ controlled access. This type of access usually has to be granted by a nominated DAC (Data Access Committee)
 
-The Human Cell Atlas Data Coordination Platform accepts datasets featuring both data access types, with an important note on the data and metadata files required for each type:
-
-## Open access datasets - accepted data and metadata:
-
-- Raw sequencing files (fastq, bam)
-
-- Donor and sample metadata
-
-- Analysis files (raw/normalised matrices; cell type annotations; spatial embeddings)
-
-
-## Controlled access datasets - accepted data and metadata:
-
-- Sample metadata (no donor-identifiable metadata)
-
-- Analysis files (raw/normalised matrices; cell type annotations; spatial embeddings)
 
 # Data sources
 
@@ -62,10 +48,11 @@ There are three main sources of data considered eligible for the Human Cell Atla
 To contribute data to the Human Cell Atlas Data Coordination Platform, follow this checklist:
 
 1. Make sure your dataset conforms to the suitability criteria above.
-2. Get informed about the data access type for your dataset (Open access, Controlled access, or a mix of both).  E.g. Data from living donors is always Controlled access.
-3. Prepare the data files and metadata for your dataset, based on the requirements for your data access type.
-4. Fill in the [HCA dataset questionnaire](https://docs.google.com/forms/d/e/1FAIpQLSdjPk2Z6xYozds53ycvXo57PvFsyqOF6XMpSWCVNTpQYalZzQ/viewform) to inform us of dataset details.
-5. Contact HCA Data Coordination Platform [data wrangling team](mailto:wrangler-team@data.humancellatlas.org?subject=get%20started%20with%20data%20contribution) to get you started.
+2. Get informed about the data access type for your dataset (Open access, Controlled access, or a mix of both).
+3. Sign the DCA agreement if required
+4. Prepare the data files and metadata for your dataset, based on the requirements for your data access type.
+5. Fill in the [HCA dataset questionnaire](https://docs.google.com/forms/d/e/1FAIpQLSdjPk2Z6xYozds53ycvXo57PvFsyqOF6XMpSWCVNTpQYalZzQ/viewform) to inform us of dataset details.
+6. Contact HCA Data Coordination Platform [data wrangling team](mailto:wrangler-team@data.humancellatlas.org?subject=get%20started%20with%20data%20contribution) to get you started.
 
 
 
