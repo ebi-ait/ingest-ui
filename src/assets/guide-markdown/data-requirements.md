@@ -54,7 +54,7 @@ To contribute data to the Human Cell Atlas Data Portal, follow this checklist:
 
 1. Make sure your dataset conforms to the suitability criteria above.
 2. Get informed about the data access type for your dataset (Open access, Controlled access, or a mix of both).
-3. Sign the DCA agreement if required
+3. Sign the DCA agreement if required (contact [data wrangling team](mailto:wrangler-team@data.humancellatlas.org?subject=get%20started%20with%20data%20contribution) for more information about the agreement)
 4. Prepare the data files and metadata for your dataset, based on the requirements for your data access type.
 5. Fill in the [HCA dataset questionnaire](https://docs.google.com/forms/d/e/1FAIpQLSdjPk2Z6xYozds53ycvXo57PvFsyqOF6XMpSWCVNTpQYalZzQ/viewform) to inform us of dataset details.
 6. Contact HCA Data Portal [data wrangling team](mailto:wrangler-team@data.humancellatlas.org?subject=get%20started%20with%20data%20contribution) to get you started.
