@@ -28,15 +28,17 @@ export class OidcInterceptor implements HttpInterceptor {
     const securedUrls = environment.SECURED_ENDPOINTS.split(',');
     const matches = securedUrls.filter(pattern => {
       const regex = new RegExp(pattern);
-      return regex.test(url);
+      const isMatch = regex.test(url);
+      return isMatch;
     });
     return matches.length > 0;
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const hostName = OidcInterceptor.getHostName(request.url);
+    const urlSecured = this.isUrlSecured(request.url);
 
-    if (hostName && environment.DOMAIN_WHITELIST.indexOf(hostName) > -1 && (request.method !== 'GET' || this.isUrlSecured(request.url))) {
+    if (hostName && environment.DOMAIN_WHITELIST.indexOf(hostName) > -1 && (request.method !== 'GET' || urlSecured)) {
       return this.aai.userAuthHeader().pipe(
         concatMap(authHeader => {
           const headerRequest = request.clone({
