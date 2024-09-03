@@ -5,7 +5,7 @@ export const environment = {
   SCHEMA_API_URL: 'https://schema.humancellatlas.org',
   DSS_API_URL: 'https://dss.dev.data.humancellatlas.org',
   DOMAIN_WHITELIST: 'api.ingest.dev.archive.data.humancellatlas.org,ingest.dev.archive.data.humancellatlas.org',
-  SECURED_ENDPOINTS: '\/auth\/.*,\/user\/.*,\/submissionEnvelopes\/?.*,\/projects$,\/(?:biomaterials|processes|protocols|files|bundleManifests)\/search\/.*',
+  SECURED_ENDPOINTS: '\/auth\/.*,\/user\/.*,\/submissionEnvelopes\/?.*,\/projects$,\/(?:biomaterials|processes|protocols|files|bundleManifests)\/.*',
 
 
   // AAI
