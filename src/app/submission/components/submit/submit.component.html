@@ -60,16 +60,6 @@
       public with the next snapshot.
     </mat-checkbox>
   </div>
-  <div>
-    <mat-checkbox
-      [(ngModel)]="cleanup"
-      [disabled]="!submitToDcp"
-      [checked]="submitToDcp ? cleanup : false"
-      matTooltip="{{submitToDcp ? '': deleteWarning}}"
-      labelPosition="after">
-      Delete the upload area and data files after successful submission.
-    </mat-checkbox>
-  </div>
 </ng-container>
 
 <br/>
