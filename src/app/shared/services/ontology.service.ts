@@ -51,44 +51,26 @@ export class OntologyService {
     const ontologyClasses: string[] = graphRestriction['classes'] || [];
     const ontologyRelation: string = graphRestriction['relations']?.[0] || ''; // TODO support only 1 relation for now
     const ontologies: string[] = graphRestriction['ontologies'] || [];
-
-    if (ontologies.length > 0) {
-      searchParams['ontology'] = ontologies
-        .map((ontology) => ontology.replace('obo:', ''))
-        .join(",");
-    }
-
-    if (ontologyClasses.length === 0) {
-      console.warn("No ontology classes found. Using default q parameter.");
-      return of(searchParams);
-    }
-
+    searchParams['ontology'] = ontologies
+      .map(ontology => ontology.replace('obo:', ''))
+      .join(",");
     return combineLatest(
       ontologyClasses
-        .map((ontologyClass) => ontologyClass.replace(':', '_'))
-        .map((olsClass) =>
-          this.select({
-            q: olsClass,
-            ontology: searchParams['ontology'],
-          })
-        )
+        .map(ontologyClass => ontologyClass.replace(':', '_'))
+        .map(olsClass => this.select({
+          q: olsClass,
+          ontology: searchParams['ontology']
+        }))
     ).pipe(
-      map((responseArray) => {
-        const iriArray = responseArray
-          .map((ols) => ols.response)
-          .filter((olsResponse) => olsResponse.numFound === 1)
-          .map((olsResponse) => olsResponse.docs[0]?.iri || '');
-
-        if (iriArray.length > 0) {
-          if (ontologyRelation && this.OLS_RELATION[ontologyRelation]) {
-            searchParams[this.OLS_RELATION[ontologyRelation]] = iriArray.join(',');
-          } else {
-            searchParams['allChildrenOf'] = iriArray.join(',');
-          }
-        } else {
-          searchParams.q = searchText || '*';
+      map(responseArray => {
+          return responseArray
+            .map(ols => ols.response)
+            .filter(olsResponse => olsResponse.numFound === 1)
+            .map(olsResponse => olsResponse.docs[0].iri);
         }
-
+      ),
+      map(iriArray => {
+        searchParams[this.OLS_RELATION[ontologyRelation]] = iriArray.join(',');
         return searchParams;
       })
     );
