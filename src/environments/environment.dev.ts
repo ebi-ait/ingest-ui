@@ -13,6 +13,7 @@ export const environment = {
   AAI_AUTHORITY: 'https://login.elixir-czech.org/oidc',
 
   OLS_URL: "https://www.ebi.ac.uk/ols4",
+  // OLS_URL: 'https://ontology.dev.archive.data.humancellatlas.org',
 
   AUTOSAVE_PERIOD_MILLIS: 10 * 1000,
   WRANGLER_EMAIL: 'wrangler-team@data.humancellatlas.org',

@@ -115,24 +115,35 @@ describe('OntologyService', () => {
 
     it('should return correct search params when given a schema', (done) => {
       // given
-      http.get.and.returnValue(of(olsHttpResponse));
+      const mockedResponse = {
+        _embedded: {
+          terms: [
+            {
+              iri: 'http://www.ebi.ac.uk/efo/EFO_0009736', // Expected IRI
+            },
+          ],
+        },
+      };
 
-      // when
+      // Mock the API call to `/api/terms`
+      http.get.and.returnValue(of(mockedResponse));
+
+      // Call the function under test
       const output = service.createSearchParams(schema, 'text');
 
-      // then
-
-      output.subscribe(data => {
+      // Verify the result
+      output.subscribe((data) => {
         expect(data).toEqual({
-          ...OlsRequestParamsDefaults,
-          ontology: 'efo',
-          allChildrenOf: 'http://www.ebi.ac.uk/efo/EFO_0009736',
           q: 'text',
+          rows: 30,
+          start: 0,
+          ontology: 'efo',
+          allChildrenOf: 'http://www.ebi.ac.uk/efo/EFO_0009736', // Matches the mocked IRI
         });
+        done();
       });
-
-      done();
     });
+
 
     it('should return correct search params when schema is undefined', (done) => {
       // given
@@ -143,12 +154,12 @@ describe('OntologyService', () => {
       // then
       output.subscribe(data => {
         expect(data).toEqual({
-          ...OlsRequestParamsDefaults,
           q: '*',
+          rows: 30,
+          start: 0
         });
+        done();
       });
-
-      done();
     });
 
     it('should work when ols returns 2 results', (done) => {
@@ -251,13 +262,17 @@ describe('OntologyService', () => {
     it('be able to retrieve data from the API via GET', () => {
       const olsResponse: OlsResponse = creatOlsResponse();
       const olsHttpResponse = createOlsHttpResponse(olsResponse);
-      olsHttpResponse.response.numFound = 3;
-      service.select({}).subscribe(data => {
+      const params = { q: '*', ontology: 'efo' }; // Add mock query parameters
+      const queryParams = new HttpParams({ fromObject: params }); // Convert to HttpParams
+      const expectedUrl = `${service.API_URL}/api/select?${queryParams.toString()}`;
+
+      service.select(params).subscribe((data) => {
         expect(data).toEqual(olsHttpResponse);
       });
-      const request = httpMock.expectOne(`${service.API_URL}/api/select`);
+
+      // Ensure the request URL matches exactly
+      const request = httpMock.expectOne(expectedUrl);
       expect(request.request.method).toBe('GET');
-      expect(request.request.params).toEqual(new HttpParams({fromObject: {}}));
       request.flush(olsHttpResponse);
     });
   });
