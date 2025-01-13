@@ -58,16 +58,6 @@ export class OntologyService {
         .join(",");
     }
 
-    // Logging for "Strain ontology"
-    if (schema.title === 'Strain ontology') {
-      console.log('--- Debug: Strain Ontology ---');
-      console.log('Properties:', properties);
-      console.log('Graph Restriction:', graphRestriction);
-      console.log('Ontology Classes:', ontologyClasses);
-      console.log('Ontology Relation:', ontologyRelation);
-      console.log('Ontologies:', ontologies);
-    }
-
     if (ontologyClasses.length === 0) {
       console.warn("No ontology classes found. Using default q parameter.");
       return of(searchParams);
@@ -101,11 +91,6 @@ export class OntologyService {
           searchParams.q = searchText || '*';
         }
 
-        // Log final search parameters for "Strain ontology"
-        if (schema.title === 'Strain ontology') {
-          console.log('Final Search Parameters:', searchParams);
-        }
-
         return searchParams;
       })
     );
@@ -113,20 +98,11 @@ export class OntologyService {
 
 
   searchOntologies(params: OlsRequestParams): Observable<Ontology[]> {
-    if (params.q.includes('Strain ontology')) {
-      console.log('--- Debug: Search Ontologies ---');
-      console.log('Search Parameters:', params);
-    }
-
     return this.select(params).pipe(
       map((result) => {
         if (!result.response || !result.response.docs) {
           console.error("No response or docs found in API result.");
           return [];
-        }
-
-        if (params.q.includes('Strain ontology')) {
-          console.log('API Result:', result.response.docs);
         }
 
         return result.response.docs
@@ -143,13 +119,6 @@ export class OntologyService {
   select(params: any, schemaTitle?: string): Observable<OlsHttpResponse> {
     const queryParams = new URLSearchParams(params).toString();
     const fullUrl = `${this.API_URL}/api/select?${queryParams}`;
-
-    // Log the URL only if the schema title is "Strain Ontology"
-    if (schemaTitle === 'Strain ontology') {
-      console.log('--- Debug: Strain Ontology API Request ---');
-      console.log('Constructed API URL:', fullUrl);
-      console.log('Request Parameters:', params);
-    }
 
     return this.http.get<OlsHttpResponse>(fullUrl);
   }
