@@ -252,7 +252,10 @@
         "Needs update",
         "SCEA",
         "CellxGene",
-        "Archive"
+        "Archive",
+        "Blood Network",
+        "Skin Network",
+        "Brain Network"
       ],
       "user_friendly": "Project labels"
     },
