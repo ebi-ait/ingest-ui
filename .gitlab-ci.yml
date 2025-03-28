@@ -1,5 +1,12 @@
 include:
-  remote: 'https://raw.githubusercontent.com/ebi-ait/gitlab-ci-templates/master/build-release-deploy.yml'
+  - remote: 'https://raw.githubusercontent.com/ebi-ait/gitlab-ci-templates/master/build-release-deploy.yml'
+  - template: Code-Quality.gitlab-ci.yml
+
+code_quality:
+  variables:
+    REPORT_FORMAT: html
+  artifacts:
+    paths: [gl-code-quality-report.html]
 
 Test:
   image: quay.io/ebi-ait/ingest-base-images:node_14.15.5-alpine
