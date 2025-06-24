@@ -34,10 +34,10 @@ export class OntologyService {
   }
 
   createSearchParams(schema: JsonSchema, searchText?: string): Observable<OlsRequestParams> {
-    const searchParams:OlsRequestParams = {
-      ...OlsRequestParamsDefaults,
-      q: searchText ? searchText : '*',
-      rows: 30
+    const searchParams: OlsRequestParams = {
+      q: searchText || '*',
+      rows: 30,
+      start: 0,
     };
 
     if (!schema) {
@@ -45,55 +45,82 @@ export class OntologyService {
     }
 
     const properties = schema.properties;
-    const graphRestriction = properties['ontology']['graph_restriction'];
-    const ontologyClasses: string[] = graphRestriction['classes'];
-    const ontologyRelation: string = graphRestriction['relations'][0]; // TODO support only 1 relation for now
-    const ontologies: string[] = graphRestriction['ontologies'];
-    searchParams['ontology'] = ontologies
-      .map(ontology => ontology.replace('obo:', ''))
-      .join(",");
+    const graphRestriction = properties?.['ontology']?.['graph_restriction'] || {};
+    const ontologyClasses: string[] = graphRestriction['classes'] || [];
+    const ontologyRelation: string = graphRestriction['relations']?.[0] || 'rdfs:subClassOf'; // Default relation
+    const ontologies: string[] = graphRestriction['ontologies'] || [];
+    const includeSelf = graphRestriction['include_self'];
+    const relationKey = this.OLS_RELATION[ontologyRelation] || 'allChildrenOf';
+
+    if (ontologies.length > 0) {
+      searchParams['ontology'] = ontologies
+        .map((ontology) => ontology.replace('obo:', ''))
+        .join(",");
+    }
+
+    if (ontologyClasses.length === 0) {
+      console.warn("No ontology classes found. Using default q parameter.");
+      return of(searchParams);
+    }
+
     return combineLatest(
-      ontologyClasses
-        .map(ontologyClass => ontologyClass.replace(':', '_'))
-        .map(olsClass => this.select({
-          q: olsClass,
-          ontology: searchParams['ontology']
-        }))
+      ontologyClasses.map((ontologyClass) =>
+        this.http.get<{ _embedded: { terms: Array<{ iri: string }> } }>(
+          `${this.API_URL}/api/terms`,
+          { params: { id: ontologyClass } }
+        ).pipe(
+          map((response) => {
+            const termIri = response._embedded?.terms?.[0]?.iri;
+            if (!termIri) {
+              console.warn(`No IRI found for class: ${ontologyClass}`);
+            }
+            return termIri || '';
+          })
+        )
+      )
     ).pipe(
-      map(responseArray => {
-          return responseArray
-            .map(ols => ols.response)
-            .filter(olsResponse => olsResponse.numFound === 1)
-            .map(olsResponse => olsResponse.docs[0].iri);
+      map((iriArray) => {
+        const validIris = iriArray.filter((iri) => !!iri);
+
+        if (validIris.length > 0) {
+          searchParams[relationKey] = validIris.join(',');
+          if (includeSelf) {
+            searchParams['includeSelf'] = true;
+          }
+        } else {
+          searchParams.q = searchText || '*';
         }
-      ),
-      map(iriArray => {
-        searchParams[this.OLS_RELATION[ontologyRelation]] = iriArray.join(',');
+
         return searchParams;
       })
     );
-
   }
 
-  searchOntologies(params:OlsRequestParams): Observable<Ontology[]> {
-    return this.select(params)
-      .pipe(map(result => {
+
+  searchOntologies(params: OlsRequestParams): Observable<Ontology[]> {
+    return this.select(params).pipe(
+      map((result) => {
+        if (!result.response || !result.response.docs) {
+          console.error("No response or docs found in API result.");
+          return [];
+        }
+
         return result.response.docs
-          .map(doc => {
-            const ontology: Ontology = {
-              ontology: doc.obo_id,
-              ontology_label: doc.label,
-              text: doc.label
-            };
-            return ontology;
-          });
-      }));
+          .filter((doc) => doc.type === 'class' && doc.label && doc.obo_id)
+          .map((doc) => ({
+            ontology: doc.obo_id,
+            ontology_label: doc.label,
+            text: doc.label,
+          }));
+      })
+    );
   }
 
-  select(params): Observable<OlsHttpResponse> {
-    return this.http
-      .get<OlsHttpResponse>(`${this.API_URL}/api/select`, {params})
-  }
+  select(params: any, schemaTitle?: string): Observable<OlsHttpResponse> {
+    const queryParams = new URLSearchParams(params).toString();
+    const fullUrl = `${this.API_URL}/api/select?${queryParams}`;
 
+    return this.http.get<OlsHttpResponse>(fullUrl);
+  }
 
 }
