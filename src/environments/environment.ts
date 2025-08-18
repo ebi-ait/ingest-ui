@@ -14,7 +14,7 @@ export const environment = {
 
   // AAI
   AAI_CLIENT_ID: 'e2041c2d-9449-4468-856e-e84711cebd21',
-  AAI_AUTHORITY: 'https://login.elixir-czech.org/oidc',
+  AAI_AUTHORITY: 'https://login.aai.lifescience-ri.eu/oidc',
 
   OLS_URL: "https://www.ebi.ac.uk/ols4",
   // OLS_URL: 'https://ontology.dev.archive.data.humancellatlas.org',

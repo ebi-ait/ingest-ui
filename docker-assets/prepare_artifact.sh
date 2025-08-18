@@ -8,7 +8,7 @@ SCHEMA_API_URL=${SCHEMA_API_URL:-"https://schema.humancellatlas.org"}
 DSS_API_URL=${DSS_API_URL:-"https://dss.dev.data.humancellatlas.org"}
 DOMAIN_WHITELIST=${DOMAIN_WHITELIST:-"localhost:8080,localhost:5000"}
 AAI_CLIENT_ID=${AAI_CLIENT_ID:-"e2041c2d-9449-4468-856e-e84711cebd21"}
-AAI_AUTHORITY=${AAI_AUTHORITY:-"https://login.elixir-czech.org/oidc"}
+AAI_AUTHORITY=${AAI_AUTHORITY:-"https://login.aai.lifescience-ri.eu/oidc"}
 OLS_URL=${OLS_URL:-"https://ontology.dev.archive.data.humancellatlas.org"}
 
 
